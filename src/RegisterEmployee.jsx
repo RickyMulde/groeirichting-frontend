@@ -1,142 +1,125 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { useSearchParams, useNavigate } from 'react-router-dom'
 
 function RegisterEmployee() {
-  const [params] = useSearchParams()
-  const navigate = useNavigate()
-  const token = params.get('token')
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get('token')
 
-  const [invitation, setInvitation] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [form, setForm] = useState({
-    first_name: '',
-    middle_name: '',
-    last_name: '',
-    birthdate: '',
-    password: '',
-    confirm_password: ''
-  })
+  const [tokenOngeldig, setTokenOngeldig] = useState(false)
+
+  const [email, setEmail] = useState('')
+  const [bedrijf, setBedrijf] = useState('')
+
+  const [firstName, setFirstName] = useState('')
+  const [middleName, setMiddleName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [birthdate, setBirthdate] = useState('')
+  const [gender, setGender] = useState('')
+
+  const [wachtwoord, setWachtwoord] = useState('')
+  const [bevestiging, setBevestiging] = useState('')
+
+  const [foutmelding, setFoutmelding] = useState('')
+  const [succesmelding, setSuccesmelding] = useState('')
 
   useEffect(() => {
     const fetchInvitation = async () => {
-      setLoading(true)
       const { data, error } = await supabase
         .from('invitations')
-        .select('*')
+        .select('email, bedrijf, status')
         .eq('token', token)
-        .eq('status', 'pending')
         .single()
 
-      if (error || !data) {
-        setError('Ongeldige of verlopen uitnodiging.')
+      if (error || !data || data.status !== 'pending') {
+        setTokenOngeldig(true)
       } else {
-        setInvitation(data)
+        setEmail(data.email)
+        setBedrijf(data.bedrijf)
       }
+
       setLoading(false)
     }
 
-    if (token) fetchInvitation()
-    else setError('Geen token meegegeven.')
+    if (token) {
+      fetchInvitation()
+    } else {
+      setTokenOngeldig(true)
+      setLoading(false)
+    }
   }, [token])
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
+    setFoutmelding('')
+    setSuccesmelding('')
 
-    if (form.password !== form.confirm_password) {
-      setError('Wachtwoorden komen niet overeen.')
+    if (!firstName || !lastName || !birthdate || !gender) {
+      setFoutmelding('Vul alle verplichte velden in.')
       return
     }
 
-    if (!invitation) {
-      setError('Geen geldige uitnodiging.')
+    if (wachtwoord.length < 8) {
+      setFoutmelding('Wachtwoord moet minimaal 8 tekens zijn.')
       return
     }
 
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-      email: invitation.email,
-      password: form.password
+    if (wachtwoord !== bevestiging) {
+      setFoutmelding('Wachtwoorden komen niet overeen.')
+      return
+    }
+
+    const response = await fetch('https://groeirichting-backend.onrender.com/api/register-employee', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token,
+        first_name: firstName,
+        middle_name: middleName,
+        last_name: lastName,
+        birthdate,
+        gender,
+        password: wachtwoord
+      })
     })
 
-    if (signUpError) {
-      setError(signUpError.message)
-      return
+    const result = await response.json()
+
+    if (!response.ok) {
+      setFoutmelding(result.error || 'Registratie mislukt')
+    } else {
+      setSuccesmelding('Je account is succesvol geregistreerd.')
     }
-
-    const userId = authData.user?.id
-    if (!userId) {
-      setError('Er ging iets mis met het aanmaken van het account.')
-      return
-    }
-
-    const { error: insertError } = await supabase.from('users').insert({
-      id: userId,
-      email: invitation.email,
-      role: 'medewerker',
-      employer_id: invitation.employer_id,
-      first_name: form.first_name,
-      middle_name: form.middle_name,
-      last_name: form.last_name,
-      birthdate: form.birthdate
-    })
-
-    if (insertError) {
-      setError('Kon gebruikersprofiel niet opslaan.')
-      return
-    }
-
-    await supabase.from('invitations')
-      .update({ status: 'gebruikt' })
-      .eq('token', token)
-
-    navigate('/login')
   }
 
-  if (loading) return <div className="page-container">Laden...</div>
-  if (error) return <div className="page-container text-red-600">{error}</div>
+  if (loading) return <p>Token wordt gecontroleerd...</p>
+  if (tokenOngeldig) return <p className="text-red-600">Deze uitnodiging is niet geldig of is verlopen.</p>
 
   return (
-    <div className="page-container max-w-xl">
-      <h1 className="text-2xl font-semibold mb-4">Account aanmaken</h1>
-      <p className="mb-6">Je gaat een account aanmaken gekoppeld aan werkgever ID: <strong>{invitation.employer_id}</strong></p>
+    <div className="page-container max-w-xl space-y-8">
+      <section>
+        <h1 className="text-2xl font-semibold mb-2">Account aanmaken</h1>
+        <p className="text-kleur-muted">Vul je gegevens in om je account te activeren.</p>
+      </section>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label>Voornaam</label>
-          <input name="first_name" value={form.first_name} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Tussenvoegsel</label>
-          <input name="middle_name" value={form.middle_name} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Achternaam</label>
-          <input name="last_name" value={form.last_name} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Geboortedatum</label>
-          <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Wachtwoord</label>
-          <input type="password" name="password" value={form.password} onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Bevestig wachtwoord</label>
-          <input type="password" name="confirm_password" value={form.confirm_password} onChange={handleChange} required />
-        </div>
-        <button type="submit" className="btn btn-primary">Account aanmaken</button>
+      <form onSubmit={handleSubmit} className="bg-white shadow-md p-6 rounded-xl space-y-4">
+        <input type="text" value={bedrijf} disabled className="bg-gray-100" />
+        <input type="email" value={email} disabled className="bg-gray-100" />
+        <input type="text" placeholder="Voornaam" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+        <input type="text" placeholder="Tussenvoegsel (optioneel)" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
+        <input type="text" placeholder="Achternaam" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+        <input type="date" placeholder="Geboortedatum" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} required />
+        <input type="text" placeholder="Geslacht (bijv. man, vrouw, non-binair)" value={gender} onChange={(e) => setGender(e.target.value)} required />
+        <input type="password" placeholder="Wachtwoord" value={wachtwoord} onChange={(e) => setWachtwoord(e.target.value)} required />
+        <input type="password" placeholder="Bevestig wachtwoord" value={bevestiging} onChange={(e) => setBevestiging(e.target.value)} required />
+        <button type="submit" className="btn btn-primary w-full">Account aanmaken</button>
+
+        {foutmelding && <p className="mt-2 text-red-600">{foutmelding}</p>}
+        {succesmelding && <p className="mt-2 text-green-600">{succesmelding}</p>}
       </form>
-
-      {error && <p className="text-red-600 mt-4">{error}</p>}
     </div>
   )
 }
 
-export default RegisterEmployee;
+export default RegisterEmployee
