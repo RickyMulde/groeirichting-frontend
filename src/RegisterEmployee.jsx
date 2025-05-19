@@ -89,7 +89,10 @@ function RegisterEmployee() {
     if (!response.ok) {
       setFoutmelding(result.error || 'Registratie mislukt')
     } else {
-      setSuccesmelding('Je account is succesvol geregistreerd.')
+      setSuccesmelding('Je account is succesvol geregistreerd. Je wordt nu doorgestuurd...')
+      setTimeout(() => {
+        window.location.href = '/werknemer-portaal'
+      }, 2000)
     }
   }
 
