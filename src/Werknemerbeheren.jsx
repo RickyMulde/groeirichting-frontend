@@ -79,20 +79,21 @@ function WerknemerBeheren() {
       return
     }
 
-// Verstuur e-mail via eigen backend API
-const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      to: email,
-      name: 'Medewerker',
-      employerId: profiel.employer_id?.toString?.() || ''
-    })
-  });
+    // Verstuur e-mail via eigen backend API
+    const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        to: email,
+        name: 'Medewerker',
+        employerId: profiel.employer_id?.toString?.() || '',
+        token: token
+      })
+    });
 
-      if (!response.ok) {
+    if (!response.ok) {
       setFoutmelding('Uitnodiging aangemaakt, maar e-mail verzenden is mislukt.')
     } else {
       setEmail('')
