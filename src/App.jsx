@@ -9,6 +9,7 @@ import Werknemerbeheren from './Werknemerbeheren'
 import Instellingen from './Instellingen'
 import RegisterEmployee from './RegisterEmployee'
 import PostLoginRedirect from './PostLoginRedirect'
+import RegistratieVerplicht from './RegistratieVerplicht'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/werknemerbeheer" element={<Werknemerbeheren />} />
         <Route path="/instellingen" element={<Instellingen />} />
         <Route path="/redirect" element={<PostLoginRedirect />} />
+        <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
       </Routes>
     </Layout>
   )
