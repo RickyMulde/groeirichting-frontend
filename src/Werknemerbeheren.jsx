@@ -88,7 +88,7 @@ const response = await fetch('https://groeirichting-backend.onrender.com/api/sen
     body: JSON.stringify({
       to: email,
       name: 'Medewerker',
-      employerId: profiel.employer_id
+      employerId: profiel.employer_id?.toString?.() || ''
     })
   });
 
