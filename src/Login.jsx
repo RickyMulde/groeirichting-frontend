@@ -22,28 +22,8 @@ function Login() {
       return
     }
 
-    const {
-      data: { user }
-    } = await supabase.auth.getUser()
-
-    const { data: profiel, error: profielError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-
-    if (profielError) {
-      setError('Kon rol niet ophalen.')
-      return
-    }
-
-    if (profiel.role === 'werkgever') {
-      navigate('/werkgever-portaal')
-    } else if (profiel.role === 'medewerker') {
-      navigate('/werknemer-portaal')
-    } else {
-      setError('Onbekende rol. Neem contact op met de beheerder.')
-    }
+    // Na succesvolle login, ga naar de redirect pagina
+    navigate('/redirect')
   }
 
   return (

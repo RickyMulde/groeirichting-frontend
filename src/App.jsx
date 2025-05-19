@@ -8,6 +8,7 @@ import Dashboard from './dashboard'
 import Werknemerbeheren from './Werknemerbeheren'
 import Instellingen from './Instellingen'
 import RegisterEmployee from './RegisterEmployee'
+import PostLoginRedirect from './PostLoginRedirect'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/werknemerbeheer" element={<Werknemerbeheren />} />
         <Route path="/instellingen" element={<Instellingen />} />
+        <Route path="/redirect" element={<PostLoginRedirect />} />
       </Routes>
     </Layout>
   )
