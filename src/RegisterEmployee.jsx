@@ -28,7 +28,7 @@ function RegisterEmployee() {
     const fetchInvitation = async () => {
       const { data, error } = await supabase
         .from('invitations')
-        .select('email, bedrijf, status')
+        .select('email, employer_id, status')
         .eq('token', token)
         .single()
 
@@ -36,7 +36,7 @@ function RegisterEmployee() {
         setTokenOngeldig(true)
       } else {
         setEmail(data.email)
-        setBedrijf(data.bedrijf)
+        setBedrijf(data.employer_id)
       }
 
       setLoading(false)
