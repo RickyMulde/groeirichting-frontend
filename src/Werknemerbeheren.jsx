@@ -7,6 +7,7 @@ function WerknemerBeheren() {
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [loading, setLoading] = useState(false)
   const [foutmelding, setFoutmelding] = useState('')
+  const [succesmelding, setSuccesmelding] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +39,7 @@ function WerknemerBeheren() {
   const handleInvite = async (e) => {
     e.preventDefault()
     setFoutmelding('')
+    setSuccesmelding('')
     setLoading(true)
 
     const { data: sessionData } = await supabase.auth.getSession()
@@ -97,6 +99,8 @@ function WerknemerBeheren() {
       setFoutmelding('Uitnodiging aangemaakt, maar e-mail verzenden is mislukt.')
     } else {
       setEmail('')
+      setSuccesmelding('Uitnodiging succesvol verzonden!')
+      setTimeout(() => setSuccesmelding(''), 5000)
       const { data: nieuwe } = await supabase
         .from('invitations')
         .select('*')
@@ -124,6 +128,7 @@ function WerknemerBeheren() {
           </button>
         </form>
         {foutmelding && <p className="mt-2 text-red-600">{foutmelding}</p>}
+        {succesmelding && <p className="mt-2 text-green-600">{succesmelding}</p>}
       </section>
     </div>
   )
