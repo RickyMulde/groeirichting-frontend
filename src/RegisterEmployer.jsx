@@ -1,5 +1,5 @@
+
 import { useState } from 'react'
-import { supabase } from './supabaseClient'
 import { Link } from 'react-router-dom'
 
 function RegisterEmployer() {
@@ -16,10 +16,6 @@ function RegisterEmployer() {
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const validatePassword = (pw) => {
-    return pw.length >= 8 && /[A-Za-z]/.test(pw) && /[0-9]/.test(pw)
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -32,53 +28,24 @@ function RegisterEmployer() {
         return
       }
 
-      if (!validatePassword(password)) {
-        setError('Wachtwoord moet minimaal 8 tekens bevatten, incl. 1 letter en 1 cijfer.')
-        return
-      }
-
-      const { data: authData, error: authError } = await supabase.auth.signUp({ email, password })
-      if (authError) {
-        setError(authError.message)
-        return
-      }
-
-      const userId = authData.user?.id
-      if (!userId) {
-        setError('Registratie mislukt. Geen gebruikers-ID ontvangen.')
-        return
-      }
-
-      const { data: employerData, error: employerError } = await supabase
-        .from('employers')
-        .insert({
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/register-employer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           company_name: companyName,
           kvk_number: kvk,
-          contact_email: email,
-          contact_phone: contactPhone
-        })
-        .select()
-        .single()
-
-      if (employerError) {
-        setError(employerError.message)
-        return
-      }
-
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert({
-          id: userId,
+          contact_phone: contactPhone,
           email,
-          role: 'employer',
-          employer_id: employerData.id,
+          password,
           first_name: firstName,
           middle_name: middleName,
           last_name: lastName
         })
+      })
 
-      if (profileError) {
-        setError(profileError.message)
+      const result = await response.json()
+      if (!response.ok) {
+        setError(result.error || 'Registratie mislukt.')
       } else {
         setSuccess('Account succesvol aangemaakt! Bevestig je e-mailadres via de ontvangen mail.')
         setCompanyName('')
