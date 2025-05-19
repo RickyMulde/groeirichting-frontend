@@ -36,10 +36,10 @@ function ProtectedRoute({ children }) {
       }
 
       if (location.pathname === '/' || location.pathname === '/login') {
-        if (profiel.role === 'werkgever') {
+        if (profiel.role === 'employer') {
           navigate('/werkgever-portaal')
-        } else if (profiel.role === 'medewerker') {
-          navigate('/werknemer-portaal')
+        } else if (profiel.role === 'employee') {
+          navigate('/dashboard')
         }
       }
     }

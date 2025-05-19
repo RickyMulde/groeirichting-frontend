@@ -65,18 +65,20 @@ function RegisterEmployer() {
         return
       }
 
-      const { error: userError } = await supabase.from('users').insert({
-        id: userId,
-        email,
-        role: 'werkgever',
-        employer_id: employerData.id,
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName
-      })
+      const { error: profileError } = await supabase
+        .from('users')
+        .insert({
+          id: userId,
+          email,
+          role: 'employer',
+          employer_id: employerData.id,
+          first_name: firstName,
+          middle_name: middleName,
+          last_name: lastName
+        })
 
-      if (userError) {
-        setError(userError.message)
+      if (profileError) {
+        setError(profileError.message)
       } else {
         setSuccess('Account succesvol aangemaakt! Bevestig je e-mailadres via de ontvangen mail.')
         setCompanyName('')
