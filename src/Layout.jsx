@@ -32,7 +32,7 @@ function Layout({ children }) {
         <div className="text-xl font-semibold text-kleur-primary">GroeiRichting</div>
 
         <nav className="flex items-center space-x-4">
-          {/* Voeg hier nav-links toe indien gewenst */}
+          {/* Hier kun je later navigatielinks plaatsen */}
         </nav>
 
         <div className="flex items-center space-x-3">
@@ -46,7 +46,8 @@ function Layout({ children }) {
               </Link>
             </>
           ) : (
-            <button onClick={handleLogout} className="btn btn-primary">Uitloggen</button>
+            // Niks tonen als iemand ingelogd is — Uitloggen zit dan in Navigatiebalk
+            null
           )}
         </div>
       </header>
