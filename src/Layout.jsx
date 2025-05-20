@@ -36,7 +36,9 @@ function Layout({ children }) {
         </nav>
 
         <div className="flex items-center space-x-3">
-          {!session ? (
+          {session ? (
+            <button onClick={handleLogout} className="btn btn-primary">Uitloggen</button>
+          ) : (
             <>
               <Link to="/login">
                 <button className="btn btn-primary">Login</button>
@@ -45,9 +47,6 @@ function Layout({ children }) {
                 <button className="btn btn-accent">Account aanmaken</button>
               </Link>
             </>
-          ) : (
-            // Niks tonen als iemand ingelogd is — Uitloggen zit dan in Navigatiebalk
-            null
           )}
         </div>
       </header>
