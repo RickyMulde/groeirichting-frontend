@@ -11,17 +11,16 @@ function EmployerPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--kleur-background)] text-[var(--kleur-text)] relative">
-      {/* Uitloggen-knop rechtsboven */}
-      <div className="absolute top-4 right-4">
-        <button 
-          onClick={handleLogout}
-          className="btn btn-primary flex items-center gap-2 text-sm"
-        >
-          <LogOut className="w-4 h-4" />
+    <div className="page-container">
+      {/* De absolute gepositioneerde uitlogknop die verwijderd moet worden */}
+      {/* <div className="absolute top-4 right-4">
+        <button onClick={handleLogout} className="btn btn-primary flex items-center gap-2 text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-4 h-4" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
           Uitloggen
         </button>
-      </div>
+      </div> */}
+
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Welkom bij het werkgever portaal</h1>
 
       <div className="max-w-4xl mx-auto pt-20 px-4 space-y-8">
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
