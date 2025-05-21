@@ -176,8 +176,8 @@ function WerknemerBeheren() {
                 <td className="py-2">{w.email}</td>
                 <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
                 <td className="py-2 flex gap-2">
-                  <button onClick={() => handleEdit(w)} className="text-blue-600 hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>
-                  <button onClick={() => handleDelete(w.id)} className="text-red-600 hover:underline text-sm flex items-center gap-1"><Trash2 size={14} />Verwijder</button>
+                  <button onClick={() => handleEdit(w)} className="text-white hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>
+                  <button onClick={() => handleDelete(w.id)} className="text-red-600 text-sm flex items-center"><Trash2 size={14} /></button>
                 </td>
               </tr>
             ))}
@@ -202,7 +202,7 @@ function WerknemerBeheren() {
                 <td className="py-2">{u.email}</td>
                 <td className="py-2 text-yellow-600 font-medium">Uitgenodigd</td>
                 <td className="py-2">
-                  <button onClick={() => handleResend(u)} className="text-orange-600 hover:underline text-sm flex items-center gap-1"><RefreshCw size={14} />Opnieuw versturen</button>
+                  <button onClick={() => handleResend(u)} className="text-white hover:underline text-sm flex items-center gap-1"><RefreshCw size={14} />Opnieuw versturen</button>
                 </td>
               </tr>
             ))}
