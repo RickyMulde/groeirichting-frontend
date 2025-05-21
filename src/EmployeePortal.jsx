@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import Navigatiebalk from './Navigatiebalk'
+import { Smile, History, Settings } from 'lucide-react'
 
 function EmployeePortal() {
   const [user, setUser] = useState(null)
@@ -18,50 +20,44 @@ function EmployeePortal() {
     fetchUser()
   }, [])
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/login')
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="flex justify-between items-center px-6 py-4 border-b bg-white">
-        <h1 className="text-xl font-semibold">GroeiRichting</h1>
-        <button onClick={handleLogout} className="btn btn-primary">Uitloggen</button>
-      </header>
+    <div className="min-h-screen bg-[var(--kleur-background)] text-[var(--kleur-text)]">
+      <Navigatiebalk extraButtons={[]} />
 
-      <main className="max-w-4xl mx-auto py-10 px-4 space-y-6">
-        <div className="space-y-1">
-          <h2 className="text-2xl font-semibold">Welkom terug</h2>
-          <p className="text-gray-600">Wat wil je vandaag doen?</p>
-        </div>
-
-        <div className="space-y-6">
-          <div className="bg-white shadow-md rounded-xl p-6 flex justify-between items-center">
+      <div className="max-w-4xl mx-auto pt-20 px-4 space-y-8">
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Smile className="text-[var(--kleur-primary)] w-8 h-8" />
             <div>
-              <h3 className="text-lg font-semibold">Start een gesprek</h3>
-              <p className="text-gray-500">Beantwoord vragen om je situatie en gevoel in kaart te brengen.</p>
+              <h2 className="text-xl font-semibold">Start een gesprek</h2>
+              <p className="text-sm text-gray-500">Beantwoord vragen om je situatie en gevoel in kaart te brengen.</p>
             </div>
-            <button className="btn btn-primary">Start het gesprek</button>
           </div>
+          <button className="btn btn-primary">Start het gesprek</button>
+        </section>
 
-          <div className="bg-white shadow-md rounded-xl p-6 flex justify-between items-center">
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <History className="text-[var(--kleur-accent)] w-8 h-8" />
             <div>
-              <h3 className="text-lg font-semibold">Eerdere gesprekken</h3>
-              <p className="text-gray-500">Bekijk samenvattingen van je vorige gesprekken.</p>
+              <h2 className="text-xl font-semibold">Eerdere gesprekken</h2>
+              <p className="text-sm text-gray-500">Bekijk samenvattingen van je vorige gesprekken.</p>
             </div>
-            <button className="btn btn-secondary">Bekijk samenvattingen</button>
           </div>
+          <button className="btn btn-accent">Bekijk samenvattingen</button>
+        </section>
 
-          <div className="bg-white shadow-md rounded-xl p-6 flex justify-between items-center">
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Settings className="text-[var(--kleur-secondary)] w-8 h-8" />
             <div>
-              <h3 className="text-lg font-semibold">Instellingen</h3>
-              <p className="text-gray-500">Beheer je profiel en voorkeuren.</p>
+              <h2 className="text-xl font-semibold">Instellingen</h2>
+              <p className="text-sm text-gray-500">Beheer je profiel en voorkeuren.</p>
             </div>
-            <button className="btn btn-orange">Ga naar instellingen</button>
           </div>
-        </div>
-      </main>
+          <button className="btn btn-secondary">Ga naar instellingen</button>
+        </section>
+      </div>
     </div>
   )
 }
