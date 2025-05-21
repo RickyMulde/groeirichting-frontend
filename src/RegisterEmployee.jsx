@@ -89,6 +89,17 @@ function RegisterEmployee() {
     if (!response.ok) {
       setFoutmelding(result.error || 'Registratie mislukt')
     } else {
+      // Probeer automatisch in te loggen
+      const loginResult = await supabase.auth.signInWithPassword({
+        email: email,
+        password: wachtwoord
+      })
+
+      if (loginResult.error) {
+        setFoutmelding('Registratie gelukt, maar automatisch inloggen mislukt: ' + loginResult.error.message)
+        return
+      }
+
       setSuccesmelding('Je account is succesvol geregistreerd. Je wordt nu doorgestuurd...')
       setTimeout(() => {
         window.location.href = '/werknemer-portaal'
