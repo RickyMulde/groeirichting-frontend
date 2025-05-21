@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
 import { MailPlus, Pencil, Trash2, RefreshCw } from 'lucide-react'
+import Alert from './Alert'
 
 function WerknemerBeheren() {
   const [email, setEmail] = useState('')
@@ -131,6 +132,9 @@ function WerknemerBeheren() {
 
   return (
     <div className="page-container space-y-12">
+      <Alert type="success" message={succesmelding} onClose={() => setSuccesmelding('')} />
+      <Alert type="error" message={foutmelding} onClose={() => setFoutmelding('')} />
+
       <section>
         <h1 className="text-2xl font-semibold mb-2">Werknemers beheren</h1>
         <p className="text-kleur-muted">Nodig nieuwe medewerkers uit en beheer bestaande accounts.</p>
@@ -146,8 +150,6 @@ function WerknemerBeheren() {
             {loading ? 'Versturen...' : 'Uitnodigen'}
           </button>
         </form>
-        {foutmelding && <p className="mt-2 text-red-600">{foutmelding}</p>}
-        {succesmelding && <p className="mt-2 text-green-600">{succesmelding}</p>}
       </section>
 
       {/* Werknemerslijst */}
