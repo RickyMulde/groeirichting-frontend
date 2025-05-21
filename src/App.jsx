@@ -10,6 +10,8 @@ import Instellingen from './Instellingen'
 import RegisterEmployee from './RegisterEmployee'
 import PostLoginRedirect from './PostLoginRedirect'
 import RegistratieVerplicht from './RegistratieVerplicht'
+import EmployeePortal from './EmployeePortal'
+
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
         <Route path="/instellingen" element={<Instellingen />} />
         <Route path="/redirect" element={<PostLoginRedirect />} />
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
+        <Route path="/werknemer-portaal" element={<EmployeePortal />} />
       </Routes>
     </Layout>
   )
