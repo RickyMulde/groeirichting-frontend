@@ -31,7 +31,7 @@ function PostLoginRedirect() {
         if (data.role === 'employer') {
           navigate('/werkgever-portaal')
         } else if (data.role === 'employee') {
-          navigate('/werknemerbeheer')
+          navigate('/werknemer-portaal')
         } else {
           navigate('/registratie-verplicht')
         }
