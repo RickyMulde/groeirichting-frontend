@@ -5,6 +5,7 @@ import { MailPlus } from 'lucide-react'
 function WerknemerBeheren() {
   const [email, setEmail] = useState('')
   const [uitnodigingen, setUitnodigingen] = useState([])
+  const [werknemers, setWerknemers] = useState([])
   const [loading, setLoading] = useState(false)
   const [foutmelding, setFoutmelding] = useState('')
   const [succesmelding, setSuccesmelding] = useState('')
@@ -13,7 +14,6 @@ function WerknemerBeheren() {
     const fetchData = async () => {
       const { data: sessionData } = await supabase.auth.getSession()
       const userId = sessionData.session?.user?.id
-
       if (!userId) return
 
       const { data: userProfiel } = await supabase
@@ -24,13 +24,21 @@ function WerknemerBeheren() {
 
       if (!userProfiel) return
 
-      const { data, error } = await supabase
+      const { data: uitnodigingenData } = await supabase
         .from('invitations')
         .select('*')
         .eq('employer_id', userProfiel.employer_id)
         .order('created_at', { ascending: false })
 
-      if (!error) setUitnodigingen(data)
+      const { data: werknemersData } = await supabase
+        .from('users')
+        .select('*')
+        .eq('employer_id', userProfiel.employer_id)
+        .eq('role', 'employee')
+        .order('created_at', { ascending: false })
+
+      setUitnodigingen(uitnodigingenData || [])
+      setWerknemers(werknemersData || [])
     }
 
     fetchData()
@@ -44,7 +52,6 @@ function WerknemerBeheren() {
 
     const { data: sessionData } = await supabase.auth.getSession()
     const userId = sessionData.session?.user?.id
-
     if (!userId) {
       setFoutmelding('Gebruiker niet ingelogd')
       setLoading(false)
@@ -81,7 +88,6 @@ function WerknemerBeheren() {
       return
     }
 
-    // Verstuur e-mail via eigen backend API
     const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
       method: 'POST',
       headers: {
@@ -93,7 +99,7 @@ function WerknemerBeheren() {
         employerId: profiel.employer_id?.toString?.() || '',
         token: token
       })
-    });
+    })
 
     if (!response.ok) {
       setFoutmelding('Uitnodiging aangemaakt, maar e-mail verzenden is mislukt.')
@@ -101,12 +107,22 @@ function WerknemerBeheren() {
       setEmail('')
       setSuccesmelding('Uitnodiging succesvol verzonden!')
       setTimeout(() => setSuccesmelding(''), 5000)
+
       const { data: nieuwe } = await supabase
         .from('invitations')
         .select('*')
         .eq('employer_id', profiel.employer_id)
         .order('created_at', { ascending: false })
+
+      const { data: nieuweWerknemers } = await supabase
+        .from('users')
+        .select('*')
+        .eq('employer_id', profiel.employer_id)
+        .eq('role', 'employee')
+        .order('created_at', { ascending: false })
+
       setUitnodigingen(nieuwe)
+      setWerknemers(nieuweWerknemers)
     }
 
     setLoading(false)
@@ -116,11 +132,14 @@ function WerknemerBeheren() {
     <div className="page-container space-y-12">
       <section>
         <h1 className="text-2xl font-semibold mb-2">Werknemers beheren</h1>
-        <p className="text-kleur-muted">Nodig nieuwe medewerkers uit en verstuur automatisch een activatiemail.</p>
+        <p className="text-kleur-muted">Nodig nieuwe medewerkers uit en beheer bestaande accounts.</p>
       </section>
 
+      {/* Werknemer uitnodigen */}
       <section className="bg-white shadow-md p-6 rounded-xl">
-        <h2 className="text-xl font-medium mb-4 flex items-center gap-2"><MailPlus className="text-kleur-primary" /> Werknemer uitnodigen</h2>
+        <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
+          <MailPlus className="text-kleur-primary" /> Werknemer uitnodigen
+        </h2>
         <form onSubmit={handleInvite} className="flex flex-col sm:flex-row gap-4">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mailadres" required />
           <button type="submit" disabled={loading} className="btn btn-primary">
@@ -129,6 +148,38 @@ function WerknemerBeheren() {
         </form>
         {foutmelding && <p className="mt-2 text-red-600">{foutmelding}</p>}
         {succesmelding && <p className="mt-2 text-green-600">{succesmelding}</p>}
+      </section>
+
+      {/* Tabel met werknemers */}
+      <section className="bg-white shadow-md p-6 rounded-xl">
+        <h2 className="text-xl font-medium mb-4">Actieve werknemers</h2>
+        <table className="w-full text-sm table-auto">
+          <thead className="text-left text-gray-500 border-b">
+            <tr>
+              <th className="py-2">Naam</th>
+              <th className="py-2">E-mailadres</th>
+              <th className="py-2">Status</th>
+              <th className="py-2">Acties</th>
+            </tr>
+          </thead>
+          <tbody>
+            {werknemers.length === 0 && (
+              <tr>
+                <td colSpan="4" className="py-4 text-center text-gray-400">Geen werknemers gevonden.</td>
+              </tr>
+            )}
+            {werknemers.map((w) => (
+              <tr key={w.id} className="border-b">
+                <td className="py-2">{w.first_name} {w.middle_name} {w.last_name}</td>
+                <td className="py-2">{w.email}</td>
+                <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
+                <td className="py-2">
+                  <button className="text-blue-600 hover:underline text-sm">Bewerken</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </div>
   )

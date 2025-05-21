@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
-import Navigatiebalk from './Navigatiebalk'
 
 function Gebruikers() {
   const [werknemers, setWerknemers] = useState([])
@@ -32,7 +31,6 @@ function Gebruikers() {
 
   return (
     <>
-      <Navigatiebalk />
       <div className="page-container">
         <h2>Werknemers beheren</h2>
         {loading ? (
