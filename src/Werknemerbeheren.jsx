@@ -1,48 +1,41 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { MailPlus } from 'lucide-react'
+import { MailPlus, Pencil, Trash2, RefreshCw } from 'lucide-react'
 
 function WerknemerBeheren() {
   const [email, setEmail] = useState('')
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [werknemers, setWerknemers] = useState([])
+  const [selectedWerknemer, setSelectedWerknemer] = useState(null)
   const [loading, setLoading] = useState(false)
   const [foutmelding, setFoutmelding] = useState('')
   const [succesmelding, setSuccesmelding] = useState('')
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const userId = sessionData.session?.user?.id
-      if (!userId) return
-
-      const { data: userProfiel } = await supabase
-        .from('users')
-        .select('employer_id')
-        .eq('id', userId)
-        .single()
-
-      if (!userProfiel) return
-
-      const { data: uitnodigingenData } = await supabase
-        .from('invitations')
-        .select('*')
-        .eq('employer_id', userProfiel.employer_id)
-        .order('created_at', { ascending: false })
-
-      const { data: werknemersData } = await supabase
-        .from('users')
-        .select('*')
-        .eq('employer_id', userProfiel.employer_id)
-        .eq('role', 'employee')
-        .order('created_at', { ascending: false })
-
-      setUitnodigingen(uitnodigingenData || [])
-      setWerknemers(werknemersData || [])
-    }
-
     fetchData()
   }, [])
+
+  const fetchData = async () => {
+    const { data: sessionData } = await supabase.auth.getSession()
+    const userId = sessionData.session?.user?.id
+    if (!userId) return
+
+    const { data: userProfiel } = await supabase
+      .from('users')
+      .select('employer_id')
+      .eq('id', userId)
+      .single()
+
+    if (!userProfiel) return
+
+    const [uitnodigingenData, werknemersData] = await Promise.all([
+      supabase.from('invitations').select('*').eq('employer_id', userProfiel.employer_id).order('created_at', { ascending: false }),
+      supabase.from('users').select('*').eq('employer_id', userProfiel.employer_id).eq('role', 'employee').order('created_at', { ascending: false })
+    ])
+
+    setUitnodigingen(uitnodigingenData.data || [])
+    setWerknemers(werknemersData.data || [])
+  }
 
   const handleInvite = async (e) => {
     e.preventDefault()
@@ -90,15 +83,8 @@ function WerknemerBeheren() {
 
     const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        to: email,
-        name: 'Medewerker',
-        employerId: profiel.employer_id?.toString?.() || '',
-        token: token
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: email, name: 'Medewerker', employerId: profiel.employer_id.toString(), token })
     })
 
     if (!response.ok) {
@@ -107,25 +93,40 @@ function WerknemerBeheren() {
       setEmail('')
       setSuccesmelding('Uitnodiging succesvol verzonden!')
       setTimeout(() => setSuccesmelding(''), 5000)
-
-      const { data: nieuwe } = await supabase
-        .from('invitations')
-        .select('*')
-        .eq('employer_id', profiel.employer_id)
-        .order('created_at', { ascending: false })
-
-      const { data: nieuweWerknemers } = await supabase
-        .from('users')
-        .select('*')
-        .eq('employer_id', profiel.employer_id)
-        .eq('role', 'employee')
-        .order('created_at', { ascending: false })
-
-      setUitnodigingen(nieuwe)
-      setWerknemers(nieuweWerknemers)
+      fetchData()
     }
 
     setLoading(false)
+  }
+
+  const handleEdit = (werknemer) => setSelectedWerknemer(werknemer)
+  const handleCloseModal = () => setSelectedWerknemer(null)
+  const handleSaveChanges = async () => {
+    const { id, email, first_name, middle_name, last_name, birthdate, gender } = selectedWerknemer
+    await supabase.from('users').update({ email, first_name, middle_name, last_name, birthdate, gender }).eq('id', id)
+    handleCloseModal()
+    fetchData()
+  }
+
+  const handleDelete = async (id) => {
+    if (confirm('Weet je zeker dat je deze werknemer wilt verwijderen?')) {
+      await supabase.from('users').delete().eq('id', id)
+      fetchData()
+    }
+  }
+
+  const handleResend = async (invitation) => {
+    const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: invitation.email,
+        name: 'Medewerker',
+        employerId: invitation.employer_id.toString(),
+        token: invitation.token
+      })
+    })
+    if (response.ok) alert('Uitnodiging opnieuw verzonden.')
   }
 
   return (
@@ -135,7 +136,6 @@ function WerknemerBeheren() {
         <p className="text-kleur-muted">Nodig nieuwe medewerkers uit en beheer bestaande accounts.</p>
       </section>
 
-      {/* Werknemer uitnodigen */}
       <section className="bg-white shadow-md p-6 rounded-xl">
         <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
           <MailPlus className="text-kleur-primary" /> Werknemer uitnodigen
@@ -150,7 +150,7 @@ function WerknemerBeheren() {
         {succesmelding && <p className="mt-2 text-green-600">{succesmelding}</p>}
       </section>
 
-      {/* Tabel met werknemers */}
+      {/* Werknemerslijst */}
       <section className="bg-white shadow-md p-6 rounded-xl">
         <h2 className="text-xl font-medium mb-4">Actieve werknemers</h2>
         <table className="w-full text-sm table-auto">
@@ -173,14 +173,61 @@ function WerknemerBeheren() {
                 <td className="py-2">{w.first_name} {w.middle_name} {w.last_name}</td>
                 <td className="py-2">{w.email}</td>
                 <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
-                <td className="py-2">
-                  <button className="text-blue-600 hover:underline text-sm">Bewerken</button>
+                <td className="py-2 flex gap-2">
+                  <button onClick={() => handleEdit(w)} className="text-blue-600 hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>
+                  <button onClick={() => handleDelete(w.id)} className="text-red-600 hover:underline text-sm flex items-center gap-1"><Trash2 size={14} />Verwijder</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
+
+      {/* Uitnodigingenlijst */}
+      <section className="bg-white shadow-md p-6 rounded-xl">
+        <h2 className="text-xl font-medium mb-4">Openstaande uitnodigingen</h2>
+        <table className="w-full text-sm table-auto">
+          <thead className="text-left text-gray-500 border-b">
+            <tr>
+              <th className="py-2">E-mailadres</th>
+              <th className="py-2">Status</th>
+              <th className="py-2">Acties</th>
+            </tr>
+          </thead>
+          <tbody>
+            {uitnodigingen.filter(u => u.status === 'pending').map((u) => (
+              <tr key={u.id} className="border-b">
+                <td className="py-2">{u.email}</td>
+                <td className="py-2 text-yellow-600 font-medium">Uitgenodigd</td>
+                <td className="py-2">
+                  <button onClick={() => handleResend(u)} className="text-orange-600 hover:underline text-sm flex items-center gap-1"><RefreshCw size={14} />Opnieuw versturen</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      {/* Bewerken modal */}
+      {selectedWerknemer && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-xl space-y-4">
+            <h2 className="text-xl font-semibold">Werknemer bewerken</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <input value={selectedWerknemer.email} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, email: e.target.value })} placeholder="E-mailadres" />
+              <input value={selectedWerknemer.first_name} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, first_name: e.target.value })} placeholder="Voornaam" />
+              <input value={selectedWerknemer.middle_name || ''} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, middle_name: e.target.value })} placeholder="Tussenvoegsel" />
+              <input value={selectedWerknemer.last_name} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, last_name: e.target.value })} placeholder="Achternaam" />
+              <input type="date" value={selectedWerknemer.birthdate || ''} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, birthdate: e.target.value })} />
+              <input value={selectedWerknemer.gender} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, gender: e.target.value })} placeholder="Geslacht" />
+            </div>
+            <div className="flex justify-end gap-4 pt-4">
+              <button onClick={handleCloseModal} className="btn btn-secondary">Annuleren</button>
+              <button onClick={handleSaveChanges} className="btn btn-primary">Opslaan</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
