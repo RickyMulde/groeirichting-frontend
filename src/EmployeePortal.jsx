@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
 import { useNavigate, Link } from 'react-router-dom'
-import Navigatiebalk from './Navigatiebalk'
+//import Navigatiebalk from './Navigatiebalk'
 import { Smile, History, Settings } from 'lucide-react'
 
 function EmployeePortal() {
@@ -22,7 +22,7 @@ function EmployeePortal() {
 
   return (
     <div className="min-h-screen bg-[var(--kleur-background)] text-[var(--kleur-text)]">
-      <Navigatiebalk extraButtons={[]} />
+      {/*<Navigatiebalk extraButtons={[]} />*/}
 
       <div className="max-w-4xl mx-auto pt-20 px-4 space-y-8">
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
