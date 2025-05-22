@@ -155,59 +155,63 @@ function WerknemerBeheren() {
       {/* Werknemerslijst */}
       <section className="bg-white shadow-md p-6 rounded-xl">
         <h2 className="text-xl font-medium mb-4">Actieve werknemers</h2>
-        <table className="w-full text-sm table-auto">
-          <thead className="text-left text-gray-500 border-b">
-            <tr>
-              <th className="py-2">Naam</th>
-              <th className="py-2">E-mailadres</th>
-              <th className="py-2">Status</th>
-              <th className="py-2">Acties</th>
-            </tr>
-          </thead>
-          <tbody>
-            {werknemers.length === 0 && (
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm table-auto">
+            <thead className="text-left text-gray-500 border-b">
               <tr>
-                <td colSpan="4" className="py-4 text-center text-gray-400">Geen werknemers gevonden.</td>
+                <th className="py-2">Naam</th>
+                <th className="py-2">E-mailadres</th>
+                <th className="py-2">Status</th>
+                <th className="py-2">Acties</th>
               </tr>
-            )}
-            {werknemers.map((w) => (
-              <tr key={w.id} className="border-b">
-                <td className="py-2">{w.first_name} {w.middle_name} {w.last_name}</td>
-                <td className="py-2">{w.email}</td>
-                <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
-                <td className="py-2 flex gap-2">
-                  <button onClick={() => handleEdit(w)} className="text-white hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>
-                  <button onClick={() => handleDelete(w.id)} className="text-red-600 text-sm flex items-center"><Trash2 size={14} /></button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {werknemers.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="py-4 text-center text-gray-400">Geen werknemers gevonden.</td>
+                </tr>
+              )}
+              {werknemers.map((w) => (
+                <tr key={w.id} className="border-b">
+                  <td className="py-2">{w.first_name} {w.middle_name} {w.last_name}</td>
+                  <td className="py-2">{w.email}</td>
+                  <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
+                  <td className="py-2 flex gap-2">
+                    <button onClick={() => handleEdit(w)} className="text-white hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>
+                    <button onClick={() => handleDelete(w.id)} className="text-red-600 text-sm flex items-center"><Trash2 size={14} /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Uitnodigingenlijst */}
       <section className="bg-white shadow-md p-6 rounded-xl">
         <h2 className="text-xl font-medium mb-4">Openstaande uitnodigingen</h2>
-        <table className="w-full text-sm table-auto">
-          <thead className="text-left text-gray-500 border-b">
-            <tr>
-              <th className="py-2">E-mailadres</th>
-              <th className="py-2">Status</th>
-              <th className="py-2">Acties</th>
-            </tr>
-          </thead>
-          <tbody>
-            {uitnodigingen.filter(u => u.status === 'pending').map((u) => (
-              <tr key={u.id} className="border-b">
-                <td className="py-2">{u.email}</td>
-                <td className="py-2 text-yellow-600 font-medium">Uitgenodigd</td>
-                <td className="py-2">
-                  <button onClick={() => handleResend(u)} className="text-white hover:underline text-sm flex items-center gap-1"><RefreshCw size={14} />Opnieuw versturen</button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm table-auto">
+            <thead className="text-left text-gray-500 border-b">
+              <tr>
+                <th className="py-2">E-mailadres</th>
+                <th className="py-2">Status</th>
+                <th className="py-2">Acties</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {uitnodigingen.filter(u => u.status === 'pending').map((u) => (
+                <tr key={u.id} className="border-b">
+                  <td className="py-2">{u.email}</td>
+                  <td className="py-2 text-yellow-600 font-medium">Uitgenodigd</td>
+                  <td className="py-2">
+                    <button onClick={() => handleResend(u)} className="text-white hover:underline text-sm flex items-center gap-1"><RefreshCw size={14} />Opnieuw versturen</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Bewerken modal */}
