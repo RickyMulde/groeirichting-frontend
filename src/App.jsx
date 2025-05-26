@@ -11,6 +11,7 @@ import RegisterEmployee from './RegisterEmployee'
 import PostLoginRedirect from './PostLoginRedirect'
 import RegistratieVerplicht from './RegistratieVerplicht'
 import EmployeePortal from './EmployeePortal'
+import SuperadminPortaal from './Superadminportaal'
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/redirect" element={<PostLoginRedirect />} />
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
         <Route path="/werknemer-portaal" element={<EmployeePortal />} />
+        <Route path="/superadmin-portaal" element={<SuperadminPortaal />} />
       </Routes>
     </Layout>
   )
