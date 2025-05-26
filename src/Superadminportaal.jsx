@@ -7,55 +7,67 @@ function SuperadminPortaal() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser()
-      if (error || !data?.user) {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
         navigate('/login')
         return
       }
 
-      const { data: profiel, error: profielError } = await supabase
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        navigate('/login')
+        return
+      }
+
+      const { data: profiel, error } = await supabase
         .from('users')
         .select('role')
-        .eq('id', data.user.id)
+        .eq('id', user.id)
         .single()
 
-      if (profielError || !profiel || profiel.role !== 'superuser') {
+      if (error || !profiel || profiel.role !== 'superuser') {
         navigate('/login')
         return
       }
 
-      setUser(data.user)
+      setUser(user)
     }
 
-    fetchUser()
+    checkAuth()
   }, [navigate])
 
   if (!user) {
-    return <p className="text-center mt-10">Laden...</p>
+    return (
+      <div className="page-container">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)]"></div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Superadmin Portaal – Thema's beheren</h1>
+    <div className="page-container">
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Superadmin Portaal – Thema's beheren</h1>
 
       <button
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className="btn btn-primary"
         onClick={() => alert('Thema toevoegen komt hier')}
       >
         + Thema toevoegen
       </button>
 
-      <div className="bg-white shadow rounded-lg p-4 mt-6">
+      <div className="bg-white shadow-md p-6 rounded-xl mt-6">
         <h2 className="text-lg font-semibold mb-3">Actieve thema's (dummy)</h2>
         <ul className="divide-y">
           <li className="py-2 flex justify-between items-center">
             <span>Werkdruk & Taaklast</span>
-            <span className="text-sm text-green-600">Standaard actief</span>
+            <span className="text-sm text-[var(--kleur-accent)]">Standaard actief</span>
           </li>
           <li className="py-2 flex justify-between items-center">
             <span>Cyberrisico's</span>
-            <span className="text-sm text-yellow-600">Optioneel (upsell)</span>
+            <span className="text-sm text-[var(--kleur-secondary)]">Optioneel (upsell)</span>
           </li>
         </ul>
       </div>
