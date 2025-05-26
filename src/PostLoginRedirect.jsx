@@ -28,7 +28,9 @@ function PostLoginRedirect() {
         }
 
         // Navigeer naar de juiste portal op basis van de rol
-        if (data.role === 'employer') {
+        if (data.role === 'superuser') {
+          navigate('/superadmin-portaal')
+        } else if (data.role === 'employer') {
           navigate('/werkgever-portaal')
         } else if (data.role === 'employee') {
           navigate('/werknemer-portaal')
