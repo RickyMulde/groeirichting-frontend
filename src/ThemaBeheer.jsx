@@ -160,6 +160,10 @@ function ThemaBeheer() {
       zoeklabels: splitList(formData.zoeklabels)
     }
 
+    ['zichtbaar_vanaf', 'zichtbaar_tot'].forEach(field => {
+      if (payload[field] === '') payload[field] = null
+    })
+
     if (nieuwThema) {
       const response = await fetch('/api/create-theme-with-questions', {
         method: 'POST',
