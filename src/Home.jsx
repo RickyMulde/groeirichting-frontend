@@ -18,7 +18,7 @@ import {
               Laat je mensen groeien. Dan groeit je bedrijf vanzelf mee.
             </h1>
             <p className="text-lg text-kleur-muted mb-6">
-              GroeiRichting is hét portaal voor moderne werkgevers die willen investeren in duurzame inzetbaarheid en werkgeluk.
+              GroeiRichting is hét portaal voor werkgevers die willen investeren in duurzame inzetbaarheid en werkgeluk.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="btn btn-primary">Bekijk hoe het werkt</button>
