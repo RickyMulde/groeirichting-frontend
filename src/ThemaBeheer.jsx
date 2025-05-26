@@ -16,35 +16,108 @@ function ThemaBeheer() {
     geeft_score: true, geeft_samenvatting: true, geeft_ai_advies: true,
     ai_configuratie: '', branche_labels: '', doelgroep_labels: '',
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
-    ai_model: 'gpt-4o', volgorde_index: 0, versiebeheer: ''
+    ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: ''
   })
   const [vragen, setVragen] = useState([])
   const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchThema = async () => {
-      if (!nieuwThema) {
-        const { data, error } = await supabase.from('themes').select('*').eq('id', id).single()
-        if (error) return setError('Kan thema niet ophalen')
-        setFormData({
-          ...data,
-          vragenlijst: JSON.stringify(data.vragenlijst || {}, null, 2),
-          vervolgvragen: JSON.stringify(data.vervolgvragen || {}, null, 2),
-          ai_configuratie: JSON.stringify(data.ai_configuratie || {}, null, 2),
-          versiebeheer: JSON.stringify(data.versiebeheer || {}, null, 2),
-          branche_labels: (data.branche_labels || []).join(', '),
-          doelgroep_labels: (data.doelgroep_labels || []).join(', '),
-          zoeklabels: (data.zoeklabels || []).join(', ')
-        })
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+          navigate('/login')
+          return
+        }
 
-        const { data: loadedVragen, error: vragenError } = await supabase.from('theme_questions').select('*').eq('theme_id', id).order('volgorde_index')
-        if (!vragenError) setVragen(loadedVragen)
+        const { data: profiel, error: profielError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', session.user.id)
+          .single()
+
+        if (profielError || !profiel || profiel.role !== 'superuser') {
+          navigate('/login')
+          return
+        }
+
+        if (!nieuwThema) {
+          const { data: themaData, error: themaError } = await supabase
+            .from('themes')
+            .select('*')
+            .eq('id', id)
+            .single()
+
+          if (themaError) {
+            console.error('Fout bij ophalen thema:', themaError)
+            setError('Kan thema niet ophalen. Controleer of de tabel bestaat.')
+            setLoading(false)
+            return
+          }
+
+          if (!themaData) {
+            setError('Thema niet gevonden')
+            setLoading(false)
+            return
+          }
+
+          setFormData({
+            ...themaData,
+            vragenlijst: JSON.stringify(themaData.vragenlijst || {}, null, 2),
+            vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
+            ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
+            versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
+            branche_labels: (themaData.branche_labels || []).join(', '),
+            doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
+            zoeklabels: (themaData.zoeklabels || []).join(', ')
+          })
+
+          const { data: loadedVragen, error: vragenError } = await supabase
+            .from('theme_questions')
+            .select('*')
+            .eq('theme_id', id)
+            .order('volgorde_index')
+
+          if (vragenError) {
+            console.error('Fout bij ophalen vragen:', vragenError)
+            setError('Kan vragen niet ophalen')
+          } else {
+            setVragen(loadedVragen || [])
+          }
+        }
+        setLoading(false)
+      } catch (error) {
+        console.error('Fout bij authenticatie:', error)
+        setError('Er is een fout opgetreden')
+        setLoading(false)
       }
     }
-    fetchThema()
-  }, [id])
+
+    checkAuth()
+  }, [id, navigate, nieuwThema])
+
+  if (loading) {
+    return (
+      <div className="page-container">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)]"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="page-container">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+          {error}
+        </div>
+      </div>
+    )
+  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
