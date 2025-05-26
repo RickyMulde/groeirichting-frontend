@@ -12,6 +12,7 @@ import PostLoginRedirect from './PostLoginRedirect'
 import RegistratieVerplicht from './RegistratieVerplicht'
 import EmployeePortal from './EmployeePortal'
 import SuperadminPortaal from './Superadminportaal'
+import ThemaBeheer from './ThemaBeheer'
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
         <Route path="/werknemer-portaal" element={<EmployeePortal />} />
         <Route path="/superadmin-portaal" element={<SuperadminPortaal />} />
+        <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
       </Routes>
     </Layout>
   )

@@ -1,91 +1,56 @@
+// 📁 Bestand: Superadminportaal.jsx
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 
 function SuperadminPortaal() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [themas, setThemas] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session) {
-          navigate('/login')
-          return
-        }
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return navigate('/login')
 
-        const { data: profiel, error: profielError } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', session.user.id)
-          .single()
+      const { data: profiel } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single()
 
-        if (profielError) {
-          console.error('Fout bij ophalen gebruikersrol:', profielError)
-          setError('Er is een fout opgetreden bij het ophalen van je rechten.')
-          return
-        }
+      if (!profiel || profiel.role !== 'superuser') return navigate('/login')
+    }
 
-        if (!profiel || profiel.role !== 'superuser') {
-          navigate('/login')
-          return
-        }
-
-        setLoading(false)
-      } catch (error) {
-        console.error('Fout bij authenticatie:', error)
-        setError('Er is een fout opgetreden bij het inloggen.')
-        setLoading(false)
-      }
+    const fetchThemas = async () => {
+      const { data, error } = await supabase.from('themes').select('*')
+      if (!error) setThemas(data)
     }
 
     checkAuth()
-  }, [navigate])
+    fetchThemas()
+    setLoading(false)
+  }, [])
 
-  if (loading) {
-    return (
-      <div className="page-container">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)]"></div>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="page-container">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
-          {error}
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <div className="page-container">Laden...</div>
+  if (error) return <div className="page-container text-red-600">{error}</div>
 
   return (
     <div className="page-container">
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Superadmin Portaal – Thema's beheren</h1>
 
-      <button
-        className="btn btn-primary"
-        onClick={() => alert('Thema toevoegen komt hier')}
-      >
-        + Thema toevoegen
-      </button>
+      <Link to="/superadmin/thema/nieuw" className="btn btn-primary">+ Thema toevoegen</Link>
 
       <div className="bg-white shadow-md p-6 rounded-xl mt-6">
-        <h2 className="text-lg font-semibold mb-3">Actieve thema's (dummy)</h2>
+        <h2 className="text-lg font-semibold mb-3">Bestaande thema's</h2>
         <ul className="divide-y">
-          <li className="py-2 flex justify-between items-center">
-            <span>Werkdruk & Taaklast</span>
-            <span className="text-sm text-[var(--kleur-accent)]">Standaard actief</span>
-          </li>
-          <li className="py-2 flex justify-between items-center">
-            <span>Cyberrisico's</span>
-            <span className="text-sm text-[var(--kleur-secondary)]">Optioneel (upsell)</span>
-          </li>
+          {themas.map((thema) => (
+            <li key={thema.id} className="py-2 flex justify-between items-center">
+              <span>{thema.titel}</span>
+              <Link to={`/superadmin/thema/${thema.id}`} className="btn btn-accent text-sm">Bewerk</Link>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
