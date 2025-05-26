@@ -3,45 +3,62 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 
 function SuperadminPortaal() {
-  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        navigate('/login')
-        return
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+          navigate('/login')
+          return
+        }
+
+        const { data: profiel, error: profielError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', session.user.id)
+          .single()
+
+        if (profielError) {
+          console.error('Fout bij ophalen gebruikersrol:', profielError)
+          setError('Er is een fout opgetreden bij het ophalen van je rechten.')
+          return
+        }
+
+        if (!profiel || profiel.role !== 'superuser') {
+          navigate('/login')
+          return
+        }
+
+        setLoading(false)
+      } catch (error) {
+        console.error('Fout bij authenticatie:', error)
+        setError('Er is een fout opgetreden bij het inloggen.')
+        setLoading(false)
       }
-
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        navigate('/login')
-        return
-      }
-
-      const { data: profiel, error } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      if (error || !profiel || profiel.role !== 'superuser') {
-        navigate('/login')
-        return
-      }
-
-      setUser(user)
     }
 
     checkAuth()
   }, [navigate])
 
-  if (!user) {
+  if (loading) {
     return (
       <div className="page-container">
         <div className="flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)]"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="page-container">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+          {error}
         </div>
       </div>
     )
