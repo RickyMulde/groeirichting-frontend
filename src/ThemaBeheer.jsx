@@ -165,7 +165,7 @@ function ThemaBeheer() {
     })
 
     if (nieuwThema) {
-      const response = await fetch('/api/create-theme-with-questions', {
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ thema: payload, vragen })
