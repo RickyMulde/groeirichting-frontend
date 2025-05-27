@@ -160,22 +160,20 @@ function ThemaBeheer() {
       zoeklabels: splitList(formData.zoeklabels)
     }
 
-    ['zichtbaar_vanaf', 'zichtbaar_tot'].forEach(field => {
+    // Foutafhandeling: voorkom crash op zichtbaar_* velden
+    ;['zichtbaar_vanaf', 'zichtbaar_tot'].forEach((field) => {
       if (payload[field] === '') payload[field] = null
+      if (Array.isArray(payload[field])) {
+        console.warn(`⚠️ ${field} is per ongeluk een array:`, payload[field])
+        payload[field] = payload[field][0] || null
+      }
     })
 
     if (nieuwThema) {
       const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          thema: {
-            ...payload,
-            zichtbaar_vanaf: payload.zichtbaar_vanaf,
-            zichtbaar_tot: payload.zichtbaar_tot
-          }, 
-          vragen 
-        })
+        body: JSON.stringify({ thema: payload, vragen })
       })
       const result = await response.json()
       if (!response.ok) return setError(result.error || 'Opslaan mislukt')
@@ -185,7 +183,6 @@ function ThemaBeheer() {
       const { error } = await supabase.from('themes').update(payload).eq('id', id)
       if (error) return setError('Opslaan mislukt')
 
-      // bewaar wijzigingen aan vragen (alleen nieuwe toevoegen)
       const nieuwe = vragen.filter((v) => !v.id)
       if (nieuwe.length > 0) {
         const response = await supabase.from('theme_questions').insert(
