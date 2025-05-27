@@ -336,27 +336,39 @@ function ThemaBeheer() {
 
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Huidige vragen</h2>
-            {formData.vragenlijst && formData.vragenlijst.length > 0 ? (
-              <div className="space-y-4">
-                {formData.vragenlijst.map((vraag, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow">
-                    <p className="font-medium">{vraag.tekst}</p>
-                    <p className="text-sm text-gray-600">
-                      Type: {vraag.type} | Verplicht: {vraag.verplicht ? 'Ja' : 'Nee'}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => verwijderVraag(index)}
-                      className="mt-2 text-red-500 hover:text-red-700"
-                    >
-                      Verwijder
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">Nog geen vragen toegevoegd</p>
-            )}
+            {(() => {
+              try {
+                const vragenlijst = typeof formData.vragenlijst === 'string' 
+                  ? JSON.parse(formData.vragenlijst) 
+                  : formData.vragenlijst;
+                
+                if (Array.isArray(vragenlijst) && vragenlijst.length > 0) {
+                  return (
+                    <div className="space-y-4">
+                      {vragenlijst.map((vraag, index) => (
+                        <div key={index} className="bg-white p-4 rounded-lg shadow">
+                          <p className="font-medium">{vraag.tekst}</p>
+                          <p className="text-sm text-gray-600">
+                            Type: {vraag.type} | Verplicht: {vraag.verplicht ? 'Ja' : 'Nee'}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => verwijderVraag(index)}
+                            className="mt-2 text-red-500 hover:text-red-700"
+                          >
+                            Verwijder
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }
+                return <p className="text-gray-500">Nog geen vragen toegevoegd</p>;
+              } catch (error) {
+                console.error('Fout bij parsen vragenlijst:', error);
+                return <p className="text-red-500">Fout bij laden van de vragen</p>;
+              }
+            })()}
           </div>
 
           <div className="mt-6 flex justify-end space-x-4">
