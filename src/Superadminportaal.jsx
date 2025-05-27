@@ -47,7 +47,10 @@ function SuperadminPortaal() {
         <ul className="divide-y">
           {themas.map((thema) => (
             <li key={thema.id} className="py-2 flex justify-between items-center">
-              <span>{thema.titel}</span>
+              <div>
+                <span className="font-medium">{thema.titel}</span>
+                <p className="text-sm text-gray-600 mt-1">{thema.beschrijving}</p>
+              </div>
               <Link to={`/superadmin/thema/${thema.id}`} className="btn btn-accent text-sm">Bewerk</Link>
             </li>
           ))}
