@@ -168,7 +168,14 @@ function ThemaBeheer() {
       const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ thema: payload, vragen })
+        body: JSON.stringify({ 
+          thema: {
+            ...payload,
+            zichtbaar_vanaf: payload.zichtbaar_vanaf,
+            zichtbaar_tot: payload.zichtbaar_tot
+          }, 
+          vragen 
+        })
       })
       const result = await response.json()
       if (!response.ok) return setError(result.error || 'Opslaan mislukt')
