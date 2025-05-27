@@ -4,6 +4,37 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import Alert from './Alert'
 
+const tooltipData = {
+  titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
+  beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
+  intro_prompt: 'Inleidingstekst voor werknemers. Wordt getoond vóór het invullen van de vragenlijst.',
+  vragenlijst: 'JSON met de standaardvragen die in dit thema gesteld worden. Wordt vooraf geladen in het werknemersportaal.',
+  vervolgvragen: 'JSON met eventuele vervolgvraaglogica. Bijvoorbeeld: toon vraag X alleen als antwoord op Y = ja.',
+  gespreksdoel: 'Interne beschrijving van het doel van het AI-gesprek (bijv. evaluatie, signalering, coaching).',
+  doel_vraag: 'Specifieke kernvraag die als basis dient voor de AI-samenvatting, bijvoorbeeld: "Wat wil je bespreken?"',
+  toelichting: 'Uitleg voor de werknemer bij het starten van een gesprek. Wordt prominent getoond.',
+  geeft_score: 'Vink aan als het AI-gesprek een score teruggeeft over bijvoorbeeld werkdruk of veerkracht.',
+  geeft_samenvatting: 'Vink aan als het AI een samenvatting van het gesprek moet genereren.',
+  geeft_ai_advies: 'Vink aan als de AI ook aanbevelingen mag geven (zoals coaching- of ontwikkelrichtingen).',
+  ai_configuratie: 'JSON met instellingen voor de AI, zoals toon, gevoeligheid voor emoties, beperkingen.',
+  ai_model: 'Model dat gebruikt wordt (standaard: GPT-4).',
+  standaard_zichtbaar: 'Vink aan als dit thema standaard actief moet zijn voor nieuwe werkgevers.',
+  alleen_premium: 'Vink aan als dit thema alleen beschikbaar is in het premium pakket.',
+  alleen_concept: 'Alleen zichtbaar voor jou als superadmin. Gebruik dit voor testen of voorbereiding.',
+  voorgesteld_als_verplicht: 'Geef aan of je dit thema aanbeveelt als verplicht onderdeel voor werknemers.',
+  zichtbaar_vanaf: 'Optionele datum vanaf wanneer dit thema beschikbaar is voor werknemers.',
+  zichtbaar_tot: 'Optionele datum tot wanneer het thema beschikbaar is (handig bij seizoensgebonden onderwerpen).',
+  branche_labels: 'Lijst met branches waarvoor dit thema relevant is (bijv. onderwijs, zorg). Gescheiden met komma\'s.',
+  doelgroep_labels: 'Lijst met doelgroepen waarvoor het thema geschikt is (bijv. leidinggevenden, starters).',
+  zoeklabels: 'Zoektermen waarop het thema gevonden mag worden binnen het superadminportaal.',
+  versiebeheer: 'JSON met changelog of revisiegeschiedenis van dit thema.',
+  volgorde_index: 'Nummer voor sortering van het thema in de weergave. Lager = eerder in de lijst.',
+  taalcode: 'De taal waarin het thema is geschreven (standaard: nl).',
+  tekst: 'De vraagtekst die aan de werknemer wordt gesteld.',
+  verplicht: 'Vink aan of de werknemer verplicht is deze vraag te beantwoorden.',
+  type: 'Geef aan of dit een initiële of vervolg-vraag is.'
+}
+
 function ThemaBeheer() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -196,49 +227,155 @@ function ThemaBeheer() {
   }
 
   return (
-    <div className="page-container">
-      <h1 className="text-2xl font-bold mb-6">{nieuwThema ? 'Nieuw thema aanmaken' : 'Thema bewerken'}</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {Object.entries(formData).map(([key, val]) => (
-          <div key={key}>
-            <label className="block text-sm font-medium capitalize">{key.replace(/_/g, ' ')}</label>
-            {typeof val === 'boolean' ? (
-              <input type="checkbox" name={key} checked={val} onChange={handleChange} />
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Thema Beheren</h1>
+      {error && <Alert type="error" message={error} />}
+      {success && <Alert type="success" message={success} />}
+      
+      {loading ? (
+        <div>Laden...</div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {Object.entries(formData).map(([key, val]) => (
+            <div key={key} className="mb-4">
+              <label className="block text-sm font-medium capitalize mb-1">
+                {key.replace(/_/g, ' ')}
+                {tooltipData[key] && (
+                  <span
+                    title={tooltipData[key]}
+                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                  >🛈</span>
+                )}
+              </label>
+              {typeof val === 'boolean' ? (
+                <input 
+                  type="checkbox" 
+                  name={key} 
+                  checked={val} 
+                  onChange={handleChange}
+                  className="mt-1"
+                />
+              ) : (
+                <input
+                  type={key.includes('datum') ? 'date' : 'text'}
+                  name={key}
+                  value={val || ''}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              )}
+            </div>
+          ))}
+
+          <h2 className="text-xl font-semibold mt-6 mb-4">Vragen toevoegen</h2>
+          <div className="bg-gray-50 p-4 rounded-xl">
+            <div className="mb-4">
+              <label className="block text-sm font-medium capitalize mb-1">
+                Vraagtekst
+                {tooltipData.tekst && (
+                  <span 
+                    title={tooltipData.tekst} 
+                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                  >🛈</span>
+                )}
+              </label>
+              <input 
+                type="text" 
+                name="tekst" 
+                value={nieuweVraag.tekst} 
+                onChange={handleVraagChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium capitalize mb-1">
+                Verplicht
+                {tooltipData.verplicht && (
+                  <span 
+                    title={tooltipData.verplicht} 
+                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                  >🛈</span>
+                )}
+              </label>
+              <input 
+                type="checkbox" 
+                name="verplicht" 
+                checked={nieuweVraag.verplicht} 
+                onChange={handleVraagChange}
+                className="mt-1"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium capitalize mb-1">
+                Type
+                {tooltipData.type && (
+                  <span 
+                    title={tooltipData.type} 
+                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                  >🛈</span>
+                )}
+              </label>
+              <select 
+                name="type" 
+                value={nieuweVraag.type} 
+                onChange={handleVraagChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="initieel">Initieel</option>
+                <option value="vervolg">Vervolg</option>
+              </select>
+            </div>
+            <button 
+              type="button" 
+              onClick={voegVraagToe}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+            >
+              + Voeg vraag toe
+            </button>
+          </div>
+
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4">Huidige vragen</h2>
+            {formData.vragenlijst && formData.vragenlijst.length > 0 ? (
+              <div className="space-y-4">
+                {formData.vragenlijst.map((vraag, index) => (
+                  <div key={index} className="bg-white p-4 rounded-lg shadow">
+                    <p className="font-medium">{vraag.tekst}</p>
+                    <p className="text-sm text-gray-600">
+                      Type: {vraag.type} | Verplicht: {vraag.verplicht ? 'Ja' : 'Nee'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => verwijderVraag(index)}
+                      className="mt-2 text-red-500 hover:text-red-700"
+                    >
+                      Verwijder
+                    </button>
+                  </div>
+                ))}
+              </div>
             ) : (
-              <input type={key.includes('datum') ? 'date' : 'text'} name={key} value={val || ''} onChange={handleChange} />
+              <p className="text-gray-500">Nog geen vragen toegevoegd</p>
             )}
           </div>
-        ))}
 
-        <h2 className="text-xl font-semibold mt-6">Vragen toevoegen</h2>
-        <div className="bg-gray-50 p-4 rounded-xl">
-          <input type="text" name="tekst" value={nieuweVraag.tekst} onChange={handleVraagChange} placeholder="Vraagtekst" />
-          <label className="inline-flex items-center ml-4">
-            <input type="checkbox" name="verplicht" checked={nieuweVraag.verplicht} onChange={handleVraagChange} /> Verplicht
-          </label>
-          <select name="type" value={nieuweVraag.type} onChange={handleVraagChange}>
-            <option value="initieel">Initieel</option>
-            <option value="vervolg">Vervolg</option>
-          </select>
-          <button type="button" className="btn btn-secondary ml-4" onClick={voegVraagToe}>+ Voeg vraag toe</button>
-        </div>
-
-        {vragen.length > 0 && (
-          <ul className="mt-4 list-disc list-inside">
-            {vragen.map((vraag, i) => (
-              <li key={i} className="flex justify-between items-center">
-                <span>{vraag.tekst} ({vraag.type}) {vraag.verplicht ? '[verplicht]' : ''}</span>
-                <button type="button" className="text-sm text-red-600 underline" onClick={() => verwijderVraag(i)}>Verwijder</button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <button type="submit" className="btn btn-primary">Opslaan</button>
-      </form>
-
-      <Alert message={error} type="error" onClose={() => setError('')} />
-      <Alert message={success} type="success" onClose={() => setSuccess('')} />
+          <div className="mt-6 flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate('/superadmin')}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Annuleren
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              Opslaan
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   )
 }
