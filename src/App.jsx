@@ -13,6 +13,8 @@ import RegistratieVerplicht from './RegistratieVerplicht'
 import EmployeePortal from './EmployeePortal'
 import SuperadminPortaal from './Superadminportaal'
 import ThemaBeheer from './ThemaBeheer'
+import GesprekPagina from './GesprekPagina'
+import ThemaOverzicht from './ThemaOverzicht'
 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
         <Route path="/werknemer-portaal" element={<EmployeePortal />} />
         <Route path="/superadmin-portaal" element={<SuperadminPortaal />} />
         <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
+        <Route path="/thema-overzicht" element={<ThemaOverzicht />} />
+        <Route path="/gesprek" element={<GesprekPagina />} />
       </Routes>
     </Layout>
   )
