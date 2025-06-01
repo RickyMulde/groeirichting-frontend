@@ -1,6 +1,5 @@
 
 import {
-  AlertCircle, UserMinus, TrendingDown,
   BarChart, Smile, MessageCircle,
   LogIn, Users, BarChartBig, Quote
 } from 'lucide-react'
@@ -12,7 +11,7 @@ function Home() {
   return (
     <div className="space-y-24">
 
-      {/* 1. Hero */}
+      {/* Hero */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-kleur-primary mb-4">
@@ -29,7 +28,7 @@ function Home() {
         <HeroIllustratie className="w-full h-auto" />
       </section>
 
-      {/* 2. Wat levert het op */}
+      {/* Wat levert het op */}
       <section>
         <h2 className="text-2xl font-semibold text-center mb-12">Wat levert GroeiRichting jou op?</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -51,7 +50,7 @@ function Home() {
         </div>
       </section>
 
-      {/* 3. Hoe het werkt */}
+      {/* Hoe het werkt */}
       <section>
         <h2 className="text-2xl font-semibold text-center mb-12">Hoe het werkt</h2>
         <div className="flex flex-col md:flex-row items-center gap-12">
@@ -82,18 +81,7 @@ function Home() {
         </div>
       </section>
 
-      {/* 4. En als je het niet doet */}
-      <section className="bg-gray-900 text-white p-12 rounded-xl">
-        <h2 className="text-2xl font-semibold mb-6">En als je het niet doet?</h2>
-        <ul className="space-y-3">
-          <li className="flex items-center gap-2"><AlertCircle className="text-red-500" /> Gemotiveerde medewerkers vertrekken</li>
-          <li className="flex items-center gap-2"><UserMinus className="text-red-500" /> Ziekteverzuim stijgt, kosten lopen op</li>
-          <li className="flex items-center gap-2"><TrendingDown className="text-red-500" /> Teamspirit daalt, klanten merken het</li>
-          <li className="flex items-center gap-2"><AlertCircle className="text-red-500" /> Talenten kiezen voor andere werkgevers</li>
-        </ul>
-      </section>
-
-      {/* 5. Quote */}
+      {/* Quote */}
       <section className="bg-kleur-accent text-white p-12 rounded-xl text-center">
         <Quote className="w-8 h-8 mx-auto mb-4" />
         <p className="text-lg italic max-w-2xl mx-auto">
@@ -102,7 +90,7 @@ function Home() {
         <p className="mt-4 font-medium">– HR-manager in de zorg</p>
       </section>
 
-      {/* 6. Afsluiter */}
+      {/* Afsluiter */}
       <section className="bg-kleur-primary text-white py-12 text-center rounded-xl">
         <h2 className="text-2xl font-bold mb-4">Jouw mensen zijn je belangrijkste kapitaal.</h2>
         <p className="mb-6">Investeer slim — zonder gedoe.</p>
