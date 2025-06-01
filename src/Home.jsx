@@ -1,11 +1,10 @@
 
 import {
   BarChart, Smile, MessageCircle,
-  LogIn, Users, BarChartBig, Quote, Eye, Speech
+  Users, Quote, CheckCircle
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
-import StepsIllustratie from './assets/steps.svg?react'
 
 function Home() {
   return (
@@ -15,10 +14,10 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-kleur-primary mb-4">
-            Tussen functioneringsgesprek en medewerkertevredenheidsonderzoek in.
+            GroeiRichting – Inzicht. Gesprek. Samen. Groei.
           </h1>
           <p className="text-lg text-kleur-muted mb-6">
-            GroeiRichting helpt organisaties signalen te herkennen, betere gesprekken te voeren en medewerkers écht te betrekken. Eén platform. Thematisch, gestructureerd en AVG-proof.
+            GroeiRichting helpt organisaties signalen te herkennen, betere gesprekken te voeren en medewerkers écht te betrekken. Eén platform. Voorkom uitval en stimuleer groei.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button className="btn btn-primary">Plan een demo</button>
@@ -29,125 +28,96 @@ function Home() {
       </section>
 
       {/* Wat is GroeiRichting */}
-      <section>
-        <h2 className="text-2xl font-semibold text-center mb-12">Wat is GroeiRichting?</h2>
-        <div className="max-w-3xl mx-auto text-center text-kleur-muted space-y-4">
-          <p>GroeiRichting is een digitale gespreksassistent die de brug slaat tussen medewerkertevredenheidsonderzoeken en functioneringsgesprekken.</p>
-          <p>Medewerkers vullen themagerichte vragen in en het platform vertaalt hun input naar duidelijke signalen en gespreksvoorstellen.</p>
-          <p>Zo weet jij wat er écht speelt – en voer je gesprekken die verschil maken.</p>
-        </div>
+      <section className="bg-gray-50 py-16 px-6 rounded-xl text-center">
+        <h2 className="text-2xl font-semibold mb-6">Wat is GroeiRichting?</h2>
+        <p className="max-w-3xl mx-auto text-kleur-muted text-lg">
+          GroeiRichting is een digitale gespreksassistent die de brug slaat tussen medewerkertevredenheidsonderzoeken en functioneringsgesprekken. Medewerkers vullen themagerichte vragen in en het platform vertaalt hun input naar duidelijke signalen en gespreksvoorstellen. Zo weet jij wat er écht speelt – en voer je gesprekken die verschil maken.
+        </p>
       </section>
 
-      {/* Voordelen */}
+      {/* Wat levert het op */}
       <section>
         <h2 className="text-2xl font-semibold text-center mb-12">Wat levert het op?</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 bg-white shadow-md rounded-xl text-center">
-            <Eye className="mx-auto mb-4 text-kleur-primary" />
+            <BarChart className="mx-auto mb-4 text-kleur-primary" />
             <h3 className="font-medium mb-2">Signalen herkennen</h3>
-            <p>Zie op tijd waar het wringt binnen je team of organisatie.</p>
+            <p>Signaleer trends op persoonsniveau of over het hele team. Speel tijdig in op kansen of bedreigingen.</p>
           </div>
           <div className="p-6 bg-white shadow-md rounded-xl text-center">
-            <Speech className="mx-auto mb-4 text-kleur-accent" />
+            <MessageCircle className="mx-auto mb-4 text-kleur-accent" />
             <h3 className="font-medium mb-2">Betere gesprekken</h3>
-            <p>AI-samenvattingen, gesprekstips en opvolging per medewerker.</p>
+            <p>GroeiRichting gaat verder dan een medewerkerstevredenheidsonderzoek. Ontdek wat jouw medewerkers echt denken en stuur bij met behulp van het dashboard met key trends.</p>
           </div>
           <div className="p-6 bg-white shadow-md rounded-xl text-center">
             <Smile className="mx-auto mb-4 text-kleur-secondary" />
             <h3 className="font-medium mb-2">Actieve betrokkenheid</h3>
-            <p>Medewerkers zien dat hun input telt én wordt opgevolgd.</p>
+            <p>De input van jouw medewerkers is een belangrijk onderdeel in het functioneringsgesprek. GroeiRichting zorgt voor een doorlopend verbeteringsproces, waarbij medewerkers het gevoel krijgen dat hun input telt én wordt opgevolgd.</p>
           </div>
         </div>
       </section>
 
-      {/* Hoe het werkt */}
+      {/* Voordelen van GroeiRichting */}
       <section>
-        <h2 className="text-2xl font-semibold text-center mb-12">Hoe het werkt</h2>
-        <div className="flex flex-col md:flex-row items-center gap-12">
-          <StepsIllustratie className="w-full md:w-1/2" />
-          <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <LogIn className="text-kleur-primary mt-1" />
-              <div>
-                <h4 className="font-semibold mb-1">1. Meld je aan als organisatie</h4>
-                <p>Registreer in 2 minuten en stel je voorkeuren in per thema.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <Users className="text-kleur-accent mt-1" />
-              <div>
-                <h4 className="font-semibold mb-1">2. Nodig je medewerkers uit</h4>
-                <p>Via e-mail of directe link. Geen installatie nodig.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <BarChartBig className="text-kleur-secondary mt-1" />
-              <div>
-                <h4 className="font-semibold mb-1">3. Ontvang inzichten en gespreksvoorstellen</h4>
-                <p>Bekijk het dashboard met signalen, samenvattingen en reflecties.</p>
-              </div>
-            </div>
+        <h2 className="text-2xl font-semibold text-center mb-12">Voordelen van GroeiRichting</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-kleur-primary mt-1" />
+            <p>Flexibele themastructuur afgestemd op wat er nú speelt</p>
+          </div>
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-kleur-primary mt-1" />
+            <p>AI-samenvattingen die gesprekken efficiënter en gerichter maken</p>
+          </div>
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-kleur-primary mt-1" />
+            <p>Signalering op individueel én teamniveau</p>
+          </div>
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-kleur-primary mt-1" />
+            <p>Volledige controle en instelbaarheid per werkgever of team</p>
+          </div>
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-kleur-primary mt-1" />
+            <p>Professionalisering zonder extra HR-capaciteit nodig te hebben</p>
           </div>
         </div>
       </section>
 
-      {/* Vergelijkingstabel */}
-      <section>
-        <h2 className="text-2xl font-semibold text-center mb-8">Waarom GroeiRichting?</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse text-sm text-left">
-            <thead>
-              <tr className="bg-gray-100 text-kleur-primary">
-                <th className="px-4 py-2">Kenmerk</th>
-                <th className="px-4 py-2">MTO</th>
-                <th className="px-4 py-2">Functioneringsgesprek</th>
-                <th className="px-4 py-2">GroeiRichting</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-t">
-                <td className="px-4 py-2">Frequentie</td>
-                <td className="px-4 py-2">1× per jaar</td>
-                <td className="px-4 py-2">1× per jaar</td>
-                <td className="px-4 py-2">Thematisch & continu</td>
-              </tr>
-              <tr className="border-t">
-                <td className="px-4 py-2">Medewerkerinput</td>
-                <td className="px-4 py-2">Anoniem</td>
-                <td className="px-4 py-2">Subjectief</td>
-                <td className="px-4 py-2">Persoonlijk + gestructureerd</td>
-              </tr>
-              <tr className="border-t">
-                <td className="px-4 py-2">Opvolging</td>
-                <td className="px-4 py-2">Beperkt</td>
-                <td className="px-4 py-2">Afhankelijk van leidinggevende</td>
-                <td className="px-4 py-2">AI-voorstellen + reflectie & logging</td>
-              </tr>
-              <tr className="border-t">
-                <td className="px-4 py-2">Inzetbaarheid</td>
-                <td className="px-4 py-2">Lange termijn</td>
-                <td className="px-4 py-2">Vaak vergeten</td>
-                <td className="px-4 py-2">Doorlopend inzichtelijk</td>
-              </tr>
-              <tr className="border-t">
-                <td className="px-4 py-2">Privacy & grip</td>
-                <td className="px-4 py-2">Ja</td>
-                <td className="px-4 py-2">Ja</td>
-                <td className="px-4 py-2">AVG + instelbaar per thema</td>
-              </tr>
-            </tbody>
-          </table>
+      {/* Nadelen van huidige praktijk */}
+      <section className="bg-gray-100 py-16 px-6 rounded-xl">
+        <h2 className="text-2xl font-semibold text-center mb-8">De nadelen van hoe het nu gaat</h2>
+        <div className="max-w-3xl mx-auto space-y-4 text-kleur-muted text-center text-lg">
+          <p>Functioneringsgesprekken kosten veel tijd en zijn vaak oppervlakkig.</p>
+          <p>Medewerkers zijn vaak al ontevreden vóór het gesprek plaatsvindt.</p>
+          <p>MT’s hebben geen goed zicht op wat er écht speelt in het team.</p>
+          <p>MTO’s zijn te algemeen en leiden zelden tot echte verandering.</p>
+          <p>Leidinggevenden vinden het lastig om moeilijke onderwerpen bespreekbaar te maken.</p>
         </div>
       </section>
 
-      {/* CTA afsluiter */}
-      <section className="bg-kleur-primary text-white py-12 text-center rounded-xl mt-16">
-        <h2 className="text-2xl font-bold mb-4">Klaar met vrijblijvende evaluatiegesprekken?</h2>
-        <p className="mb-6">Start vandaag met groeigesprekken die écht impact maken.</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="btn btn-accent">Vraag een gratis proefperiode aan</button>
-          <button className="btn btn-secondary">Bekijk het platform</button>
-        </div>
+      {/* GroeiRichting als oplossing */}
+      <section className="py-16 px-6 text-center">
+        <h2 className="text-2xl font-semibold mb-6">GroeiRichting biedt de oplossing</h2>
+        <p className="max-w-3xl mx-auto text-kleur-muted text-lg mb-6">
+          Met thematische gesprekken, AI-ondersteuning en flexibele instellingen geef je richting aan ontwikkeling. Je krijgt als werkgever direct bruikbare input, terwijl medewerkers ervaren dat hun stem telt. Zo ontstaat een gesprekscultuur waarin groei centraal staat.
+        </p>
+      </section>
+
+      {/* Quote */}
+      <section className="bg-kleur-accent text-white p-12 rounded-xl text-center">
+        <Quote className="w-8 h-8 mx-auto mb-4" />
+        <p className="text-lg italic max-w-2xl mx-auto">
+          "Sinds we met GroeiRichting werken, hebben we écht inzicht in wat er speelt. We kunnen nu preventief handelen."
+        </p>
+        <p className="mt-4 font-medium">– HR-manager in de zorg</p>
+      </section>
+
+      {/* Eindkreet */}
+      <section className="bg-kleur-primary text-white py-12 text-center rounded-xl">
+        <h2 className="text-2xl font-bold mb-4">Wil jij werken aan en met een team van gemotiveerde medewerkers die samen het bedrijf willen laten groeien in de richting die jij wilt?</h2>
+        <p className="mb-6">Dan start je met GroeiRichting.</p>
+        <button className="btn btn-secondary">Hoe werkt het?</button>
       </section>
     </div>
   )
