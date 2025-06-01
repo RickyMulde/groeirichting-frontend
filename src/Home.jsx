@@ -1,4 +1,3 @@
-
 import {
   BarChart, Smile, MessageCircle,
   Users, Quote, CheckCircle
@@ -81,6 +80,10 @@ function Home() {
             <CheckCircle className="text-kleur-primary mt-1" />
             <p>Professionalisering zonder extra HR-capaciteit nodig te hebben</p>
           </div>
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-kleur-primary mt-1" />
+            <p>Een dashboard om beleidskeuzes op te baseren</p>
+          </div>
         </div>
       </section>
 
@@ -90,8 +93,8 @@ function Home() {
         <div className="max-w-3xl mx-auto space-y-4 text-kleur-muted text-center text-lg">
           <p>Functioneringsgesprekken kosten veel tijd en zijn vaak oppervlakkig.</p>
           <p>Medewerkers zijn vaak al ontevreden vóór het gesprek plaatsvindt.</p>
-          <p>MT’s hebben geen goed zicht op wat er écht speelt in het team.</p>
-          <p>MTO’s zijn te algemeen en leiden zelden tot echte verandering.</p>
+          <p>MT's hebben geen goed zicht op wat er écht speelt in het team.</p>
+          <p>MTO's zijn te algemeen en leiden zelden tot echte verandering.</p>
           <p>Leidinggevenden vinden het lastig om moeilijke onderwerpen bespreekbaar te maken.</p>
         </div>
       </section>
