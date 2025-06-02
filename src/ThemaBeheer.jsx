@@ -9,7 +9,7 @@ const tooltipData = {
   titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
   beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
   intro_prompt: 'Inleidingstekst voor werknemers. Wordt getoond vóór het invullen van de vragenlijst.',
-  vragenlijst: 'JSON met de standaardvragen die in dit thema gesteld worden. Wordt vooraf geladen in het werknemersportaal.',
+  vragenlijst: 'JSON met de standaardvragen die in dit thema gesteld worden. Wordt automatisch bijgewerkt bij het toevoegen van vragen. Alleen ter controle.',
   vervolgvragen: 'JSON met eventuele vervolgvraaglogica. Bijvoorbeeld: toon vraag X alleen als antwoord op Y = ja.',
   gespreksdoel: 'Interne beschrijving van het doel van het AI-gesprek (bijv. evaluatie, signalering, coaching).',
   doel_vraag: 'Specifieke kernvraag die als basis dient voor de AI-samenvatting, bijvoorbeeld: "Wat wil je bespreken?"',
@@ -97,17 +97,6 @@ function ThemaBeheer() {
             return
           }
 
-          setFormData({
-            ...themaData,
-            vragenlijst: JSON.stringify(themaData.vragenlijst || {}, null, 2),
-            vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
-            ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
-            versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
-            branche_labels: (themaData.branche_labels || []).join(', '),
-            doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
-            zoeklabels: (themaData.zoeklabels || []).join(', ')
-          })
-
           const { data: loadedVragen, error: vragenError } = await supabase
             .from('theme_questions')
             .select('*')
@@ -120,6 +109,18 @@ function ThemaBeheer() {
           } else {
             setVragen(loadedVragen || [])
           }
+
+          setFormData({
+            ...themaData,
+            vragenlijst: JSON.stringify(loadedVragen || [], null, 2),
+            vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
+            ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
+            versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
+            branche_labels: (themaData.branche_labels || []).join(', '),
+            doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
+            zoeklabels: (themaData.zoeklabels || []).join(', '),
+            verwachte_signalen: (themaData.verwachte_signalen || []).join(', ')
+          })
         }
         setLoading(false)
       } catch (error) {
@@ -164,7 +165,16 @@ function ThemaBeheer() {
 
   const voegVraagToe = () => {
     if (nieuweVraag.tekst.trim()) {
-      setVragen((prev) => [...prev, nieuweVraag])
+      if (vragen.length >= 5) {
+        setError('Je kunt maximaal 5 vragen toevoegen.')
+        return
+      }
+      const nieuweVragen = [...vragen, nieuweVraag]
+      setVragen(nieuweVragen)
+      setFormData(prev => ({
+        ...prev,
+        vragenlijst: JSON.stringify(nieuweVragen, null, 2)
+      }))
       setNieuweVraag({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
     }
   }
@@ -190,7 +200,8 @@ function ThemaBeheer() {
       versiebeheer: safeParseJSON(formData.versiebeheer),
       branche_labels: splitList(formData.branche_labels),
       doelgroep_labels: splitList(formData.doelgroep_labels),
-      zoeklabels: splitList(formData.zoeklabels)
+      zoeklabels: splitList(formData.zoeklabels),
+      verwachte_signalen: splitList(formData.verwachte_signalen)
     }
 
     // Foutafhandeling: voorkom crash op zichtbaar_* velden
@@ -238,36 +249,61 @@ function ThemaBeheer() {
         <div>Laden...</div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {Object.entries(formData).map(([key, val]) => (
-            <div key={key} className="mb-4">
-              <label className="block text-sm font-medium capitalize mb-1">
-                {key.replace(/_/g, ' ')}
-                {tooltipData[key] && (
-                  <span
-                    title={tooltipData[key]}
-                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                  >🛈</span>
+          {Object.entries(formData).map(([key, val]) => {
+            if (key === 'vragenlijst') {
+              return (
+                <div key={key} className="mb-4">
+                  <label className="block text-sm font-medium capitalize mb-1">
+                    {key.replace(/_/g, ' ')}
+                    {tooltipData[key] && (
+                      <span
+                        title={tooltipData[key]}
+                        className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                      >🛈</span>
+                    )}
+                  </label>
+                  <textarea
+                    name={key}
+                    value={val || ''}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    rows="4"
+                    readOnly
+                  />
+                </div>
+              )
+            }
+            return (
+              <div key={key} className="mb-4">
+                <label className="block text-sm font-medium capitalize mb-1">
+                  {key.replace(/_/g, ' ')}
+                  {tooltipData[key] && (
+                    <span
+                      title={tooltipData[key]}
+                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                    >🛈</span>
+                  )}
+                </label>
+                {typeof val === 'boolean' ? (
+                  <input 
+                    type="checkbox" 
+                    name={key} 
+                    checked={val} 
+                    onChange={handleChange}
+                    className="mt-1"
+                  />
+                ) : (
+                  <input
+                    type={key.includes('datum') ? 'date' : 'text'}
+                    name={key}
+                    value={val || ''}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
                 )}
-              </label>
-              {typeof val === 'boolean' ? (
-                <input 
-                  type="checkbox" 
-                  name={key} 
-                  checked={val} 
-                  onChange={handleChange}
-                  className="mt-1"
-                />
-              ) : (
-                <input
-                  type={key.includes('datum') ? 'date' : 'text'}
-                  name={key}
-                  value={val || ''}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              )}
-            </div>
-          ))}
+              </div>
+            )
+          })}
 
           <h2 className="text-xl font-semibold mt-6 mb-4">Vragen toevoegen</h2>
           <div className="bg-gray-50 p-4 rounded-xl">
