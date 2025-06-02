@@ -200,7 +200,7 @@ function ThemaBeheer() {
 
     const payload = {
       ...formData,
-      vragenlijst: safeParseJSON(formData.vragenlijst),
+      vragenlijst: vragen,
       vervolgvragen: safeParseJSON(formData.vervolgvragen),
       ai_configuratie: safeParseJSON(formData.ai_configuratie),
       versiebeheer: safeParseJSON(formData.versiebeheer),
