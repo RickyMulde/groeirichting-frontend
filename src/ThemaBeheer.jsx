@@ -5,6 +5,7 @@ import { supabase } from './supabaseClient'
 import Alert from './Alert'
 
 const tooltipData = {
+  verwachte_signalen: 'Welke signalen hoop je dat dit thema zichtbaar maakt? Bijvoorbeeld: werkdruk, motivatie, betrokkenheid. Gescheiden door komma\'s.',
   titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
   beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
   intro_prompt: 'Inleidingstekst voor werknemers. Wordt getoond vóór het invullen van de vragenlijst.',
@@ -47,7 +48,8 @@ function ThemaBeheer() {
     geeft_score: true, geeft_samenvatting: true, geeft_ai_advies: true,
     ai_configuratie: '', branche_labels: '', doelgroep_labels: '',
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
-    ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: ''
+    ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: '',
+    verwachte_signalen: ''
   })
   const [vragen, setVragen] = useState([])
   const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
