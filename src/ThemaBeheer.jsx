@@ -110,10 +110,14 @@ function ThemaBeheer() {
           } else {
             const vragen = loadedVragen || []
             setVragen(vragen)
+            
+            // Zorg ervoor dat we altijd een geldige JSON string hebben
+            const vragenlijstJSON = JSON.stringify(vragen, null, 2)
+            
             setFormData(prev => ({
               ...prev,
               ...themaData,
-              vragenlijst: JSON.stringify(vragen, null, 2),
+              vragenlijst: vragenlijstJSON,
               vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
               ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
               versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
@@ -383,7 +387,7 @@ function ThemaBeheer() {
             {(() => {
               try {
                 const vragenlijst = typeof formData.vragenlijst === 'string' 
-                  ? JSON.parse(formData.vragenlijst) 
+                  ? safeParseJSON(formData.vragenlijst) 
                   : formData.vragenlijst;
                 
                 if (Array.isArray(vragenlijst) && vragenlijst.length > 0) {
@@ -439,7 +443,8 @@ function ThemaBeheer() {
 function safeParseJSON(str) {
   if (!str) return {}
   try {
-    return JSON.parse(str)
+    const parsed = JSON.parse(str)
+    return parsed || {}
   } catch (error) {
     console.warn('JSON parse error:', error)
     return {}
