@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import Alert from './Alert'
+import React from 'react'
 
 const tooltipData = {
   verwachte_signalen: 'Welke signalen hoop je dat dit thema zichtbaar maakt? Bijvoorbeeld: werkdruk, motivatie, betrokkenheid. Gescheiden door komma\'s.',
@@ -107,20 +108,21 @@ function ThemaBeheer() {
             console.error('Fout bij ophalen vragen:', vragenError)
             setError('Kan vragen niet ophalen')
           } else {
-            setVragen(loadedVragen || [])
+            const vragen = loadedVragen || []
+            setVragen(vragen)
+            setFormData(prev => ({
+              ...prev,
+              ...themaData,
+              vragenlijst: JSON.stringify(vragen, null, 2),
+              vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
+              ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
+              versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
+              branche_labels: (themaData.branche_labels || []).join(', '),
+              doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
+              zoeklabels: (themaData.zoeklabels || []).join(', '),
+              verwachte_signalen: (themaData.verwachte_signalen || []).join(', ')
+            }))
           }
-
-          setFormData({
-            ...themaData,
-            vragenlijst: JSON.stringify(loadedVragen || [], null, 2),
-            vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
-            ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
-            versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
-            branche_labels: (themaData.branche_labels || []).join(', '),
-            doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
-            zoeklabels: (themaData.zoeklabels || []).join(', '),
-            verwachte_signalen: (themaData.verwachte_signalen || []).join(', ')
-          })
         }
         setLoading(false)
       } catch (error) {
@@ -252,25 +254,96 @@ function ThemaBeheer() {
           {Object.entries(formData).map(([key, val]) => {
             if (key === 'vragenlijst') {
               return (
-                <div key={key} className="mb-4">
-                  <label className="block text-sm font-medium capitalize mb-1">
-                    {key.replace(/_/g, ' ')}
-                    {tooltipData[key] && (
-                      <span
-                        title={tooltipData[key]}
-                        className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                      >🛈</span>
-                    )}
-                  </label>
-                  <textarea
-                    name={key}
-                    value={val || ''}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    rows="4"
-                    readOnly
-                  />
-                </div>
+                <React.Fragment key={key}>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium capitalize mb-1">
+                      {key.replace(/_/g, ' ')}
+                      {tooltipData[key] && (
+                        <span
+                          title={tooltipData[key]}
+                          className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                        >🛈</span>
+                      )}
+                    </label>
+                    <textarea
+                      name={key}
+                      value={val || ''}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      rows="4"
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="mb-8">
+                    <h2 className="text-xl font-semibold mb-4">Vragen toevoegen</h2>
+                    <div className="bg-gray-50 p-4 rounded-xl">
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium capitalize mb-1">
+                          Vraagtekst
+                          {tooltipData.tekst && (
+                            <span 
+                              title={tooltipData.tekst} 
+                              className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                            >🛈</span>
+                          )}
+                        </label>
+                        <input 
+                          type="text" 
+                          name="tekst" 
+                          value={nieuweVraag.tekst} 
+                          onChange={handleVraagChange}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium capitalize mb-1">
+                          Verplicht
+                          {tooltipData.verplicht && (
+                            <span 
+                              title={tooltipData.verplicht} 
+                              className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                            >🛈</span>
+                          )}
+                        </label>
+                        <input 
+                          type="checkbox" 
+                          name="verplicht" 
+                          checked={nieuweVraag.verplicht} 
+                          onChange={handleVraagChange}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium capitalize mb-1">
+                          Type
+                          {tooltipData.type && (
+                            <span 
+                              title={tooltipData.type} 
+                              className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                            >🛈</span>
+                          )}
+                        </label>
+                        <select 
+                          name="type" 
+                          value={nieuweVraag.type} 
+                          onChange={handleVraagChange}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        >
+                          <option value="initieel">Initieel</option>
+                          <option value="vervolg">Vervolg</option>
+                        </select>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={voegVraagToe}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                      >
+                        + Voeg vraag toe
+                      </button>
+                    </div>
+                  </div>
+                </React.Fragment>
               )
             }
             return (
@@ -304,73 +377,6 @@ function ThemaBeheer() {
               </div>
             )
           })}
-
-          <h2 className="text-xl font-semibold mt-6 mb-4">Vragen toevoegen</h2>
-          <div className="bg-gray-50 p-4 rounded-xl">
-            <div className="mb-4">
-              <label className="block text-sm font-medium capitalize mb-1">
-                Vraagtekst
-                {tooltipData.tekst && (
-                  <span 
-                    title={tooltipData.tekst} 
-                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                  >🛈</span>
-                )}
-              </label>
-              <input 
-                type="text" 
-                name="tekst" 
-                value={nieuweVraag.tekst} 
-                onChange={handleVraagChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium capitalize mb-1">
-                Verplicht
-                {tooltipData.verplicht && (
-                  <span 
-                    title={tooltipData.verplicht} 
-                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                  >🛈</span>
-                )}
-              </label>
-              <input 
-                type="checkbox" 
-                name="verplicht" 
-                checked={nieuweVraag.verplicht} 
-                onChange={handleVraagChange}
-                className="mt-1"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium capitalize mb-1">
-                Type
-                {tooltipData.type && (
-                  <span 
-                    title={tooltipData.type} 
-                    className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                  >🛈</span>
-                )}
-              </label>
-              <select 
-                name="type" 
-                value={nieuweVraag.type} 
-                onChange={handleVraagChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="initieel">Initieel</option>
-                <option value="vervolg">Vervolg</option>
-              </select>
-            </div>
-            <button 
-              type="button" 
-              onClick={voegVraagToe}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-            >
-              + Voeg vraag toe
-            </button>
-          </div>
 
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Huidige vragen</h2>
@@ -431,15 +437,18 @@ function ThemaBeheer() {
 }
 
 function safeParseJSON(str) {
+  if (!str) return {}
   try {
-    return JSON.parse(str || '{}')
-  } catch {
+    return JSON.parse(str)
+  } catch (error) {
+    console.warn('JSON parse error:', error)
     return {}
   }
 }
 
 function splitList(str) {
-  return str ? str.split(',').map((s) => s.trim()) : []
+  if (!str) return []
+  return str.split(',').map((s) => s.trim()).filter(Boolean)
 }
 
 export default ThemaBeheer
