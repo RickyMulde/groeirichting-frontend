@@ -45,7 +45,7 @@ function ThemaOverzicht() {
           <div 
             key={thema.id} 
             className="p-4 border rounded-xl flex items-center justify-between cursor-pointer hover:bg-gray-50"
-            onClick={() => navigate('/gesprek')}
+            onClick={() => navigate('/gesprek?theme_id=' + thema.id)}
           >
             <span>{thema.titel}</span>
             <span className={`text-xs px-3 py-1 rounded-full ${statusKleur[thema.status]}`}>

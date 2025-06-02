@@ -7,6 +7,16 @@ function GesprekPagina() {
   const [params] = useSearchParams()
   const themeId = params.get('theme_id')
 
+  if (!themeId) {
+    return (
+      <div className="p-6 space-y-4">
+        <h1 className="text-xl font-semibold text-kleur-primary">Gesprek</h1>
+        <p className="text-red-600 bg-red-50 p-4 rounded-xl">Er is geen thema geselecteerd. Je kunt geen gesprek starten.</p>
+        <a href="/thema-overzicht" className="inline-block text-blue-600 underline">← Terug naar thema-overzicht</a>
+      </div>
+    )
+  }
+
   const [theme, setTheme] = useState(null)
   const [vragen, setVragen] = useState([])
   const [currentIndex, setCurrentIndex] = useState(-1)
