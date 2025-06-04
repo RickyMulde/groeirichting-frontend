@@ -26,7 +26,6 @@ function GesprekPagina() {
   const [done, setDone] = useState(false)
   const [saved, setSaved] = useState(false)
   const [foutmelding, setFoutmelding] = useState(null)
-  const [foutmelding, setFoutmelding] = useState(null)
 
   useEffect(() => {
     const fetchThema = async () => {
