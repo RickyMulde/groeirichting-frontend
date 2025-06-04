@@ -1,5 +1,5 @@
-import nlp from 'compromise';
 import {
+  functieSet,
   voornamenSet,
   achternamenSet,
   medischeSet,
@@ -49,6 +49,10 @@ export function containsSensitiveInfo(text) {
     if (religieuzeSet.has(woord)) {
       console.log("Match op religieuze term:", woord);
       return { flagged: true, reason: `Vermijd religieuze termen zoals "${woord}".` };
+    }
+    if (functieSet.has(woord)) {
+      console.log("Match op functietitel:", woord);
+      return { flagged: true, reason: `Noem liever geen functietitels zoals "${woord}".` };
     }
     if (politiekeSet.has(woord)) {
       console.log("Match op politieke term:", woord);
