@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { supabase } from './supabaseClient'
+import { containsSensitiveInfo } from './utils/filterInput';
 
 function GesprekPagina() {
   const [params] = useSearchParams()
