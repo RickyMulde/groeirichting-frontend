@@ -26,6 +26,7 @@ function GesprekPagina() {
   const [done, setDone] = useState(false)
   const [saved, setSaved] = useState(false)
   const [foutmelding, setFoutmelding] = useState(null)
+  const [foutmelding, setFoutmelding] = useState(null)
 
   useEffect(() => {
     const fetchThema = async () => {
@@ -141,7 +142,7 @@ function GesprekPagina() {
       </div>
 
       {!done && currentIndex >= 0 && (
-        {foutmelding && (
+        <> {foutmelding && (
           <div className="bg-red-100 text-red-800 text-sm p-3 rounded-xl mb-2">{foutmelding}</div>
         )}
         <form
@@ -157,7 +158,7 @@ function GesprekPagina() {
           />
           <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
         </form>
-      )}
+        </>)}
     </div>
   )
 }
