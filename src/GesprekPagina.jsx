@@ -25,6 +25,7 @@ function GesprekPagina() {
   const [input, setInput] = useState('')
   const [done, setDone] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [foutmelding, setFoutmelding] = useState(null)
 
   useEffect(() => {
     const fetchThema = async () => {
@@ -140,6 +141,9 @@ function GesprekPagina() {
       </div>
 
       {!done && currentIndex >= 0 && (
+        {foutmelding && (
+          <div className="bg-red-100 text-red-800 text-sm p-3 rounded-xl mb-2">{foutmelding}</div>
+        )}
         <form
           onSubmit={verstuurAntwoord}
           className="p-4 border-t bg-white flex items-center gap-2"
