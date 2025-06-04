@@ -8,8 +8,10 @@ import {
   politiekeSet
 } from './gevoeligeData';
 
-console.log("Filter geladen — aantal voornamen:", voornamenSet.size);
+console.log("Eerste 20 voornamen:", Array.from(voornamenSet).slice(0, 20));
 console.log("Bevat 'rick'?", voornamenSet.has("rick"));
+console.log("Bevat 'john'?", voornamenSet.has("john"));
+console.log("Aantal voornamen:", voornamenSet.size);
 
 const patterns = {
   email: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i,
