@@ -55,6 +55,13 @@ function GesprekPagina() {
     e.preventDefault()
     if (!input.trim()) return
 
+    const check = containsSensitiveInfo(input)
+    if (check.flagged) {
+      setFoutmelding(check.reason)
+      return
+    }
+    setFoutmelding(null)
+
     const nieuweAntwoorden = [...antwoorden, { vraag: vragen[currentIndex]?.tekst, antwoord: input }]
     setAntwoorden(nieuweAntwoorden)
     setInput('')

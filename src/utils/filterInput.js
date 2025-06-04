@@ -21,6 +21,7 @@ export function containsSensitiveInfo(text) {
   const lowered = text.toLowerCase();
   console.log("Check gestart voor input:", lowered);
 
+  // Check voor regex patterns (email, telefoon, IBAN)
   for (const [type, regex] of Object.entries(patterns)) {
     if (regex.test(text)) {
       console.log("Match op regex:", type);
@@ -28,6 +29,7 @@ export function containsSensitiveInfo(text) {
     }
   }
 
+  // Check voor gevoelige woorden in de tekst
   const woorden = lowered.split(/[^\w]+/);
   for (const woord of woorden) {
     if (voornamenSet.has(woord)) {
@@ -60,12 +62,13 @@ export function containsSensitiveInfo(text) {
     }
   }
 
-  const doc = nlp(text);
-  const names = doc.people().out('array');
-  if (names.length > 0) {
-    console.log("Compromise naam gedetecteerd:", names[0]);
-    return { flagged: true, reason: `Naam gedetecteerd: "${names[0]}"` };
-  }
+  // Tijdelijk uitgeschakeld tot compromise is geïnstalleerd
+  // const doc = nlp(text);
+  // const names = doc.people().out('array');
+  // if (names.length > 0) {
+  //   console.log("Compromise naam gedetecteerd:", names[0]);
+  //   return { flagged: true, reason: `Naam gedetecteerd: "${names[0]}"` };
+  // }
 
   return { flagged: false };
 }
