@@ -19,12 +19,10 @@ const patterns = {
 
 export function containsSensitiveInfo(text) {
   const lowered = text.toLowerCase();
-  console.log("Check gestart voor input:", lowered);
 
   // Check voor regex patterns (email, telefoon, IBAN)
   for (const [type, regex] of Object.entries(patterns)) {
     if (regex.test(text)) {
-      console.log("Match op regex:", type);
       return { flagged: true, reason: `Vul a.u.b. geen ${type} in.` };
     }
   }
@@ -33,31 +31,24 @@ export function containsSensitiveInfo(text) {
   const woorden = lowered.split(/[^\w]+/);
   for (const woord of woorden) {
     if (voornamenSet.has(woord)) {
-      console.log("Match op voornaam:", woord);
       return { flagged: true, reason: `Noem liever geen voornamen zoals "${woord}".` };
     }
     if (achternamenSet.has(woord)) {
-      console.log("Match op achternaam:", woord);
       return { flagged: true, reason: `Noem liever geen achternamen zoals "${woord}".` };
     }
     if (medischeSet.has(woord)) {
-      console.log("Match op medische term:", woord);
       return { flagged: true, reason: `Vermijd medische termen zoals "${woord}".` };
     }
     if (seksueleSet.has(woord)) {
-      console.log("Match op seksuele term:", woord);
       return { flagged: true, reason: `Vermijd termen over seksuele voorkeur zoals "${woord}".` };
     }
     if (religieuzeSet.has(woord)) {
-      console.log("Match op religieuze term:", woord);
       return { flagged: true, reason: `Vermijd religieuze termen zoals "${woord}".` };
     }
     if (functieSet.has(woord)) {
-      console.log("Match op functietitel:", woord);
       return { flagged: true, reason: `Noem liever geen functietitels zoals "${woord}".` };
     }
     if (politiekeSet.has(woord)) {
-      console.log("Match op politieke term:", woord);
       return { flagged: true, reason: `Vermijd politieke termen zoals "${woord}".` };
     }
   }

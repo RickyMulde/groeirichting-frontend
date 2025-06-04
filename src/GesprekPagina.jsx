@@ -60,11 +60,11 @@ function GesprekPagina() {
       setFoutmelding(check.reason)
       return
     }
-    setFoutmelding(null)
 
     const nieuweAntwoorden = [...antwoorden, { vraag: vragen[currentIndex]?.tekst, antwoord: input }]
     setAntwoorden(nieuweAntwoorden)
     setInput('')
+    setFoutmelding(null)
 
     if (currentIndex + 1 >= vragen.length) {
       setDone(true)
@@ -148,23 +148,30 @@ function GesprekPagina() {
       </div>
 
       {!done && currentIndex >= 0 && (
-        <> {foutmelding && (
-          <div className="bg-red-100 text-red-800 text-sm p-3 rounded-xl mb-2">{foutmelding}</div>
-        )}
-        <form
-          onSubmit={verstuurAntwoord}
-          className="p-4 border-t bg-white flex items-center gap-2"
-        >
-          <input
-            type="text"
-            placeholder="Typ je antwoord..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
-          />
-          <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
-        </form>
-        </>)}
+        <>
+          {foutmelding && (
+            <div className="fixed bottom-20 left-0 right-0 mx-4 bg-red-100 text-red-800 text-sm p-3 rounded-xl shadow-lg z-50">
+              {foutmelding}
+            </div>
+          )}
+          <form
+            onSubmit={verstuurAntwoord}
+            className="p-4 border-t bg-white flex items-center gap-2"
+          >
+            <input
+              type="text"
+              placeholder="Typ je antwoord..."
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                if (foutmelding) setFoutmelding(null);
+              }}
+              className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
+            />
+            <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
+          </form>
+        </>
+      )}
     </div>
   )
 }
