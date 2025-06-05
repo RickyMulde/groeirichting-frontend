@@ -61,6 +61,7 @@ function ThemaBeheer() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -201,48 +202,52 @@ function ThemaBeheer() {
     e.preventDefault()
     setError('')
     setSuccess('')
-
-    const payload = {
-      ...formData,
-      vragenlijst: vragen,
-      vervolgvragen: safeParseJSON(formData.vervolgvragen),
-      ai_configuratie: safeParseJSON(formData.ai_configuratie),
-      versiebeheer: safeParseJSON(formData.versiebeheer),
-      branche_labels: splitList(formData.branche_labels),
-      doelgroep_labels: splitList(formData.doelgroep_labels),
-      zoeklabels: splitList(formData.zoeklabels),
-      verwachte_signalen: splitList(formData.verwachte_signalen)
-    }
-
-    // Foutafhandeling: voorkom crash op zichtbaar_* velden
-    ;['zichtbaar_vanaf', 'zichtbaar_tot'].forEach((field) => {
-      if (payload[field] === '') payload[field] = null
-      if (Array.isArray(payload[field])) {
-        console.warn(`⚠️ ${field} is per ongeluk een array:`, payload[field])
-        payload[field] = payload[field][0] || null
+    setSaving(true)
+    try {
+      const payload = {
+        ...formData,
+        vragenlijst: vragen,
+        vervolgvragen: safeParseJSON(formData.vervolgvragen),
+        ai_configuratie: safeParseJSON(formData.ai_configuratie),
+        versiebeheer: safeParseJSON(formData.versiebeheer),
+        branche_labels: splitList(formData.branche_labels),
+        doelgroep_labels: splitList(formData.doelgroep_labels),
+        zoeklabels: splitList(formData.zoeklabels),
+        verwachte_signalen: splitList(formData.verwachte_signalen)
       }
-    })
 
-    if (nieuwThema) {
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ thema: payload, vragen })
+      // Foutafhandeling: voorkom crash op zichtbaar_* velden
+      ;['zichtbaar_vanaf', 'zichtbaar_tot'].forEach((field) => {
+        if (payload[field] === '') payload[field] = null
+        if (Array.isArray(payload[field])) {
+          console.warn(`⚠️ ${field} is per ongeluk een array:`, payload[field])
+          payload[field] = payload[field][0] || null
+        }
       })
-      const result = await response.json()
-      if (!response.ok) return setError(result.error || 'Opslaan mislukt')
-      setSuccess('Thema en vragen opgeslagen')
-      navigate('/superadmin-portaal')
-    } else {
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ thema: { ...payload, id }, vragen })
-      });
-      const result = await response.json();
-      if (!response.ok) return setError(result.error || 'Opslaan mislukt');
-      setSuccess('Thema en vragen bijgewerkt');
-      navigate('/superadmin-portaal');
+
+      if (nieuwThema) {
+        const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ thema: payload, vragen })
+        })
+        const result = await response.json()
+        if (!response.ok) return setError(result.error || 'Opslaan mislukt')
+        setSuccess('Thema en vragen opgeslagen')
+        navigate('/superadmin-portaal')
+      } else {
+        const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ thema: { ...payload, id }, vragen })
+        });
+        const result = await response.json();
+        if (!response.ok) return setError(result.error || 'Opslaan mislukt');
+        setSuccess('Thema en vragen bijgewerkt');
+        navigate('/superadmin-portaal');
+      }
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -337,17 +342,25 @@ function ThemaBeheer() {
               type="button"
               onClick={() => navigate('/superadmin')}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              disabled={saving}
             >
               Annuleren
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+              disabled={saving}
             >
-              Opslaan
+              {saving ? 'Bezig met opslaan...' : 'Opslaan'}
             </button>
           </div>
         </form>
+      )}
+      {saving && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 z-50">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)]"></div>
+          <span className="ml-4 text-blue-700">Bezig met opslaan...</span>
+        </div>
       )}
     </div>
   )
