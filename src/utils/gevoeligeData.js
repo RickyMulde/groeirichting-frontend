@@ -289,7 +289,6 @@ export const voornamenSet = new Set([
   'beine',
   'beinte',
   'bele',
-  'ben',
   'benck',
   'bendert',
   'benedikt',
@@ -316,7 +315,6 @@ export const voornamenSet = new Set([
   'berkan',
   'bernard',
   'bernd',
-  'beroemdheden',
   'berre',
   'bert',
   'bertan',
@@ -327,7 +325,6 @@ export const voornamenSet = new Set([
   'bertrand',
   'bertus',
   'bessel',
-  'bestemd',
   'bhodi',
   'bianca',
   'bibi',
@@ -335,8 +332,6 @@ export const voornamenSet = new Set([
   'bij',
   'bijbelse',
   'bijn',
-  'bijzonder',
-  'bijzondere',
   'bikkel',
   'bilal',
   'billie',
@@ -10402,7 +10397,7 @@ export const achternamenSet = new Set([
 ]);
 export const medischeSet = new Set(['kanker', 'depressie', 'burn-out', 'ms', 'diabetes', 'epilepsie', 'hartaandoening', 'longziekte', 'alzheimer', 'parkinson', 'tbc', 'astma', 'reuma', 'migraine', 'anorexia']);
 export const seksueleSet = new Set(['homo', 'homoseksueel', 'gay', 'lesbisch', 'lesbo', 'biseksueel', 'transgender', 'non-binair']);
-export const religieuzeSet = new Set(['moslim', 'christen', 'joods', 'hindoe', 'boeddhist', 'atheïst', 'protestants', 'katholiek']);
-export const politiekeSet = new Set(['PVV', 'VVD', 'D66', 'CDA', 'Forum', 'GroenLinks', 'PvdA', 'SP', 'Volt', 'Partij voor de Dieren']);
+export const religieuzeSet = new Set(['moslim', 'christen', 'joods', 'hindoe', 'boeddhist', 'atheïst', 'protestants', 'islam', 'katholiek']);
+export const politiekeSet = new Set(['PVV', 'VVD', 'D66', 'CDA', 'Forum', 'GroenLinks', 'PvdA', 'SP', 'Volt', 'FvD','Partij voor de Dieren']);
 
 export const functieSet = new Set(['manager', 'leidinggevende', 'directeur', 'teamleider', 'afdelingshoofd', 'ceo', 'cfo', 'coo', 'cto', 'bedrijfsleider', 'supervisor', 'projectleider', 'programmamanager', 'changemanager', 'strategisch adviseur', 'beleidsadviseur', 'beleidsmedewerker', 'afdelingsmanager', 'filiaalmanager', 'kantoorleider', 'zaakvoerder', 'medewerker', 'secretaresse', 'receptioniste', 'assistent', 'administratief medewerker', 'balie medewerker', 'frontoffice medewerker', 'backoffice medewerker', 'telefonist', 'planner', 'personal assistant', 'verkoopmedewerker', 'winkelmedewerker', 'klantenservice medewerker', 'callcentermedewerker', 'accountmanager', 'commercieel medewerker', 'inkoper', 'verkoper', 'vertegenwoordiger', 'salesmanager', 'marketingmanager', 'marketeer', 'communicatieadviseur', 'communicatiemedewerker', 'contentmanager', 'copywriter', 'redacteur', 'socialmediamanager', 'ict medewerker', 'ict beheerder', 'systeembeheerder', 'netwerkbeheerder', 'softwareontwikkelaar', 'programmeur', 'developer', 'webdeveloper', 'data-analist', 'data scientist', 'functioneel beheerder', 'product owner', 'scrummaster', 'tester', 'consultant', 'adviseur', 'jurist', 'beleidsjurist', 'fiscaal jurist', 'accountant', 'controller', 'financieel medewerker', 'boekhouder', 'payroll specialist', 'salarisadministrateur', 'hr medewerker', 'hr adviseur', 'hr manager', 'loopbaanadviseur', 'coach', 'vertrouwenspersoon', 'verpleegkundige', 'arts', 'dokter', 'huisarts', 'specialist', 'psychiater', 'psycholoog', 'ggz medewerker', 'maatschappelijk werker', 'therapeut', 'zorgmedewerker', 'verzorgende', 'helpende', 'mantelzorger', 'docent', 'leraar', 'leerkracht', 'mentor', 'onderwijsassistent', 'intern begeleider', 'zorgcoördinator', 'schoolleider', 'rector', 'decaan', 'trainer', 'opleider', 'stagebegeleider']);

@@ -8,28 +8,27 @@ import {
   politiekeSet
 } from './gevoeligeData';
 
-console.log("Eerste 20 voornamen:", Array.from(voornamenSet).slice(0, 20));
-console.log("Bevat 'rick'?", voornamenSet.has("rick"));
-console.log("Bevat 'john'?", voornamenSet.has("john"));
-console.log("Aantal voornamen:", voornamenSet.size);
-
 const patterns = {
   email: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i,
   phone: /\+?\d{6,15}/,
   iban: /\bNL\d{2}[A-Z]{4}\d{10}\b/i,
+  xss: /<\s*script.*?>.*?<\s*\/\s*script\s*>/gi,
+  suspiciousFileLink: /(https?:\/\/)?[a-z0-9.-]+\.(exe|zip|scr|php|bat|cmd|sh)(\b|\/|$)/i,
+  base64: /\b([A-Za-z0-9+\/]{40,}={0,2})\b/
 };
 
 export function containsSensitiveInfo(text) {
   const lowered = text.toLowerCase();
 
-  // Check voor regex patterns (email, telefoon, IBAN)
-  for (const [type, regex] of Object.entries(patterns)) {
+  for (const regex of Object.values(patterns)) {
     if (regex.test(text)) {
-      return { flagged: true, reason: `Vul a.u.b. geen ${type} in.` };
+      return {
+        flagged: true,
+        reason: `Vul a.u.b. geen persoonsgegevens of andere belangrijke gegevens in.`
+      };
     }
   }
 
-  // Check voor gevoelige woorden in de tekst
   const woorden = lowered.split(/[^\w]+/);
   for (const woord of woorden) {
     if (voornamenSet.has(woord)) {
@@ -54,14 +53,6 @@ export function containsSensitiveInfo(text) {
       return { flagged: true, reason: `Vermijd politieke termen zoals "${woord}".` };
     }
   }
-
-  // Tijdelijk uitgeschakeld tot compromise is geïnstalleerd
-  // const doc = nlp(text);
-  // const names = doc.people().out('array');
-  // if (names.length > 0) {
-  //   console.log("Compromise naam gedetecteerd:", names[0]);
-  //   return { flagged: true, reason: `Naam gedetecteerd: "${names[0]}"` };
-  // }
 
   return { flagged: false };
 }
