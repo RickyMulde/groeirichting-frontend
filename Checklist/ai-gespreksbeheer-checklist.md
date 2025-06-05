@@ -37,12 +37,12 @@ Een complete en chronologisch verantwoorde checklist voor het ontwikkelen van he
 ## ✅ Volledige Checklist op Logische Volgorde
 
 ### 🔹 FASE 0 – Superadmin & themabeheer
-1. [ ] Bouw superadmin-portaal (afgeschermd)
-2. [ ] `themes`-tabel maken met juiste kolommen
+1. ✔ Bouw superadmin-portaal (afgeschermd)
+2. ✔ `themes`-tabel maken met juiste kolommen
 3. [ ] `employer_themes`-koppeltabel maken
-4. [ ] Functionaliteit: thema toevoegen, verwijderen, zichtbaar maken (globaal/specifiek)
-5. [ ] Functionaliteit: thema activeren voor specifieke werkgevers
-6. [ ] Functionaliteit: premium-thema’s met betaallogica markeren
+4. ✔ Functionaliteit: thema toevoegen, verwijderen, zichtbaar maken (globaal/specifiek)
+5. ✔ Functionaliteit: thema activeren voor specifieke werkgevers
+6. ✔ Functionaliteit: premium-thema’s met betaallogica markeren
 
 ### 🔹 FASE 1 – Werkgeveromgeving
 7. [ ] Thema-overzicht tonen in dashboard werkgever

@@ -49,7 +49,12 @@ function ThemaBeheer() {
     ai_configuratie: '', branche_labels: '', doelgroep_labels: '',
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
     ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: '',
-    verwachte_signalen: ''
+    verwachte_signalen: '',
+    vraag_1: '', vraag_1_verplicht: false, vraag_1_type: 'initieel',
+    vraag_2: '', vraag_2_verplicht: false, vraag_2_type: 'initieel',
+    vraag_3: '', vraag_3_verplicht: false, vraag_3_type: 'initieel',
+    vraag_4: '', vraag_4_verplicht: false, vraag_4_type: 'initieel',
+    vraag_5: '', vraag_5_verplicht: false, vraag_5_type: 'initieel',
   })
   const [vragen, setVragen] = useState([])
   const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
@@ -285,73 +290,46 @@ function ThemaBeheer() {
             )
           })}
 
+          {/* Vaste vragenvelden */}
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Vragen toevoegen</h2>
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <div className="mb-4">
-                <label className="block text-sm font-medium capitalize mb-1">
-                  Vraagtekst
-                  {tooltipData.tekst && (
-                    <span 
-                      title={tooltipData.tekst} 
-                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                    >🛈</span>
-                  )}
+            <h2 className="text-xl font-semibold mb-4">Vragen (max 5)</h2>
+            {[1,2,3,4,5].map((nr) => (
+              <div key={nr} className="bg-gray-50 p-4 rounded-xl mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  Vraag {nr}
                 </label>
-                <input 
-                  type="text" 
-                  name="tekst" 
-                  value={nieuweVraag.tekst} 
-                  onChange={handleVraagChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                <input
+                  type="text"
+                  name={`vraag_${nr}`}
+                  value={formData[`vraag_${nr}`]}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  placeholder={`Vraag ${nr}`}
                 />
+                <div className="flex items-center mt-2">
+                  <input
+                    type="checkbox"
+                    name={`vraag_${nr}_verplicht`}
+                    checked={formData[`vraag_${nr}_verplicht`]}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  <span>Verplicht</span>
+                </div>
+                <div className="mt-2">
+                  <label className="mr-2">Type:</label>
+                  <select
+                    name={`vraag_${nr}_type`}
+                    value={formData[`vraag_${nr}_type`]}
+                    onChange={handleChange}
+                    className="rounded-md border-gray-300"
+                  >
+                    <option value="initieel">Initieel</option>
+                    <option value="vervolg">Vervolg</option>
+                  </select>
+                </div>
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium capitalize mb-1">
-                  Verplicht
-                  {tooltipData.verplicht && (
-                    <span 
-                      title={tooltipData.verplicht} 
-                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                    >🛈</span>
-                  )}
-                </label>
-                <input 
-                  type="checkbox" 
-                  name="verplicht" 
-                  checked={nieuweVraag.verplicht} 
-                  onChange={handleVraagChange}
-                  className="mt-1"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium capitalize mb-1">
-                  Type
-                  {tooltipData.type && (
-                    <span 
-                      title={tooltipData.type} 
-                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                    >🛈</span>
-                  )}
-                </label>
-                <select 
-                  name="type" 
-                  value={nieuweVraag.type} 
-                  onChange={handleVraagChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                  <option value="initieel">Initieel</option>
-                  <option value="vervolg">Vervolg</option>
-                </select>
-              </div>
-              <button 
-                type="button" 
-                onClick={voegVraagToe}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-              >
-                + Voeg vraag toe
-              </button>
-            </div>
+            ))}
           </div>
 
           <div className="mt-6 flex justify-end space-x-4">
