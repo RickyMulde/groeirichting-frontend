@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import { containsSensitiveInfo } from './utils/filterInput';
@@ -7,6 +7,7 @@ import { containsSensitiveInfo } from './utils/filterInput';
 function GesprekPagina() {
   const [params] = useSearchParams()
   const themeId = params.get('theme_id')
+  const navigate = useNavigate();
 
   if (!themeId) {
     return (
@@ -108,70 +109,76 @@ function GesprekPagina() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-[var(--kleur-background)]">
-      <header className="flex items-center gap-2 p-4 border-b bg-white">
-        <ArrowLeft className="text-[var(--kleur-muted)]" />
-        <h1 className="text-xl font-semibold text-[var(--kleur-primary)]">
-          {theme?.titel || 'Gesprek'}
-        </h1>
-      </header>
+    <div className="flex justify-center items-center min-h-screen bg-[var(--kleur-background)]">
+      <div
+        className="w-full h-full fixed inset-0 md:static md:w-[500px] md:h-[80vh] md:max-w-xl md:max-h-[80vh] md:rounded-3xl md:shadow-2xl md:bg-white flex flex-col"
+      >
+        <header className="flex items-center gap-2 p-4 border-b bg-white md:rounded-t-3xl">
+          <button onClick={() => navigate('/thema-overzicht')} className="p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <ArrowLeft className="text-[var(--kleur-muted)]" />
+          </button>
+          <h1 className="text-xl font-semibold text-[var(--kleur-primary)]">
+            {theme?.titel || 'Gesprek'}
+          </h1>
+        </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {currentIndex === -1 && (
-          <div className="space-y-4">
-            <p className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
-              {theme?.intro_prompt || 'Welkom bij dit thema.'}
-            </p>
-            <button
-              onClick={startGesprek}
-              className="btn btn-primary px-4 py-2 rounded-full"
-            >
-              Start gesprek
-            </button>
-          </div>
-        )}
-
-        {currentIndex >= 0 && !done && (
-          <div className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
-            {vragen[currentIndex]?.tekst}
-          </div>
-        )}
-
-        {done && (
-          <div className="space-y-4">
-            <p className="bg-green-100 text-green-800 p-4 rounded-xl">
-              Bedankt voor je antwoorden. Je gesprek is {saved ? 'opgeslagen.' : 'klaar om op te slaan...'}
-            </p>
-            <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
-          </div>
-        )}
-      </div>
-
-      {!done && currentIndex >= 0 && (
-        <>
-          {foutmelding && (
-            <div className="fixed bottom-20 left-0 right-0 mx-4 bg-red-100 text-red-800 text-sm p-3 rounded-xl shadow-lg z-50">
-              {foutmelding}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {currentIndex === -1 && (
+            <div className="space-y-4">
+              <p className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
+                {theme?.intro_prompt || 'Welkom bij dit thema.'}
+              </p>
+              <button
+                onClick={startGesprek}
+                className="btn btn-primary px-4 py-2 rounded-full"
+              >
+                Start gesprek
+              </button>
             </div>
           )}
-          <form
-            onSubmit={verstuurAntwoord}
-            className="p-4 border-t bg-white flex items-center gap-2"
-          >
-            <input
-              type="text"
-              placeholder="Typ je antwoord..."
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                if (foutmelding) setFoutmelding(null);
-              }}
-              className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
-            />
-            <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
-          </form>
-        </>
-      )}
+
+          {currentIndex >= 0 && !done && (
+            <div className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
+              {vragen[currentIndex]?.tekst}
+            </div>
+          )}
+
+          {done && (
+            <div className="space-y-4">
+              <p className="bg-green-100 text-green-800 p-4 rounded-xl">
+                Bedankt voor je antwoorden. Je gesprek is {saved ? 'opgeslagen.' : 'klaar om op te slaan...'}
+              </p>
+              <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
+            </div>
+          )}
+        </div>
+
+        {!done && currentIndex >= 0 && (
+          <>
+            {foutmelding && (
+              <div className="fixed bottom-20 left-0 right-0 mx-4 bg-red-100 text-red-800 text-sm p-3 rounded-xl shadow-lg z-50">
+                {foutmelding}
+              </div>
+            )}
+            <form
+              onSubmit={verstuurAntwoord}
+              className="p-4 border-t bg-white flex items-center gap-2"
+            >
+              <input
+                type="text"
+                placeholder="Typ je antwoord..."
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  if (foutmelding) setFoutmelding(null);
+                }}
+                className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
+              />
+              <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
+            </form>
+          </>
+        )}
+      </div>
     </div>
   )
 }
