@@ -10,7 +10,6 @@ const tooltipData = {
   titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
   beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
   intro_prompt: 'Inleidingstekst voor werknemers. Wordt getoond vóór het invullen van de vragenlijst.',
-  vragenlijst: 'JSON met de standaardvragen die in dit thema gesteld worden. Wordt automatisch bijgewerkt bij het toevoegen van vragen. Alleen ter controle.',
   vervolgvragen: 'JSON met eventuele vervolgvraaglogica. Bijvoorbeeld: toon vraag X alleen als antwoord op Y = ja.',
   gespreksdoel: 'Interne beschrijving van het doel van het AI-gesprek (bijv. evaluatie, signalering, coaching).',
   doel_vraag: 'Specifieke kernvraag die als basis dient voor de AI-samenvatting, bijvoorbeeld: "Wat wil je bespreken?"',
@@ -45,7 +44,7 @@ function ThemaBeheer() {
     titel: '', beschrijving: '', klaar_voor_gebruik: false,
     voorgesteld_als_verplicht: false, standaard_zichtbaar: true,
     alleen_premium: false, alleen_concept: false, intro_prompt: '',
-    vragenlijst: '', vervolgvragen: '', gespreksdoel: '', doel_vraag: '',
+    vervolgvragen: '', gespreksdoel: '', doel_vraag: '',
     geeft_score: true, geeft_samenvatting: true, geeft_ai_advies: true,
     ai_configuratie: '', branche_labels: '', doelgroep_labels: '',
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
@@ -230,18 +229,15 @@ function ThemaBeheer() {
       setSuccess('Thema en vragen opgeslagen')
       navigate('/superadmin-portaal')
     } else {
-      const { error } = await supabase.from('themes').update(payload).eq('id', id)
-      if (error) return setError('Opslaan mislukt')
-
-      const nieuwe = vragen.filter((v) => !v.id)
-      if (nieuwe.length > 0) {
-        const response = await supabase.from('theme_questions').insert(
-          nieuwe.map((v, i) => ({ ...v, theme_id: id, volgorde_index: i }))
-        )
-        if (response.error) return setError('Vragen opslaan mislukt')
-      }
-
-      setSuccess('Thema bijgewerkt')
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thema: { ...payload, id }, vragen })
+      });
+      const result = await response.json();
+      if (!response.ok) return setError(result.error || 'Opslaan mislukt');
+      setSuccess('Thema en vragen bijgewerkt');
+      navigate('/superadmin-portaal');
     }
   }
 
@@ -256,100 +252,7 @@ function ThemaBeheer() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.entries(formData).map(([key, val]) => {
-            if (key === 'vragenlijst') {
-              return (
-                <React.Fragment key={key}>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium capitalize mb-1">
-                      {key.replace(/_/g, ' ')}
-                      {tooltipData[key] && (
-                        <span
-                          title={tooltipData[key]}
-                          className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                        >🛈</span>
-                      )}
-                    </label>
-                    <textarea
-                      name={key}
-                      value={val || ''}
-                      onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      rows="4"
-                      readOnly
-                    />
-                  </div>
-
-                  <div className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Vragen toevoegen</h2>
-                    <div className="bg-gray-50 p-4 rounded-xl">
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium capitalize mb-1">
-                          Vraagtekst
-                          {tooltipData.tekst && (
-                            <span 
-                              title={tooltipData.tekst} 
-                              className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                            >🛈</span>
-                          )}
-                        </label>
-                        <input 
-                          type="text" 
-                          name="tekst" 
-                          value={nieuweVraag.tekst} 
-                          onChange={handleVraagChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium capitalize mb-1">
-                          Verplicht
-                          {tooltipData.verplicht && (
-                            <span 
-                              title={tooltipData.verplicht} 
-                              className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                            >🛈</span>
-                          )}
-                        </label>
-                        <input 
-                          type="checkbox" 
-                          name="verplicht" 
-                          checked={nieuweVraag.verplicht} 
-                          onChange={handleVraagChange}
-                          className="mt-1"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium capitalize mb-1">
-                          Type
-                          {tooltipData.type && (
-                            <span 
-                              title={tooltipData.type} 
-                              className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                            >🛈</span>
-                          )}
-                        </label>
-                        <select 
-                          name="type" 
-                          value={nieuweVraag.type} 
-                          onChange={handleVraagChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        >
-                          <option value="initieel">Initieel</option>
-                          <option value="vervolg">Vervolg</option>
-                        </select>
-                      </div>
-                      <button 
-                        type="button" 
-                        onClick={voegVraagToe}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                      >
-                        + Voeg vraag toe
-                      </button>
-                    </div>
-                  </div>
-                </React.Fragment>
-              )
-            }
+            if (key.startsWith('vraag_')) return null;
             return (
               <div key={key} className="mb-4">
                 <label className="block text-sm font-medium capitalize mb-1">
@@ -383,40 +286,72 @@ function ThemaBeheer() {
           })}
 
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Huidige vragen</h2>
-            {(() => {
-              try {
-                const vragenlijst = typeof formData.vragenlijst === 'string' 
-                  ? safeParseJSON(formData.vragenlijst) 
-                  : formData.vragenlijst;
-                
-                if (Array.isArray(vragenlijst) && vragenlijst.length > 0) {
-                  return (
-                    <div className="space-y-4">
-                      {vragenlijst.map((vraag, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg shadow">
-                          <p className="font-medium">{vraag.tekst}</p>
-                          <p className="text-sm text-gray-600">
-                            Type: {vraag.type} | Verplicht: {vraag.verplicht ? 'Ja' : 'Nee'}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => verwijderVraag(index)}
-                            className="mt-2 text-red-500 hover:text-red-700"
-                          >
-                            Verwijder
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                }
-                return <p className="text-gray-500">Nog geen vragen toegevoegd</p>;
-              } catch (error) {
-                console.error('Fout bij parsen vragenlijst:', error);
-                return <p className="text-red-500">Fout bij laden van de vragen</p>;
-              }
-            })()}
+            <h2 className="text-xl font-semibold mb-4">Vragen toevoegen</h2>
+            <div className="bg-gray-50 p-4 rounded-xl">
+              <div className="mb-4">
+                <label className="block text-sm font-medium capitalize mb-1">
+                  Vraagtekst
+                  {tooltipData.tekst && (
+                    <span 
+                      title={tooltipData.tekst} 
+                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                    >🛈</span>
+                  )}
+                </label>
+                <input 
+                  type="text" 
+                  name="tekst" 
+                  value={nieuweVraag.tekst} 
+                  onChange={handleVraagChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium capitalize mb-1">
+                  Verplicht
+                  {tooltipData.verplicht && (
+                    <span 
+                      title={tooltipData.verplicht} 
+                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                    >🛈</span>
+                  )}
+                </label>
+                <input 
+                  type="checkbox" 
+                  name="verplicht" 
+                  checked={nieuweVraag.verplicht} 
+                  onChange={handleVraagChange}
+                  className="mt-1"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium capitalize mb-1">
+                  Type
+                  {tooltipData.type && (
+                    <span 
+                      title={tooltipData.type} 
+                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                    >🛈</span>
+                  )}
+                </label>
+                <select 
+                  name="type" 
+                  value={nieuweVraag.type} 
+                  onChange={handleVraagChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="initieel">Initieel</option>
+                  <option value="vervolg">Vervolg</option>
+                </select>
+              </div>
+              <button 
+                type="button" 
+                onClick={voegVraagToe}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+              >
+                + Voeg vraag toe
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 flex justify-end space-x-4">
