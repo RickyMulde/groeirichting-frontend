@@ -32,17 +32,21 @@ function GesprekPagina() {
     const fetchThema = async () => {
       const { data, error } = await supabase
         .from('themes')
-        .select('id, titel, intro_prompt, doel_vraag, vragenlijst')
+        .select('id, titel, intro_prompt, doel_vraag')
         .eq('id', themeId)
         .single()
 
       if (!error && data) {
         setTheme(data)
-        try {
-          const parsed = typeof data.vragenlijst === 'string' ? JSON.parse(data.vragenlijst) : data.vragenlijst
-          setVragen(parsed || [])
-        } catch {
-          console.warn('Vragenlijst kon niet worden geladen.')
+        const { data: vragenData, error: vragenError } = await supabase
+          .from('theme_questions')
+          .select('*')
+          .eq('theme_id', themeId)
+          .order('volgorde_index');
+        if (!vragenError) {
+          setVragen(vragenData || []);
+        } else {
+          setVragen([]);
         }
       } else {
         console.error('Fout bij ophalen thema:', error)
@@ -146,9 +150,22 @@ function GesprekPagina() {
           {done && (
             <div className="space-y-4">
               <p className="bg-green-100 text-green-800 p-4 rounded-xl">
-                Bedankt voor je antwoorden. Je gesprek is {saved ? 'opgeslagen.' : 'klaar om op te slaan...'}
+                Bedankt voor je antwoorden. Je gesprek is klaar om op te slaan... Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
               </p>
               <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
+              {!saved && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => slaGesprekOp(antwoorden)}
+                >
+                  Opslaan
+                </button>
+              )}
+              {saved && (
+                <div className="bg-green-200 text-green-900 p-2 rounded mt-2">
+                  Gesprek succesvol opgeslagen!
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -156,8 +173,9 @@ function GesprekPagina() {
         {!done && currentIndex >= 0 && (
           <>
             {foutmelding && (
-              <div className="fixed bottom-20 left-0 right-0 mx-4 bg-red-100 text-red-800 text-sm p-3 rounded-xl shadow-lg z-50">
-                {foutmelding}
+              <div className="mb-2 flex items-center gap-2 bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{foutmelding}</span>
               </div>
             )}
             <form

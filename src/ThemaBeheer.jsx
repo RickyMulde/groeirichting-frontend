@@ -44,7 +44,7 @@ function ThemaBeheer() {
     titel: '', beschrijving: '', klaar_voor_gebruik: false,
     voorgesteld_als_verplicht: false, standaard_zichtbaar: true,
     alleen_premium: false, alleen_concept: false, intro_prompt: '',
-    vervolgvragen: '', gespreksdoel: '', doel_vraag: '',
+    gespreksdoel: '', doel_vraag: '',
     geeft_score: true, geeft_samenvatting: true, geeft_ai_advies: true,
     ai_configuratie: '', branche_labels: '', doelgroep_labels: '',
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
@@ -115,15 +115,9 @@ function ThemaBeheer() {
           } else {
             const vragen = loadedVragen || []
             setVragen(vragen)
-            
-            // Zorg ervoor dat we altijd een geldige JSON string hebben
-            const vragenlijstJSON = JSON.stringify(vragen, null, 2)
-            
             setFormData(prev => ({
               ...prev,
               ...themaData,
-              vragenlijst: vragenlijstJSON,
-              vervolgvragen: JSON.stringify(themaData.vervolgvragen || {}, null, 2),
               ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
               versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
               branche_labels: (themaData.branche_labels || []).join(', '),
@@ -182,10 +176,6 @@ function ThemaBeheer() {
       }
       const nieuweVragen = [...vragen, nieuweVraag]
       setVragen(nieuweVragen)
-      setFormData(prev => ({
-        ...prev,
-        vragenlijst: JSON.stringify(nieuweVragen, null, 2)
-      }))
       setNieuweVraag({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
     }
   }
@@ -206,8 +196,6 @@ function ThemaBeheer() {
     try {
       const payload = {
         ...formData,
-        vragenlijst: vragen,
-        vervolgvragen: safeParseJSON(formData.vervolgvragen),
         ai_configuratie: safeParseJSON(formData.ai_configuratie),
         versiebeheer: safeParseJSON(formData.versiebeheer),
         branche_labels: splitList(formData.branche_labels),
