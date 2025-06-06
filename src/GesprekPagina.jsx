@@ -96,7 +96,7 @@ function GesprekPagina() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        werknemer_id: user.id,
+        employee_id: user.id,
         theme_id: themeId,
         antwoorden,
         status: 'verzonden',
