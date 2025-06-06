@@ -82,10 +82,8 @@ function GesprekPagina() {
   const startGesprek = () => setCurrentIndex(0)
 
   const slaGesprekOp = async (antwoorden) => {
-    const {
-      data: { user },
-      error: authError
-    } = await supabase.auth.getUser()
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
 
     if (authError || !user) {
       console.error('Gebruiker niet gevonden of niet ingelogd')
