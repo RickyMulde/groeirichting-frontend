@@ -57,6 +57,36 @@ function GesprekPagina() {
     if (themeId) fetchThema()
   }, [themeId])
 
+  const startGesprek = async () => {
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
+
+    if (authError || !user) {
+      console.error('Gebruiker niet gevonden of niet ingelogd')
+      return
+    }
+
+    // Maak het gesprek aan voordat we beginnen
+    const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        werknemer_id: user.id,
+        theme_id: themeId,
+        status: 'Nog niet afgerond'
+      })
+    })
+    
+    const result = await res.json()
+    if (res.ok && result.gesprek_id) {
+      setGesprekId(result.gesprek_id)
+      setCurrentIndex(0)
+    } else {
+      console.error('Gesprek aanmaken mislukt:', result.error)
+      setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.')
+    }
+  }
+
   const slaGesprekOp = async (theme_question_id, antwoord) => {
     const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
@@ -66,24 +96,9 @@ function GesprekPagina() {
       return
     }
 
-    // Bij het eerste antwoord, maak een gesprek aan
-    if (currentIndex === 0 && !gesprekId) {
-      const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          werknemer_id: user.id,
-          theme_id: themeId,
-          status: 'Nog niet afgerond'
-        })
-      })
-      const result = await res.json()
-      if (res.ok && result.gesprek_id) {
-        setGesprekId(result.gesprek_id)
-      } else {
-        console.error('Gesprek aanmaken mislukt:', result.error)
-        return
-      }
+    if (!gesprekId) {
+      console.error('Geen gesprek_id beschikbaar')
+      return
     }
 
     // Sla het antwoord op in antwoordpervraag tabel
@@ -142,10 +157,6 @@ function GesprekPagina() {
     } else {
       setCurrentIndex(currentIndex + 1)
     }
-  }
-
-  const startGesprek = () => {
-    setCurrentIndex(0)
   }
 
   return (
