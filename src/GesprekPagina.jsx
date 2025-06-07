@@ -67,8 +67,8 @@ function GesprekPagina() {
     }
 
     // Bij het eerste antwoord, maak een gesprek aan
-    if (currentIndex === 0) {
-      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+    if (currentIndex === 0 && !gesprekId) {
+      const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -77,15 +77,23 @@ function GesprekPagina() {
           status: 'Nog niet afgerond'
         })
       })
+      const result = await res.json()
+      if (res.ok && result.gesprek_id) {
+        setGesprekId(result.gesprek_id)
+      } else {
+        console.error('Gesprek aanmaken mislukt:', result.error)
+        return
+      }
     }
 
-    // Sla het antwoord op in antwoordopvraag tabel
+    // Sla het antwoord op in antwoordpervraag tabel
     const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         werknemer_id: user.id,
         theme_id: themeId,
+        gesprek_id: gesprekId,
         theme_question_id: theme_question_id,
         antwoord: antwoord
       })
@@ -95,6 +103,7 @@ function GesprekPagina() {
     if (!response.ok) {
       console.error('Opslaan antwoord mislukt:', result.error)
     }
+    return result;
   }
 
   const verstuurAntwoord = async (e) => {
@@ -125,7 +134,8 @@ function GesprekPagina() {
         body: JSON.stringify({
           werknemer_id: userData.user.id,
           theme_id: themeId,
-          status: 'Afgerond'
+          status: 'Afgerond',
+          gesprek_id: gesprekId
         })
       })
       setDone(true)
