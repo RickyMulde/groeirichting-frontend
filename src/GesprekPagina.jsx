@@ -72,19 +72,19 @@ function GesprekPagina() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          employee_id: user.id,
+          werknemer_id: user.id,
           theme_id: themeId,
           status: 'Nog niet afgerond'
         })
       })
     }
 
-    // Sla het antwoord op
+    // Sla het antwoord op in antwoordopvraag tabel
     const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        employee_id: user.id,
+        werknemer_id: user.id,
         theme_id: themeId,
         theme_question_id: theme_question_id,
         antwoord: antwoord
@@ -93,7 +93,7 @@ function GesprekPagina() {
 
     const result = await response.json()
     if (!response.ok) {
-      console.error('Opslaan mislukt:', result.error)
+      console.error('Opslaan antwoord mislukt:', result.error)
     }
   }
 
@@ -123,7 +123,7 @@ function GesprekPagina() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          employee_id: userData.user.id,
+          werknemer_id: userData.user.id,
           theme_id: themeId,
           status: 'Afgerond'
         })
