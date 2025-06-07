@@ -66,6 +66,20 @@ function GesprekPagina() {
       return
     }
 
+    // Bij het eerste antwoord, maak een gesprek aan
+    if (currentIndex === 0) {
+      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          employee_id: user.id,
+          theme_id: themeId,
+          status: 'Nog niet afgerond'
+        })
+      })
+    }
+
+    // Sla het antwoord op
     const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -73,8 +87,7 @@ function GesprekPagina() {
         employee_id: user.id,
         theme_id: themeId,
         theme_question_id: theme_question_id,
-        antwoord: antwoord,
-        status: 'Nog niet afgerond'
+        antwoord: antwoord
       })
     })
 
@@ -100,55 +113,29 @@ function GesprekPagina() {
     setInput('')
     setFoutmelding(null)
 
-    // Direct het antwoord opslaan
+    // Sla het antwoord op
     await slaGesprekOp(huidigeVraag.id, input)
 
     if (currentIndex + 1 >= vragen.length) {
-      // Bij het laatste antwoord, markeer het gesprek als afgerond
-      await updateGesprekStatus('Afgerond')
+      // Bij het laatste antwoord, update de status naar Afgerond
+      const { data: userData } = await supabase.auth.getUser();
+      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          employee_id: userData.user.id,
+          theme_id: themeId,
+          status: 'Afgerond'
+        })
+      })
       setDone(true)
     } else {
       setCurrentIndex(currentIndex + 1)
     }
   }
 
-  const updateGesprekStatus = async (status) => {
-    const { data, error: authError } = await supabase.auth.getUser();
-    const user = data?.user;
-
-    if (authError || !user) {
-      console.error('Gebruiker niet gevonden of niet ingelogd')
-      return
-    }
-
-    const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        employee_id: user.id,
-        theme_id: themeId,
-        status: status
-      })
-    })
-
-    const result = await response.json()
-    if (!response.ok) {
-      console.error('Status update mislukt:', result.error)
-    }
-  }
-
-  // Voeg een cleanup functie toe voor als de gebruiker de pagina verlaat
-  useEffect(() => {
-    return () => {
-      if (currentIndex > 0 && !done) {
-        updateGesprekStatus('Nog niet afgerond')
-      }
-    }
-  }, [currentIndex, done])
-
-  const startGesprek = async () => {
+  const startGesprek = () => {
     setCurrentIndex(0)
-    await updateGesprekStatus('Nog niet gestart')
   }
 
   return (
