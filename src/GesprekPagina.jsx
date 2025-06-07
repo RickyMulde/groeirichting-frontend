@@ -67,7 +67,7 @@ function GesprekPagina() {
     }
 
     // Maak het gesprek aan voordat we beginnen
-    await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+    const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -77,7 +77,14 @@ function GesprekPagina() {
       })
     })
     
-    setCurrentIndex(0)
+    const result = await res.json()
+    if (res.ok && result.gesprek_id) {
+      setGesprekId(result.gesprek_id)
+      setCurrentIndex(0)
+    } else {
+      console.error('Gesprek aanmaken mislukt:', result.error)
+      setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.')
+    }
   }
 
   const slaGesprekOp = async (theme_question_id, antwoord) => {
@@ -89,6 +96,11 @@ function GesprekPagina() {
       return
     }
 
+    if (!gesprekId) {
+      console.error('Geen gesprek_id beschikbaar')
+      return
+    }
+
     // Sla het antwoord op in antwoordpervraag tabel
     const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
@@ -96,6 +108,7 @@ function GesprekPagina() {
       body: JSON.stringify({
         werknemer_id: user.id,
         theme_id: themeId,
+        gesprek_id: gesprekId,
         theme_question_id: theme_question_id,
         antwoord: antwoord
       })
