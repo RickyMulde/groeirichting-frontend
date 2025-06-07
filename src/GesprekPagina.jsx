@@ -57,6 +57,61 @@ function GesprekPagina() {
     if (themeId) fetchThema()
   }, [themeId])
 
+  const slaGesprekOp = async (theme_question_id, antwoord) => {
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
+
+    if (authError || !user) {
+      console.error('Gebruiker niet gevonden of niet ingelogd')
+      return
+    }
+
+    const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        employee_id: user.id,
+        theme_id: themeId,
+        theme_question_id: theme_question_id,
+        antwoord: antwoord,
+        status: 'Nog niet afgerond'
+      })
+    })
+
+    const result = await response.json()
+    if (!response.ok) {
+      console.error('Opslaan mislukt:', result.error)
+    }
+  }
+
+  const verstuurAntwoord = async (e) => {
+    e.preventDefault()
+    if (!input.trim()) return
+
+    const check = containsSensitiveInfo(input)
+    if (check.flagged) {
+      setFoutmelding(check.reason)
+      return
+    }
+
+    const huidigeVraag = vragen[currentIndex]
+    const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }]
+    setAntwoorden(nieuweAntwoorden)
+    setInput('')
+    setFoutmelding(null)
+
+    // Direct het antwoord opslaan
+    await slaGesprekOp(huidigeVraag.id, input)
+
+    if (currentIndex + 1 >= vragen.length) {
+      // Bij het laatste antwoord, markeer het gesprek als afgerond
+      await updateGesprekStatus('Afgerond')
+      setDone(true)
+    } else {
+      setCurrentIndex(currentIndex + 1)
+    }
+  }
+
   const updateGesprekStatus = async (status) => {
     const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
@@ -82,39 +137,6 @@ function GesprekPagina() {
     }
   }
 
-  const verstuurAntwoord = async (e) => {
-    e.preventDefault()
-    if (!input.trim()) return
-
-    const check = containsSensitiveInfo(input)
-    if (check.flagged) {
-      setFoutmelding(check.reason)
-      return
-    }
-
-    const huidigeVraag = vragen[currentIndex]
-    const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }]
-    setAntwoorden(nieuweAntwoorden)
-    setInput('')
-    setFoutmelding(null)
-
-    // Bij het eerste antwoord, maak een gesprek aan
-    if (currentIndex === 0) {
-      await updateGesprekStatus('Nog niet afgerond')
-    }
-
-    // Direct het antwoord opslaan
-    await slaGesprekOp(huidigeVraag.id, input)
-
-    if (currentIndex + 1 >= vragen.length) {
-      // Bij het laatste antwoord, markeer het gesprek als afgerond
-      await updateGesprekStatus('Afgerond')
-      setDone(true)
-    } else {
-      setCurrentIndex(currentIndex + 1)
-    }
-  }
-
   // Voeg een cleanup functie toe voor als de gebruiker de pagina verlaat
   useEffect(() => {
     return () => {
@@ -124,35 +146,9 @@ function GesprekPagina() {
     }
   }, [currentIndex, done])
 
-  const startGesprek = () => {
+  const startGesprek = async () => {
     setCurrentIndex(0)
-    updateGesprekStatus('Nog niet gestart')
-  }
-
-  const slaGesprekOp = async (theme_question_id, antwoord) => {
-    const { data, error: authError } = await supabase.auth.getUser();
-    const user = data?.user;
-
-    if (authError || !user) {
-      console.error('Gebruiker niet gevonden of niet ingelogd')
-      return
-    }
-
-    const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        employee_id: user.id,
-        theme_id: themeId,
-        theme_question_id: theme_question_id,
-        antwoord: antwoord
-      })
-    })
-
-    const result = await response.json()
-    if (!response.ok) {
-      console.error('Opslaan mislukt:', result.error)
-    }
+    await updateGesprekStatus('Nog niet gestart')
   }
 
   return (
