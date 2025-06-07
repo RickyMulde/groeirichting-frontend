@@ -27,6 +27,7 @@ function GesprekPagina() {
   const [done, setDone] = useState(false)
   const [saved, setSaved] = useState(false)
   const [foutmelding, setFoutmelding] = useState(null)
+  const [gesprekId, setGesprekId] = useState(null)
 
   useEffect(() => {
     const fetchThema = async () => {
@@ -56,32 +57,7 @@ function GesprekPagina() {
     if (themeId) fetchThema()
   }, [themeId])
 
-  const verstuurAntwoord = (e) => {
-    e.preventDefault()
-    if (!input.trim()) return
-
-    const check = containsSensitiveInfo(input)
-    if (check.flagged) {
-      setFoutmelding(check.reason)
-      return
-    }
-
-    const nieuweAntwoorden = [...antwoorden, { vraag: vragen[currentIndex]?.tekst, antwoord: input }]
-    setAntwoorden(nieuweAntwoorden)
-    setInput('')
-    setFoutmelding(null)
-
-    if (currentIndex + 1 >= vragen.length) {
-      setDone(true)
-      slaGesprekOp(nieuweAntwoorden)
-    } else {
-      setCurrentIndex(currentIndex + 1)
-    }
-  }
-
-  const startGesprek = () => setCurrentIndex(0)
-
-  const slaGesprekOp = async (antwoorden) => {
+  const updateGesprekStatus = async (status) => {
     const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
 
@@ -96,16 +72,85 @@ function GesprekPagina() {
       body: JSON.stringify({
         employee_id: user.id,
         theme_id: themeId,
-        antwoorden,
-        status: 'verzonden',
-        taalcode: 'nl'
+        status: status
       })
     })
 
     const result = await response.json()
-    if (response.ok) {
-      setSaved(true)
+    if (!response.ok) {
+      console.error('Status update mislukt:', result.error)
+    }
+  }
+
+  const verstuurAntwoord = async (e) => {
+    e.preventDefault()
+    if (!input.trim()) return
+
+    const check = containsSensitiveInfo(input)
+    if (check.flagged) {
+      setFoutmelding(check.reason)
+      return
+    }
+
+    const huidigeVraag = vragen[currentIndex]
+    const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }]
+    setAntwoorden(nieuweAntwoorden)
+    setInput('')
+    setFoutmelding(null)
+
+    // Bij het eerste antwoord, maak een gesprek aan
+    if (currentIndex === 0) {
+      await updateGesprekStatus('Nog niet afgerond')
+    }
+
+    // Direct het antwoord opslaan
+    await slaGesprekOp(huidigeVraag.id, input)
+
+    if (currentIndex + 1 >= vragen.length) {
+      // Bij het laatste antwoord, markeer het gesprek als afgerond
+      await updateGesprekStatus('Afgerond')
+      setDone(true)
     } else {
+      setCurrentIndex(currentIndex + 1)
+    }
+  }
+
+  // Voeg een cleanup functie toe voor als de gebruiker de pagina verlaat
+  useEffect(() => {
+    return () => {
+      if (currentIndex > 0 && !done) {
+        updateGesprekStatus('Nog niet afgerond')
+      }
+    }
+  }, [currentIndex, done])
+
+  const startGesprek = () => {
+    setCurrentIndex(0)
+    updateGesprekStatus('Nog niet gestart')
+  }
+
+  const slaGesprekOp = async (theme_question_id, antwoord) => {
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
+
+    if (authError || !user) {
+      console.error('Gebruiker niet gevonden of niet ingelogd')
+      return
+    }
+
+    const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        employee_id: user.id,
+        theme_id: themeId,
+        theme_question_id: theme_question_id,
+        antwoord: antwoord
+      })
+    })
+
+    const result = await response.json()
+    if (!response.ok) {
       console.error('Opslaan mislukt:', result.error)
     }
   }
@@ -148,22 +193,9 @@ function GesprekPagina() {
           {done && (
             <div className="space-y-4">
               <p className="bg-green-100 text-green-800 p-4 rounded-xl">
-                Bedankt voor je antwoorden. Je gesprek is klaar om op te slaan... Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
+                Bedankt voor je antwoorden. Je gesprek is opgeslagen. Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
               </p>
               <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
-              {!saved && (
-                <button
-                  className="btn btn-primary"
-                  onClick={() => slaGesprekOp(antwoorden)}
-                >
-                  Opslaan
-                </button>
-              )}
-              {saved && (
-                <div className="bg-green-200 text-green-900 p-2 rounded mt-2">
-                  Gesprek succesvol opgeslagen!
-                </div>
-              )}
             </div>
           )}
         </div>
