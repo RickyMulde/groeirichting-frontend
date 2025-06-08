@@ -49,6 +49,57 @@ function GesprekPagina() {
         } else {
           setVragen([]);
         }
+
+        // Haal bestaande antwoorden op als het gesprek al bestaat
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: gesprekData, error: gesprekError } = await supabase
+            .from('gesprek')
+            .select('id, status')
+            .eq('werknemer_id', user.id)
+            .eq('theme_id', themeId)
+            .single();
+
+          if (!gesprekError && gesprekData) {
+            setGesprekId(gesprekData.id);
+            
+            // Haal de antwoorden op via de API
+            const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+              },
+              body: JSON.stringify({
+                gesprek_id: gesprekData.id
+              })
+            });
+
+            if (response.ok) {
+              const { antwoorden } = await response.json();
+              
+              // Sorteer de antwoorden op basis van de volgorde van de vragen
+              const gesorteerdeAntwoorden = vragenData.map(vraag => {
+                const antwoord = antwoorden.find(a => a.theme_question_id === vraag.id);
+                return {
+                  vraag: vraag.tekst,
+                  antwoord: antwoord?.antwoord || null
+                };
+              });
+
+              setAntwoorden(gesorteerdeAntwoorden);
+              
+              // Zet de currentIndex naar de eerste vraag zonder antwoord
+              const eersteLegeIndex = gesorteerdeAntwoorden.findIndex(a => a.antwoord === null);
+              setCurrentIndex(eersteLegeIndex === -1 ? vragenData.length : eersteLegeIndex);
+              
+              // Als alle vragen zijn beantwoord, zet done op true
+              if (eersteLegeIndex === -1) {
+                setDone(true);
+              }
+            }
+          }
+        }
       } else {
         console.error('Fout bij ophalen thema:', error)
       }
@@ -64,6 +115,13 @@ function GesprekPagina() {
     if (authError || !user) {
       console.error('Gebruiker niet gevonden of niet ingelogd')
       return
+    }
+
+    // Als er al een gesprek bestaat, ga direct naar de eerste vraag zonder antwoord
+    if (gesprekId) {
+      const eersteLegeIndex = antwoorden.findIndex(a => a.antwoord === null);
+      setCurrentIndex(eersteLegeIndex === -1 ? vragen.length : eersteLegeIndex);
+      return;
     }
 
     // Maak het gesprek aan voordat we beginnen
@@ -179,11 +237,24 @@ function GesprekPagina() {
               <p className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
                 {theme?.intro_prompt || 'Welkom bij dit thema.'}
               </p>
+              {antwoorden.some(a => a.antwoord !== null) && (
+                <div className="space-y-4">
+                  <h3 className="font-medium">Je eerdere antwoorden:</h3>
+                  {antwoorden.map((antwoord, index) => (
+                    antwoord.antwoord && (
+                      <div key={index} className="bg-white p-4 rounded-xl border">
+                        <p className="text-sm font-medium mb-2">{antwoord.vraag}</p>
+                        <p className="text-sm text-gray-600">{antwoord.antwoord}</p>
+                      </div>
+                    )
+                  ))}
+                </div>
+              )}
               <button
                 onClick={startGesprek}
                 className="btn btn-primary px-4 py-2 rounded-full"
               >
-                Start gesprek
+                {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : 'Start gesprek'}
               </button>
             </div>
           )}
