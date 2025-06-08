@@ -58,7 +58,7 @@ function GesprekPagina() {
             .select('id, status')
             .eq('werknemer_id', user.id)
             .eq('theme_id', themeId)
-            .single();
+            .maybeSingle();
 
           if (!gesprekError && gesprekData) {
             setGesprekId(gesprekData.id);
