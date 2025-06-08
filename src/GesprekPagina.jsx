@@ -175,7 +175,6 @@ function GesprekPagina() {
     const result = await response.json()
     if (!response.ok) {
       console.error('Opslaan antwoord mislukt:', result.error)
-      // Gebruik de foutmelding van de backend direct
       setFoutmelding(result.error)
       return false;
     }
