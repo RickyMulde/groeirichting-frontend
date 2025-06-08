@@ -175,6 +175,8 @@ function GesprekPagina() {
     const result = await response.json()
     if (!response.ok) {
       console.error('Opslaan antwoord mislukt:', result.error)
+      setFoutmelding(result.error || 'Er is een fout opgetreden bij het opslaan van je antwoord.')
+      return false;
     }
     return result;
   }
@@ -196,12 +198,13 @@ function GesprekPagina() {
     setFoutmelding(null)
 
     // Sla het antwoord op
-    await slaGesprekOp(huidigeVraag.id, input)
+    const result = await slaGesprekOp(huidigeVraag.id, input)
+    if (!result) return; // Stop als het opslaan is mislukt
 
     if (currentIndex + 1 >= vragen.length) {
       // Bij het laatste antwoord, update de status naar Afgerond
       const { data: userData } = await supabase.auth.getUser();
-      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -211,6 +214,13 @@ function GesprekPagina() {
           gesprek_id: gesprekId
         })
       })
+      
+      const result = await response.json()
+      if (!response.ok) {
+        setFoutmelding(result.error || 'Er is een fout opgetreden bij het afronden van het gesprek.')
+        return;
+      }
+      
       setDone(true)
     } else {
       setCurrentIndex(currentIndex + 1)
