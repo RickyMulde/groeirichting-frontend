@@ -162,7 +162,7 @@ function GesprekPagina() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-[var(--kleur-background)]">
       <div
-        className="w-full h-full fixed inset-0 md:static md:w-[500px] md:h-[90vh] md:max-w-xl md:max-h-[90vh] md:rounded-3xl md:shadow-2xl md:bg-white flex flex-col"
+        className="w-full h-screen md:h-[600px] fixed inset-0 md:static md:w-[500px] md:max-w-xl md:rounded-3xl md:shadow-2xl md:bg-white flex flex-col"
       >
         <header className="flex items-center gap-2 p-2 border-b bg-white md:rounded-t-3xl md:min-h-[56px]">
           <button onClick={() => navigate('/thema-overzicht')} className="p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -212,22 +212,24 @@ function GesprekPagina() {
                 <span>{foutmelding}</span>
               </div>
             )}
-            <form
-              onSubmit={verstuurAntwoord}
-              className="p-4 border-t bg-white flex items-center gap-2"
-            >
-              <input
-                type="text"
-                placeholder="Typ je antwoord..."
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  if (foutmelding) setFoutmelding(null);
-                }}
-                className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
-              />
-              <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
-            </form>
+            <div className="sticky bottom-0 bg-white border-t">
+              <form
+                onSubmit={verstuurAntwoord}
+                className="p-4 flex items-center gap-2"
+              >
+                <input
+                  type="text"
+                  placeholder="Typ je antwoord..."
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    if (foutmelding) setFoutmelding(null);
+                  }}
+                  className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
+                />
+                <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
+              </form>
+            </div>
           </>
         )}
       </div>
