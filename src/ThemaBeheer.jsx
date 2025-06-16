@@ -6,6 +6,7 @@ import Alert from './Alert'
 import React from 'react'
 
 const tooltipData = {
+  gebruik_gpt_vragen: 'Vink aan als je in dit thema GPT-vervolgvragen wilt gebruiken in plaats van handmatig ingestelde vervolgvragen.',
   verwachte_signalen: 'Welke signalen hoop je dat dit thema zichtbaar maakt? Bijvoorbeeld: werkdruk, motivatie, betrokkenheid. Gescheiden door komma\'s.',
   titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
   beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
@@ -41,6 +42,7 @@ function ThemaBeheer() {
   const navigate = useNavigate()
   const nieuwThema = id === 'nieuw'
   const [formData, setFormData] = useState({
+    gebruik_gpt_vragen: false,
     titel: '', beschrijving: '', klaar_voor_gebruik: false,
     voorgesteld_als_verplicht: false, standaard_zichtbaar: true,
     alleen_premium: false, alleen_concept: false, intro_prompt: '',

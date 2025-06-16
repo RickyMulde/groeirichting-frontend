@@ -33,7 +33,7 @@ function GesprekPagina() {
     const fetchThema = async () => {
       const { data, error } = await supabase
         .from('themes')
-        .select('id, titel, intro_prompt, doel_vraag')
+        .select('id, titel, intro_prompt, doel_vraag, gebruik_gpt_vragen')
         .eq('id', themeId)
         .single()
 
@@ -44,11 +44,16 @@ function GesprekPagina() {
           .select('*')
           .eq('theme_id', themeId)
           .order('volgorde_index');
-        if (!vragenError) {
-          setVragen(vragenData || []);
-        } else {
-          setVragen([]);
-        }
+          if (!vragenError) {
+            if (data.gebruik_gpt_vragen) {
+              const eersteVraag = (vragenData || []).find(q => q.volgorde_index === 0);
+              setVragen(eersteVraag ? [eersteVraag] : []);
+            } else {
+              setVragen(vragenData || []);
+            }
+          } else {
+            setVragen([]);
+          }
 
         // Haal bestaande antwoorden op als het gesprek al bestaat
         const { data: { user } } = await supabase.auth.getUser();
@@ -182,29 +187,35 @@ function GesprekPagina() {
   }
 
   const verstuurAntwoord = async (e) => {
-    e.preventDefault()
-    if (!input.trim()) return
+    e.preventDefault();
+    if (!input.trim()) return;
 
-    const check = containsSensitiveInfo(input)
+    const check = containsSensitiveInfo(input);
     if (check.flagged) {
-      setFoutmelding(check.reason)
-      return
+      setFoutmelding(check.reason);
+      return;
     }
 
-    const huidigeVraag = vragen[currentIndex]
-    const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }]
-    setAntwoorden(nieuweAntwoorden)
-    setInput('')
-    setFoutmelding(null)
+    const huidigeVraag = vragen[currentIndex];
+    const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }];
+    setAntwoorden(nieuweAntwoorden);
+    setInput('');
+    setFoutmelding(null);
 
-    // Sla het antwoord op
-    const result = await slaGesprekOp(huidigeVraag.id, input)
-    if (!result) return; // Stop als het opslaan is mislukt
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData || !userData.user) {
+      console.error('Gebruiker niet gevonden');
+      return;
+    }
 
-    if (currentIndex + 1 >= vragen.length) {
-      // Bij het laatste antwoord, update de status naar Afgerond
-      const { data: userData } = await supabase.auth.getUser();
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+    // Sla het antwoord op in Supabase
+    const result = await slaGesprekOp(huidigeVraag.id, input);
+    if (!result) return;
+
+    // Check of we aan het maximum zitten
+    if (nieuweAntwoorden.length >= 5) {
+      setDone(true);
+      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -213,18 +224,46 @@ function GesprekPagina() {
           status: 'Afgerond',
           gesprek_id: gesprekId
         })
-      })
-      
-      const result = await response.json()
-      if (!response.ok) {
-        setFoutmelding(result.error || 'Er is een fout opgetreden bij het afronden van het gesprek.')
-        return;
-      }
-      
-      setDone(true)
-    } else {
-      setCurrentIndex(currentIndex + 1)
+      });
+      return;
     }
+
+    // Vraag GPT om beslissing over vervolgvraag
+    const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        thema: theme?.titel || 'Thema',
+        eerdereAntwoorden: nieuweAntwoorden.map(a => a.antwoord),
+        laatsteAntwoord: input
+      })
+    });
+
+    const decide = await decideRes.json();
+
+    if (!decide.doorgaan || !decide.vervolgvraag) {
+      setDone(true);
+      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          werknemer_id: userData.user.id,
+          theme_id: themeId,
+          status: 'Afgerond',
+          gesprek_id: gesprekId
+        })
+      });
+      return;
+    }
+
+    // Voeg GPT-vraag toe als volgende stap
+    const gptVraag = {
+      id: `gpt-${Date.now()}`,
+      tekst: decide.vervolgvraag
+    };
+
+    setVragen([...vragen, gptVraag]);
+    setCurrentIndex(currentIndex + 1);
   }
 
   return (
