@@ -69,6 +69,11 @@ function GesprekPagina() {
           if (!gesprekError && gesprekData) {
             setGesprekId(gesprekData.id);
             
+            // Alleen het gesprek als afgerond markeren als de status 'Afgerond' is
+            if (gesprekData.status === 'Afgerond') {
+              setDone(true);
+            }
+            
             // Haal de antwoorden op via de API
             const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
               method: 'POST',
@@ -98,11 +103,6 @@ function GesprekPagina() {
               // Zet de currentIndex naar de eerste vraag zonder antwoord
               const eersteLegeIndex = gesorteerdeAntwoorden.findIndex(a => a.antwoord === null);
               setCurrentIndex(eersteLegeIndex === -1 ? vragenData.length : eersteLegeIndex);
-              
-              // Als alle vragen zijn beantwoord, zet done op true
-              if (eersteLegeIndex === -1) {
-                setDone(true);
-              }
             }
           }
         }
@@ -213,22 +213,6 @@ function GesprekPagina() {
     const result = await slaGesprekOp(huidigeVraag.id, input);
     if (!result) return;
 
-    // Check of we aan het maximum zitten
-    if (nieuweAntwoorden.length >= 5) {
-      setDone(true);
-      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          werknemer_id: userData.user.id,
-          theme_id: themeId,
-          status: 'Afgerond',
-          gesprek_id: gesprekId
-        })
-      });
-      return;
-    }
-
     // Vraag GPT om beslissing over vervolgvraag
     const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
       method: 'POST',
@@ -241,10 +225,15 @@ function GesprekPagina() {
     });
 
     const decide = await decideRes.json();
-    setToelichting(decide.toelichting || null);
+    
+    // Toon de toelichting direct na het antwoord
+    if (decide.toelichting) {
+      setFoutmelding(null);
+      setToelichting(decide.toelichting);
+    }
 
-
-    if (!decide.doorgaan || !decide.vervolgvraag) {
+    // Check of we aan het maximum zitten of dat AI besluit te stoppen
+    if (nieuweAntwoorden.length >= 5 || !decide.doorgaan || !decide.vervolgvraag) {
       setDone(true);
       await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
         method: 'POST',
@@ -312,27 +301,33 @@ function GesprekPagina() {
           )}
 
           {currentIndex >= 0 && !done && (
-            <div className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
-              {vragen[currentIndex]?.tekst}
+            <div className="space-y-4">
+              <div className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
+                {vragen[currentIndex]?.tekst}
+              </div>
+              {toelichting && (
+                <div className="bg-blue-50 p-4 rounded-xl text-sm max-w-[80%]">
+                  <p className="text-blue-800">{toelichting}</p>
+                </div>
+              )}
             </div>
           )}
 
-        {done && (
-          <div className="space-y-4">
-            <p className="bg-green-100 text-green-800 p-4 rounded-xl">
-              Bedankt voor je antwoorden. Je gesprek is opgeslagen. Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
-            </p>
-
-            {toelichting && (
-              <p className="text-sm italic text-gray-500">
-                AI-beslissing: {toelichting}
+          {done && (
+            <div className="space-y-4">
+              <p className="bg-green-100 text-green-800 p-4 rounded-xl">
+                Bedankt voor je antwoorden. Je gesprek is opgeslagen. Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
               </p>
-            )}
 
-            <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
-          </div>
-        )}
+              {toelichting && (
+                <div className="bg-blue-50 p-4 rounded-xl">
+                  <p className="text-blue-800">{toelichting}</p>
+                </div>
+              )}
 
+              <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
+            </div>
+          )}
         </div>
 
         {!done && currentIndex >= 0 && (
