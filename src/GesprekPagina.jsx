@@ -242,7 +242,8 @@ function GesprekPagina() {
           werknemer_id: userData.user.id,
           theme_id: themeId,
           status: 'Afgerond',
-          gesprek_id: gesprekId
+          gesprek_id: gesprekId,
+          afrondingsreden: nieuweAntwoorden.length >= 5 ? 'MAX_ANTWOORDEN' : 'VOLDENDE_DUIDELIJK'
         })
       });
       return;
