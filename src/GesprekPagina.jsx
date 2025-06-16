@@ -28,6 +28,7 @@ function GesprekPagina() {
   const [saved, setSaved] = useState(false)
   const [foutmelding, setFoutmelding] = useState(null)
   const [gesprekId, setGesprekId] = useState(null)
+  const [toelichting, setToelichting] = useState(null)
 
   useEffect(() => {
     const fetchThema = async () => {
@@ -240,6 +241,8 @@ function GesprekPagina() {
     });
 
     const decide = await decideRes.json();
+    setToelichting(decide.toelichting || null);
+
 
     if (!decide.doorgaan || !decide.vervolgvraag) {
       setDone(true);
@@ -314,14 +317,22 @@ function GesprekPagina() {
             </div>
           )}
 
-          {done && (
-            <div className="space-y-4">
-              <p className="bg-green-100 text-green-800 p-4 rounded-xl">
-                Bedankt voor je antwoorden. Je gesprek is opgeslagen. Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
+        {done && (
+          <div className="space-y-4">
+            <p className="bg-green-100 text-green-800 p-4 rounded-xl">
+              Bedankt voor je antwoorden. Je gesprek is opgeslagen. Hieronder komt de samenvatting + cijfer + anoniem of niet naar werkgever. 
+            </p>
+
+            {toelichting && (
+              <p className="text-sm italic text-gray-500">
+                AI-beslissing: {toelichting}
               </p>
-              <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
-            </div>
-          )}
+            )}
+
+            <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
+          </div>
+        )}
+
         </div>
 
         {!done && currentIndex >= 0 && (
