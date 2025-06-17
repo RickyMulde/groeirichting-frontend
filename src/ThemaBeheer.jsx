@@ -52,11 +52,11 @@ function ThemaBeheer() {
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
     ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: '',
     verwachte_signalen: '',
-    vraag_1: '', vraag_1_verplicht: false, vraag_1_type: 'initieel',
-    vraag_2: '', vraag_2_verplicht: false, vraag_2_type: 'initieel',
-    vraag_3: '', vraag_3_verplicht: false, vraag_3_type: 'initieel',
-    vraag_4: '', vraag_4_verplicht: false, vraag_4_type: 'initieel',
-    vraag_5: '', vraag_5_verplicht: false, vraag_5_type: 'initieel',
+    vraag_1: '', vraag_1_verplicht: false, vraag_1_type: 'initieel', vraag_1_doel: '',
+    vraag_2: '', vraag_2_verplicht: false, vraag_2_type: 'initieel', vraag_2_doel: '',
+    vraag_3: '', vraag_3_verplicht: false, vraag_3_type: 'initieel', vraag_3_doel: '',
+    vraag_4: '', vraag_4_verplicht: false, vraag_4_type: 'initieel', vraag_4_doel: '',
+    vraag_5: '', vraag_5_verplicht: false, vraag_5_type: 'initieel', vraag_5_doel: '',
   })
   const [vragen, setVragen] = useState([])
   const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
@@ -215,11 +215,19 @@ function ThemaBeheer() {
         }
       })
 
+      // Bereid de vragen voor met hun doelvragen
+      const vragenMetDoel = [1,2,3,4,5].map((nr) => ({
+        tekst: formData[`vraag_${nr}`],
+        verplicht: formData[`vraag_${nr}_verplicht`],
+        type: formData[`vraag_${nr}_type`],
+        doel_vraag: formData[`vraag_${nr}_doel`]
+      })).filter(vraag => vraag.tekst.trim() !== ''); // Alleen vragen met tekst meesturen
+
       if (nieuwThema) {
         const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ thema: payload, vragen })
+          body: JSON.stringify({ thema: payload, vragen: vragenMetDoel })
         })
         const result = await response.json()
         if (!response.ok) return setError(result.error || 'Opslaan mislukt')
@@ -229,7 +237,7 @@ function ThemaBeheer() {
         const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ thema: { ...payload, id }, vragen })
+          body: JSON.stringify({ thema: { ...payload, id }, vragen: vragenMetDoel })
         });
         const result = await response.json();
         if (!response.ok) return setError(result.error || 'Opslaan mislukt');
@@ -300,6 +308,19 @@ function ThemaBeheer() {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                   placeholder={`Vraag ${nr}`}
+                  required
+                />
+                <label className="block text-sm font-medium mt-2 mb-1">
+                  Doel van vraag {nr}
+                </label>
+                <input
+                  type="text"
+                  name={`vraag_${nr}_doel`}
+                  value={formData[`vraag_${nr}_doel`]}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  placeholder={`Wat is het doel van vraag ${nr}?`}
+                  required
                 />
                 <div className="flex items-center mt-2">
                   <input
