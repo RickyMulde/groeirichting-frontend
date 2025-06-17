@@ -308,7 +308,6 @@ function ThemaBeheer() {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                   placeholder={`Vraag ${nr}`}
-                  required
                 />
                 <label className="block text-sm font-medium mt-2 mb-1">
                   Doel van vraag {nr}
@@ -320,7 +319,6 @@ function ThemaBeheer() {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                   placeholder={`Wat is het doel van vraag ${nr}?`}
-                  required
                 />
                 <div className="flex items-center mt-2">
                   <input
