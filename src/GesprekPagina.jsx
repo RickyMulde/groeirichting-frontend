@@ -42,7 +42,7 @@ function GesprekPagina() {
         setTheme(data)
         const { data: vragenData, error: vragenError } = await supabase
           .from('theme_questions')
-          .select('*')
+          .select('id, tekst, verplicht, type, doel_vraag, volgorde_index')
           .eq('theme_id', themeId)
           .order('volgorde_index');
           if (!vragenError) {
@@ -226,7 +226,8 @@ function GesprekPagina() {
       body: JSON.stringify({
         thema: theme?.titel || 'Thema',
         eerdereAntwoorden: nieuweAntwoorden.map(a => a.antwoord),
-        laatsteAntwoord: input
+        laatsteAntwoord: input,
+        doel_vraag: huidigeVraag?.doel_vraag || ''
       })
     });
 
