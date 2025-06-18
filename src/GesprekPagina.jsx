@@ -29,6 +29,7 @@ function GesprekPagina() {
   const [foutmelding, setFoutmelding] = useState(null)
   const [gesprekId, setGesprekId] = useState(null)
   const [toelichting, setToelichting] = useState(null)
+  const [vervolgvragenTeller, setVervolgvragenTeller] = useState(0);
 
   useEffect(() => {
     const fetchThema = async () => {
@@ -231,11 +232,46 @@ function GesprekPagina() {
     // Als dit een vaste vraag was, ga direct naar de volgende vaste vraag als die er is
     const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
     if (isVasteVraag) {
+      // Reset de vervolgvragenteller bij een vaste vraag
+      setVervolgvragenTeller(0);
+      
       const volgendeVasteVraag = vragen.find((v, i) => 
         i > currentIndex && !v.id.toString().startsWith('gpt-')
       );
       if (volgendeVasteVraag) {
         setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+        return;
+      }
+    } else {
+      // Verhoog de teller bij een vervolgvraag
+      setVervolgvragenTeller(prev => prev + 1);
+    }
+
+    // Check of we het maximum aantal vervolgvragen voor de huidige vaste vraag hebben bereikt
+    if (!isVasteVraag && vervolgvragenTeller >= 4) { // 4 omdat we net de teller hebben verhoogd
+      const volgendeVasteVraag = vragen.find((v, i) => 
+        i > currentIndex && !v.id.toString().startsWith('gpt-')
+      );
+      
+      if (volgendeVasteVraag) {
+        // Er is nog een vaste vraag, ga daar naartoe
+        setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+        setVervolgvragenTeller(0);
+        return;
+      } else {
+        // Geen vaste vragen meer, rond het gesprek af
+        setDone(true);
+        await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            werknemer_id: userData.user.id,
+            theme_id: themeId,
+            status: 'Afgerond',
+            gesprek_id: gesprekId,
+            afrondingsreden: 'MAX_ANTWOORDEN'
+          })
+        });
         return;
       }
     }
@@ -260,8 +296,20 @@ function GesprekPagina() {
       setToelichting(decide.toelichting);
     }
 
-    // Check of we aan het maximum zitten of dat AI besluit te stoppen
-    if (nieuweAntwoorden.length >= 5 || !decide.doorgaan || !decide.vervolgvraag) {
+    // Als er geen vervolgvraag is of AI wil stoppen, check dan eerst of er nog vaste vragen zijn
+    if (!decide.doorgaan || !decide.vervolgvraag) {
+      const volgendeVasteVraag = vragen.find((v, i) => 
+        i > currentIndex && !v.id.toString().startsWith('gpt-')
+      );
+      
+      if (volgendeVasteVraag) {
+        // Er zijn nog onbeantwoorde vaste vragen, ga door naar de volgende
+        setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+        setVervolgvragenTeller(0);
+        return;
+      }
+
+      // Geen vaste vragen meer en AI wil stoppen, rond het gesprek af
       setDone(true);
       await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
         method: 'POST',
@@ -271,7 +319,7 @@ function GesprekPagina() {
           theme_id: themeId,
           status: 'Afgerond',
           gesprek_id: gesprekId,
-          afrondingsreden: (!decide.doorgaan || !decide.vervolgvraag) ? 'VOLDENDE_DUIDELIJK' : 'MAX_ANTWOORDEN'
+          afrondingsreden: 'VOLDENDE_DUIDELIJK'
         })
       });
       return;
