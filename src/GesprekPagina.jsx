@@ -45,13 +45,10 @@ function GesprekPagina() {
           .select('id, tekst, verplicht, type, doel_vraag, volgorde_index')
           .eq('theme_id', themeId)
           .order('volgorde_index');
+          
           if (!vragenError) {
-            if (data.gebruik_gpt_vragen) {
-              const eersteVraag = (vragenData || []).find(q => q.volgorde_index === 0);
-              setVragen(eersteVraag ? [eersteVraag] : []);
-            } else {
-              setVragen(vragenData || []);
-            }
+            // Laad alle vaste vragen, ongeacht of we GPT gebruiken
+            setVragen(vragenData || []);
           } else {
             setVragen([]);
           }
@@ -168,13 +165,16 @@ function GesprekPagina() {
     // Bepaal of dit een vaste vraag is of een AI-vraag
     const isVasteVraag = !theme_question_id.toString().startsWith('gpt-');
     
-    // Voor een vervolgvraag, gebruik de theme_question_id van de laatste vaste vraag
+    // Voor een vervolgvraag, gebruik de theme_question_id van de huidige vaste vraag
     let hoortBijQuestionId = null;
     if (!isVasteVraag) {
-      // Zoek de laatste vaste vraag in de antwoorden array
+      // Vind de laatste beantwoorde vaste vraag
       const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
-      if (vasteVragen.length > 0) {
-        hoortBijQuestionId = vasteVragen[vasteVragen.length - 1].id;
+      const huidigeVasteVraagIndex = vasteVragen.findIndex(v => 
+        antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
+      );
+      if (huidigeVasteVraagIndex >= 0) {
+        hoortBijQuestionId = vasteVragen[huidigeVasteVraagIndex].id;
       }
     }
 
@@ -228,7 +228,19 @@ function GesprekPagina() {
     const result = await slaGesprekOp(huidigeVraag.id, input);
     if (!result) return;
 
-    // Vraag GPT om beslissing over vervolgvraag
+    // Als dit een vaste vraag was, ga direct naar de volgende vaste vraag als die er is
+    const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
+    if (isVasteVraag) {
+      const volgendeVasteVraag = vragen.find((v, i) => 
+        i > currentIndex && !v.id.toString().startsWith('gpt-')
+      );
+      if (volgendeVasteVraag) {
+        setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+        return;
+      }
+    }
+
+    // Anders, vraag GPT om een beslissing over een vervolgvraag
     const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -272,7 +284,7 @@ function GesprekPagina() {
     };
 
     setVragen([...vragen, gptVraag]);
-    setCurrentIndex(currentIndex + 1);
+    setCurrentIndex(vragen.length);
   }
 
   return (
