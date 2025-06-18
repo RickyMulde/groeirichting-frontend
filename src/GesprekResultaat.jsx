@@ -36,17 +36,15 @@ function GesprekResultaat() {
 
       <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
         <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold">Wil je deze samenvatting delen?</h2>
+          <h2 className="text-xl font-semibold">De samenvatting en score zijn anoniem gedeeld met je werkgever</h2>
           <p className="text-sm text-[var(--kleur-muted)]">
-            Je kunt ervoor kiezen om deze samenvatting te delen met je werkgever. 
-            Je kunt dit anoniem of persoonlijk doen. Je keuze kun je later altijd aanpassen.
+            Privacy by design. Jouw werkgever kan een samenvatting nooit herleiden naar jou persoonlijk. 
+            Bekijk hoe en wat er met jouw gegevens gebeurd
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="btn btn-primary w-full sm:w-auto">Deel persoonlijk met werkgever</button>
-          <button className="btn btn-accent w-full sm:w-auto">Deel anoniem met werkgever</button>
-          <button className="btn btn-secondary w-full sm:w-auto" onClick={() => navigate('/employee-portal')}>Niet delen</button>
+          <button className="btn btn-primary w-full sm:w-auto">Wat gebeurt er met jouw gegevens?</button>
         </div>
       </section>
     </div>
