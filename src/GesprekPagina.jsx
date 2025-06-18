@@ -402,7 +402,28 @@ function GesprekPagina() {
                 </div>
               )}
 
-              <pre className="bg-white p-4 rounded text-xs border">{JSON.stringify(antwoorden, null, 2)}</pre>
+              <div className="bg-white p-4 rounded-xl border space-y-4">
+                <h3 className="font-semibold text-[var(--kleur-primary)]">Je gesprek is afgerond!</h3>
+                <p className="text-sm text-[var(--kleur-muted)]">
+                  Bekijk hieronder je antwoorden en ga naar de samenvatting om je resultaten te delen.
+                </p>
+                
+                <button
+                  onClick={() => navigate(`/gesprek-resultaat?gesprek_id=${gesprekId}&theme_id=${themeId}`)}
+                  className="btn btn-primary w-full"
+                >
+                  Bekijk samenvatting en deel resultaten
+                </button>
+              </div>
+
+              <details className="bg-gray-50 p-4 rounded-xl">
+                <summary className="cursor-pointer font-medium text-[var(--kleur-muted)]">
+                  Bekijk je antwoorden (klik om uit te klappen)
+                </summary>
+                <pre className="mt-2 text-xs border bg-white p-2 rounded overflow-auto max-h-40">
+                  {JSON.stringify(antwoorden, null, 2)}
+                </pre>
+              </details>
             </div>
           )}
         </div>

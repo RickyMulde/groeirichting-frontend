@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 //import Navigatiebalk from './Navigatiebalk'
 import { Smile, History, Settings } from 'lucide-react'
 
 function EmployeePortal() {
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
+  const location = useLocation()
+  const [showMessage, setShowMessage] = useState(false)
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -20,11 +23,31 @@ function EmployeePortal() {
     fetchUser()
   }, [])
 
+  useEffect(() => {
+    // Check voor success message in location state
+    if (location.state?.message) {
+      setMessage(location.state.message)
+      setShowMessage(true)
+      
+      // Verwijder de message uit de history
+      navigate(location.pathname, { replace: true })
+      
+      // Verberg de message na 5 seconden
+      setTimeout(() => setShowMessage(false), 5000)
+    }
+  }, [location, navigate])
+
   return (
     <div className="min-h-screen bg-[var(--kleur-background)] text-[var(--kleur-text)]">
       {/*<Navigatiebalk extraButtons={[]} />*/}
 
       <div className="max-w-4xl mx-auto pt-20 px-4 space-y-8">
+        {showMessage && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <p className="text-green-800 font-medium">{message}</p>
+          </div>
+        )}
+
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Smile className="text-[var(--kleur-primary)] w-8 h-8" />
