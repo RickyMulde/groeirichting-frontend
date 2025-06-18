@@ -1,9 +1,8 @@
-
 # ✅ Technische Checklist – GroeiRichting (MVP)
 
 ## 🔐 Authenticatie & Rollenbeheer (Supabase)
 - [x] Supabase-project aangemaakt
-- [x] Tabellen: users, employers, employees, invitations, conversations
+- [x] Tabellen: users, employers, employees, invitations, antwoordpervraag
 - [x] Rollenbeheer: employee, employer, admin
 - [x] Invite-only registratieflow werknemer
 - [ ] Supabase RLS-policies correct ingericht
@@ -27,7 +26,7 @@
 - [ ] Employee dashboard UI (gesprekken + overzicht)
 - [ ] Start gesprek component
 - [ ] Instellingen werknemer
-- [ ] Instellingen werkgever (thema’s aan/uit)
+- [ ] Instellingen werkgever (thema's aan/uit)
 - [ ] Keuzemenu in gesprek: wat mag werkgever zien? (score, samenvatting, volledig gesprek)
 
 ## 📩 E-mailfunctionaliteit
@@ -48,15 +47,15 @@
 ## 🗃️ Gespreksbeheer
 - [x] Gesprekken opslaan in Supabase
 - [ ] Samenvattingen zichtbaar maken voor werknemer
-- [ ] Knop ‘start nieuw gesprek’ werknemer
-- [ ] Thema’s dynamisch ophalen uit werkgeversinstellingen
+- [ ] Knop 'start nieuw gesprek' werknemer
+- [ ] Thema's dynamisch ophalen uit werkgeversinstellingen
 - [ ] Draft-mode / tussentijds opslaan
 - [ ] Versiebeheer bij updates of aanvullingen
 - [ ] Mogelijkheid om bijlagen toe te voegen (Supabase Storage)
 - [ ] Metadata opslaan per gesprek (thema, datum, score, inzendingstype)
 
 ## ⚙️ Instellingen & configuratie
-- [ ] Thema’s aan/uit per werkgever
+- [ ] Thema's aan/uit per werkgever
 - [ ] Employer-specifieke voorkeuren instelbaar
 - [ ] Exportoptie voor gesprekken (CSV / PDF)
 - [ ] Instellingen werknemer (bijv. e-mail aanpassen)

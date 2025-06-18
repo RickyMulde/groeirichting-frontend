@@ -167,7 +167,16 @@ function GesprekPagina() {
 
     // Bepaal of dit een vaste vraag is of een AI-vraag
     const isVasteVraag = !theme_question_id.toString().startsWith('gpt-');
-    const hoortBijQuestionId = theme_question_id;
+    
+    // Voor een vervolgvraag, gebruik de theme_question_id van de laatste vaste vraag
+    let hoortBijQuestionId = null;
+    if (!isVasteVraag) {
+      // Zoek de laatste vaste vraag in de antwoorden array
+      const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+      if (vasteVragen.length > 0) {
+        hoortBijQuestionId = vasteVragen[vasteVragen.length - 1].id;
+      }
+    }
 
     // Sla het antwoord op in antwoordpervraag tabel
     const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
@@ -177,7 +186,7 @@ function GesprekPagina() {
         werknemer_id: user.id,
         theme_id: themeId,
         gesprek_id: gesprekId,
-        theme_question_id: theme_question_id,
+        theme_question_id: isVasteVraag ? theme_question_id : null,
         antwoord: antwoord,
         is_vaste_vraag: isVasteVraag,
         hoort_bij_question_id: hoortBijQuestionId

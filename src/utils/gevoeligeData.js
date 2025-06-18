@@ -693,7 +693,6 @@ export const voornamenSet = new Set([
   'duke',
   'dulce',
   'duncan',
-  'dus',
   'duuk',
   'dylan',
   'dymas',
