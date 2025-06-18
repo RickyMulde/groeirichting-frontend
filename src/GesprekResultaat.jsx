@@ -54,6 +54,55 @@ function GesprekResultaat() {
 
         if (!response.ok) {
           if (response.status === 404) {
+            // Probeer eerst een samenvatting te genereren
+            try {
+              console.log('Geen samenvatting gevonden, probeer er een te genereren...');
+              const generateResponse = await fetch(
+                'https://groeirichting-backend.onrender.com/api/generate-summary',
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                  },
+                  body: JSON.stringify({
+                    theme_id: themeId,
+                    werknemer_id: user.id
+                  })
+                }
+              );
+
+              if (generateResponse.ok) {
+                // Probeer nu opnieuw de samenvatting op te halen
+                const retryResponse = await fetch(
+                  `https://groeirichting-backend.onrender.com/api/get-summary?theme_id=${themeId}&werknemer_id=${user.id}`,
+                  {
+                    method: 'GET',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                    }
+                  }
+                );
+
+                if (retryResponse.ok) {
+                  const resultData = await retryResponse.json();
+                  setGesprekData({
+                    themeTitle: themeData.titel,
+                    samenvatting: resultData.samenvatting,
+                    score: resultData.score,
+                    magWerkgeverInzien: resultData.mag_werkgever_inzien,
+                    themeId,
+                    gesprekId
+                  });
+                  return;
+                }
+              }
+            } catch (generateError) {
+              console.error('Fout bij genereren samenvatting:', generateError);
+            }
+            
+            // Als genereren niet lukte, toon foutmelding
             throw new Error('Geen samenvatting gevonden voor dit gesprek')
           }
           throw new Error('Fout bij ophalen samenvatting')

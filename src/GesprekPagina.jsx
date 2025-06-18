@@ -31,6 +31,37 @@ function GesprekPagina() {
   const [toelichting, setToelichting] = useState(null)
   const [vervolgvragenTeller, setVervolgvragenTeller] = useState(0);
 
+  // Functie om samenvatting te genereren
+  const genereerSamenvatting = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData || !userData.user) {
+        console.error('Gebruiker niet gevonden');
+        return;
+      }
+
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/generate-summary', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({
+          theme_id: themeId,
+          werknemer_id: userData.user.id
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Fout bij genereren samenvatting:', await response.text());
+      } else {
+        console.log('Samenvatting succesvol gegenereerd');
+      }
+    } catch (error) {
+      console.error('Fout bij genereren samenvatting:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchThema = async () => {
       const { data, error } = await supabase
@@ -272,6 +303,8 @@ function GesprekPagina() {
             afrondingsreden: 'MAX_ANTWOORDEN'
           })
         });
+        // Genereer samenvatting na het afronden
+        await genereerSamenvatting();
         return;
       }
     }
@@ -322,6 +355,8 @@ function GesprekPagina() {
           afrondingsreden: 'VOLDENDE_DUIDELIJK'
         })
       });
+      // Genereer samenvatting na het afronden
+      await genereerSamenvatting();
       return;
     }
 
