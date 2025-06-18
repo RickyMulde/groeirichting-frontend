@@ -14,6 +14,7 @@ import EmployeePortal from './EmployeePortal'
 import SuperadminPortaal from './Superadminportaal'
 import ThemaBeheer from './ThemaBeheer'
 import GesprekPagina from './GesprekPagina'
+import GesprekResultaat from './GesprekResultaat'
 import ThemaOverzicht from './ThemaOverzicht'
 
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
         <Route path="/thema-overzicht" element={<ThemaOverzicht />} />
         <Route path="/gesprek" element={<GesprekPagina />} />
+        <Route path="/gesprek-resultaat" element={<GesprekResultaat />} />
       </Routes>
     </Layout>
   )
