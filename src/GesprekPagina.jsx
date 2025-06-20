@@ -273,7 +273,9 @@ function GesprekPagina() {
       if (huidigeVervolgvragen >= 4) {
         // Ga naar de volgende vaste vraag
         const volgendeVasteVraag = vragen.find((v, i) => 
-          i > currentIndex && !v.id.toString().startsWith('gpt-')
+          i > currentIndex && 
+          !v.id.toString().startsWith('gpt-') &&
+          !antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
         );
         
         if (volgendeVasteVraag) {
@@ -317,7 +319,9 @@ function GesprekPagina() {
         if (nieuweTeller >= 4) {
           // Ga naar de volgende vaste vraag
           const volgendeVasteVraag = vragen.find((v, i) => 
-            i > currentIndex && !v.id.toString().startsWith('gpt-')
+            i > currentIndex && 
+            !v.id.toString().startsWith('gpt-') &&
+            !antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
           );
           
           if (volgendeVasteVraag) {
@@ -368,7 +372,9 @@ function GesprekPagina() {
     // Als er geen vervolgvraag is of AI wil stoppen, check dan eerst of er nog vaste vragen zijn
     if (!decide.doorgaan || !decide.vervolgvraag) {
       const volgendeVasteVraag = vragen.find((v, i) => 
-        i > currentIndex && !v.id.toString().startsWith('gpt-')
+        i > currentIndex && 
+        !v.id.toString().startsWith('gpt-') &&
+        !antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
       );
       
       if (volgendeVasteVraag) {
