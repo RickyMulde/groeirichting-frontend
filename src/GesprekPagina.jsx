@@ -40,7 +40,7 @@ function GesprekPagina() {
         return;
       }
 
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/generate-summary', {
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/genereer-samenvatting', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -53,7 +53,8 @@ function GesprekPagina() {
       });
 
       if (!response.ok) {
-        console.error('Fout bij genereren samenvatting:', await response.text());
+        const errorText = await response.text();
+        console.error('Fout bij genereren samenvatting:', response.status, errorText);
       } else {
         console.log('Samenvatting succesvol gegenereerd');
       }

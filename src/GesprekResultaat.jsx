@@ -57,8 +57,10 @@ function GesprekResultaat() {
             // Probeer eerst een samenvatting te genereren
             try {
               console.log('Geen samenvatting gevonden, probeer er een te genereren...');
+              console.log('Parameters:', { theme_id: themeId, werknemer_id: user.id });
+              
               const generateResponse = await fetch(
-                'https://groeirichting-backend.onrender.com/api/generate-summary',
+                'https://groeirichting-backend.onrender.com/api/genereer-samenvatting',
                 {
                   method: 'POST',
                   headers: {
@@ -73,6 +75,12 @@ function GesprekResultaat() {
               );
 
               if (generateResponse.ok) {
+                const generateResult = await generateResponse.json();
+                console.log('Samenvatting gegenereerd:', generateResult);
+                
+                // Wacht even zodat de backend tijd heeft om de samenvatting te genereren
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
                 // Probeer nu opnieuw de samenvatting op te halen
                 const retryResponse = await fetch(
                   `https://groeirichting-backend.onrender.com/api/get-summary?theme_id=${themeId}&werknemer_id=${user.id}`,
@@ -87,6 +95,7 @@ function GesprekResultaat() {
 
                 if (retryResponse.ok) {
                   const resultData = await retryResponse.json();
+                  console.log('Samenvatting opgehaald na genereren:', resultData);
                   setGesprekData({
                     themeTitle: themeData.titel,
                     samenvatting: resultData.samenvatting,
@@ -96,7 +105,13 @@ function GesprekResultaat() {
                     gesprekId
                   });
                   return;
+                } else {
+                  const retryErrorText = await retryResponse.text();
+                  console.error('Fout bij ophalen samenvatting na genereren:', retryResponse.status, retryErrorText);
                 }
+              } else {
+                const generateErrorText = await generateResponse.text();
+                console.error('Fout bij genereren samenvatting:', generateResponse.status, generateErrorText);
               }
             } catch (generateError) {
               console.error('Fout bij genereren samenvatting:', generateError);
