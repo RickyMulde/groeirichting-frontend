@@ -42,7 +42,7 @@ function GesprekResultaat() {
 
         // Haal samenvatting op via backend API
         const response = await fetch(
-          `https://groeirichting-backend.onrender.com/api/get-summary?theme_id=${themeId}&werknemer_id=${user.id}`,
+          `https://groeirichting-backend.onrender.com/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}`,
           {
             method: 'GET',
             headers: {
@@ -83,7 +83,7 @@ function GesprekResultaat() {
                 
                 // Probeer nu opnieuw de samenvatting op te halen
                 const retryResponse = await fetch(
-                  `https://groeirichting-backend.onrender.com/api/get-summary?theme_id=${themeId}&werknemer_id=${user.id}`,
+                  `https://groeirichting-backend.onrender.com/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}`,
                   {
                     method: 'GET',
                     headers: {
