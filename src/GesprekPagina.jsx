@@ -261,21 +261,45 @@ function GesprekPagina() {
     const result = await slaGesprekOp(huidigeVraag.id, input);
     if (!result) return;
 
-    // Als dit een vaste vraag was, ga direct naar de volgende vaste vraag als die er is
+    // Bepaal of dit een vaste vraag is
     const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
+    
     if (isVasteVraag) {
-      // Reset de vervolgvragenPerVasteVraag bij een vaste vraag
-      setVervolgvragenPerVasteVraag({});
+      // Voor vaste vragen: verhoog de teller voor vervolgvragen van deze vaste vraag
+      const huidigeVasteVraagId = huidigeVraag.id;
+      const huidigeVervolgvragen = vervolgvragenPerVasteVraag[huidigeVasteVraagId] || 0;
       
-      const volgendeVasteVraag = vragen.find((v, i) => 
-        i > currentIndex && !v.id.toString().startsWith('gpt-')
-      );
-      if (volgendeVasteVraag) {
-        setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
-        return;
+      // Check of we al 4 vervolgvragen hebben voor deze vaste vraag
+      if (huidigeVervolgvragen >= 4) {
+        // Ga naar de volgende vaste vraag
+        const volgendeVasteVraag = vragen.find((v, i) => 
+          i > currentIndex && !v.id.toString().startsWith('gpt-')
+        );
+        
+        if (volgendeVasteVraag) {
+          setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+          setVervolgvragenPerVasteVraag({});
+          return;
+        } else {
+          // Geen vaste vragen meer, rond het gesprek af
+          setDone(true);
+          await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              werknemer_id: userData.user.id,
+              theme_id: themeId,
+              status: 'Afgerond',
+              gesprek_id: gesprekId,
+              afrondingsreden: 'MAX_ANTWOORDEN'
+            })
+          });
+          await genereerSamenvatting();
+          return;
+        }
       }
     } else {
-      // Voor een vervolgvraag, vind de bijbehorende vaste vraag
+      // Voor vervolgvragen: vind de bijbehorende vaste vraag en verhoog de teller
       const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
       const huidigeVasteVraagIndex = vasteVragen.findIndex(v => 
         antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
@@ -283,55 +307,10 @@ function GesprekPagina() {
       
       if (huidigeVasteVraagIndex >= 0) {
         const huidigeVasteVraagId = vasteVragen[huidigeVasteVraagIndex].id;
-        // Verhoog de teller voor deze vaste vraag
         setVervolgvragenPerVasteVraag(prev => ({ 
           ...prev, 
           [huidigeVasteVraagId]: (prev[huidigeVasteVraagId] || 0) + 1 
         }));
-      }
-    }
-
-    // Check of we het maximum aantal vervolgvragen voor de huidige vaste vraag hebben bereikt
-    if (!isVasteVraag) {
-      // Vind de bijbehorende vaste vraag
-      const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
-      const huidigeVasteVraagIndex = vasteVragen.findIndex(v => 
-        antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
-      );
-      
-      if (huidigeVasteVraagIndex >= 0) {
-        const huidigeVasteVraagId = vasteVragen[huidigeVasteVraagIndex].id;
-        const vervolgvragenVoorDezeVasteVraag = vervolgvragenPerVasteVraag[huidigeVasteVraagId] || 0;
-        
-        if (vervolgvragenVoorDezeVasteVraag >= 4) {
-          const volgendeVasteVraag = vragen.find((v, i) => 
-            i > currentIndex && !v.id.toString().startsWith('gpt-')
-          );
-          
-          if (volgendeVasteVraag) {
-            // Er is nog een vaste vraag, ga daar naartoe
-            setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
-            setVervolgvragenPerVasteVraag({});
-            return;
-          } else {
-            // Geen vaste vragen meer, rond het gesprek af
-            setDone(true);
-            await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                werknemer_id: userData.user.id,
-                theme_id: themeId,
-                status: 'Afgerond',
-                gesprek_id: gesprekId,
-                afrondingsreden: 'MAX_ANTWOORDEN'
-              })
-            });
-            // Genereer samenvatting na het afronden
-            await genereerSamenvatting();
-            return;
-          }
-        }
       }
     }
 
@@ -381,7 +360,6 @@ function GesprekPagina() {
           afrondingsreden: 'VOLDENDE_DUIDELIJK'
         })
       });
-      // Genereer samenvatting na het afronden
       await genereerSamenvatting();
       return;
     }
