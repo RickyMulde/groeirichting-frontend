@@ -307,14 +307,45 @@ function GesprekPagina() {
       
       if (huidigeVasteVraagIndex >= 0) {
         const huidigeVasteVraagId = vasteVragen[huidigeVasteVraagIndex].id;
+        const nieuweTeller = (vervolgvragenPerVasteVraag[huidigeVasteVraagId] || 0) + 1;
         setVervolgvragenPerVasteVraag(prev => ({ 
           ...prev, 
-          [huidigeVasteVraagId]: (prev[huidigeVasteVraagId] || 0) + 1 
+          [huidigeVasteVraagId]: nieuweTeller 
         }));
+        
+        // Check of we nu 4 vervolgvragen hebben voor deze vaste vraag
+        if (nieuweTeller >= 4) {
+          // Ga naar de volgende vaste vraag
+          const volgendeVasteVraag = vragen.find((v, i) => 
+            i > currentIndex && !v.id.toString().startsWith('gpt-')
+          );
+          
+          if (volgendeVasteVraag) {
+            setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+            setVervolgvragenPerVasteVraag({});
+            return;
+          } else {
+            // Geen vaste vragen meer, rond het gesprek af
+            setDone(true);
+            await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                werknemer_id: userData.user.id,
+                theme_id: themeId,
+                status: 'Afgerond',
+                gesprek_id: gesprekId,
+                afrondingsreden: 'MAX_ANTWOORDEN'
+              })
+            });
+            await genereerSamenvatting();
+            return;
+          }
+        }
       }
     }
 
-    // Vraag GPT om een beslissing over een vervolgvraag (voor zowel vaste vragen als vervolgvragen)
+    // Vraag GPT om een beslissing over een vervolgvraag (alleen als we nog niet 4 vervolgvragen hebben)
     const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
