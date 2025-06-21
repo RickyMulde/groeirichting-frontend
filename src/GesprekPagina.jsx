@@ -274,8 +274,7 @@ function GesprekPagina() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           thema: theme?.titel || 'Thema',
-          eerdereAntwoorden: nieuweAntwoorden.map(a => a.antwoord),
-          laatsteAntwoord: input,
+          gespreksgeschiedenis: nieuweAntwoorden,
           doel_vraag: huidigeVraag?.doel_vraag || ''
         })
       });
@@ -334,8 +333,7 @@ function GesprekPagina() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             thema: theme?.titel || 'Thema',
-            eerdereAntwoorden: nieuweAntwoorden.map(a => a.antwoord),
-            laatsteAntwoord: input,
+            gespreksgeschiedenis: nieuweAntwoorden,
             doel_vraag: vasteVragen[huidigeVasteVraagIndex]?.doel_vraag || ''
           })
         });
