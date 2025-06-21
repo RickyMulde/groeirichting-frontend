@@ -30,6 +30,7 @@ function GesprekPagina() {
   const [gesprekId, setGesprekId] = useState(null)
   const [toelichting, setToelichting] = useState(null)
   const [vervolgvragenPerVasteVraag, setVervolgvragenPerVasteVraag] = useState({})
+  const [isVerzenden, setIsVerzenden] = useState(false);
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
@@ -237,104 +238,47 @@ function GesprekPagina() {
 
   const verstuurAntwoord = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isVerzenden) return;
 
-    const check = containsSensitiveInfo(input);
-    if (check.flagged) {
-      setFoutmelding(check.reason);
-      return;
-    }
-
-    const huidigeVraag = vragen[currentIndex];
-    const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }];
-    setAntwoorden(nieuweAntwoorden);
-    setInput('');
-    setFoutmelding(null);
-
-    const { data: userData } = await supabase.auth.getUser();
-    if (!userData || !userData.user) {
-      console.error('Gebruiker niet gevonden');
-      return;
-    }
-
-    // Sla het antwoord op in Supabase
-    const result = await slaGesprekOp(huidigeVraag.id, input);
-    if (!result) return;
-
-    // Bepaal of dit een vaste vraag is
-    const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
-    
-    if (isVasteVraag) {
-      // We hebben een vaste vraag beantwoord
-      console.log('Vaste vraag beantwoord:', huidigeVraag.tekst);
-      
-      // Vraag GPT of er een vervolgvraag moet komen
-      const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          thema: theme?.titel || 'Thema',
-          gespreksgeschiedenis: nieuweAntwoorden,
-          doel_vraag: huidigeVraag?.doel_vraag || ''
-        })
-      });
-
-      const decide = await decideRes.json();
-      
-      if (decide.toelichting) {
-        setToelichting(decide.toelichting);
+    setIsVerzenden(true);
+    try {
+      const check = containsSensitiveInfo(input);
+      if (check.flagged) {
+        setFoutmelding(check.reason);
+        return;
       }
 
-      if (decide.doorgaan && decide.vervolgvraag) {
-        // Voeg vervolgvraag toe
-        const gptVraag = {
-          id: `gpt-${Date.now()}`,
-          tekst: decide.vervolgvraag
-        };
-        setVragen([...vragen, gptVraag]);
-        setCurrentIndex(vragen.length);
-      } else {
-        // Ga naar volgende vaste vraag
-        await gaNaarVolgendeVasteVraag();
+      const huidigeVraag = vragen[currentIndex];
+      const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }];
+      setAntwoorden(nieuweAntwoorden);
+      setInput('');
+      setFoutmelding(null);
+
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData || !userData.user) {
+        console.error('Gebruiker niet gevonden');
+        return;
       }
+
+      // Sla het antwoord op in Supabase
+      const result = await slaGesprekOp(huidigeVraag.id, input);
+      if (!result) return;
+
+      // Bepaal of dit een vaste vraag is
+      const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
       
-    } else {
-      // We hebben een vervolgvraag beantwoord
-      console.log('Vervolgvraag beantwoord:', huidigeVraag.tekst);
-      
-      // Vind bij welke vaste vraag deze vervolgvraag hoort
-      const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
-      const huidigeVasteVraagIndex = vasteVragen.findIndex(v => 
-        antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
-      );
-      
-      if (huidigeVasteVraagIndex >= 0) {
-        const huidigeVasteVraagId = vasteVragen[huidigeVasteVraagIndex].id;
-        const huidigeVervolgvragen = vervolgvragenPerVasteVraag[huidigeVasteVraagId] || 0;
-        const nieuweTeller = huidigeVervolgvragen + 1;
+      if (isVasteVraag) {
+        // We hebben een vaste vraag beantwoord
+        console.log('Vaste vraag beantwoord:', huidigeVraag.tekst);
         
-        console.log(`Vervolgvraag ${nieuweTeller} voor vaste vraag ${huidigeVasteVraagIndex + 1}`);
-        
-        setVervolgvragenPerVasteVraag(prev => ({ 
-          ...prev, 
-          [huidigeVasteVraagId]: nieuweTeller 
-        }));
-        
-        // Check of we 4 vervolgvragen hebben bereikt
-        if (nieuweTeller >= 4) {
-          console.log('4 vervolgvragen bereikt, ga naar volgende vaste vraag');
-          await gaNaarVolgendeVasteVraag();
-          return;
-        }
-        
-        // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 4 hebben)
+        // Vraag GPT of er een vervolgvraag moet komen
         const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             thema: theme?.titel || 'Thema',
             gespreksgeschiedenis: nieuweAntwoorden,
-            doel_vraag: vasteVragen[huidigeVasteVraagIndex]?.doel_vraag || ''
+            doel_vraag: huidigeVraag?.doel_vraag || ''
           })
         });
 
@@ -356,7 +300,69 @@ function GesprekPagina() {
           // Ga naar volgende vaste vraag
           await gaNaarVolgendeVasteVraag();
         }
+        
+      } else {
+        // We hebben een vervolgvraag beantwoord
+        console.log('Vervolgvraag beantwoord:', huidigeVraag.tekst);
+        
+        // Vind bij welke vaste vraag deze vervolgvraag hoort
+        const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+        const huidigeVasteVraagIndex = vasteVragen.findIndex(v => 
+          antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
+        );
+        
+        if (huidigeVasteVraagIndex >= 0) {
+          const huidigeVasteVraagId = vasteVragen[huidigeVasteVraagIndex].id;
+          const huidigeVervolgvragen = vervolgvragenPerVasteVraag[huidigeVasteVraagId] || 0;
+          const nieuweTeller = huidigeVervolgvragen + 1;
+          
+          console.log(`Vervolgvraag ${nieuweTeller} voor vaste vraag ${huidigeVasteVraagIndex + 1}`);
+          
+          setVervolgvragenPerVasteVraag(prev => ({ 
+            ...prev, 
+            [huidigeVasteVraagId]: nieuweTeller 
+          }));
+          
+          // Check of we 4 vervolgvragen hebben bereikt
+          if (nieuweTeller >= 4) {
+            console.log('4 vervolgvragen bereikt, ga naar volgende vaste vraag');
+            await gaNaarVolgendeVasteVraag();
+            return;
+          }
+          
+          // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 4 hebben)
+          const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              thema: theme?.titel || 'Thema',
+              gespreksgeschiedenis: nieuweAntwoorden,
+              doel_vraag: vasteVragen[huidigeVasteVraagIndex]?.doel_vraag || ''
+            })
+          });
+
+          const decide = await decideRes.json();
+          
+          if (decide.toelichting) {
+            setToelichting(decide.toelichting);
+          }
+
+          if (decide.doorgaan && decide.vervolgvraag) {
+            // Voeg vervolgvraag toe
+            const gptVraag = {
+              id: `gpt-${Date.now()}`,
+              tekst: decide.vervolgvraag
+            };
+            setVragen([...vragen, gptVraag]);
+            setCurrentIndex(vragen.length);
+          } else {
+            // Ga naar volgende vaste vraag
+            await gaNaarVolgendeVasteVraag();
+          }
+        }
       }
+    } finally {
+      setIsVerzenden(false);
     }
   }
 
@@ -530,8 +536,15 @@ function GesprekPagina() {
                     if (foutmelding) setFoutmelding(null);
                   }}
                   className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
+                  disabled={isVerzenden}
                 />
-                <button type="submit" className="btn btn-primary rounded-full px-3">→</button>
+                <button type="submit" className="btn btn-primary rounded-full px-3 w-12 h-10 flex items-center justify-center" disabled={isVerzenden}>
+                  {isVerzenden ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  ) : (
+                    '→'
+                  )}
+                </button>
               </form>
             </div>
           </>
