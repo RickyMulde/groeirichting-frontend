@@ -57,6 +57,7 @@ function ThemaBeheer() {
     vraag_3: '', vraag_3_verplicht: false, vraag_3_type: 'initieel', vraag_3_doel: '',
     vraag_4: '', vraag_4_verplicht: false, vraag_4_type: 'initieel', vraag_4_doel: '',
     vraag_5: '', vraag_5_verplicht: false, vraag_5_type: 'initieel', vraag_5_doel: '',
+    ai_behavior: '', prompt_style: '', thema_type: '', gpt_doelstelling: '', gpt_beperkingen: '',
   })
   const [vragen, setVragen] = useState([])
   const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
@@ -261,6 +262,76 @@ function ThemaBeheer() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {Object.entries(formData).map(([key, val]) => {
             if (key.startsWith('vraag_')) return null;
+            if (key === 'ai_behavior') {
+              return (
+                <div key={key} className="mb-4">
+                  <label className="block text-sm font-medium mb-1">AI Gedrag</label>
+                  <select
+                    name="ai_behavior"
+                    value={formData.ai_behavior || ''}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  >
+                    <option value="">-- Kies een optie --</option>
+                    <option value="coach">Coach</option>
+                    <option value="informer">Informer</option>
+                    <option value="facilitator">Facilitator</option>
+                    <option value="reviewer">Reviewer</option>
+                  </select>
+                </div>
+              );
+            }
+            if (key === 'prompt_style') {
+              return (
+                <div key={key} className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Promptstijl</label>
+                  <select
+                    name="prompt_style"
+                    value={formData.prompt_style || ''}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  >
+                    <option value="">-- Kies een optie --</option>
+                    <option value="vragend">Vragend</option>
+                    <option value="informatief">Informatief</option>
+                    <option value="gemengd">Gemengd</option>
+                  </select>
+                </div>
+              );
+            }
+            if (key === 'thema_type') {
+              return (
+                <div key={key} className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Thema type</label>
+                  <select
+                    name="thema_type"
+                    value={formData.thema_type || ''}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  >
+                    <option value="">-- Kies een optie --</option>
+                    <option value="coachend">Coachend</option>
+                    <option value="informatief">Informatief</option>
+                    <option value="toetsend">Toetsend</option>
+                    <option value="open">Open</option>
+                  </select>
+                </div>
+              );
+            }
+            if (key === 'gpt_doelstelling' || key === 'gpt_beperkingen') {
+              return (
+                <div key={key} className="mb-4">
+                  <label className="block text-sm font-medium mb-1">{key.replace(/_/g, ' ')}</label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={val || ''}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  />
+                </div>
+              );
+            }
             return (
               <div key={key} className="mb-4">
                 <label className="block text-sm font-medium capitalize mb-1">
