@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Kleuren === */
+:root {
+  --kleur-primary: #1A4D8C; /* Diep blauw */
+  --kleur-secondary: #F4A261; /* Warm oranje */
+  --kleur-accent: #2A9D8F; /* Fris groenblauw */
+  --kleur-background: #F9FAFB; /* Lichtgrijs achtergrond */
+  --kleur-text: #1F2937; /* Diepgrijs tekst */
+  --kleur-muted: #6B7280; /* Gedempte tekstkleur */
+}
+
+/* === Component Layers === */
+@layer components {
+  .page-container {
+    @apply max-w-[700px] mx-auto p-4 md:p-6;
+  }
+
+  .centered-page {
+    @apply max-w-[700px] mx-auto p-4 md:p-8;
+  }
+
+  button {
+    @apply px-4 py-2 rounded-xl font-medium shadow-sm bg-[var(--kleur-primary)] text-white transition-all;
+  }
+
+  button:hover {
+    @apply filter brightness-[1.1];
+  }
+
+  input, select, textarea {
+    @apply w-1/2 px-3 py-1.5 rounded-lg border border-gray-300;
+    @apply mt-1 mb-2; /* tailwind klassen voor margins */
+  }
+
+  input:focus, textarea:focus, select:focus {
+    @apply outline-none border-[var(--kleur-accent)] ring-1 ring-[var(--kleur-accent)];
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-xl font-medium shadow-sm transition-all whitespace-nowrap text-white;
+  }
+
+  .btn-primary {
+    @apply bg-[var(--kleur-primary)] hover:brightness-[1.1] hover:text-white;
+  }
+
+  .btn-accent {
+    @apply bg-[var(--kleur-accent)] hover:brightness-[1.1] hover:text-white;
+  }
+
+  .btn-secondary {
+    @apply bg-[var(--kleur-secondary)] hover:brightness-[1.1] hover:text-white;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  a:not(.btn):hover {
+    @apply text-[var(--kleur-secondary)];
+  }
+
+  a.btn:hover {
+    @apply text-white;
+  }
+}
+
+/* === Basis typografie === */
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply text-base text-[var(--kleur-text)] bg-[var(--kleur-background)] leading-relaxed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-[var(--kleur-primary)];
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+}
+
+/* === Tooltips === */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -110px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext,
+.tooltip:focus .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
