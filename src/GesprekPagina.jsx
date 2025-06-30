@@ -30,6 +30,7 @@ function GesprekPagina() {
   const [foutmelding, setFoutmelding] = useState(null)
   const [gesprekId, setGesprekId] = useState(gesprekIdFromUrl)
   const [toelichting, setToelichting] = useState(null)
+  const [reactie, setReactie] = useState(null)
   const [vervolgvragenPerVasteVraag, setVervolgvragenPerVasteVraag] = useState({})
   const [isVerzenden, setIsVerzenden] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -331,6 +332,10 @@ function GesprekPagina() {
           setToelichting(decide.toelichting);
         }
 
+        if (decide.reactie) {
+          setReactie(decide.reactie);
+        }
+
         if (decide.doorgaan && decide.vervolgvraag) {
           // Voeg vervolgvraag toe
           const gptVraag = {
@@ -394,6 +399,10 @@ function GesprekPagina() {
             setToelichting(decide.toelichting);
           }
 
+          if (decide.reactie) {
+            setReactie(decide.reactie);
+          }
+
           if (decide.doorgaan && decide.vervolgvraag) {
             // Voeg vervolgvraag toe
             const gptVraag = {
@@ -449,6 +458,7 @@ function GesprekPagina() {
         setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
         setVervolgvragenPerVasteVraag({});
         setToelichting(null);
+        setReactie(null);
       } else {
         console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
         setDone(true);
@@ -534,6 +544,11 @@ function GesprekPagina() {
               <div className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
                 {vragen[currentIndex]?.tekst}
               </div>
+              {reactie && (
+                <div className="bg-blue-50 p-4 rounded-xl text-sm max-w-[80%] ml-auto">
+                  <p className="text-blue-800">{reactie}</p>
+                </div>
+              )}
               {toelichting && (
                 <div className="bg-blue-50 p-4 rounded-xl text-sm max-w-[80%]">
                   <p className="text-blue-800">{toelichting}</p>
