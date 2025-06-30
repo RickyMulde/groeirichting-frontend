@@ -342,8 +342,9 @@ function GesprekPagina() {
             id: `gpt-${Date.now()}`,
             tekst: decide.vervolgvraag
           };
-          setVragen([...vragen, gptVraag]);
-          setCurrentIndex(vragen.length);
+          const nieuweVragen = [...vragen, gptVraag];
+          setVragen(nieuweVragen);
+          setCurrentIndex(nieuweVragen.length - 1);
         } else {
           // Ga naar volgende vaste vraag
           await gaNaarVolgendeVasteVraag();
@@ -409,8 +410,9 @@ function GesprekPagina() {
               id: `gpt-${Date.now()}`,
               tekst: decide.vervolgvraag
             };
-            setVragen([...vragen, gptVraag]);
-            setCurrentIndex(vragen.length);
+            const nieuweVragen = [...vragen, gptVraag];
+            setVragen(nieuweVragen);
+            setCurrentIndex(nieuweVragen.length - 1);
           } else {
             // Ga naar volgende vaste vraag
             await gaNaarVolgendeVasteVraag();
@@ -443,7 +445,7 @@ function GesprekPagina() {
           theme_id: themeId,
           status: 'Afgerond',
           gesprek_id: gesprekId,
-          afrondingsreden: 'ALLE_VRAGEN_BEANTWOORD'
+          afrondingsreden: 'VOLDENDE_DUIDELIJK'
         })
       });
       await genereerSamenvatting();
@@ -455,7 +457,8 @@ function GesprekPagina() {
       
       if (volgendeVasteVraag) {
         console.log('Volgende vaste vraag:', volgendeVasteVraag.tekst);
-        setCurrentIndex(vragen.indexOf(volgendeVasteVraag));
+        const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
+        setCurrentIndex(nieuweIndex);
         setVervolgvragenPerVasteVraag({});
         setToelichting(null);
         setReactie(null);
@@ -470,7 +473,7 @@ function GesprekPagina() {
             theme_id: themeId,
             status: 'Afgerond',
             gesprek_id: gesprekId,
-            afrondingsreden: 'GEEN_VOLGENDE_VRAAG'
+            afrondingsreden: 'VOLDENDE_DUIDELIJK'
           })
         });
         await genereerSamenvatting();
