@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { Plus, RotateCcw, Calendar } from 'lucide-react'
+import { Plus, RotateCcw, Calendar, Play, Eye } from 'lucide-react'
 
 function ThemaOverzicht() {
   const navigate = useNavigate()
@@ -167,11 +167,11 @@ function ThemaOverzicht() {
       ) : (
         themas.map((thema) => (
           <div key={thema.id} className="border rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-2">
               <h3 className="font-medium text-lg">{thema.titel}</h3>
               <button 
                 onClick={() => startVervolggesprek(thema.id)}
-                className="btn btn-primary text-sm flex items-center gap-2"
+                className="btn btn-secondary text-sm flex items-center gap-2"
               >
                 <Plus size={16} />
                 Nieuw gesprek
@@ -183,7 +183,7 @@ function ThemaOverzicht() {
             ) : (
               <div className="space-y-2">
                 {thema.gesprekken.map((gesprek, index) => (
-                  <div key={gesprek.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={gesprek.id} className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-gray-50 rounded-lg gap-2">
                     <div className="flex items-center gap-3">
                       <Calendar size={16} className="text-gray-400" />
                       <div>
@@ -201,30 +201,29 @@ function ThemaOverzicht() {
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="flex gap-2">
-                      {gesprek.status === 'Afgerond' ? (
-                        <>
-                          <button 
-                            onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                            className="text-sm text-[var(--kleur-primary)] hover:underline"
-                          >
-                            Bekijk resultaat
-                          </button>
-                          <button 
-                            onClick={() => herstartGesprek(gesprek.id, thema.id)}
-                            className="text-sm text-[var(--kleur-secondary)] hover:underline flex items-center gap-1"
-                          >
-                            <RotateCcw size={14} />
-                            Herstart
-                          </button>
-                        </>
-                      ) : (
-                        <button 
+                    <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
+                      {gesprek.status === 'Nog niet afgerond' && (
+                        <button
                           onClick={() => navigate(`/gesprek?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                          className="text-sm text-[var(--kleur-primary)] hover:underline"
+                          className="btn btn-primary flex items-center gap-1 text-sm"
                         >
-                          Ga verder
+                          <Play size={16} /> Ga verder
+                        </button>
+                      )}
+                      {(gesprek.status === 'Nog niet afgerond' || gesprek.status === 'Afgerond') && (
+                        <button
+                          onClick={() => herstartGesprek(gesprek.id, thema.id)}
+                          className="btn btn-accent flex items-center gap-1 text-sm"
+                        >
+                          <RotateCcw size={16} /> Herstart
+                        </button>
+                      )}
+                      {gesprek.status === 'Afgerond' && (
+                        <button
+                          onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
+                          className="btn btn-primary flex items-center gap-1 text-sm"
+                        >
+                          <Eye size={16} /> Bekijk resultaat
                         </button>
                       )}
                     </div>
