@@ -157,19 +157,11 @@ function GesprekPagina() {
             if (response.ok) {
               const { antwoorden } = await response.json();
               
-              // Sorteer de antwoorden op basis van de volgorde van de vragen
-              const gesorteerdeAntwoorden = vragenData.map(vraag => {
-                const antwoord = antwoorden.find(a => a.theme_question_id === vraag.id);
-                return {
-                  vraag: vraag.tekst,
-                  antwoord: antwoord?.antwoord || null
-                };
-              });
-
-              setAntwoorden(gesorteerdeAntwoorden);
+              // De antwoorden komen nu direct in het juiste formaat
+              setAntwoorden(antwoorden);
               
               // Zet de currentIndex naar de eerste vraag zonder antwoord
-              const eersteLegeIndex = gesorteerdeAntwoorden.findIndex(a => a.antwoord === null);
+              const eersteLegeIndex = antwoorden.findIndex(a => a.antwoord === null);
               setCurrentIndex(eersteLegeIndex === -1 ? vragenData.length : eersteLegeIndex);
             }
           }
@@ -222,7 +214,49 @@ function GesprekPagina() {
     }
   }
 
-  const slaGesprekOp = async (theme_question_id, antwoord) => {
+  // Nieuwe functie om een gesprek te herstarten
+  const herstartGesprek = async () => {
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
+
+    if (authError || !user) {
+      console.error('Gebruiker niet gevonden of niet ingelogd')
+      return
+    }
+
+    // Verwijder oude gesprek data als die bestaat
+    if (gesprekId) {
+      try {
+        await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            werknemer_id: user.id,
+            theme_id: themeId,
+            gesprek_id: gesprekId,
+            status: 'Afgerond',
+            afrondingsreden: 'VOLDENDE_DUIDELIJK'
+          })
+        });
+      } catch (error) {
+        console.error('Fout bij afronden oude gesprek:', error);
+      }
+    }
+
+    // Reset state
+    setGesprekId(null);
+    setAntwoorden([]);
+    setVragen(vragen.filter(v => !v.id.toString().startsWith('gpt-')));
+    setVervolgvragenPerVasteVraag({});
+    setToelichting(null);
+    setReactie(null);
+    setCurrentIndex(-1);
+
+    // Start nieuw gesprek
+    await startGesprek();
+  }
+
+  const slaGesprekOp = async (theme_question_id, antwoord, vraag_tekst = null) => {
     const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
 
@@ -252,7 +286,7 @@ function GesprekPagina() {
       }
     }
 
-    // Sla het antwoord op in antwoordpervraag tabel
+    // Sla het antwoord op in de nieuwe structuur
     const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -263,7 +297,8 @@ function GesprekPagina() {
         theme_question_id: isVasteVraag ? theme_question_id : null,
         antwoord: antwoord,
         is_vaste_vraag: isVasteVraag,
-        hoort_bij_question_id: hoortBijQuestionId
+        hoort_bij_question_id: hoortBijQuestionId,
+        vraag_tekst: vraag_tekst || (isVasteVraag ? 'Vaste vraag' : 'Vervolgvraag')
       })
     })
 
@@ -301,7 +336,7 @@ function GesprekPagina() {
       }
 
       // Sla het antwoord op in Supabase
-      const result = await slaGesprekOp(huidigeVraag.id, input);
+      const result = await slaGesprekOp(huidigeVraag.id, input, huidigeVraag?.tekst);
       if (!result) return;
 
       // Bepaal of dit een vaste vraag is
@@ -539,6 +574,14 @@ function GesprekPagina() {
               >
                 {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : 'Start gesprek'}
               </button>
+              {antwoorden.some(a => a.antwoord !== null) && (
+                <button
+                  onClick={herstartGesprek}
+                  className="btn btn-secondary px-4 py-2 rounded-full ml-2"
+                >
+                  Herstart gesprek
+                </button>
+              )}
             </div>
           )}
 
