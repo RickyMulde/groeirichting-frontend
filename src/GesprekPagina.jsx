@@ -161,11 +161,15 @@ function GesprekPagina() {
               setAntwoorden(antwoorden);
               
               // Zet de currentIndex naar de eerste vraag zonder antwoord
-              const eersteLegeIndex = antwoorden.findIndex(a => a.antwoord === null);
-              setCurrentIndex(eersteLegeIndex === -1 ? vragenData.length : eersteLegeIndex);
-            } else {
-              // Geen bestaand gesprek gevonden, zet currentIndex op 0 voor nieuwe gesprekken
-              setCurrentIndex(0);
+              // Of naar de eerste vaste vraag als er nog geen antwoorden zijn
+              if (antwoorden.length === 0) {
+                setCurrentIndex(0); // Start bij eerste vaste vraag
+              } else {
+                // Zoek naar de eerste vaste vraag die nog niet beantwoord is
+                const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
+                const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+                setCurrentIndex(Math.min(beantwoordeVasteVragen, vasteVragen.length));
+              }
             }
           }
         }
@@ -191,8 +195,14 @@ function GesprekPagina() {
 
     // Als er al een gesprek bestaat, ga direct naar de eerste vraag zonder antwoord
     if (gesprekId) {
-      const eersteLegeIndex = antwoorden.findIndex(a => a.antwoord === null);
-      setCurrentIndex(eersteLegeIndex === -1 ? vragen.length : eersteLegeIndex);
+      if (antwoorden.length === 0) {
+        setCurrentIndex(0); // Start bij eerste vaste vraag
+      } else {
+        // Zoek naar de eerste vaste vraag die nog niet beantwoord is
+        const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+        const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+        setCurrentIndex(Math.min(beantwoordeVasteVragen, vasteVragen.length));
+      }
       return;
     }
 
@@ -210,7 +220,6 @@ function GesprekPagina() {
     const result = await res.json()
     if (res.ok && result.gesprek_id) {
       setGesprekId(result.gesprek_id)
-      // Voor een nieuw gesprek, start bij de eerste vraag
       setCurrentIndex(0)
     } else {
       console.error('Gesprek aanmaken mislukt:', result.error)
@@ -254,7 +263,7 @@ function GesprekPagina() {
     setVervolgvragenPerVasteVraag({});
     setToelichting(null);
     setReactie(null);
-    setCurrentIndex(-1);
+    setCurrentIndex(0); // Start bij eerste vaste vraag
 
     // Start nieuw gesprek
     await startGesprek();
