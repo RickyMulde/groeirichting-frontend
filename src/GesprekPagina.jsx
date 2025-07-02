@@ -163,6 +163,9 @@ function GesprekPagina() {
               // Zet de currentIndex naar de eerste vraag zonder antwoord
               const eersteLegeIndex = antwoorden.findIndex(a => a.antwoord === null);
               setCurrentIndex(eersteLegeIndex === -1 ? vragenData.length : eersteLegeIndex);
+            } else {
+              // Geen bestaand gesprek gevonden, zet currentIndex op 0 voor nieuwe gesprekken
+              setCurrentIndex(0);
             }
           }
         }
@@ -207,6 +210,7 @@ function GesprekPagina() {
     const result = await res.json()
     if (res.ok && result.gesprek_id) {
       setGesprekId(result.gesprek_id)
+      // Voor een nieuw gesprek, start bij de eerste vraag
       setCurrentIndex(0)
     } else {
       console.error('Gesprek aanmaken mislukt:', result.error)
