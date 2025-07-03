@@ -168,7 +168,16 @@ function GesprekPagina() {
                 // Zoek naar de eerste vaste vraag die nog niet beantwoord is
                 const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
                 const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-                setCurrentIndex(Math.min(beantwoordeVasteVragen, vasteVragen.length));
+                
+                if (beantwoordeVasteVragen >= vasteVragen.length) {
+                  // Alle vaste vragen zijn beantwoord
+                  setDone(true);
+                } else {
+                  // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
+                  const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+                  const nieuweIndex = vragenData.indexOf(volgendeVasteVraag);
+                  setCurrentIndex(nieuweIndex);
+                }
               }
             }
           }
@@ -201,7 +210,16 @@ function GesprekPagina() {
         // Zoek naar de eerste vaste vraag die nog niet beantwoord is
         const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
         const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-        setCurrentIndex(Math.min(beantwoordeVasteVragen, vasteVragen.length));
+        
+        if (beantwoordeVasteVragen >= vasteVragen.length) {
+          // Alle vaste vragen zijn beantwoord
+          setDone(true);
+        } else {
+          // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
+          const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+          const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
+          setCurrentIndex(nieuweIndex);
+        }
       }
       return;
     }
@@ -475,13 +493,13 @@ function GesprekPagina() {
   // Helper functie om naar de volgende vaste vraag te gaan
   const gaNaarVolgendeVasteVraag = async () => {
     const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
-    const beantwoordeVasteVragen = vasteVragen.filter(v => 
-      antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
-    );
     
-    console.log(`Beantwoorde vaste vragen: ${beantwoordeVasteVragen.length}/${vasteVragen.length}`);
+    // Gebruik consistente logica: tel beantwoorde vaste vragen op basis van type
+    const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
     
-    if (beantwoordeVasteVragen.length >= vasteVragen.length) {
+    console.log(`Beantwoorde vaste vragen: ${beantwoordeVasteVragen}/${vasteVragen.length}`);
+    
+    if (beantwoordeVasteVragen >= vasteVragen.length) {
       // Alle vaste vragen zijn beantwoord, rond het gesprek af
       console.log('Alle vaste vragen beantwoord, rond gesprek af');
       setDone(true);
@@ -499,9 +517,7 @@ function GesprekPagina() {
       await genereerSamenvatting();
     } else {
       // Zoek de volgende onbeantwoorde vaste vraag
-      const volgendeVasteVraag = vasteVragen.find(v => 
-        !antwoorden.some(a => a.vraag === v.tekst && a.antwoord)
-      );
+      const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
       
       if (volgendeVasteVraag) {
         console.log('Volgende vaste vraag:', volgendeVasteVraag.tekst);
