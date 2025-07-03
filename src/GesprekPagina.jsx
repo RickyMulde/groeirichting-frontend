@@ -355,7 +355,15 @@ function GesprekPagina() {
       }
 
       const huidigeVraag = vragen[currentIndex];
-      const nieuweAntwoorden = [...antwoorden, { vraag: huidigeVraag?.tekst, antwoord: input }];
+      const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
+      const nieuweAntwoorden = [
+        ...antwoorden,
+        {
+          vraag: huidigeVraag?.tekst,
+          antwoord: input,
+          type: isVasteVraag ? 'vaste_vraag' : 'vervolgvraag'
+        }
+      ];
       setAntwoorden(nieuweAntwoorden);
       setInput('');
       setFoutmelding(null);
@@ -370,9 +378,6 @@ function GesprekPagina() {
       const result = await slaGesprekOp(huidigeVraag.id, input, huidigeVraag?.tekst);
       if (!result) return;
 
-      // Bepaal of dit een vaste vraag is
-      const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
-      
       if (isVasteVraag) {
         // We hebben een vaste vraag beantwoord
         console.log('Vaste vraag beantwoord:', huidigeVraag.tekst);
