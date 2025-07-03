@@ -82,6 +82,12 @@ function GebruikersBeheer() {
 
   return (
     <div className="page-container">
+      <button
+        className="btn btn-secondary mb-4"
+        onClick={() => navigate('/superadmin-portaal')}
+      >
+        &larr; Terug naar superadmin
+      </button>
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Werkgevers en werknemers instellingen</h1>
 
       {/* Zoekveld */}

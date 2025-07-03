@@ -37,6 +37,12 @@ function ThemaBeheerOverzicht() {
 
   return (
     <div className="page-container">
+      <button
+        className="btn btn-secondary mb-4"
+        onClick={() => navigate('/superadmin-portaal')}
+      >
+        &larr; Terug naar superadmin
+      </button>
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Thema's beheren</h1>
 
       <Link to="/superadmin/thema/nieuw" className="btn btn-primary">+ Thema toevoegen</Link>
