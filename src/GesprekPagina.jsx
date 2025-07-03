@@ -74,128 +74,107 @@ function GesprekPagina() {
     }
   };
 
+  // Haal altijd thema en vragen op als themeId verandert
   useEffect(() => {
     if (!themeId) return;
-
-    const fetchThema = async () => {
+    const fetchThemaEnVragen = async () => {
       setLoading(true);
-      
       const { data, error } = await supabase
         .from('themes')
         .select('id, titel, intro_prompt, doel_vraag, gebruik_gpt_vragen, gpt_doelstelling, prompt_style, ai_behavior, gpt_beperkingen, geeft_samenvatting')
         .eq('id', themeId)
-        .single()
-
+        .single();
       if (!error && data) {
-        setTheme(data)
+        setTheme(data);
         const { data: vragenData, error: vragenError } = await supabase
           .from('theme_questions')
           .select('id, tekst, verplicht, type, doel_vraag, volgorde_index')
           .eq('theme_id', themeId)
           .order('volgorde_index');
-          
-          if (!vragenError) {
-            // Laad alle vaste vragen, ongeacht of we GPT gebruiken
-            setVragen(vragenData || []);
-          } else {
-            setVragen([]);
-          }
-
-        // Nieuw gesprek: geen gesprekIdFromUrl, dus toon introprompt
-        if (!gesprekIdFromUrl) {
-          setLoading(false);
-          setCurrentIndex(-1);
-          setAntwoorden([]);
-          return;
-        }
-
-        // Hervatten gesprek: haal bestaande antwoorden op
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          let gesprekData = null;
-          
-          // Als er een specifieke gesprek_id is opgegeven, haal die op
-          const { data: existingGesprek, error: gesprekError } = await supabase
-            .from('gesprek')
-            .select('id, status, werknemer_id')
-            .eq('id', gesprekIdFromUrl)
-            .single();
-
-          if (!gesprekError && existingGesprek && existingGesprek.werknemer_id === user.id) {
-            gesprekData = existingGesprek;
-            setGesprekId(existingGesprek.id);
-          } else {
-            console.error('Gesprek niet gevonden of geen toegang');
-            setFoutmelding('Gesprek niet gevonden of geen toegang tot dit gesprek.');
-            setLoading(false);
-            return;
-          }
-
-          if (gesprekData) {
-            // Alleen ophalen als het gesprek niet afgerond is
-            if (gesprekData.status !== 'Afgerond') {
-              try {
-                const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-                  },
-                  body: JSON.stringify({
-                    gesprek_id: gesprekData.id
-                  })
-                });
-
-                if (response.ok) {
-                  const { antwoorden } = await response.json();
-                  setAntwoorden(antwoorden);
-
-                  if (antwoorden.length === 0) {
-                    setCurrentIndex(0);
-                  } else {
-                    // Zoek naar de eerste vaste vraag die nog niet beantwoord is
-                    const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
-                    const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-                    
-                    console.log(`Geladen antwoorden: ${antwoorden.length}, beantwoorde vaste vragen: ${beantwoordeVasteVragen}/${vasteVragen.length}`);
-                    
-                    if (beantwoordeVasteVragen >= vasteVragen.length) {
-                      // Alle vaste vragen zijn beantwoord
-                      console.log('Alle vaste vragen beantwoord, markeer als afgerond');
-                      setDone(true);
-                    } else {
-                      // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
-                      const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
-                      const nieuweIndex = vragenData.indexOf(volgendeVasteVraag);
-                      console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${nieuweIndex})`);
-                      setCurrentIndex(nieuweIndex);
-                    }
-                  }
-                } else if (response.status === 404) {
-                  // Geen antwoorden, start bij introprompt
-                  setAntwoorden([]);
-                  setCurrentIndex(-1);
-                } else {
-                  setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
-                }
-              } catch (error) {
-                setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
-              }
-            } else {
-              setDone(true);
-            }
-          }
+        if (!vragenError) {
+          setVragen(vragenData || []);
+        } else {
+          setVragen([]);
         }
       } else {
-        console.error('Fout bij ophalen thema:', error)
+        setTheme(null);
+        setVragen([]);
         setFoutmelding('Fout bij ophalen thema. Probeer het later opnieuw.');
       }
-      
       setLoading(false);
-    }
+    };
+    fetchThemaEnVragen();
+  }, [themeId]);
 
-    if (themeId) fetchThema()
-  }, [themeId, gesprekIdFromUrl])
+  // Haal alleen antwoorden op als er een bestaand gesprek is (hervatten)
+  useEffect(() => {
+    if (!themeId || !gesprekIdFromUrl) return;
+    const fetchAntwoorden = async () => {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setFoutmelding('Gebruiker niet gevonden.');
+        setLoading(false);
+        return;
+      }
+      // Check of het gesprek bestaat en van deze gebruiker is
+      const { data: existingGesprek, error: gesprekError } = await supabase
+        .from('gesprek')
+        .select('id, status, werknemer_id')
+        .eq('id', gesprekIdFromUrl)
+        .single();
+      if (gesprekError || !existingGesprek || existingGesprek.werknemer_id !== user.id) {
+        setFoutmelding('Gesprek niet gevonden of geen toegang tot dit gesprek.');
+        setLoading(false);
+        return;
+      }
+      setGesprekId(existingGesprek.id);
+      if (existingGesprek.status === 'Afgerond') {
+        setDone(true);
+        setLoading(false);
+        return;
+      }
+      // Haal antwoorden op
+      try {
+        const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          },
+          body: JSON.stringify({ gesprek_id: existingGesprek.id })
+        });
+        if (response.ok) {
+          const { antwoorden } = await response.json();
+          setAntwoorden(antwoorden);
+          if (antwoorden.length === 0) {
+            setCurrentIndex(0);
+          } else {
+            // Zoek naar de eerste vaste vraag die nog niet beantwoord is
+            const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+            const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+            if (beantwoordeVasteVragen >= vasteVragen.length) {
+              setDone(true);
+            } else {
+              const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+              const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
+              setCurrentIndex(nieuweIndex);
+            }
+          }
+        } else if (response.status === 404) {
+          setAntwoorden([]);
+          setCurrentIndex(-1);
+        } else {
+          setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
+        }
+      } catch (error) {
+        setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
+      }
+      setLoading(false);
+    };
+    fetchAntwoorden();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themeId, gesprekIdFromUrl, vragen.length]);
 
   const startGesprek = async () => {
     const { data, error: authError } = await supabase.auth.getUser();
