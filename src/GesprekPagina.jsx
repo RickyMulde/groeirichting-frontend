@@ -34,7 +34,6 @@ function GesprekPagina() {
   const [vervolgvragenPerVasteVraag, setVervolgvragenPerVasteVraag] = useState({})
   const [isVerzenden, setIsVerzenden] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isNieuwGesprek, setIsNieuwGesprek] = useState(true);
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
@@ -75,7 +74,7 @@ function GesprekPagina() {
     }
   };
 
-  // Haal altijd thema en vragen op als themeId verandert
+  // useEffect: alleen thema en vragen ophalen
   useEffect(() => {
     if (!themeId) return;
     const fetchThemaEnVragen = async () => {
@@ -107,38 +106,32 @@ function GesprekPagina() {
     fetchThemaEnVragen();
   }, [themeId]);
 
-  // startGesprek verwerkt nu alles: nieuw, hervatten, antwoorden ophalen
+  // startGesprek: nieuw of bestaand gesprek
   const startGesprek = async () => {
     const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
-
     if (authError || !user) {
-      console.error('Gebruiker niet gevonden of niet ingelogd');
+      setFoutmelding('Gebruiker niet gevonden of niet ingelogd');
       return;
     }
 
     if (gesprekIdFromUrl) {
-      setIsNieuwGesprek(false);
-      // Probeer bestaand gesprek op te halen
+      // Bestaand gesprek ophalen
       const { data: existingGesprek, error } = await supabase
         .from('gesprek')
         .select('id, status, werknemer_id')
         .eq('id', gesprekIdFromUrl)
         .single();
-
       if (!existingGesprek || existingGesprek.werknemer_id !== user.id) {
         setFoutmelding('Dit gesprek bestaat niet (meer) of je hebt geen toegang.');
         return;
       }
-
       setGesprekId(existingGesprek.id);
-
       if (existingGesprek.status === 'Afgerond') {
         setDone(true);
         return;
       }
-
-      // Haal antwoorden op, alleen als het GEEN nieuw gesprek is
+      // Antwoorden ophalen
       try {
         const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
           method: 'POST',
@@ -148,14 +141,12 @@ function GesprekPagina() {
           },
           body: JSON.stringify({ gesprek_id: existingGesprek.id })
         });
-
         if (response.ok) {
           const { antwoorden } = await response.json();
           setAntwoorden(antwoorden);
           if (antwoorden.length === 0) {
             setCurrentIndex(0);
           } else {
-            // Zoek naar de eerste vaste vraag die nog niet beantwoord is
             const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
             const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
             if (beantwoordeVasteVragen >= vasteVragen.length) {
@@ -178,8 +169,7 @@ function GesprekPagina() {
       return;
     }
 
-    // Nieuw gesprek starten
-    setIsNieuwGesprek(true);
+    // Nieuw gesprek aanmaken
     const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -189,7 +179,6 @@ function GesprekPagina() {
         status: 'Nog niet afgerond'
       })
     });
-
     const result = await res.json();
     if (res.ok && result.gesprek_id) {
       setGesprekId(result.gesprek_id);
@@ -200,17 +189,14 @@ function GesprekPagina() {
     }
   };
 
-  // Nieuwe functie om een gesprek te herstarten
+  // herstartGesprek: oud gesprek afronden, state resetten, nieuw gesprek starten
   const herstartGesprek = async () => {
     const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
-
     if (authError || !user) {
-      console.error('Gebruiker niet gevonden of niet ingelogd')
-      return
+      setFoutmelding('Gebruiker niet gevonden of niet ingelogd');
+      return;
     }
-
-    // Verwijder oude gesprek data als die bestaat
     if (gesprekId) {
       try {
         await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
@@ -225,24 +211,20 @@ function GesprekPagina() {
           })
         });
       } catch (error) {
-        console.error('Fout bij afronden oude gesprek:', error);
+        // geen blocking error
       }
     }
-
-    // Reset alle state volledig
     setGesprekId(null);
     setAntwoorden([]);
     setVervolgvragenPerVasteVraag({});
     setToelichting(null);
     setReactie(null);
     setDone(false);
-    setCurrentIndex(-1); // Start bij introprompt
+    setCurrentIndex(-1);
     setInput('');
     setFoutmelding(null);
-
-    // Start nieuw gesprek (dit zal automatisch naar introprompt gaan)
     await startGesprek();
-  }
+  };
 
   const slaGesprekOp = async (theme_question_id, antwoord, vraag_tekst = null) => {
     const { data, error: authError } = await supabase.auth.getUser();
