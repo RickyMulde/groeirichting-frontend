@@ -75,6 +75,15 @@ function GesprekPagina() {
   };
 
   useEffect(() => {
+    if (!themeId) return;
+
+    // Haal alleen antwoorden op als er een gesprekId is
+    if (!gesprekIdFromUrl && !gesprekId) {
+      setLoading(false);
+      setCurrentIndex(-1); // Zorg dat de introprompt getoond wordt
+      return;
+    }
+
     const fetchThema = async () => {
       setLoading(true);
       
@@ -206,7 +215,7 @@ function GesprekPagina() {
     }
 
     if (themeId) fetchThema()
-  }, [themeId, gesprekIdFromUrl])
+  }, [themeId, gesprekIdFromUrl, gesprekId])
 
   const startGesprek = async () => {
     const { data, error: authError } = await supabase.auth.getUser();
