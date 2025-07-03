@@ -34,6 +34,7 @@ function GesprekPagina() {
   const [vervolgvragenPerVasteVraag, setVervolgvragenPerVasteVraag] = useState({})
   const [isVerzenden, setIsVerzenden] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isNieuwGesprek, setIsNieuwGesprek] = useState(true);
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
@@ -117,6 +118,7 @@ function GesprekPagina() {
     }
 
     if (gesprekIdFromUrl) {
+      setIsNieuwGesprek(false);
       // Probeer bestaand gesprek op te halen
       const { data: existingGesprek, error } = await supabase
         .from('gesprek')
@@ -136,7 +138,7 @@ function GesprekPagina() {
         return;
       }
 
-      // Haal antwoorden op
+      // Haal antwoorden op, alleen als het GEEN nieuw gesprek is
       try {
         const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
           method: 'POST',
@@ -177,6 +179,7 @@ function GesprekPagina() {
     }
 
     // Nieuw gesprek starten
+    setIsNieuwGesprek(true);
     const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
