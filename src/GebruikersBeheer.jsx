@@ -25,18 +25,17 @@ function GebruikersBeheer() {
     }
 
     const fetchGebruikers = async () => {
-      // Haal werkgevers op
+      // Haal werkgevers op uit employers
       const { data: werkgeversData, error: werkgeversError } = await supabase
-        .from('users')
+        .from('employers')
         .select('*')
-        .eq('role', 'employer')
         .order('created_at', { ascending: false })
 
       if (!werkgeversError && werkgeversData) {
         setWerkgevers(werkgeversData)
       }
 
-      // Haal werknemers op
+      // Haal werknemers op uit users
       const { data: werknemersData, error: werknemersError } = await supabase
         .from('users')
         .select('*')
@@ -56,9 +55,9 @@ function GebruikersBeheer() {
   // Filteren op zoekterm (case-insensitive)
   const filterWerkgevers = (lijst) => {
     if (!zoekterm.trim()) return lijst
-    return lijst.filter((gebruiker) => {
-      const email = gebruiker.email?.toLowerCase() || ''
-      const company = gebruiker.company_name?.toLowerCase() || ''
+    return lijst.filter((werkgever) => {
+      const email = werkgever.email?.toLowerCase() || ''
+      const company = werkgever.company_name?.toLowerCase() || ''
       const term = zoekterm.toLowerCase()
       return email.includes(term) || company.includes(term)
     })
