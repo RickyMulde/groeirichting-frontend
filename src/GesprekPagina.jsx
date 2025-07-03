@@ -77,10 +77,11 @@ function GesprekPagina() {
   useEffect(() => {
     if (!themeId) return;
 
-    // Haal alleen antwoorden op als er een gesprekId is
+    // Nieuw gesprek: geen gesprekId, dus toon introprompt
     if (!gesprekIdFromUrl && !gesprekId) {
       setLoading(false);
-      setCurrentIndex(-1); // Zorg dat de introprompt getoond wordt
+      setCurrentIndex(-1);
+      setAntwoorden([]);
       return;
     }
 
@@ -108,7 +109,7 @@ function GesprekPagina() {
             setVragen([]);
           }
 
-        // Haal bestaande antwoorden op als het gesprek al bestaat
+        // Haal bestaande antwoorden op ALLEEN als we een gesprek hervatten (dus gesprekIdFromUrl is aanwezig)
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           let gesprekData = null;
@@ -146,63 +147,57 @@ function GesprekPagina() {
           }
 
           if (gesprekData) {
-            // Alleen het gesprek als afgerond markeren als de status 'Afgerond' is
-            if (gesprekData.status === 'Afgerond') {
-              setDone(true);
-            }
-            
-            // Haal de antwoorden op via de API
-            try {
-              const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-                },
-                body: JSON.stringify({
-                  gesprek_id: gesprekData.id
-                })
-              });
+            // Alleen ophalen als het gesprek niet afgerond is
+            if (gesprekData.status !== 'Afgerond') {
+              try {
+                const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                  },
+                  body: JSON.stringify({
+                    gesprek_id: gesprekData.id
+                  })
+                });
 
-              if (response.ok) {
-                const { antwoorden } = await response.json();
-                
-                // De antwoorden komen nu direct in het juiste formaat
-                setAntwoorden(antwoorden);
-                
-                // Zet de currentIndex naar de eerste vraag zonder antwoord
-                // Of naar de eerste vaste vraag als er nog geen antwoorden zijn
-                if (antwoorden.length === 0) {
-                  console.log('Geen bestaande antwoorden gevonden, start bij eerste vaste vraag');
-                  setCurrentIndex(0); // Start bij eerste vaste vraag
-                } else {
-                  // Zoek naar de eerste vaste vraag die nog niet beantwoord is
-                  const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
-                  const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-                  
-                  console.log(`Geladen antwoorden: ${antwoorden.length}, beantwoorde vaste vragen: ${beantwoordeVasteVragen}/${vasteVragen.length}`);
-                  
-                  if (beantwoordeVasteVragen >= vasteVragen.length) {
-                    // Alle vaste vragen zijn beantwoord
-                    console.log('Alle vaste vragen beantwoord, markeer als afgerond');
-                    setDone(true);
+                if (response.ok) {
+                  const { antwoorden } = await response.json();
+                  setAntwoorden(antwoorden);
+
+                  if (antwoorden.length === 0) {
+                    setCurrentIndex(0);
                   } else {
-                    // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
-                    const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
-                    const nieuweIndex = vragenData.indexOf(volgendeVasteVraag);
-                    console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${nieuweIndex})`);
-                    setCurrentIndex(nieuweIndex);
+                    // Zoek naar de eerste vaste vraag die nog niet beantwoord is
+                    const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
+                    const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+                    
+                    console.log(`Geladen antwoorden: ${antwoorden.length}, beantwoorde vaste vragen: ${beantwoordeVasteVragen}/${vasteVragen.length}`);
+                    
+                    if (beantwoordeVasteVragen >= vasteVragen.length) {
+                      // Alle vaste vragen zijn beantwoord
+                      console.log('Alle vaste vragen beantwoord, markeer als afgerond');
+                      setDone(true);
+                    } else {
+                      // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
+                      const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+                      const nieuweIndex = vragenData.indexOf(volgendeVasteVraag);
+                      console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${nieuweIndex})`);
+                      setCurrentIndex(nieuweIndex);
+                    }
                   }
+                } else if (response.status === 404) {
+                  // Geen antwoorden, start bij introprompt
+                  setAntwoorden([]);
+                  setCurrentIndex(-1);
+                } else {
+                  setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
                 }
-              } else {
-                console.error('Fout bij ophalen antwoorden:', response.status);
-                // Bij fout, start bij eerste vraag
-                setCurrentIndex(0);
+              } catch (error) {
+                setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
               }
-            } catch (error) {
-              console.error('Fout bij ophalen antwoorden:', error);
-              // Bij fout, start bij eerste vraag
-              setCurrentIndex(0);
+            } else {
+              setDone(true);
             }
           }
         }
