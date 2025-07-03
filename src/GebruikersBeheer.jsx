@@ -56,7 +56,7 @@ function GebruikersBeheer() {
   const filterWerkgevers = (lijst) => {
     if (!zoekterm.trim()) return lijst
     return lijst.filter((werkgever) => {
-      const email = werkgever.email?.toLowerCase() || ''
+      const email = werkgever.contact_email?.toLowerCase() || ''
       const company = werkgever.company_name?.toLowerCase() || ''
       const term = zoekterm.toLowerCase()
       return email.includes(term) || company.includes(term)
@@ -105,7 +105,7 @@ function GebruikersBeheer() {
             ) : (
               gefilterdeWerkgevers.map((werkgever) => (
                 <div key={werkgever.id} className="border rounded-lg p-3">
-                  <p className="font-medium">{werkgever.email}</p>
+                  <p className="font-medium">{werkgever.contact_email}</p>
                   {werkgever.company_name && (
                     <p className="text-sm text-gray-700">{werkgever.company_name}</p>
                   )}
