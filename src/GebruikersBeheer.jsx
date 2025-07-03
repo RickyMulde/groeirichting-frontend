@@ -1,0 +1,113 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from './supabaseClient'
+
+function GebruikersBeheer() {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [werkgevers, setWerkgevers] = useState([])
+  const [werknemers, setWerknemers] = useState([])
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return navigate('/login')
+
+      const { data: profiel } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single()
+
+      if (!profiel || profiel.role !== 'superuser') return navigate('/login')
+    }
+
+    const fetchGebruikers = async () => {
+      // Haal werkgevers op
+      const { data: werkgeversData, error: werkgeversError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('role', 'employer')
+        .order('created_at', { ascending: false })
+
+      if (!werkgeversError && werkgeversData) {
+        setWerkgevers(werkgeversData)
+      }
+
+      // Haal werknemers op
+      const { data: werknemersData, error: werknemersError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('role', 'employee')
+        .order('created_at', { ascending: false })
+
+      if (!werknemersError && werknemersData) {
+        setWerknemers(werknemersData)
+      }
+    }
+
+    checkAuth()
+    fetchGebruikers()
+    setLoading(false)
+  }, [])
+
+  if (loading) return <div className="page-container">Laden...</div>
+  if (error) return <div className="page-container text-red-600">{error}</div>
+
+  return (
+    <div className="page-container">
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Werkgevers en werknemers instellingen</h1>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Werkgevers sectie */}
+        <div className="bg-white shadow-md p-6 rounded-xl">
+          <h2 className="text-lg font-semibold mb-4">Werkgevers ({werkgevers.length})</h2>
+          <div className="space-y-3">
+            {werkgevers.map((werkgever) => (
+              <div key={werkgever.id} className="border rounded-lg p-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium">{werkgever.email}</p>
+                    <p className="text-sm text-gray-600">
+                      Aangemaakt: {new Date(werkgever.created_at).toLocaleDateString('nl-NL')}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="btn btn-accent text-xs">Bewerk</button>
+                    <button className="btn btn-secondary text-xs">Details</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Werknemers sectie */}
+        <div className="bg-white shadow-md p-6 rounded-xl">
+          <h2 className="text-lg font-semibold mb-4">Werknemers ({werknemers.length})</h2>
+          <div className="space-y-3">
+            {werknemers.map((werknemer) => (
+              <div key={werknemer.id} className="border rounded-lg p-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium">{werknemer.email}</p>
+                    <p className="text-sm text-gray-600">
+                      Aangemaakt: {new Date(werknemer.created_at).toLocaleDateString('nl-NL')}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="btn btn-accent text-xs">Bewerk</button>
+                    <button className="btn btn-secondary text-xs">Details</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default GebruikersBeheer 

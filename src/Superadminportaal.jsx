@@ -1,12 +1,10 @@
 // 📁 Bestand: Superadminportaal.jsx
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
+import { Settings, Users, Palette } from 'lucide-react'
 
 function SuperadminPortaal() {
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [themas, setThemas] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -23,38 +21,49 @@ function SuperadminPortaal() {
       if (!profiel || profiel.role !== 'superuser') return navigate('/login')
     }
 
-    const fetchThemas = async () => {
-      const { data, error } = await supabase.from('themes').select('*')
-      if (!error) setThemas(data)
-    }
-
     checkAuth()
-    fetchThemas()
-    setLoading(false)
   }, [])
-
-  if (loading) return <div className="page-container">Laden...</div>
-  if (error) return <div className="page-container text-red-600">{error}</div>
 
   return (
     <div className="page-container">
-      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Superadmin Portaal – Thema's beheren</h1>
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Superadmin Portaal</h1>
 
-      <Link to="/superadmin/thema/nieuw" className="btn btn-primary">+ Thema toevoegen</Link>
+      <div className="max-w-4xl mx-auto pt-20 px-4 space-y-8">
+        {/* 1. Themabeheer */}
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Palette className="text-[var(--kleur-primary)] w-8 h-8" />
+            <div>
+              <h2 className="text-xl font-semibold">Themabeheer</h2>
+              <p className="text-sm text-gray-500">Beheer alle thema's, vragen en AI-configuraties voor het platform.</p>
+            </div>
+          </div>
+          <Link to="/superadmin/thema-beheer" className="btn btn-primary">Ga naar themabeheer</Link>
+        </section>
 
-      <div className="bg-white shadow-md p-6 rounded-xl mt-6">
-        <h2 className="text-lg font-semibold mb-3">Bestaande thema's</h2>
-        <ul className="divide-y">
-          {themas.map((thema) => (
-            <li key={thema.id} className="py-2 flex justify-between items-center">
-              <div>
-                <span className="font-medium">{thema.titel}</span>
-                <p className="text-sm text-gray-600 mt-1">{thema.beschrijving}</p>
-              </div>
-              <Link to={`/superadmin/thema/${thema.id}`} className="btn btn-accent text-sm">Bewerk</Link>
-            </li>
-          ))}
-        </ul>
+        {/* 2. Werkgevers en werknemers instellingen */}
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Users className="text-[var(--kleur-accent)] w-8 h-8" />
+            <div>
+              <h2 className="text-xl font-semibold">Werkgevers en werknemers instellingen</h2>
+              <p className="text-sm text-gray-500">Beheer alle gebruikersaccounts, rechten en organisatie-instellingen.</p>
+            </div>
+          </div>
+          <Link to="/superadmin/gebruikers-beheer" className="btn btn-accent">Beheer gebruikers</Link>
+        </section>
+
+        {/* 3. Blanco - nog in te vullen */}
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Settings className="text-[var(--kleur-secondary)] w-8 h-8" />
+            <div>
+              <h2 className="text-xl font-semibold">Systeem instellingen</h2>
+              <p className="text-sm text-gray-500">Platform-brede instellingen en configuraties (nog in ontwikkeling).</p>
+            </div>
+          </div>
+          <button className="btn btn-secondary" disabled>Binnenkort beschikbaar</button>
+        </section>
       </div>
     </div>
   )
