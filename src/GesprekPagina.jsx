@@ -164,6 +164,7 @@ function GesprekPagina() {
                 // Zet de currentIndex naar de eerste vraag zonder antwoord
                 // Of naar de eerste vaste vraag als er nog geen antwoorden zijn
                 if (antwoorden.length === 0) {
+                  console.log('Geen bestaande antwoorden gevonden, start bij eerste vaste vraag');
                   setCurrentIndex(0); // Start bij eerste vaste vraag
                 } else {
                   // Zoek naar de eerste vaste vraag die nog niet beantwoord is
@@ -184,12 +185,10 @@ function GesprekPagina() {
                     setCurrentIndex(nieuweIndex);
                   }
                 }
-              } else if (response.status === 404) {
-                // Geen gespreksgeschiedenis gevonden, start bij eerste vraag
-                console.log('Geen bestaande gespreksgeschiedenis gevonden, start bij eerste vraag');
-                setCurrentIndex(0);
               } else {
                 console.error('Fout bij ophalen antwoorden:', response.status);
+                // Bij fout, start bij eerste vraag
+                setCurrentIndex(0);
               }
             } catch (error) {
               console.error('Fout bij ophalen antwoorden:', error);
