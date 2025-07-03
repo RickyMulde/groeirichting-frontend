@@ -143,42 +143,58 @@ function GesprekPagina() {
             }
             
             // Haal de antwoorden op via de API
-            const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-              },
-              body: JSON.stringify({
-                gesprek_id: gesprekData.id
-              })
-            });
+            try {
+              const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                },
+                body: JSON.stringify({
+                  gesprek_id: gesprekData.id
+                })
+              });
 
-            if (response.ok) {
-              const { antwoorden } = await response.json();
-              
-              // De antwoorden komen nu direct in het juiste formaat
-              setAntwoorden(antwoorden);
-              
-              // Zet de currentIndex naar de eerste vraag zonder antwoord
-              // Of naar de eerste vaste vraag als er nog geen antwoorden zijn
-              if (antwoorden.length === 0) {
-                setCurrentIndex(0); // Start bij eerste vaste vraag
-              } else {
-                // Zoek naar de eerste vaste vraag die nog niet beantwoord is
-                const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
-                const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+              if (response.ok) {
+                const { antwoorden } = await response.json();
                 
-                if (beantwoordeVasteVragen >= vasteVragen.length) {
-                  // Alle vaste vragen zijn beantwoord
-                  setDone(true);
+                // De antwoorden komen nu direct in het juiste formaat
+                setAntwoorden(antwoorden);
+                
+                // Zet de currentIndex naar de eerste vraag zonder antwoord
+                // Of naar de eerste vaste vraag als er nog geen antwoorden zijn
+                if (antwoorden.length === 0) {
+                  setCurrentIndex(0); // Start bij eerste vaste vraag
                 } else {
-                  // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
-                  const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
-                  const nieuweIndex = vragenData.indexOf(volgendeVasteVraag);
-                  setCurrentIndex(nieuweIndex);
+                  // Zoek naar de eerste vaste vraag die nog niet beantwoord is
+                  const vasteVragen = vragenData.filter(v => !v.id.toString().startsWith('gpt-'));
+                  const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+                  
+                  console.log(`Geladen antwoorden: ${antwoorden.length}, beantwoorde vaste vragen: ${beantwoordeVasteVragen}/${vasteVragen.length}`);
+                  
+                  if (beantwoordeVasteVragen >= vasteVragen.length) {
+                    // Alle vaste vragen zijn beantwoord
+                    console.log('Alle vaste vragen beantwoord, markeer als afgerond');
+                    setDone(true);
+                  } else {
+                    // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
+                    const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+                    const nieuweIndex = vragenData.indexOf(volgendeVasteVraag);
+                    console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${nieuweIndex})`);
+                    setCurrentIndex(nieuweIndex);
+                  }
                 }
+              } else if (response.status === 404) {
+                // Geen gespreksgeschiedenis gevonden, start bij eerste vraag
+                console.log('Geen bestaande gespreksgeschiedenis gevonden, start bij eerste vraag');
+                setCurrentIndex(0);
+              } else {
+                console.error('Fout bij ophalen antwoorden:', response.status);
               }
+            } catch (error) {
+              console.error('Fout bij ophalen antwoorden:', error);
+              // Bij fout, start bij eerste vraag
+              setCurrentIndex(0);
             }
           }
         }
@@ -205,19 +221,24 @@ function GesprekPagina() {
     // Als er al een gesprek bestaat, ga direct naar de eerste vraag zonder antwoord
     if (gesprekId) {
       if (antwoorden.length === 0) {
+        console.log('Geen antwoorden, start bij eerste vaste vraag');
         setCurrentIndex(0); // Start bij eerste vaste vraag
       } else {
         // Zoek naar de eerste vaste vraag die nog niet beantwoord is
         const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
         const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
         
+        console.log(`StartGesprek: ${antwoorden.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
+        
         if (beantwoordeVasteVragen >= vasteVragen.length) {
           // Alle vaste vragen zijn beantwoord
+          console.log('Alle vaste vragen beantwoord, markeer als afgerond');
           setDone(true);
         } else {
           // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
           const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
           const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
+          console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${nieuweIndex})`);
           setCurrentIndex(nieuweIndex);
         }
       }
@@ -356,14 +377,16 @@ function GesprekPagina() {
 
       const huidigeVraag = vragen[currentIndex];
       const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
-      const nieuweAntwoorden = [
-        ...antwoorden,
-        {
-          vraag: huidigeVraag?.tekst,
-          antwoord: input,
-          type: isVasteVraag ? 'vaste_vraag' : 'vervolgvraag'
-        }
-      ];
+      const nieuwAntwoord = {
+        vraag: huidigeVraag?.tekst,
+        antwoord: input,
+        type: isVasteVraag ? 'vaste_vraag' : 'vervolgvraag'
+      };
+      const nieuweAntwoorden = [...antwoorden, nieuwAntwoord];
+      
+      console.log(`Antwoord toegevoegd: ${nieuwAntwoord.type} - "${nieuwAntwoord.vraag}"`);
+      console.log(`Totaal antwoorden: ${nieuweAntwoorden.length}`);
+      
       setAntwoorden(nieuweAntwoorden);
       setInput('');
       setFoutmelding(null);
@@ -417,8 +440,8 @@ function GesprekPagina() {
           setVragen(nieuweVragen);
           setCurrentIndex(nieuweVragen.length - 1);
         } else {
-          // Ga naar volgende vaste vraag
-          await gaNaarVolgendeVasteVraag();
+          // Ga naar volgende vaste vraag met de nieuwe antwoorden
+          await gaNaarVolgendeVasteVraagMetAntwoorden(nieuweAntwoorden);
         }
         
       } else {
@@ -446,7 +469,7 @@ function GesprekPagina() {
           // Check of we 4 vervolgvragen hebben bereikt
           if (nieuweTeller >= 4) {
             console.log('4 vervolgvragen bereikt, ga naar volgende vaste vraag');
-            await gaNaarVolgendeVasteVraag();
+            await gaNaarVolgendeVasteVraagMetAntwoorden(nieuweAntwoorden);
             return;
           }
           
@@ -485,8 +508,8 @@ function GesprekPagina() {
             setVragen(nieuweVragen);
             setCurrentIndex(nieuweVragen.length - 1);
           } else {
-            // Ga naar volgende vaste vraag
-            await gaNaarVolgendeVasteVraag();
+            // Ga naar volgende vaste vraag met de nieuwe antwoorden
+            await gaNaarVolgendeVasteVraagMetAntwoorden(nieuweAntwoorden);
           }
         }
       }
@@ -502,7 +525,7 @@ function GesprekPagina() {
     // Gebruik consistente logica: tel beantwoorde vaste vragen op basis van type
     const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
     
-    console.log(`Beantwoorde vaste vragen: ${beantwoordeVasteVragen}/${vasteVragen.length}`);
+    console.log(`gaNaarVolgendeVasteVraag: ${antwoorden.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
     
     if (beantwoordeVasteVragen >= vasteVragen.length) {
       // Alle vaste vragen zijn beantwoord, rond het gesprek af
@@ -525,7 +548,62 @@ function GesprekPagina() {
       const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
       
       if (volgendeVasteVraag) {
-        console.log('Volgende vaste vraag:', volgendeVasteVraag.tekst);
+        console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${vragen.indexOf(volgendeVasteVraag)})`);
+        const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
+        setCurrentIndex(nieuweIndex);
+        setVervolgvragenPerVasteVraag({});
+        setToelichting(null);
+        setReactie(null);
+      } else {
+        console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
+        setDone(true);
+        await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            werknemer_id: (await supabase.auth.getUser()).data.user.id,
+            theme_id: themeId,
+            status: 'Afgerond',
+            gesprek_id: gesprekId,
+            afrondingsreden: 'VOLDENDE_DUIDELIJK'
+          })
+        });
+        await genereerSamenvatting();
+      }
+    }
+  }
+
+  // Helper functie om naar de volgende vaste vraag te gaan met specifieke antwoorden
+  const gaNaarVolgendeVasteVraagMetAntwoorden = async (specifiekeAntwoorden) => {
+    const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+    
+    // Gebruik consistente logica: tel beantwoorde vaste vragen op basis van type
+    const beantwoordeVasteVragen = specifiekeAntwoorden.filter(a => a.type === 'vaste_vraag').length;
+    
+    console.log(`gaNaarVolgendeVasteVraagMetAntwoorden: ${specifiekeAntwoorden.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
+    
+    if (beantwoordeVasteVragen >= vasteVragen.length) {
+      // Alle vaste vragen zijn beantwoord, rond het gesprek af
+      console.log('Alle vaste vragen beantwoord, rond gesprek af');
+      setDone(true);
+      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          werknemer_id: (await supabase.auth.getUser()).data.user.id,
+          theme_id: themeId,
+          status: 'Afgerond',
+          gesprek_id: gesprekId,
+          afrondingsreden: 'VOLDENDE_DUIDELIJK'
+        })
+      });
+      await genereerSamenvatting();
+    } else {
+      // Zoek de volgende onbeantwoorde vaste vraag
+      const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+      
+      if (volgendeVasteVraag) {
+        console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${vragen.indexOf(volgendeVasteVraag)})`);
         const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
         setCurrentIndex(nieuweIndex);
         setVervolgvragenPerVasteVraag({});
