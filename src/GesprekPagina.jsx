@@ -77,8 +77,8 @@ function GesprekPagina() {
   useEffect(() => {
     if (!themeId) return;
 
-    // Nieuw gesprek: geen gesprekId, dus toon introprompt
-    if (!gesprekIdFromUrl && !gesprekId) {
+    // Nieuw gesprek: geen gesprekIdFromUrl, dus toon introprompt
+    if (!gesprekIdFromUrl) {
       setLoading(false);
       setCurrentIndex(-1);
       setAntwoorden([]);
@@ -210,7 +210,7 @@ function GesprekPagina() {
     }
 
     if (themeId) fetchThema()
-  }, [themeId, gesprekIdFromUrl, gesprekId])
+  }, [themeId, gesprekIdFromUrl])
 
   const startGesprek = async () => {
     const { data, error: authError } = await supabase.auth.getUser();
@@ -221,7 +221,7 @@ function GesprekPagina() {
       return
     }
 
-    // Als er al een gesprek bestaat, ga direct naar de eerste vraag zonder antwoord
+    // Als er al een gesprek bestaat (hervatten), ga direct naar de eerste vraag zonder antwoord
     if (gesprekId) {
       if (antwoorden.length === 0) {
         console.log('Geen antwoorden, start bij eerste vaste vraag');
@@ -248,7 +248,7 @@ function GesprekPagina() {
       return;
     }
 
-    // Maak het gesprek aan voordat we beginnen
+    // Nieuw gesprek: maak het gesprek aan en ga naar eerste vaste vraag
     const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -262,7 +262,7 @@ function GesprekPagina() {
     const result = await res.json()
     if (res.ok && result.gesprek_id) {
       setGesprekId(result.gesprek_id)
-      setCurrentIndex(0)
+      setCurrentIndex(0) // Ga direct naar eerste vaste vraag (skip introprompt)
     } else {
       console.error('Gesprek aanmaken mislukt:', result.error)
       setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.')
@@ -298,16 +298,18 @@ function GesprekPagina() {
       }
     }
 
-    // Reset state
+    // Reset alle state volledig
     setGesprekId(null);
     setAntwoorden([]);
-    setVragen(vragen.filter(v => !v.id.toString().startsWith('gpt-')));
     setVervolgvragenPerVasteVraag({});
     setToelichting(null);
     setReactie(null);
-    setCurrentIndex(0); // Start bij eerste vaste vraag
+    setDone(false);
+    setCurrentIndex(-1); // Start bij introprompt
+    setInput('');
+    setFoutmelding(null);
 
-    // Start nieuw gesprek
+    // Start nieuw gesprek (dit zal automatisch naar introprompt gaan)
     await startGesprek();
   }
 
@@ -444,7 +446,7 @@ function GesprekPagina() {
           setCurrentIndex(nieuweVragen.length - 1);
         } else {
           // Ga naar volgende vaste vraag met de nieuwe antwoorden
-          await gaNaarVolgendeVasteVraagMetAntwoorden(nieuweAntwoorden);
+          await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
         }
         
       } else {
@@ -472,7 +474,7 @@ function GesprekPagina() {
           // Check of we 4 vervolgvragen hebben bereikt
           if (nieuweTeller >= 4) {
             console.log('4 vervolgvragen bereikt, ga naar volgende vaste vraag');
-            await gaNaarVolgendeVasteVraagMetAntwoorden(nieuweAntwoorden);
+            await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
             return;
           }
           
@@ -512,7 +514,7 @@ function GesprekPagina() {
             setCurrentIndex(nieuweVragen.length - 1);
           } else {
             // Ga naar volgende vaste vraag met de nieuwe antwoorden
-            await gaNaarVolgendeVasteVraagMetAntwoorden(nieuweAntwoorden);
+            await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
           }
         }
       }
@@ -522,68 +524,16 @@ function GesprekPagina() {
   }
 
   // Helper functie om naar de volgende vaste vraag te gaan
-  const gaNaarVolgendeVasteVraag = async () => {
+  const gaNaarVolgendeVasteVraag = async (specifiekeAntwoorden = null) => {
     const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
     
-    // Gebruik consistente logica: tel beantwoorde vaste vragen op basis van type
-    const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-    
-    console.log(`gaNaarVolgendeVasteVraag: ${antwoorden.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
-    
-    if (beantwoordeVasteVragen >= vasteVragen.length) {
-      // Alle vaste vragen zijn beantwoord, rond het gesprek af
-      console.log('Alle vaste vragen beantwoord, rond gesprek af');
-      setDone(true);
-      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          werknemer_id: (await supabase.auth.getUser()).data.user.id,
-          theme_id: themeId,
-          status: 'Afgerond',
-          gesprek_id: gesprekId,
-          afrondingsreden: 'VOLDENDE_DUIDELIJK'
-        })
-      });
-      await genereerSamenvatting();
-    } else {
-      // Zoek de volgende onbeantwoorde vaste vraag
-      const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
-      
-      if (volgendeVasteVraag) {
-        console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${vragen.indexOf(volgendeVasteVraag)})`);
-        const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
-        setCurrentIndex(nieuweIndex);
-        setVervolgvragenPerVasteVraag({});
-        setToelichting(null);
-        setReactie(null);
-      } else {
-        console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
-        setDone(true);
-        await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            werknemer_id: (await supabase.auth.getUser()).data.user.id,
-            theme_id: themeId,
-            status: 'Afgerond',
-            gesprek_id: gesprekId,
-            afrondingsreden: 'VOLDENDE_DUIDELIJK'
-          })
-        });
-        await genereerSamenvatting();
-      }
-    }
-  }
-
-  // Helper functie om naar de volgende vaste vraag te gaan met specifieke antwoorden
-  const gaNaarVolgendeVasteVraagMetAntwoorden = async (specifiekeAntwoorden) => {
-    const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+    // Gebruik de meegegeven antwoorden of de huidige antwoorden
+    const antwoordenTeGebruiken = specifiekeAntwoorden || antwoorden;
     
     // Gebruik consistente logica: tel beantwoorde vaste vragen op basis van type
-    const beantwoordeVasteVragen = specifiekeAntwoorden.filter(a => a.type === 'vaste_vraag').length;
+    const beantwoordeVasteVragen = antwoordenTeGebruiken.filter(a => a.type === 'vaste_vraag').length;
     
-    console.log(`gaNaarVolgendeVasteVraagMetAntwoorden: ${specifiekeAntwoorden.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
+    console.log(`gaNaarVolgendeVasteVraag: ${antwoordenTeGebruiken.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
     
     if (beantwoordeVasteVragen >= vasteVragen.length) {
       // Alle vaste vragen zijn beantwoord, rond het gesprek af
@@ -683,20 +633,22 @@ function GesprekPagina() {
                   ))}
                 </div>
               )}
-              <button
-                onClick={startGesprek}
-                className="btn btn-primary px-4 py-2 rounded-full"
-              >
-                {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : 'Start gesprek'}
-              </button>
-              {antwoorden.some(a => a.antwoord !== null) && (
+              <div className="flex flex-col sm:flex-row gap-2">
                 <button
-                  onClick={herstartGesprek}
-                  className="btn btn-secondary px-4 py-2 rounded-full ml-2"
+                  onClick={startGesprek}
+                  className="btn btn-primary px-4 py-2 rounded-full"
                 >
-                  Herstart gesprek
+                  {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : 'Start gesprek'}
                 </button>
-              )}
+                {antwoorden.some(a => a.antwoord !== null) && (
+                  <button
+                    onClick={herstartGesprek}
+                    className="btn btn-secondary px-4 py-2 rounded-full"
+                  >
+                    Herstart gesprek
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
