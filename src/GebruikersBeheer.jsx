@@ -7,6 +7,7 @@ function GebruikersBeheer() {
   const [error, setError] = useState(null)
   const [werkgevers, setWerkgevers] = useState([])
   const [werknemers, setWerknemers] = useState([])
+  const [zoekterm, setZoekterm] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -52,6 +53,31 @@ function GebruikersBeheer() {
     setLoading(false)
   }, [])
 
+  // Filteren op zoekterm (case-insensitive)
+  const filterWerkgevers = (lijst) => {
+    if (!zoekterm.trim()) return lijst
+    return lijst.filter((gebruiker) => {
+      const email = gebruiker.email?.toLowerCase() || ''
+      const company = gebruiker.company_name?.toLowerCase() || ''
+      const term = zoekterm.toLowerCase()
+      return email.includes(term) || company.includes(term)
+    })
+  }
+
+  const filterWerknemers = (lijst) => {
+    if (!zoekterm.trim()) return lijst
+    return lijst.filter((gebruiker) => {
+      const email = gebruiker.email?.toLowerCase() || ''
+      const first = gebruiker.first_name?.toLowerCase() || ''
+      const last = gebruiker.last_name?.toLowerCase() || ''
+      const term = zoekterm.toLowerCase()
+      return email.includes(term) || first.includes(term) || last.includes(term)
+    })
+  }
+
+  const gefilterdeWerkgevers = filterWerkgevers(werkgevers)
+  const gefilterdeWerknemers = filterWerknemers(werknemers)
+
   if (loading) return <div className="page-container">Laden...</div>
   if (error) return <div className="page-container text-red-600">{error}</div>
 
@@ -59,50 +85,69 @@ function GebruikersBeheer() {
     <div className="page-container">
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Werkgevers en werknemers instellingen</h1>
 
+      {/* Zoekveld */}
+      <div className="mb-8 max-w-md">
+        <input
+          type="text"
+          className="input input-bordered w-full"
+          placeholder="Zoek op e-mailadres, bedrijfsnaam, voornaam of achternaam..."
+          value={zoekterm}
+          onChange={e => setZoekterm(e.target.value)}
+        />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Werkgevers sectie */}
         <div className="bg-white shadow-md p-6 rounded-xl">
-          <h2 className="text-lg font-semibold mb-4">Werkgevers ({werkgevers.length})</h2>
+          <h2 className="text-lg font-semibold mb-4">Werkgevers ({gefilterdeWerkgevers.length})</h2>
           <div className="space-y-3">
-            {werkgevers.map((werkgever) => (
-              <div key={werkgever.id} className="border rounded-lg p-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium">{werkgever.email}</p>
-                    <p className="text-sm text-gray-600">
-                      Aangemaakt: {new Date(werkgever.created_at).toLocaleDateString('nl-NL')}
-                    </p>
-                  </div>
+            {gefilterdeWerkgevers.length === 0 ? (
+              <div className="text-gray-400 italic">Geen resultaten gevonden.</div>
+            ) : (
+              gefilterdeWerkgevers.map((werkgever) => (
+                <div key={werkgever.id} className="border rounded-lg p-3">
+                  <p className="font-medium">{werkgever.email}</p>
+                  {werkgever.company_name && (
+                    <p className="text-sm text-gray-700">{werkgever.company_name}</p>
+                  )}
+                  <p className="text-sm text-gray-600 mb-3">
+                    Aangemaakt: {new Date(werkgever.created_at).toLocaleDateString('nl-NL')}
+                  </p>
                   <div className="flex gap-2">
                     <button className="btn btn-accent text-xs">Bewerk</button>
                     <button className="btn btn-secondary text-xs">Details</button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
         {/* Werknemers sectie */}
         <div className="bg-white shadow-md p-6 rounded-xl">
-          <h2 className="text-lg font-semibold mb-4">Werknemers ({werknemers.length})</h2>
+          <h2 className="text-lg font-semibold mb-4">Werknemers ({gefilterdeWerknemers.length})</h2>
           <div className="space-y-3">
-            {werknemers.map((werknemer) => (
-              <div key={werknemer.id} className="border rounded-lg p-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium">{werknemer.email}</p>
-                    <p className="text-sm text-gray-600">
-                      Aangemaakt: {new Date(werknemer.created_at).toLocaleDateString('nl-NL')}
+            {gefilterdeWerknemers.length === 0 ? (
+              <div className="text-gray-400 italic">Geen resultaten gevonden.</div>
+            ) : (
+              gefilterdeWerknemers.map((werknemer) => (
+                <div key={werknemer.id} className="border rounded-lg p-3">
+                  <p className="font-medium">{werknemer.email}</p>
+                  {(werknemer.first_name || werknemer.last_name) && (
+                    <p className="text-sm text-gray-700">
+                      {[werknemer.first_name, werknemer.last_name].filter(Boolean).join(' ')}
                     </p>
-                  </div>
+                  )}
+                  <p className="text-sm text-gray-600 mb-3">
+                    Aangemaakt: {new Date(werknemer.created_at).toLocaleDateString('nl-NL')}
+                  </p>
                   <div className="flex gap-2">
                     <button className="btn btn-accent text-xs">Bewerk</button>
                     <button className="btn btn-secondary text-xs">Details</button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
