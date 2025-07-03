@@ -106,34 +106,36 @@ function GesprekPagina() {
     fetchThemaEnVragen();
   }, [themeId]);
 
-  // Haal alleen antwoorden op als er een bestaand gesprek is (hervatten)
-  useEffect(() => {
-    if (!themeId || !gesprekIdFromUrl) return;
-    const fetchAntwoorden = async () => {
-      setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setFoutmelding('Gebruiker niet gevonden.');
-        setLoading(false);
-        return;
-      }
-      // Check of het gesprek bestaat en van deze gebruiker is
-      const { data: existingGesprek, error: gesprekError } = await supabase
+  // startGesprek verwerkt nu alles: nieuw, hervatten, antwoorden ophalen
+  const startGesprek = async () => {
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
+
+    if (authError || !user) {
+      console.error('Gebruiker niet gevonden of niet ingelogd');
+      return;
+    }
+
+    if (gesprekIdFromUrl) {
+      // Probeer bestaand gesprek op te halen
+      const { data: existingGesprek, error } = await supabase
         .from('gesprek')
         .select('id, status, werknemer_id')
         .eq('id', gesprekIdFromUrl)
         .single();
-      if (gesprekError || !existingGesprek || existingGesprek.werknemer_id !== user.id) {
-        setFoutmelding('Gesprek niet gevonden of geen toegang tot dit gesprek.');
-        setLoading(false);
+
+      if (!existingGesprek || existingGesprek.werknemer_id !== user.id) {
+        setFoutmelding('Dit gesprek bestaat niet (meer) of je hebt geen toegang.');
         return;
       }
+
       setGesprekId(existingGesprek.id);
+
       if (existingGesprek.status === 'Afgerond') {
         setDone(true);
-        setLoading(false);
         return;
       }
+
       // Haal antwoorden op
       try {
         const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
@@ -144,6 +146,7 @@ function GesprekPagina() {
           },
           body: JSON.stringify({ gesprek_id: existingGesprek.id })
         });
+
         if (response.ok) {
           const { antwoorden } = await response.json();
           setAntwoorden(antwoorden);
@@ -163,56 +166,17 @@ function GesprekPagina() {
           }
         } else if (response.status === 404) {
           setAntwoorden([]);
-          setCurrentIndex(-1);
+          setCurrentIndex(0);
         } else {
           setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
         }
       } catch (error) {
         setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
       }
-      setLoading(false);
-    };
-    fetchAntwoorden();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [themeId, gesprekIdFromUrl, vragen.length]);
-
-  const startGesprek = async () => {
-    const { data, error: authError } = await supabase.auth.getUser();
-    const user = data?.user;
-
-    if (authError || !user) {
-      console.error('Gebruiker niet gevonden of niet ingelogd')
-      return
-    }
-
-    // Als er al een gesprek bestaat (hervatten), ga direct naar de eerste vraag zonder antwoord
-    if (gesprekId) {
-      if (antwoorden.length === 0) {
-        console.log('Geen antwoorden, start bij eerste vaste vraag');
-        setCurrentIndex(0); // Start bij eerste vaste vraag
-      } else {
-        // Zoek naar de eerste vaste vraag die nog niet beantwoord is
-        const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
-        const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-        
-        console.log(`StartGesprek: ${antwoorden.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
-        
-        if (beantwoordeVasteVragen >= vasteVragen.length) {
-          // Alle vaste vragen zijn beantwoord
-          console.log('Alle vaste vragen beantwoord, markeer als afgerond');
-          setDone(true);
-        } else {
-          // Ga naar de volgende vaste vraag (rekening houdend met vervolgvragen)
-          const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
-          const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
-          console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${nieuweIndex})`);
-          setCurrentIndex(nieuweIndex);
-        }
-      }
       return;
     }
 
-    // Nieuw gesprek: maak het gesprek aan en ga naar eerste vaste vraag
+    // Nieuw gesprek starten
     const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -221,17 +185,17 @@ function GesprekPagina() {
         theme_id: themeId,
         status: 'Nog niet afgerond'
       })
-    })
-    
-    const result = await res.json()
+    });
+
+    const result = await res.json();
     if (res.ok && result.gesprek_id) {
-      setGesprekId(result.gesprek_id)
-      setCurrentIndex(0) // Ga direct naar eerste vaste vraag (skip introprompt)
+      setGesprekId(result.gesprek_id);
+      setAntwoorden([]);
+      setCurrentIndex(0);
     } else {
-      console.error('Gesprek aanmaken mislukt:', result.error)
-      setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.')
+      setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.');
     }
-  }
+  };
 
   // Nieuwe functie om een gesprek te herstarten
   const herstartGesprek = async () => {
