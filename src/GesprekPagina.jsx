@@ -77,14 +77,6 @@ function GesprekPagina() {
   useEffect(() => {
     if (!themeId) return;
 
-    // Nieuw gesprek: geen gesprekIdFromUrl, dus toon introprompt
-    if (!gesprekIdFromUrl) {
-      setLoading(false);
-      setCurrentIndex(-1);
-      setAntwoorden([]);
-      return;
-    }
-
     const fetchThema = async () => {
       setLoading(true);
       
@@ -109,41 +101,34 @@ function GesprekPagina() {
             setVragen([]);
           }
 
-        // Haal bestaande antwoorden op ALLEEN als we een gesprek hervatten (dus gesprekIdFromUrl is aanwezig)
+        // Nieuw gesprek: geen gesprekIdFromUrl, dus toon introprompt
+        if (!gesprekIdFromUrl) {
+          setLoading(false);
+          setCurrentIndex(-1);
+          setAntwoorden([]);
+          return;
+        }
+
+        // Hervatten gesprek: haal bestaande antwoorden op
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           let gesprekData = null;
           
-          if (gesprekIdFromUrl) {
-            // Als er een specifieke gesprek_id is opgegeven, haal die op
-            const { data: existingGesprek, error: gesprekError } = await supabase
-              .from('gesprek')
-              .select('id, status, werknemer_id')
-              .eq('id', gesprekIdFromUrl)
-              .single();
+          // Als er een specifieke gesprek_id is opgegeven, haal die op
+          const { data: existingGesprek, error: gesprekError } = await supabase
+            .from('gesprek')
+            .select('id, status, werknemer_id')
+            .eq('id', gesprekIdFromUrl)
+            .single();
 
-            if (!gesprekError && existingGesprek && existingGesprek.werknemer_id === user.id) {
-              gesprekData = existingGesprek;
-              setGesprekId(existingGesprek.id);
-            } else {
-              console.error('Gesprek niet gevonden of geen toegang');
-              setFoutmelding('Gesprek niet gevonden of geen toegang tot dit gesprek.');
-              setLoading(false);
-              return;
-            }
+          if (!gesprekError && existingGesprek && existingGesprek.werknemer_id === user.id) {
+            gesprekData = existingGesprek;
+            setGesprekId(existingGesprek.id);
           } else {
-            // Zoek naar bestaand gesprek voor dit thema (oude gedrag)
-            const { data: existingGesprek, error: gesprekError } = await supabase
-              .from('gesprek')
-              .select('id, status')
-              .eq('werknemer_id', user.id)
-              .eq('theme_id', themeId)
-              .maybeSingle();
-
-            if (!gesprekError && existingGesprek) {
-              gesprekData = existingGesprek;
-              setGesprekId(existingGesprek.id);
-            }
+            console.error('Gesprek niet gevonden of geen toegang');
+            setFoutmelding('Gesprek niet gevonden of geen toegang tot dit gesprek.');
+            setLoading(false);
+            return;
           }
 
           if (gesprekData) {
