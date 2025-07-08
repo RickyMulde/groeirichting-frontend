@@ -318,9 +318,9 @@ function ThemaBeheer() {
               </div>
 
               {/* Rechts: Checkbox velden */}
-              <div className="space-y-3">
+              <div className="space-y-3 pl-4">
                 {['gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].map(key => (
-                  <div key={key} className="flex items-center justify-end">
+                  <div key={key} className="flex items-center">
                     <label className="flex items-center text-sm font-medium text-gray-700 cursor-pointer">
                       <input 
                         type="checkbox" 
