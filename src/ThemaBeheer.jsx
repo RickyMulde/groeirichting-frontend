@@ -51,8 +51,6 @@ const tooltipData = {
   
   // Vraag-specifieke velden
   tekst: 'De vraagtekst die aan de werknemer wordt gesteld.',
-  verplicht: 'Vink aan of de werknemer verplicht is deze vraag te beantwoorden.',
-  type: 'Geef aan of dit een initiële of vervolg-vraag is.',
   vervolgvragen: 'JSON met eventuele vervolgvraaglogica. Bijvoorbeeld: toon vraag X alleen als antwoord op Y = ja.',
   toelichting: 'Uitleg voor de werknemer bij het starten van een gesprek. Wordt prominent getoond.'
 }
@@ -72,15 +70,15 @@ function ThemaBeheer() {
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
     ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: '',
     verwachte_signalen: '',
-    vraag_1: '', vraag_1_verplicht: false, vraag_1_type: 'initieel', vraag_1_doel: '',
-    vraag_2: '', vraag_2_verplicht: false, vraag_2_type: 'initieel', vraag_2_doel: '',
-    vraag_3: '', vraag_3_verplicht: false, vraag_3_type: 'initieel', vraag_3_doel: '',
-    vraag_4: '', vraag_4_verplicht: false, vraag_4_type: 'initieel', vraag_4_doel: '',
-    vraag_5: '', vraag_5_verplicht: false, vraag_5_type: 'initieel', vraag_5_doel: '',
+    vraag_1: '', vraag_1_doel: '',
+    vraag_2: '', vraag_2_doel: '',
+    vraag_3: '', vraag_3_doel: '',
+    vraag_4: '', vraag_4_doel: '',
+    vraag_5: '', vraag_5_doel: '',
     ai_behavior: '', prompt_style: '', thema_type: '', gpt_doelstelling: '', gpt_beperkingen: '',
   })
   const [vragen, setVragen] = useState([])
-  const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
+  const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', taalcode: 'nl' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(true)
@@ -198,7 +196,7 @@ function ThemaBeheer() {
       }
       const nieuweVragen = [...vragen, nieuweVraag]
       setVragen(nieuweVragen)
-      setNieuweVraag({ tekst: '', verplicht: false, type: 'initieel', taalcode: 'nl' })
+      setNieuweVraag({ tekst: '', taalcode: 'nl' })
     }
   }
 
@@ -237,8 +235,6 @@ function ThemaBeheer() {
       // Bereid de vragen voor met hun doelvragen
       const vragenMetDoel = [1,2,3,4,5].map((nr) => ({
         tekst: formData[`vraag_${nr}`],
-        verplicht: formData[`vraag_${nr}_verplicht`],
-        type: formData[`vraag_${nr}_type`],
         doel_vraag: formData[`vraag_${nr}_doel`]
       })).filter(vraag => vraag.tekst.trim() !== ''); // Alleen vragen met tekst meesturen
 
@@ -524,13 +520,46 @@ function ThemaBeheer() {
             </div>
           </div>
 
+          {/* ❓ VRAGEN */}
+          <div className="bg-purple-50 p-6 rounded-xl">
+            <h2 className="text-xl font-semibold mb-4 text-purple-800">❓ Vragen (max 5)</h2>
+            {[1,2,3,4,5].map((nr) => (
+              <div key={nr} className="bg-white p-4 rounded-xl mb-4 border border-purple-200">
+                <label className="block text-sm font-medium mb-1">
+                  Vraag {nr}
+                </label>
+                <input
+                  type="text"
+                  name={`vraag_${nr}`}
+                  value={formData[`vraag_${nr}`]}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  placeholder={`Vraag ${nr}`}
+                />
+                <label className="block text-sm font-medium mt-2 mb-1">
+                  Doel van vraag {nr}
+                </label>
+                <input
+                  type="text"
+                  name={`vraag_${nr}_doel`}
+                  value={formData[`vraag_${nr}_doel`]}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  placeholder={`Wat is het doel van vraag ${nr}?`}
+                />
+
+
+              </div>
+            ))}
+          </div>
+
           {/* 🔧 OVERIGE INSTELLINGEN */}
           <div className="bg-gray-50 p-6 rounded-xl">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">🔧 Overige Instellingen</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, val]) => {
                 if (key.startsWith('vraag_')) return null;
-                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag'].includes(key)) return null;
+                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag', 'gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].includes(key)) return null;
                 
                 return (
                   <div key={key} className="mb-4">
@@ -564,59 +593,6 @@ function ThemaBeheer() {
                 )
               })}
             </div>
-          </div>
-
-          {/* Vaste vragenvelden */}
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Vragen (max 5)</h2>
-            {[1,2,3,4,5].map((nr) => (
-              <div key={nr} className="bg-gray-50 p-4 rounded-xl mb-4">
-                <label className="block text-sm font-medium mb-1">
-                  Vraag {nr}
-                </label>
-                <input
-                  type="text"
-                  name={`vraag_${nr}`}
-                  value={formData[`vraag_${nr}`]}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  placeholder={`Vraag ${nr}`}
-                />
-                <label className="block text-sm font-medium mt-2 mb-1">
-                  Doel van vraag {nr}
-                </label>
-                <input
-                  type="text"
-                  name={`vraag_${nr}_doel`}
-                  value={formData[`vraag_${nr}_doel`]}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  placeholder={`Wat is het doel van vraag ${nr}?`}
-                />
-                <div className="flex items-center mt-2">
-                  <input
-                    type="checkbox"
-                    name={`vraag_${nr}_verplicht`}
-                    checked={formData[`vraag_${nr}_verplicht`]}
-                    onChange={handleChange}
-                    className="mr-2"
-                  />
-                  <span>Verplicht</span>
-                </div>
-                <div className="mt-2">
-                  <label className="mr-2">Type:</label>
-                  <select
-                    name={`vraag_${nr}_type`}
-                    value={formData[`vraag_${nr}_type`]}
-                    onChange={handleChange}
-                    className="rounded-md border-gray-300"
-                  >
-                    <option value="initieel">Initieel</option>
-                    <option value="vervolg">Vervolg</option>
-                  </select>
-                </div>
-              </div>
-            ))}
           </div>
 
           <div className="mt-6 flex justify-end space-x-4">
