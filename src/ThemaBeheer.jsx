@@ -282,37 +282,68 @@ function ThemaBeheer() {
           {/* 📝 BASIS THEMA INFORMATIE */}
           <div className="bg-blue-50 p-6 rounded-xl">
             <h2 className="text-xl font-semibold mb-4 text-blue-800">📝 Basis Thema Informatie</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {['titel', 'beschrijving', 'intro_prompt'].map(key => (
-                <div key={key} className="mb-4">
-                  <label className="block text-sm font-medium capitalize mb-1">
-                    {key.replace(/_/g, ' ')}
-                    {tooltipData[key] && (
-                      <span
-                        title={tooltipData[key]}
-                        className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
-                      >🛈</span>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Links: Titel, Beschrijving, Intro Prompt */}
+              <div className="lg:col-span-2 space-y-4">
+                {['titel', 'beschrijving', 'intro_prompt'].map(key => (
+                  <div key={key} className="mb-4">
+                    <label className="block text-sm font-medium capitalize mb-1">
+                      {key.replace(/_/g, ' ')}
+                      {tooltipData[key] && (
+                        <span
+                          title={tooltipData[key]}
+                          className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                        >🛈</span>
+                      )}
+                    </label>
+                    {key === 'beschrijving' ? (
+                      <textarea
+                        name={key}
+                        value={formData[key] || ''}
+                        onChange={handleChange}
+                        rows={3}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        name={key}
+                        value={formData[key] || ''}
+                        onChange={handleChange}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      />
                     )}
-                  </label>
-                  {key === 'beschrijving' ? (
-                    <textarea
-                      name={key}
-                      value={formData[key] || ''}
-                      onChange={handleChange}
-                      rows={3}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      name={key}
-                      value={formData[key] || ''}
-                      onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Rechts: Checkbox velden */}
+              <div className="space-y-3">
+                {['gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].map(key => (
+                  <div key={key} className="flex items-center justify-end">
+                    <label className="flex items-center text-sm font-medium text-gray-700 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        name={key} 
+                        checked={formData[key]} 
+                        onChange={handleChange}
+                        className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      {tooltipData[key] ? (
+                        <span
+                          title={tooltipData[key]}
+                          className="flex items-center"
+                        >
+                          {key.replace(/_/g, ' ')}
+                          <span className="ml-1 cursor-help text-gray-400 hover:text-gray-600">🛈</span>
+                        </span>
+                      ) : (
+                        key.replace(/_/g, ' ')
+                      )}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
