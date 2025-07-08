@@ -81,7 +81,7 @@ function GesprekPagina() {
       setLoading(true);
       const { data, error } = await supabase
         .from('themes')
-        .select('id, titel, intro_prompt, doel_vraag, gebruik_gpt_vragen, gpt_doelstelling, prompt_style, ai_behavior, gpt_beperkingen, geeft_samenvatting')
+        .select('id, titel, intro_prompt, doel_vraag, gebruik_gpt_vragen, gpt_doelstelling, prompt_style, ai_behavior, gpt_beperkingen, custom_system_prompt, geeft_samenvatting')
         .eq('id', themeId)
         .single();
       if (!error && data) {
