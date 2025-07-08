@@ -6,35 +6,58 @@ import Alert from './Alert'
 import React from 'react'
 
 const tooltipData = {
-  gebruik_gpt_vragen: 'Vink aan als je in dit thema GPT-vervolgvragen wilt gebruiken in plaats van handmatig ingestelde vervolgvragen.',
-  verwachte_signalen: 'Welke signalen hoop je dat dit thema zichtbaar maakt? Bijvoorbeeld: werkdruk, motivatie, betrokkenheid. Gescheiden door komma\'s.',
+  // Basis thema informatie
   titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
   beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
   intro_prompt: 'Inleidingstekst voor werknemers. Wordt getoond vóór het invullen van de vragenlijst.',
-  vervolgvragen: 'JSON met eventuele vervolgvraaglogica. Bijvoorbeeld: toon vraag X alleen als antwoord op Y = ja.',
-  gespreksdoel: 'Interne beschrijving van het doel van het AI-gesprek (bijv. evaluatie, signalering, coaching).',
+  
+  // 🎯 AI PROMPT CONFIGURATIE - Deze velden bepalen hoe de AI zich gedraagt
+  gpt_doelstelling: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Het specifieke doel van het AI-gesprek voor dit thema. Bijvoorbeeld: "Het doel is om werkdruk-signalen te identificeren en de medewerker te ondersteunen bij het vinden van oplossingen."',
+  prompt_style: '🎯 WORDT GEBRUIKT IN AI-PROMPT: De communicatiestijl van de AI tijdens het gesprek. Vragend = veel doorvragen, Informatief = meer uitleg geven, Gemengd = balans tussen beide.',
+  ai_behavior: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Het gedrag en de rol van de AI. Coach = begeleidend, Informer = informatief, Facilitator = ondersteunend, Reviewer = evaluerend.',
+  gpt_beperkingen: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Specifieke beperkingen of richtlijnen voor de AI. Bijvoorbeeld: "Vermijd medische adviezen" of "Focus op werkgerelateerde aspecten".',
+  thema_type: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Het type thema dat de AI helpt bepalen hoe het gesprek gevoerd moet worden. Coachend = ontwikkeling, Informatief = kennisoverdracht, Toetsend = evaluatie, Open = verkennend.',
+  
+  // Vragen en gesprekslogica
   doel_vraag: 'Specifieke kernvraag die als basis dient voor de AI-samenvatting, bijvoorbeeld: "Wat wil je bespreken?"',
-  toelichting: 'Uitleg voor de werknemer bij het starten van een gesprek. Wordt prominent getoond.',
+  gespreksdoel: 'Interne beschrijving van het doel van het AI-gesprek (bijv. evaluatie, signalering, coaching).',
+  gebruik_gpt_vragen: 'Vink aan als je in dit thema GPT-vervolgvragen wilt gebruiken in plaats van handmatig ingestelde vervolgvragen.',
+  
+  // AI output configuratie
   geeft_score: 'Vink aan als het AI-gesprek een score teruggeeft over bijvoorbeeld werkdruk of veerkracht.',
   geeft_samenvatting: 'Vink aan als het AI een samenvatting van het gesprek moet genereren.',
   geeft_ai_advies: 'Vink aan als de AI ook aanbevelingen mag geven (zoals coaching- of ontwikkelrichtingen).',
-  ai_configuratie: 'JSON met instellingen voor de AI, zoals toon, gevoeligheid voor emoties, beperkingen.',
   ai_model: 'Model dat gebruikt wordt (standaard: GPT-4).',
+  ai_configuratie: 'JSON met instellingen voor de AI, zoals toon, gevoeligheid voor emoties, beperkingen.',
+  
+  // Thema zichtbaarheid en toegang
   standaard_zichtbaar: 'Vink aan als dit thema standaard actief moet zijn voor nieuwe werkgevers.',
   alleen_premium: 'Vink aan als dit thema alleen beschikbaar is in het premium pakket.',
   alleen_concept: 'Alleen zichtbaar voor jou als superadmin. Gebruik dit voor testen of voorbereiding.',
   voorgesteld_als_verplicht: 'Geef aan of je dit thema aanbeveelt als verplicht onderdeel voor werknemers.',
+  klaar_voor_gebruik: 'Vink aan als dit thema klaar is voor gebruik door werknemers.',
+  
+  // Tijdsgebonden instellingen
   zichtbaar_vanaf: 'Optionele datum vanaf wanneer dit thema beschikbaar is voor werknemers.',
   zichtbaar_tot: 'Optionele datum tot wanneer het thema beschikbaar is (handig bij seizoensgebonden onderwerpen).',
+  
+  // Categorisering
   branche_labels: 'Lijst met branches waarvoor dit thema relevant is (bijv. onderwijs, zorg). Gescheiden met komma\'s.',
   doelgroep_labels: 'Lijst met doelgroepen waarvoor het thema geschikt is (bijv. leidinggevenden, starters).',
   zoeklabels: 'Zoektermen waarop het thema gevonden mag worden binnen het superadminportaal.',
+  verwachte_signalen: 'Welke signalen hoop je dat dit thema zichtbaar maakt? Bijvoorbeeld: werkdruk, motivatie, betrokkenheid. Gescheiden door komma\'s.',
+  
+  // Technische instellingen
   versiebeheer: 'JSON met changelog of revisiegeschiedenis van dit thema.',
   volgorde_index: 'Nummer voor sortering van het thema in de weergave. Lager = eerder in de lijst.',
   taalcode: 'De taal waarin het thema is geschreven (standaard: nl).',
+  
+  // Vraag-specifieke velden
   tekst: 'De vraagtekst die aan de werknemer wordt gesteld.',
   verplicht: 'Vink aan of de werknemer verplicht is deze vraag te beantwoorden.',
-  type: 'Geef aan of dit een initiële of vervolg-vraag is.'
+  type: 'Geef aan of dit een initiële of vervolg-vraag is.',
+  vervolgvragen: 'JSON met eventuele vervolgvraaglogica. Bijvoorbeeld: toon vraag X alleen als antwoord op Y = ja.',
+  toelichting: 'Uitleg voor de werknemer bij het starten van een gesprek. Wordt prominent getoond.'
 }
 
 function ThemaBeheer() {
@@ -259,110 +282,263 @@ function ThemaBeheer() {
       {loading ? (
         <div>Laden...</div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {Object.entries(formData).map(([key, val]) => {
-            if (key.startsWith('vraag_')) return null;
-            if (key === 'ai_behavior') {
-              return (
+        <form onSubmit={handleSubmit} className="space-y-8">
+          
+          {/* 📝 BASIS THEMA INFORMATIE */}
+          <div className="bg-blue-50 p-6 rounded-xl">
+            <h2 className="text-xl font-semibold mb-4 text-blue-800">📝 Basis Thema Informatie</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {['titel', 'beschrijving', 'intro_prompt'].map(key => (
                 <div key={key} className="mb-4">
-                  <label className="block text-sm font-medium mb-1">AI Gedrag</label>
-                  <select
-                    name="ai_behavior"
-                    value={formData.ai_behavior || ''}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  >
-                    <option value="">-- Kies een optie --</option>
-                    <option value="coach">Coach</option>
-                    <option value="informer">Informer</option>
-                    <option value="facilitator">Facilitator</option>
-                    <option value="reviewer">Reviewer</option>
-                  </select>
+                  <label className="block text-sm font-medium capitalize mb-1">
+                    {key.replace(/_/g, ' ')}
+                    {tooltipData[key] && (
+                      <span
+                        title={tooltipData[key]}
+                        className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                      >🛈</span>
+                    )}
+                  </label>
+                  {key === 'beschrijving' ? (
+                    <textarea
+                      name={key}
+                      value={formData[key] || ''}
+                      onChange={handleChange}
+                      rows={3}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      name={key}
+                      value={formData[key] || ''}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  )}
                 </div>
-              );
-            }
-            if (key === 'prompt_style') {
-              return (
-                <div key={key} className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Promptstijl</label>
-                  <select
-                    name="prompt_style"
-                    value={formData.prompt_style || ''}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  >
-                    <option value="">-- Kies een optie --</option>
-                    <option value="vragend">Vragend</option>
-                    <option value="informatief">Informatief</option>
-                    <option value="gemengd">Gemengd</option>
-                  </select>
+              ))}
+            </div>
+          </div>
+
+          {/* 🎯 AI PROMPT CONFIGURATIE */}
+          <div className="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-400">
+            <h2 className="text-xl font-semibold mb-4 text-orange-800">🎯 AI Prompt Configuratie</h2>
+            <p className="text-sm text-orange-700 mb-4">Deze velden bepalen hoe de AI zich gedraagt tijdens het gesprek</p>
+            
+            {/* Prompt overzicht */}
+            <div className="bg-orange-100 p-4 rounded-lg mb-6">
+              <h3 className="font-medium text-orange-800 mb-2">📋 Hoe worden deze velden gebruikt?</h3>
+              <div className="text-sm text-orange-700 space-y-1">
+                <p><strong>GPT Doelstelling:</strong> Wordt gebruikt als "Doel van het gesprek" in de AI-prompt</p>
+                <p><strong>Prompt Stijl:</strong> Bepaalt de communicatiestijl (vragend/informatief/gemengd)</p>
+                <p><strong>AI Gedrag:</strong> Definieert de rol van de AI (coach/informer/facilitator/reviewer)</p>
+                <p><strong>GPT Beperkingen:</strong> Specifieke richtlijnen voor wat de AI wel/niet mag doen</p>
+                <p><strong>Thema Type:</strong> Helpt de AI begrijpen wat voor soort gesprek het is</p>
+              </div>
+              
+              <details className="mt-4">
+                <summary className="cursor-pointer font-medium text-orange-800">🔍 Voorbeeld van hoe de AI-prompt eruit ziet</summary>
+                <div className="mt-2 p-3 bg-white rounded border text-xs font-mono text-gray-700">
+                  <p>Je bent een AI-coach binnen een HR-tool. Je begeleidt medewerkers in reflectieve gesprekken over het thema: "[titel]".</p>
+                  <br/>
+                  <p>Doel van het gesprek: [gpt_doelstelling]</p>
+                  <p>Gedrag en stijl: Hanteer de volgende stijl: [prompt_style]. Jouw gedrag als AI: [ai_behavior].</p>
+                  <p>Beperkingen: [gpt_beperkingen]</p>
+                  <p>Organisatiecontext: Deze gesprekken zijn bedoeld om medewerkers te ondersteunen, signalen op te halen en werkplezier te verhogen.</p>
                 </div>
-              );
-            }
-            if (key === 'thema_type') {
-              return (
-                <div key={key} className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Thema type</label>
-                  <select
-                    name="thema_type"
-                    value={formData.thema_type || ''}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  >
-                    <option value="">-- Kies een optie --</option>
-                    <option value="coachend">Coachend</option>
-                    <option value="informatief">Informatief</option>
-                    <option value="toetsend">Toetsend</option>
-                    <option value="open">Open</option>
-                  </select>
-                </div>
-              );
-            }
-            if (key === 'gpt_doelstelling' || key === 'gpt_beperkingen') {
-              return (
-                <div key={key} className="mb-4">
-                  <label className="block text-sm font-medium mb-1">{key.replace(/_/g, ' ')}</label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={val || ''}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  />
-                </div>
-              );
-            }
-            return (
-              <div key={key} className="mb-4">
-                <label className="block text-sm font-medium capitalize mb-1">
-                  {key === 'doel_vraag' ? 'Doel Vraag (wordt niet gebruikt)' : key.replace(/_/g, ' ')}
-                  {tooltipData[key] && (
+              </details>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* gpt_doelstelling */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  GPT Doelstelling
+                  {tooltipData.gpt_doelstelling && (
                     <span
-                      title={tooltipData[key]}
-                      className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                      title={tooltipData.gpt_doelstelling}
+                      className="ml-2 cursor-help text-orange-600 hover:text-orange-800"
                     >🛈</span>
                   )}
                 </label>
-                {typeof val === 'boolean' ? (
-                  <input 
-                    type="checkbox" 
-                    name={key} 
-                    checked={val} 
-                    onChange={handleChange}
-                    className="mt-1"
-                  />
-                ) : (
-                  <input
-                    type={key.includes('datum') ? 'date' : 'text'}
-                    name={key}
-                    value={val || ''}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                )}
+                <textarea
+                  name="gpt_doelstelling"
+                  value={formData.gpt_doelstelling || ''}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder="Bijvoorbeeld: Het doel is om werkdruk-signalen te identificeren en de medewerker te ondersteunen bij het vinden van oplossingen."
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                />
               </div>
-            )
-          })}
+
+              {/* gpt_beperkingen */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  GPT Beperkingen
+                  {tooltipData.gpt_beperkingen && (
+                    <span
+                      title={tooltipData.gpt_beperkingen}
+                      className="ml-2 cursor-help text-orange-600 hover:text-orange-800"
+                    >🛈</span>
+                  )}
+                </label>
+                <textarea
+                  name="gpt_beperkingen"
+                  value={formData.gpt_beperkingen || ''}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder="Bijvoorbeeld: Vermijd medische adviezen, focus op werkgerelateerde aspecten"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                />
+              </div>
+
+              {/* prompt_style */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  Prompt Stijl
+                  {tooltipData.prompt_style && (
+                    <span
+                      title={tooltipData.prompt_style}
+                      className="ml-2 cursor-help text-orange-600 hover:text-orange-800"
+                    >🛈</span>
+                  )}
+                </label>
+                <select
+                  name="prompt_style"
+                  value={formData.prompt_style || ''}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                >
+                  <option value="">-- Kies een optie --</option>
+                  <option value="vragend">Vragend (veel doorvragen)</option>
+                  <option value="informatief">Informatief (meer uitleg geven)</option>
+                  <option value="gemengd">Gemengd (balans tussen beide)</option>
+                </select>
+              </div>
+
+              {/* ai_behavior */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  AI Gedrag
+                  {tooltipData.ai_behavior && (
+                    <span
+                      title={tooltipData.ai_behavior}
+                      className="ml-2 cursor-help text-orange-600 hover:text-orange-800"
+                    >🛈</span>
+                  )}
+                </label>
+                <select
+                  name="ai_behavior"
+                  value={formData.ai_behavior || ''}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                >
+                  <option value="">-- Kies een optie --</option>
+                  <option value="coach">Coach (begeleidend)</option>
+                  <option value="informer">Informer (informatief)</option>
+                  <option value="facilitator">Facilitator (ondersteunend)</option>
+                  <option value="reviewer">Reviewer (evaluerend)</option>
+                </select>
+              </div>
+
+              {/* thema_type */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">
+                  Thema Type
+                  {tooltipData.thema_type && (
+                    <span
+                      title={tooltipData.thema_type}
+                      className="ml-2 cursor-help text-orange-600 hover:text-orange-800"
+                    >🛈</span>
+                  )}
+                </label>
+                <select
+                  name="thema_type"
+                  value={formData.thema_type || ''}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                >
+                  <option value="">-- Kies een optie --</option>
+                  <option value="coachend">Coachend (ontwikkeling)</option>
+                  <option value="informatief">Informatief (kennisoverdracht)</option>
+                  <option value="toetsend">Toetsend (evaluatie)</option>
+                  <option value="open">Open (verkennend)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* ⚙️ AI OUTPUT CONFIGURATIE */}
+          <div className="bg-green-50 p-6 rounded-xl">
+            <h2 className="text-xl font-semibold mb-4 text-green-800">⚙️ AI Output Configuratie</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {['geeft_score', 'geeft_samenvatting', 'geeft_ai_advies'].map(key => (
+                <div key={key} className="mb-4">
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      name={key} 
+                      checked={formData[key]} 
+                      onChange={handleChange}
+                      className="mr-2"
+                    />
+                    <span className="text-sm font-medium capitalize">
+                      {key.replace(/_/g, ' ')}
+                      {tooltipData[key] && (
+                        <span
+                          title={tooltipData[key]}
+                          className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                        >🛈</span>
+                      )}
+                    </span>
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 🔧 OVERIGE INSTELLINGEN */}
+          <div className="bg-gray-50 p-6 rounded-xl">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">🔧 Overige Instellingen</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Object.entries(formData).map(([key, val]) => {
+                if (key.startsWith('vraag_')) return null;
+                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies'].includes(key)) return null;
+                
+                return (
+                  <div key={key} className="mb-4">
+                    <label className="block text-sm font-medium capitalize mb-1">
+                      {key.replace(/_/g, ' ')}
+                      {tooltipData[key] && (
+                        <span
+                          title={tooltipData[key]}
+                          className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                        >🛈</span>
+                      )}
+                    </label>
+                    {typeof val === 'boolean' ? (
+                      <input 
+                        type="checkbox" 
+                        name={key} 
+                        checked={val} 
+                        onChange={handleChange}
+                        className="mt-1"
+                      />
+                    ) : (
+                      <input
+                        type={key.includes('datum') ? 'date' : 'text'}
+                        name={key}
+                        value={val || ''}
+                        onChange={handleChange}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
 
           {/* Vaste vragenvelden */}
           <div className="mt-6">
