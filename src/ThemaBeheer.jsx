@@ -19,8 +19,6 @@ const tooltipData = {
   thema_type: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Het type thema dat de AI helpt bepalen hoe het gesprek gevoerd moet worden. Coachend = ontwikkeling, Informatief = kennisoverdracht, Toetsend = evaluatie, Open = verkennend.',
   
   // Vragen en gesprekslogica
-  doel_vraag: 'Specifieke kernvraag die als basis dient voor de AI-samenvatting, bijvoorbeeld: "Wat wil je bespreken?"',
-  gespreksdoel: 'Interne beschrijving van het doel van het AI-gesprek (bijv. evaluatie, signalering, coaching).',
   gebruik_gpt_vragen: 'Vink aan als je in dit thema GPT-vervolgvragen wilt gebruiken in plaats van handmatig ingestelde vervolgvragen.',
   
   // AI output configuratie
@@ -28,7 +26,6 @@ const tooltipData = {
   geeft_samenvatting: 'Vink aan als het AI een samenvatting van het gesprek moet genereren.',
   geeft_ai_advies: 'Vink aan als de AI ook aanbevelingen mag geven (zoals coaching- of ontwikkelrichtingen).',
   ai_model: 'Model dat gebruikt wordt (standaard: GPT-4).',
-  ai_configuratie: 'JSON met instellingen voor de AI, zoals toon, gevoeligheid voor emoties, beperkingen.',
   
   // Thema zichtbaarheid en toegang
   standaard_zichtbaar: 'Vink aan als dit thema standaard actief moet zijn voor nieuwe werkgevers.',
@@ -69,9 +66,9 @@ function ThemaBeheer() {
     titel: '', beschrijving: '', klaar_voor_gebruik: false,
     voorgesteld_als_verplicht: false, standaard_zichtbaar: true,
     alleen_premium: false, alleen_concept: false, intro_prompt: '',
-    gespreksdoel: '', doel_vraag: '',
+
     geeft_score: true, geeft_samenvatting: true, geeft_ai_advies: true,
-    ai_configuratie: '', branche_labels: '', doelgroep_labels: '',
+    branche_labels: '', doelgroep_labels: '',
     zichtbaar_vanaf: '', zichtbaar_tot: '', zoeklabels: '', taalcode: 'nl',
     ai_model: 'gpt-4', volgorde_index: 0, versiebeheer: '',
     verwachte_signalen: '',
@@ -144,7 +141,6 @@ function ThemaBeheer() {
             setFormData(prev => ({
               ...prev,
               ...themaData,
-              ai_configuratie: JSON.stringify(themaData.ai_configuratie || {}, null, 2),
               versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
               branche_labels: (themaData.branche_labels || []).join(', '),
               doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
@@ -222,7 +218,6 @@ function ThemaBeheer() {
     try {
       const payload = {
         ...formData,
-        ai_configuratie: safeParseJSON(formData.ai_configuratie),
         versiebeheer: safeParseJSON(formData.versiebeheer),
         branche_labels: splitList(formData.branche_labels),
         doelgroep_labels: splitList(formData.doelgroep_labels),
@@ -504,7 +499,7 @@ function ThemaBeheer() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, val]) => {
                 if (key.startsWith('vraag_')) return null;
-                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies'].includes(key)) return null;
+                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag'].includes(key)) return null;
                 
                 return (
                   <div key={key} className="mb-4">
