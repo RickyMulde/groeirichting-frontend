@@ -17,7 +17,7 @@ const tooltipData = {
   ai_behavior: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Het gedrag en de rol van de AI. Coach = begeleidend, Informer = informatief, Facilitator = ondersteunend, Reviewer = evaluerend.',
   gpt_beperkingen: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Specifieke beperkingen of richtlijnen voor de AI. Bijvoorbeeld: "Vermijd medische adviezen" of "Focus op werkgerelateerde aspecten".',
   thema_type: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Het type thema dat de AI helpt bepalen hoe het gesprek gevoerd moet worden. Coachend = ontwikkeling, Informatief = kennisoverdracht, Toetsend = evaluatie, Open = verkennend.',
-  custom_system_prompt: '🎯 WORDT GEBRUIKT IN AI-PROMPT: Volledig aangepaste system prompt voor de AI. Laat leeg om de standaard prompt te gebruiken. Overschrijft alle andere AI-instellingen.',
+
   
   // Vragen en gesprekslogica
   gebruik_gpt_vragen: 'Vink aan als je in dit thema GPT-vervolgvragen wilt gebruiken in plaats van handmatig ingestelde vervolgvragen.',
@@ -76,7 +76,7 @@ function ThemaBeheer() {
     vraag_3: '', vraag_3_doel: '',
     vraag_4: '', vraag_4_doel: '',
     vraag_5: '', vraag_5_doel: '',
-    ai_behavior: '', prompt_style: '', thema_type: '', gpt_doelstelling: '', gpt_beperkingen: '', custom_system_prompt: '',
+    ai_behavior: '', prompt_style: '', thema_type: '', gpt_doelstelling: '', gpt_beperkingen: '',
   })
   const [vragen, setVragen] = useState([])
   const [nieuweVraag, setNieuweVraag] = useState({ tekst: '', taalcode: 'nl' })
@@ -491,31 +491,7 @@ function ThemaBeheer() {
               </div>
             </div>
 
-            {/* Custom System Prompt - Volledige breedte */}
-            <div className="mt-6">
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">
-                  🎯 Custom System Prompt
-                  {tooltipData.custom_system_prompt && (
-                    <span
-                      title={tooltipData.custom_system_prompt}
-                      className="ml-2 cursor-help text-orange-600 hover:text-orange-800"
-                    >🛈</span>
-                  )}
-                </label>
-                <textarea
-                  name="custom_system_prompt"
-                  value={formData.custom_system_prompt || ''}
-                  onChange={handleChange}
-                  rows={8}
-                  placeholder="Laat leeg om de standaard prompt te gebruiken. Vul in om een volledig aangepaste system prompt te gebruiken die alle andere AI-instellingen overschrijft."
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 font-mono text-sm"
-                />
-                <p className="text-xs text-orange-600 mt-1">
-                  💡 Tip: Als je dit veld invult, worden alle andere AI-instellingen (doelstelling, stijl, gedrag, etc.) genegeerd.
-                </p>
-              </div>
-            </div>
+
           </div>
 
           {/* ⚙️ AI OUTPUT CONFIGURATIE */}
@@ -586,7 +562,7 @@ function ThemaBeheer() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, val]) => {
                 if (key.startsWith('vraag_')) return null;
-                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'custom_system_prompt', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag', 'gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].includes(key)) return null;
+                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag', 'gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].includes(key)) return null;
                 
                 return (
                   <div key={key} className="mb-4">

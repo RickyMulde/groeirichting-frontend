@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { supabase } from './supabaseClient'
@@ -9,6 +9,7 @@ function GesprekPagina() {
   const themeId = params.get('theme_id')
   const gesprekIdFromUrl = params.get('gesprek_id')
   const navigate = useNavigate();
+  const chatContainerRef = useRef(null);
 
   if (!themeId) {
     return (
@@ -34,6 +35,34 @@ function GesprekPagina() {
   const [vervolgvragenPerVasteVraag, setVervolgvragenPerVasteVraag] = useState({})
   const [isVerzenden, setIsVerzenden] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  // Nieuwe state voor chat berichten
+  const [chatBerichten, setChatBerichten] = useState([])
+
+  // Functie om chat berichten toe te voegen
+  const voegChatBerichtToe = (type, inhoud, vraagId = null, isActief = false) => {
+    const nieuwBericht = {
+      id: Date.now() + Math.random(),
+      type, // 'vraag', 'antwoord', 'toelichting', 'reactie'
+      inhoud,
+      vraagId,
+      timestamp: new Date(),
+      isActief
+    }
+    setChatBerichten(prev => [...prev, nieuwBericht])
+  }
+
+  // Auto-scroll naar beneden bij nieuwe berichten
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
+    
+    // Cleanup functie
+    return () => {
+      // Cleanup code hier indien nodig
+    }
+  }, [chatBerichten])
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
@@ -81,7 +110,7 @@ function GesprekPagina() {
       setLoading(true);
       const { data, error } = await supabase
         .from('themes')
-        .select('id, titel, intro_prompt, doel_vraag, gebruik_gpt_vragen, gpt_doelstelling, prompt_style, ai_behavior, gpt_beperkingen, custom_system_prompt, geeft_samenvatting')
+        .select('id, titel, intro_prompt, doel_vraag, gebruik_gpt_vragen, gpt_doelstelling, prompt_style, ai_behavior, gpt_beperkingen, geeft_samenvatting')
         .eq('id', themeId)
         .single();
       if (!error && data) {
@@ -144,22 +173,63 @@ function GesprekPagina() {
         if (response.ok) {
           const { antwoorden } = await response.json();
           setAntwoorden(antwoorden);
+          
+          // Reset chat berichten en voeg alles opnieuw toe in chronologische volgorde
+          setChatBerichten([]);
+          
+          // Voeg intro bericht toe als het bestaat
+          if (theme?.intro_prompt) {
+            voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+          }
+          
+          // Voeg alle bestaande antwoorden toe aan chat berichten
+          antwoorden.forEach(antwoord => {
+            if (antwoord.vraag) {
+              voegChatBerichtToe('vraag', antwoord.vraag, antwoord.vraag_id, false);
+            }
+            if (antwoord.antwoord) {
+              voegChatBerichtToe('antwoord', antwoord.antwoord, antwoord.vraag_id, false);
+            }
+            // Voeg toelichtingen en reacties toe
+            if (antwoord.toelichting_type && antwoord.toelichting_inhoud) {
+              voegChatBerichtToe(antwoord.toelichting_type, antwoord.toelichting_inhoud, antwoord.vraag_id, false);
+            }
+          });
+          
           if (antwoorden.length === 0) {
             setCurrentIndex(0);
+            // Voeg eerste vraag toe
+            if (vragen.length > 0) {
+              voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
+            }
           } else {
             const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
             const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+            
             if (beantwoordeVasteVragen >= vasteVragen.length) {
               setDone(true);
             } else {
               const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
               const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
               setCurrentIndex(nieuweIndex);
+              
+              // Voeg volgende vraag toe aan chat
+              voegChatBerichtToe('vraag', volgendeVasteVraag.tekst, volgendeVasteVraag.id, true);
             }
           }
         } else if (response.status === 404) {
           setAntwoorden([]);
           setCurrentIndex(0);
+          setChatBerichten([]);
+          
+          // Voeg intro bericht toe
+          if (theme?.intro_prompt) {
+            voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+          }
+          // Voeg eerste vraag toe
+          if (vragen.length > 0) {
+            voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
+          }
         } else {
           setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
         }
@@ -184,6 +254,15 @@ function GesprekPagina() {
       setGesprekId(result.gesprek_id);
       setAntwoorden([]);
       setCurrentIndex(0);
+      
+      // Voeg intro bericht toe
+      if (theme?.intro_prompt) {
+        voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+      }
+      // Voeg eerste vraag toe
+      if (vragen.length > 0) {
+        voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
+      }
     } else {
       setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.');
     }
@@ -223,6 +302,7 @@ function GesprekPagina() {
     setCurrentIndex(-1);
     setInput('');
     setFoutmelding(null);
+    setChatBerichten([]); // Reset chat berichten
     await startGesprek();
   };
 
@@ -281,6 +361,41 @@ function GesprekPagina() {
     return result;
   }
 
+  // Nieuwe functie om toelichtingen en reacties op te slaan
+  const slaToelichtingOp = async (type, inhoud, vraagId = null) => {
+    const { data, error: authError } = await supabase.auth.getUser();
+    const user = data?.user;
+
+    if (authError || !user || !gesprekId) {
+      console.error('Gebruiker niet gevonden of geen gesprek_id beschikbaar')
+      return false
+    }
+
+    try {
+      const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          werknemer_id: user.id,
+          theme_id: themeId,
+          gesprek_id: gesprekId,
+          toelichting_type: type, // 'toelichting' of 'reactie'
+          toelichting_inhoud: inhoud,
+          vraag_id: vraagId
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Opslaan toelichting mislukt:', await response.text());
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Fout bij opslaan toelichting:', error);
+      return false;
+    }
+  }
+
   const verstuurAntwoord = async (e) => {
     e.preventDefault();
     if (!input.trim() || isVerzenden) return;
@@ -304,6 +419,9 @@ function GesprekPagina() {
       
       console.log(`Antwoord toegevoegd: ${nieuwAntwoord.type} - "${nieuwAntwoord.vraag}"`);
       console.log(`Totaal antwoorden: ${nieuweAntwoorden.length}`);
+      
+      // Voeg antwoord toe aan chat berichten
+      voegChatBerichtToe('antwoord', input, huidigeVraag.id, false);
       
       setAntwoorden(nieuweAntwoorden);
       setInput('');
@@ -342,10 +460,16 @@ function GesprekPagina() {
         
         if (decide.toelichting) {
           setToelichting(decide.toelichting);
+          voegChatBerichtToe('toelichting', decide.toelichting, huidigeVraag.id, false);
+          // Sla toelichting op in backend
+          slaToelichtingOp('toelichting', decide.toelichting, huidigeVraag.id);
         }
 
         if (decide.reactie) {
           setReactie(decide.reactie);
+          voegChatBerichtToe('reactie', decide.reactie, huidigeVraag.id, false);
+          // Sla reactie op in backend
+          slaToelichtingOp('reactie', decide.reactie, huidigeVraag.id);
         }
 
         if (decide.doorgaan && decide.vervolgvraag) {
@@ -357,6 +481,9 @@ function GesprekPagina() {
           const nieuweVragen = [...vragen, gptVraag];
           setVragen(nieuweVragen);
           setCurrentIndex(nieuweVragen.length - 1);
+          
+          // Voeg vervolgvraag toe aan chat
+          voegChatBerichtToe('vraag', decide.vervolgvraag, gptVraag.id, true);
         } else {
           // Ga naar volgende vaste vraag met de nieuwe antwoorden
           await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
@@ -410,10 +537,16 @@ function GesprekPagina() {
           
           if (decide.toelichting) {
             setToelichting(decide.toelichting);
+            voegChatBerichtToe('toelichting', decide.toelichting, huidigeVraag.id, false);
+            // Sla toelichting op in backend
+            slaToelichtingOp('toelichting', decide.toelichting, huidigeVraag.id);
           }
 
           if (decide.reactie) {
             setReactie(decide.reactie);
+            voegChatBerichtToe('reactie', decide.reactie, huidigeVraag.id, false);
+            // Sla reactie op in backend
+            slaToelichtingOp('reactie', decide.reactie, huidigeVraag.id);
           }
 
           if (decide.doorgaan && decide.vervolgvraag) {
@@ -421,10 +554,13 @@ function GesprekPagina() {
             const gptVraag = {
               id: `gpt-${Date.now()}`,
               tekst: decide.vervolgvraag
-            };
+          };
             const nieuweVragen = [...vragen, gptVraag];
             setVragen(nieuweVragen);
             setCurrentIndex(nieuweVragen.length - 1);
+            
+            // Voeg vervolgvraag toe aan chat
+            voegChatBerichtToe('vraag', decide.vervolgvraag, gptVraag.id, true);
           } else {
             // Ga naar volgende vaste vraag met de nieuwe antwoorden
             await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
@@ -475,6 +611,9 @@ function GesprekPagina() {
         setVervolgvragenPerVasteVraag({});
         setToelichting(null);
         setReactie(null);
+        
+        // Voeg nieuwe vraag toe aan chat
+        voegChatBerichtToe('vraag', volgendeVasteVraag.tekst, volgendeVasteVraag.id, true);
       } else {
         console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
         setDone(true);
@@ -494,6 +633,32 @@ function GesprekPagina() {
     }
   }
 
+  // Chat bericht component
+  const ChatBericht = ({ bericht }) => {
+    const getBerichtStyling = () => {
+      switch (bericht.type) {
+        case 'vraag':
+          return 'bg-[var(--kleur-secondary)] text-gray-800 max-w-[80%]';
+        case 'antwoord':
+          return 'bg-blue-500 text-white max-w-[80%] ml-auto';
+        case 'toelichting':
+          return 'bg-blue-50 text-blue-800 max-w-[80%]';
+        case 'reactie':
+          return 'bg-blue-50 text-blue-800 max-w-[80%] ml-auto';
+        default:
+          return 'bg-gray-100 text-gray-800 max-w-[80%]';
+      }
+    };
+
+    return (
+      <div className={`flex ${bericht.type === 'antwoord' || bericht.type === 'reactie' ? 'justify-end' : 'justify-start'} mb-3`}>
+        <div className={`p-3 rounded-lg text-sm ${getBerichtStyling()} ${bericht.isActief ? 'ring-2 ring-blue-400' : ''}`}>
+          {bericht.inhoud}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-[var(--kleur-background)]">
       <div
@@ -508,29 +673,34 @@ function GesprekPagina() {
           </h1>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {loading && (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)]"></div>
+        {loading && (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
+              <p className="text-[var(--kleur-muted)]">Laden...</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {!loading && foutmelding && (
-            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl">
+        {!loading && foutmelding && (
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl max-w-md">
               <h3 className="font-medium mb-2">Er is een fout opgetreden</h3>
-              <p className="text-sm">{foutmelding}</p>
+              <p className="text-sm mb-4">{foutmelding}</p>
               <button 
                 onClick={() => navigate('/thema-overzicht')} 
-                className="mt-3 btn btn-primary text-sm"
+                className="btn btn-primary text-sm"
               >
                 Terug naar thema overzicht
               </button>
             </div>
-          )}
+          </div>
+        )}
 
-          {!loading && !foutmelding && currentIndex === -1 && (
-            <div className="space-y-4">
-              <p className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
+        {!loading && !foutmelding && currentIndex === -1 && (
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="space-y-4 max-w-md">
+              <p className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm">
                 {theme?.intro_prompt || 'Welkom bij dit thema.'}
               </p>
               {antwoorden.some(a => a.antwoord !== null) && (
@@ -563,72 +733,33 @@ function GesprekPagina() {
                 )}
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {!loading && !foutmelding && currentIndex >= 0 && !done && (
-            <div className="space-y-4">
-              <div className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm max-w-[80%]">
-                {vragen[currentIndex]?.tekst}
-              </div>
-              {reactie && (
-                <div className="bg-blue-50 p-4 rounded-xl text-sm max-w-[80%] ml-auto">
-                  <p className="text-blue-800">{reactie}</p>
-                </div>
-              )}
-              {toelichting && (
-                <div className="bg-blue-50 p-4 rounded-xl text-sm max-w-[80%]">
-                  <p className="text-blue-800">{toelichting}</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {!loading && !foutmelding && done && (
-            <div className="space-y-4">
-              <p className="bg-green-100 text-green-800 p-4 rounded-xl">
-                Bedankt voor je antwoorden. Je gesprek is opgeslagen.
-                {theme?.geeft_samenvatting ? ' Hieronder kun je de samenvatting bekijken.' : ' Dit thema geeft geen samenvatting.'}
-              </p>
-
-              {toelichting && (
-                <div className="bg-blue-50 p-4 rounded-xl">
-                  <p className="text-blue-800">{toelichting}</p>
-                </div>
-              )}
-
-              <div className="bg-white p-4 rounded-xl border space-y-4">
-                <h3 className="font-semibold text-[var(--kleur-primary)]">Je gesprek is afgerond!</h3>
-                <p className="text-sm text-[var(--kleur-muted)]">
-                  {theme?.geeft_samenvatting 
-                    ? 'Bekijk hieronder je antwoorden en ga naar de samenvatting om je resultaten te delen.'
-                    : 'Bekijk hieronder je antwoorden. Dit thema geeft geen samenvatting.'
-                  }
-                </p>
-                
-                {theme?.geeft_samenvatting && (
-                  <button
-                    onClick={() => navigate(`/gesprek-resultaat?gesprek_id=${gesprekId}&theme_id=${themeId}`)}
-                    className="btn btn-primary w-full"
-                  >
-                    Bekijk samenvatting en deel resultaten
-                  </button>
-                )}
-              </div>
-
-              <details className="bg-gray-50 p-4 rounded-xl">
-                <summary className="cursor-pointer font-medium text-[var(--kleur-muted)]">
-                  Bekijk je antwoorden (klik om uit te klappen)
-                </summary>
-                <pre className="mt-2 text-xs border bg-white p-2 rounded overflow-auto max-h-40">
-                  {JSON.stringify(antwoorden, null, 2)}
-                </pre>
-              </details>
-            </div>
-          )}
-        </div>
-
-        {!loading && !foutmelding && !done && currentIndex >= 0 && (
+        {!loading && !foutmelding && currentIndex >= 0 && !done && (
           <>
+            {/* Chat berichten container */}
+            <div 
+              ref={chatContainerRef}
+              className="flex-1 overflow-y-auto p-4 space-y-2"
+            >
+              {chatBerichten.map((bericht) => (
+                <ChatBericht key={bericht.id} bericht={bericht} />
+              ))}
+              
+              {isVerzenden && (
+                <div className="flex justify-end mb-3">
+                  <div className="bg-gray-100 p-3 rounded-lg text-sm text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                      Verwerken...
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input form */}
             <div className="sticky bottom-0 bg-white border-t">
               <form
                 onSubmit={verstuurAntwoord}
@@ -655,6 +786,49 @@ function GesprekPagina() {
               </form>
             </div>
           </>
+        )}
+
+        {!loading && !foutmelding && done && (
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Chat berichten tonen */}
+            {chatBerichten.map((bericht) => (
+              <ChatBericht key={bericht.id} bericht={bericht} />
+            ))}
+            
+            {/* Afronding bericht */}
+            <div className="bg-green-100 text-green-800 p-4 rounded-xl">
+              Bedankt voor je antwoorden. Je gesprek is opgeslagen.
+              {theme?.geeft_samenvatting ? ' Hieronder kun je de samenvatting bekijken.' : ' Dit thema geeft geen samenvatting.'}
+            </div>
+
+            <div className="bg-white p-4 rounded-xl border space-y-4">
+              <h3 className="font-semibold text-[var(--kleur-primary)]">Je gesprek is afgerond!</h3>
+              <p className="text-sm text-[var(--kleur-muted)]">
+                {theme?.geeft_samenvatting 
+                  ? 'Bekijk hieronder je antwoorden en ga naar de samenvatting om je resultaten te delen.'
+                  : 'Bekijk hieronder je antwoorden. Dit thema geeft geen samenvatting.'
+                }
+              </p>
+              
+              {theme?.geeft_samenvatting && (
+                <button
+                  onClick={() => navigate(`/gesprek-resultaat?gesprek_id=${gesprekId}&theme_id=${themeId}`)}
+                  className="btn btn-primary w-full"
+                >
+                  Bekijk samenvatting en deel resultaten
+                </button>
+              )}
+            </div>
+
+            <details className="bg-gray-50 p-4 rounded-xl">
+              <summary className="cursor-pointer font-medium text-[var(--kleur-muted)]">
+                Bekijk je antwoorden (klik om uit te klappen)
+              </summary>
+              <pre className="mt-2 text-xs border bg-white p-2 rounded overflow-auto max-h-40">
+                {JSON.stringify(antwoorden, null, 2)}
+              </pre>
+            </details>
+          </div>
         )}
       </div>
     </div>

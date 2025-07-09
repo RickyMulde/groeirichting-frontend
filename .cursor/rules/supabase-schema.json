@@ -605,11 +605,6 @@
     "data_type": "text"
   },
   {
-    "table_name": "themes",
-    "column_name": "custom_system_prompt",
-    "data_type": "text"
-  },
-  {
     "table_name": "users",
     "column_name": "id",
     "data_type": "uuid"
