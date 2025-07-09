@@ -10,6 +10,7 @@ function GesprekPagina() {
   const gesprekIdFromUrl = params.get('gesprek_id')
   const navigate = useNavigate();
   const chatContainerRef = useRef(null);
+  const inputRef = useRef(null);
 
   if (!themeId) {
     return (
@@ -64,20 +65,43 @@ function GesprekPagina() {
     }
   }, [chatBerichten])
 
+  // Auto-focus op input veld wanneer gesprek start
+  useEffect(() => {
+    if (currentIndex >= 0 && !done && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [currentIndex, done])
+
+  // Auto-scroll naar beneden wanneer gesprek is afgerond
+  useEffect(() => {
+    if (done && chatContainerRef.current) {
+      setTimeout(() => {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }, 100);
+    }
+  }, [done]);
+
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
+    console.log('🔍 Start genereren samenvatting...');
+    console.log('Theme geeft_samenvatting:', theme?.geeft_samenvatting);
+    console.log('Theme ID:', themeId);
+    console.log('Gesprek ID:', gesprekId);
+    
     // Alleen samenvatting genereren als het thema dit ondersteunt
     if (!theme?.geeft_samenvatting) {
-      console.log('Geen samenvatting gegenereerd: geeft_samenvatting is false voor dit thema');
+      console.log('❌ Geen samenvatting gegenereerd: geeft_samenvatting is false voor dit thema');
       return;
     }
 
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData || !userData.user) {
-        console.error('Gebruiker niet gevonden');
+        console.error('❌ Gebruiker niet gevonden');
         return;
       }
+
+      console.log('👤 Gebruiker gevonden:', userData.user.id);
 
       const response = await fetch('https://groeirichting-backend.onrender.com/api/genereer-samenvatting', {
         method: 'POST',
@@ -92,14 +116,17 @@ function GesprekPagina() {
         })
       });
 
+      console.log('📡 Response status:', response.status);
+
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Fout bij genereren samenvatting:', response.status, errorText);
+        console.error('❌ Fout bij genereren samenvatting:', response.status, errorText);
       } else {
-        console.log('Samenvatting succesvol gegenereerd');
+        const result = await response.json();
+        console.log('✅ Samenvatting succesvol gegenereerd:', result);
       }
     } catch (error) {
-      console.error('Fout bij genereren samenvatting:', error);
+      console.error('❌ Fout bij genereren samenvatting:', error);
     }
   };
 
@@ -586,8 +613,11 @@ function GesprekPagina() {
     
     if (beantwoordeVasteVragen >= vasteVragen.length) {
       // Alle vaste vragen zijn beantwoord, rond het gesprek af
-      console.log('Alle vaste vragen beantwoord, rond gesprek af');
+      console.log('🎯 Alle vaste vragen beantwoord, rond gesprek af');
+      console.log(`📊 ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
       setDone(true);
+      
+      console.log('💾 Gesprek afronden...');
       await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -599,6 +629,12 @@ function GesprekPagina() {
           afrondingsreden: 'VOLDENDE_DUIDELIJK'
         })
       });
+      
+      // Wacht even zodat alle data correct is opgeslagen
+      console.log('⏳ Wacht 2 seconden voordat samenvatting wordt gegenereerd...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      console.log('📝 Start genereren samenvatting...');
       await genereerSamenvatting();
     } else {
       // Zoek de volgende onbeantwoorde vaste vraag
@@ -628,6 +664,11 @@ function GesprekPagina() {
             afrondingsreden: 'VOLDENDE_DUIDELIJK'
           })
         });
+        
+        // Wacht even zodat alle data correct is opgeslagen
+        console.log('⏳ Wacht 2 seconden voordat samenvatting wordt gegenereerd...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
         await genereerSamenvatting();
       }
     }
@@ -766,6 +807,7 @@ function GesprekPagina() {
                 className="p-4 flex items-center gap-2"
               >
                 <input
+                  ref={inputRef}
                   type="text"
                   placeholder="Typ je antwoord..."
                   value={input}
@@ -815,7 +857,7 @@ function GesprekPagina() {
                   onClick={() => navigate(`/gesprek-resultaat?gesprek_id=${gesprekId}&theme_id=${themeId}`)}
                   className="btn btn-primary w-full"
                 >
-                  Bekijk samenvatting en deel resultaten
+                  Bekijk de samenvatting van je gesprek
                 </button>
               )}
             </div>
