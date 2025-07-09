@@ -137,15 +137,25 @@ function ThemaBeheer() {
           } else {
             const vragen = loadedVragen || []
             setVragen(vragen)
-            setFormData(prev => ({
-              ...prev,
+            
+            // Vul de formData met de geladen vragen en doelvragen
+            const formDataMetVragen = {
               ...themaData,
               versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
               branche_labels: (themaData.branche_labels || []).join(', '),
               doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
               zoeklabels: (themaData.zoeklabels || []).join(', '),
               verwachte_signalen: (themaData.verwachte_signalen || []).join(', ')
-            }))
+            }
+            
+            // Vul de vraag velden in formData
+            vragen.forEach((vraag, index) => {
+              const vraagNr = index + 1
+              formDataMetVragen[`vraag_${vraagNr}`] = vraag.tekst || ''
+              formDataMetVragen[`vraag_${vraagNr}_doel`] = vraag.doel_vraag || ''
+            })
+            
+            setFormData(formDataMetVragen)
           }
         }
         setLoading(false)
