@@ -245,17 +245,12 @@ function GesprekResultaat() {
       </section>
 
       <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold">De samenvatting en score zijn anoniem gedeeld met je werkgever</h2>
-          <p className="text-sm text-[var(--kleur-muted)]">
-            Privacy by design. Jouw werkgever kan een samenvatting nooit herleiden naar jou persoonlijk. 
-            Bekijk hoe en wat er met jouw gegevens gebeurd
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <button className="btn btn-primary w-full sm:w-auto">Wat gebeurt er met jouw gegevens?</button>
-        </div>
+        <h2 className="text-xl font-semibold mb-2">Mogelijke vervolgacties op basis van jouw antwoorden:</h2>
+        <ol className="list-decimal list-inside text-gray-700 space-y-1">
+          <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
+          <li>Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.</li>
+          <li>Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.</li>
+        </ol>
       </section>
     </div>
   )
