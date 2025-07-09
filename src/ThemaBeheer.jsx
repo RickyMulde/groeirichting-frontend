@@ -84,6 +84,11 @@ function ThemaBeheer() {
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [scoreInstructies, setScoreInstructies] = useState({
+    score_instructie: '',
+    ...Object.fromEntries(Array.from({length: 10}, (_, i) => [`score_bepalen_${i+1}`, '']))
+  });
+  const [scoreInstructiesError, setScoreInstructiesError] = useState('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -248,6 +253,19 @@ function ThemaBeheer() {
         tekst: formData[`vraag_${nr}`],
         doel_vraag: formData[`vraag_${nr}_doel`]
       })).filter(vraag => vraag.tekst.trim() !== ''); // Alleen vragen met tekst meesturen
+
+      // Valideer scoreInstructies
+      const emptyScoreField = Object.values(scoreInstructies).some(v => !v || v.trim() === '');
+      if (emptyScoreField) {
+        setScoreInstructiesError('Vul alle velden in bij Promptinstellingen genereer-samenvatting.');
+        setSaving(false);
+        return;
+      } else {
+        setScoreInstructiesError('');
+      }
+
+      // Voeg toe aan payload
+      payload.score_instructies = {...scoreInstructies};
 
       if (nieuwThema) {
         const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
@@ -606,6 +624,24 @@ function ThemaBeheer() {
                 )
               })}
             </div>
+          </div>
+
+          {/* Promptinstellingen genereer-samenvatting */}
+          <div className="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-400 mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-purple-800">Promptinstellingen genereer-samenvatting</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mb-4 col-span-2">
+                <label className="block text-sm font-medium mb-1">Score instructie (signalen) <span className="text-red-500">*</span></label>
+                <textarea name="score_instructie" value={scoreInstructies.score_instructie} onChange={e => setScoreInstructies(s => ({...s, score_instructie: e.target.value}))} rows={2} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" required />
+              </div>
+              {Array.from({length: 10}, (_, i) => (
+                <div className="mb-4" key={i}>
+                  <label className="block text-sm font-medium mb-1">Score bepalen {i+1} <span className="text-red-500">*</span></label>
+                  <input type="text" name={`score_bepalen_${i+1}`} value={scoreInstructies[`score_bepalen_${i+1}`]} onChange={e => setScoreInstructies(s => ({...s, [`score_bepalen_${i+1}`]: e.target.value}))} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" required />
+                </div>
+              ))}
+            </div>
+            {scoreInstructiesError && <div className="text-red-600 text-sm mt-2">{scoreInstructiesError}</div>}
           </div>
 
           <div className="mt-6 flex justify-end space-x-4">
