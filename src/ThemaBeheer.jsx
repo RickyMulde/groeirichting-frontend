@@ -160,6 +160,17 @@ function ThemaBeheer() {
               formDataMetVragen[`vraag_${vraagNr}_doel`] = vraag.doel_vraag || ''
             })
             
+            // Laad score instructies uit themaData
+            if (themaData.score_instructies) {
+              setScoreInstructies({
+                score_instructie: themaData.score_instructies.score_instructie || '',
+                ...Object.fromEntries(Array.from({length: 10}, (_, i) => [
+                  `score_bepalen_${i+1}`, 
+                  themaData.score_instructies[`score_bepalen_${i+1}`] || ''
+                ]))
+              })
+            }
+            
             setFormData(formDataMetVragen)
           }
         }
