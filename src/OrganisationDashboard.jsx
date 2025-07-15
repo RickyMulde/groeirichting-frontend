@@ -316,21 +316,21 @@ function OrganisationDashboard() {
 
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <button 
                   onClick={() => navigate('/werkgever-portaal')}
-                  className="btn btn-secondary flex items-center gap-2"
+                  className="btn btn-secondary flex items-center gap-2 w-fit"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Terug naar portaal
                 </button>
                 <div>
-                  <h1 className="text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
-                  <p className="text-gray-600">Overzicht van alle thema's en resultaten</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
+                  <p className="text-gray-600 text-sm sm:text-base">Overzicht van alle thema's en resultaten</p>
                 </div>
               </div>
-              <BarChart3 className="text-[var(--kleur-primary)] w-8 h-8" />
+              <BarChart3 className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
             </div>
           </div>
 
@@ -367,21 +367,21 @@ function OrganisationDashboard() {
 
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <button 
                 onClick={() => navigate('/werkgever-portaal')}
-                className="btn btn-secondary flex items-center gap-2"
+                className="btn btn-secondary flex items-center gap-2 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Terug naar portaal
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
-                <p className="text-gray-600">Overzicht van alle thema's en resultaten</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Overzicht van alle thema's en resultaten</p>
               </div>
             </div>
-            <BarChart3 className="text-[var(--kleur-primary)] w-8 h-8" />
+            <BarChart3 className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
           </div>
 
           {/* Statistieken */}
