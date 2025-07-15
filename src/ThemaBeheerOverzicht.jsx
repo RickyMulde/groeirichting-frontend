@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
+import { ArrowLeft, Settings, Plus } from 'lucide-react'
 
 function ThemaBeheerOverzicht() {
   const [loading, setLoading] = useState(true)
@@ -37,15 +38,31 @@ function ThemaBeheerOverzicht() {
 
   return (
     <div className="page-container">
-      <button
-        className="btn btn-secondary mb-4"
-        onClick={() => navigate('/superadmin-portaal')}
-      >
-        &larr; Terug naar superadmin
-      </button>
-      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Thema's beheren</h1>
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <button 
+                onClick={() => navigate('/superadmin-portaal')}
+                className="btn btn-secondary flex items-center gap-2 w-fit"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Terug naar portaal
+              </button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema's beheren</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Beheer alle thema's en hun configuratie voor de AI-gesprekken.</p>
+              </div>
+            </div>
+            <Settings className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+          </div>
+        </div>
 
-      <Link to="/superadmin/thema/nieuw" className="btn btn-primary">+ Thema toevoegen</Link>
+        <Link to="/superadmin/thema/nieuw" className="btn btn-primary flex items-center gap-2 w-fit mb-6">
+          <Plus className="w-4 h-4" />
+          Thema toevoegen
+        </Link>
 
       <div className="bg-white shadow-md p-6 rounded-xl mt-6">
         <h2 className="text-lg font-semibold mb-3">Bestaande thema's</h2>
@@ -60,6 +77,7 @@ function ThemaBeheerOverzicht() {
             </li>
           ))}
         </ul>
+      </div>
       </div>
     </div>
   )
