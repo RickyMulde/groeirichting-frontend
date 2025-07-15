@@ -27,11 +27,11 @@ function EmployerPortal() {
           <div className="flex items-center gap-4">
             <BarChart3 className="text-[var(--kleur-primary)] w-8 h-8" />
             <div>
-              <h2 className="text-xl font-semibold">Dashboard</h2>
-              <p className="text-sm text-gray-500">Bekijk signalen, actieve thema's en respons in één overzicht.</p>
+              <h2 className="text-xl font-semibold">Organisatie Dashboard</h2>
+              <p className="text-sm text-gray-500">Bekijk thema's, scores en samenvattingen van alle medewerkers.</p>
             </div>
           </div>
-          <Link to="/dashboard" className="btn btn-primary">Ga naar dashboard</Link>
+          <Link to="/organisatie-dashboard" className="btn btn-primary">Ga naar dashboard</Link>
         </section>
 
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
