@@ -549,40 +549,19 @@ function OrganisationDashboard() {
                       </button>
                     )}
                     
-                    {theme.heeft_samenvatting && theme.samenvatting_status && theme.samenvatting_status === 'handmatig' && (
-                      <span className="text-green-600 text-sm font-medium flex items-center gap-1">
-                        <CheckCircle className="w-4 h-4" />
-                        Samenvatting beschikbaar (onvolledig)
-                      </span>
-                    )}
+
                   </div>
                 </div>
                 
                 {/* Expand/collapse section onderaan */}
                 <div className="mt-4 text-center">
-                  {theme.voltooide_medewerkers < 4 ? (
-                    <div className="flex flex-col items-center gap-2">
-                      <span className="text-gray-500 text-sm">Samenvatting en adviezen nog niet beschikbaar</span>
-                      <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                        {expandedTheme === theme.theme_id ? (
-                          <ChevronUp className="w-5 h-5 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-2">
-                      <span className="text-gray-500 text-sm">Samenvatting en adviezen beschikbaar</span>
-                      <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                        {expandedTheme === theme.theme_id ? (
-                          <ChevronUp className="w-5 h-5 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    {expandedTheme === theme.theme_id ? (
+                      <ChevronUp className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    )}
+                  </div>
                 </div>
               </div>
 
