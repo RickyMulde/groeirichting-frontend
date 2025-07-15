@@ -20,9 +20,11 @@ function OrganisationDashboard() {
   const [showTooltip, setShowTooltip] = useState(null)
   const [tooltipTimeout, setTooltipTimeout] = useState(null)
 
+  // Load data on mount
   useEffect(() => {
+    setError(null) // Reset error state
     fetchOrganisationThemes()
-  }, [])
+  }, [fetchOrganisationThemes])
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
@@ -61,16 +63,13 @@ function OrganisationDashboard() {
   }, [handleTooltipHide, tooltipTimeout])
 
   const fetchOrganisationThemes = useCallback(async () => {
-    startApiCall('fetchOrganisationThemes')
-    
     try {
+      setLoading(true)
+      setError(null) // Reset error state
+      startApiCall('fetchOrganisationThemes')
+      
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        navigate('/login')
-        return
-      }
-
-      // Haal werkgever ID op
+      
       const { data: employer, error: employerError } = await supabase
         .from('employers')
         .select('id')
@@ -78,11 +77,9 @@ function OrganisationDashboard() {
         .single()
 
       if (employerError || !employer) {
-        setError('Werkgever niet gevonden. Controleer of je account correct is ingesteld.')
-        return
+        throw new Error('Werkgever niet gevonden')
       }
 
-      // Haal thema's op
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`)
       
       if (!response.ok) {
@@ -121,6 +118,11 @@ function OrganisationDashboard() {
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-summary/${employer.id}/${themeId}`)
       
       if (!response.ok) {
+        if (response.status === 404) {
+          // Geen samenvatting gevonden, dit is normaal
+          console.log('Geen samenvatting gevonden voor thema:', themeId)
+          return
+        }
         const errorData = await response.json().catch(() => ({}))
         throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen samenvatting`)
       }
@@ -132,7 +134,10 @@ function OrganisationDashboard() {
       }))
     } catch (err) {
       console.error('Fout bij ophalen samenvatting:', err)
-      setError(err.message || 'Onbekende fout bij ophalen samenvatting')
+      // Alleen echte fouten tonen, niet 404's
+      if (!err.message.includes('404') && !err.message.includes('Samenvatting niet gevonden')) {
+        setError(err.message || 'Onbekende fout bij ophalen samenvatting')
+      }
     } finally {
       setSummaryLoading(null)
     }
@@ -141,6 +146,7 @@ function OrganisationDashboard() {
   const generateSummary = useCallback(async (themeId) => {
     try {
       setSummaryLoading(themeId)
+      setError(null) // Reset error state
       const { data: { user } } = await supabase.auth.getUser()
       
       const { data: employer, error: employerError } = await supabase
@@ -237,6 +243,8 @@ function OrganisationDashboard() {
         return 'Volledig voltooid'
       case 'beschikbaar':
         return 'Samenvatting beschikbaar'
+      case 'handmatig':
+        return 'Handmatig gegenereerd'
       case 'niet_beschikbaar':
         return 'Nog niet beschikbaar'
       default:
@@ -288,11 +296,48 @@ function OrganisationDashboard() {
   if (error) {
     return (
       <div className="page-container">
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">{error}</p>
-          <button onClick={fetchOrganisationThemes} className="btn btn-primary">
-            Opnieuw proberen
-          </button>
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Error banner */}
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600" />
+              <div className="flex-1">
+                <p className="text-red-800 font-medium">Er is een fout opgetreden</p>
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+              <button 
+                onClick={() => setError(null)} 
+                className="btn btn-primary text-sm"
+              >
+                Sluiten
+              </button>
+            </div>
+          </div>
+
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => navigate('/werkgever-portaal')}
+                  className="btn btn-secondary flex items-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Terug naar portaal
+                </button>
+                <div>
+                  <h1 className="text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
+                  <p className="text-gray-600">Overzicht van alle thema's en resultaten</p>
+                </div>
+              </div>
+              <BarChart3 className="text-[var(--kleur-primary)] w-8 h-8" />
+            </div>
+          </div>
+
+          {/* Placeholder voor thema's */}
+          <div className="text-center py-12">
+            <p className="text-gray-500">Probeer de pagina te verversen om de thema's te laden</p>
+          </div>
         </div>
       </div>
     )
@@ -301,6 +346,25 @@ function OrganisationDashboard() {
   return (
     <div className="page-container">
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Error banner */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600" />
+              <div className="flex-1">
+                <p className="text-red-800 font-medium">Er is een fout opgetreden</p>
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+              <button 
+                onClick={() => setError(null)} 
+                className="btn btn-primary text-sm"
+              >
+                Sluiten
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -468,7 +532,7 @@ function OrganisationDashboard() {
                   
                   <div className="flex items-center gap-4 ml-4">
                     {/* Actie knoppen */}
-                    {theme.samenvatting_status === 'beschikbaar' && !theme.heeft_samenvatting && (
+                    {theme.voltooide_medewerkers >= 4 && !theme.heeft_samenvatting && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -485,6 +549,13 @@ function OrganisationDashboard() {
                       <span className="text-green-600 text-sm font-medium flex items-center gap-1">
                         <CheckCircle className="w-4 h-4" />
                         Beschikbaar
+                      </span>
+                    )}
+                    
+                    {theme.voltooide_medewerkers < 4 && (
+                      <span className="text-gray-500 text-sm font-medium flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {theme.voltooide_medewerkers}/4 voltooid
                       </span>
                     )}
                     
@@ -620,17 +691,26 @@ function OrganisationDashboard() {
                         <AlertCircle className="w-8 h-8 text-gray-400" />
                       </div>
                       <p className="text-gray-600 font-medium mb-2">
-                        {theme.samenvatting_status === 'niet_beschikbaar' ? 
+                        {theme.voltooide_medewerkers < 4 ? 
                           'Samenvatting nog niet beschikbaar' : 
                           'Geen samenvatting gevonden'
                         }
                       </p>
-                      <p className="text-gray-500 text-sm">
-                        {theme.samenvatting_status === 'niet_beschikbaar' ? 
-                          'Minimaal 4 medewerkers moeten het thema voltooien' : 
-                          'Klik op "Genereer samenvatting" om een samenvatting te maken'
+                      <p className="text-gray-500 text-sm mb-4">
+                        {theme.voltooide_medewerkers < 4 ? 
+                          `Minimaal 4 medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/4 voltooid)` : 
+                          'Er is nog geen samenvatting gegenereerd voor dit thema'
                         }
                       </p>
+                      {theme.voltooide_medewerkers >= 4 && (
+                        <button
+                          onClick={() => generateSummary(theme.theme_id)}
+                          disabled={summaryLoading === theme.theme_id}
+                          className="btn btn-accent"
+                        >
+                          {summaryLoading === theme.theme_id ? 'Genereren...' : 'Genereer samenvatting'}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
