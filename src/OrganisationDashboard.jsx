@@ -524,13 +524,7 @@ function OrganisationDashboard() {
 
                       </div>
                       
-                      {/* Status indicator */}
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(theme.samenvatting_status)}
-                        <span className="text-sm text-gray-600">
-                          {getStatusText(theme.samenvatting_status)}
-                        </span>
-                      </div>
+
                     </div>
                   </div>
                   
@@ -555,12 +549,20 @@ function OrganisationDashboard() {
                 
                 {/* Expand/collapse section onderaan */}
                 <div className="mt-4 text-center">
-                  <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                    {expandedTheme === theme.theme_id ? (
-                      <ChevronUp className="w-5 h-5 text-gray-400" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
-                    )}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(theme.samenvatting_status)}
+                      <span className="text-sm text-gray-600">
+                        {getStatusText(theme.samenvatting_status)}
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                      {expandedTheme === theme.theme_id ? (
+                        <ChevronUp className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-400" />
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
