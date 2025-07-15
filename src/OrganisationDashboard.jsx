@@ -345,7 +345,7 @@ function OrganisationDashboard() {
 
   return (
     <div className="page-container">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
         {/* Error banner */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
@@ -435,64 +435,67 @@ function OrganisationDashboard() {
                 className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => toggleTheme(theme.theme_id)}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-3">
+                    <div className="flex items-start gap-4 mb-3">
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold text-gray-900 mb-1">{theme.titel}</h3>
                         <p className="text-gray-600 text-sm">{theme.beschrijving}</p>
                       </div>
                       
                       {/* Score meter */}
-                      {theme.gemiddelde_score && (
-                        <div className="flex items-center gap-3">
-                          <div className="relative">
-                            <div 
-                              className={`w-16 h-16 rounded-full bg-gradient-to-br ${getScoreGradient(theme.gemiddelde_score)} flex items-center justify-center text-white font-bold text-lg shadow-lg cursor-pointer hover:scale-105 transition-transform`}
-                              onMouseEnter={() => handleTooltipShow(theme.theme_id)}
-                              onMouseLeave={handleTooltipHide}
-                              title="Hover voor individuele scores"
-                            >
-                              {theme.gemiddelde_score}
-                            </div>
-                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center">
-                              <div className={`w-3 h-3 rounded-full ${getScoreBackground(theme.gemiddelde_score)}`}></div>
-                            </div>
-                            
-                            {/* Tooltip voor individuele scores */}
-                            {theme.individuele_scores && theme.individuele_scores.length > 0 && showTooltip === theme.theme_id && (
-                              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10">
-                                <div className="bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-xs">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <Users className="w-3 h-3" />
-                                    <span className="font-medium">Individuele scores (geanonimiseerd)</span>
-                                  </div>
-                                  <div className="space-y-1">
-                                    {theme.individuele_scores.slice(0, 5).map((score, index) => (
-                                      <div key={index} className="flex items-center justify-between">
-                                        <span className="text-gray-300">Score {index + 1}:</span>
-                                        <span className={`font-medium ${getScoreColor(score)}`}>{score}</span>
-                                      </div>
-                                    ))}
-                                    {theme.individuele_scores.length > 5 && (
-                                      <div className="text-gray-400 text-xs mt-1">
-                                        +{theme.individuele_scores.length - 5} meer scores
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
-                                </div>
+                      <div className="flex-shrink-0">
+                        <div className="relative">
+                          {theme.gemiddelde_score ? (
+                            <>
+                              <div 
+                                className={`w-16 h-16 rounded-full bg-gradient-to-br ${getScoreGradient(theme.gemiddelde_score)} flex items-center justify-center text-white font-bold text-lg shadow-lg cursor-pointer hover:scale-105 transition-transform`}
+                                onMouseEnter={() => handleTooltipShow(theme.theme_id)}
+                                onMouseLeave={handleTooltipHide}
+                                title="Hover voor individuele scores"
+                              >
+                                {theme.gemiddelde_score}
                               </div>
-                            )}
-                          </div>
-                          <div className="text-right">
-                            <p className={`text-sm font-medium ${getScoreColor(theme.gemiddelde_score)}`}>
-                              Gemiddelde score
-                            </p>
-                            <p className="text-xs text-gray-500">1-10 schaal</p>
-                          </div>
+                              <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center">
+                                <div className={`w-3 h-3 rounded-full ${getScoreBackground(theme.gemiddelde_score)}`}></div>
+                              </div>
+                              
+                              {/* Tooltip voor individuele scores */}
+                              {theme.individuele_scores && theme.individuele_scores.length > 0 && showTooltip === theme.theme_id && (
+                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10">
+                                  <div className="bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-xs">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <Users className="w-3 h-3" />
+                                      <span className="font-medium">Individuele scores (geanonimiseerd)</span>
+                                    </div>
+                                    <div className="space-y-1">
+                                      {theme.individuele_scores.slice(0, 5).map((score, index) => (
+                                        <div key={index} className="flex items-center justify-between">
+                                          <span className="text-gray-300">Score {index + 1}:</span>
+                                          <span className={`font-medium ${getScoreColor(score)}`}>{score}</span>
+                                        </div>
+                                      ))}
+                                      {theme.individuele_scores.length > 5 && (
+                                        <div className="text-gray-400 text-xs mt-1">
+                                          +{theme.individuele_scores.length - 5} meer scores
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <div 
+                              className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-500 font-bold text-lg shadow-lg cursor-help transition-transform"
+                              title="De gemiddelde score is vanaf 4 medewerkers zichtbaar"
+                            >
+                              -
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
                     
                     {/* Voortgang en status */}
@@ -518,9 +521,7 @@ function OrganisationDashboard() {
                           </div>
                         </div>
                         
-                        <span className="text-xs text-gray-500 font-medium">
-                          {getProgressPercentage(theme.voltooide_medewerkers, theme.totaal_medewerkers)}%
-                        </span>
+
                       </div>
                       
                       {/* Status indicator */}
