@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { Plus, RotateCcw, Calendar, Play, Eye } from 'lucide-react'
+import { Plus, RotateCcw, Calendar, Play, Eye, ArrowLeft } from 'lucide-react'
 
 function ThemaOverzicht() {
   const navigate = useNavigate()
@@ -160,80 +160,104 @@ function ThemaOverzicht() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-      <h2 className="text-xl font-semibold mb-4">Jouw thema's en gesprekken</h2>
-      {themas.length === 0 ? (
-        <p className="text-gray-500">Er zijn nog geen thema's beschikbaar.</p>
-      ) : (
-        themas.map((thema) => (
-          <div key={thema.id} className="border rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-medium text-lg">{thema.titel}</h3>
+    <div className="page-container">
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <button 
-                onClick={() => startVervolggesprek(thema.id)}
-                className="btn btn-secondary text-sm flex items-center gap-2"
+                onClick={() => navigate('/werknemer-portaal')}
+                className="btn btn-secondary flex items-center gap-2 w-fit"
               >
-                <Plus size={16} />
-                Nieuw gesprek
+                <ArrowLeft className="w-4 h-4" />
+                Terug naar portaal
               </button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Jouw thema's en gesprekken</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Bekijk en beheer je thema's en gesprekken.</p>
+              </div>
             </div>
-            
-            {thema.gesprekken.length === 0 ? (
-              <p className="text-gray-500 text-sm">Nog geen gesprekken gestart</p>
-            ) : (
-              <div className="space-y-2">
-                {thema.gesprekken.map((gesprek, index) => (
-                  <div key={gesprek.id} className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-gray-50 rounded-lg gap-2">
-                    <div className="flex items-center gap-3">
-                      <Calendar size={16} className="text-gray-400" />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">
-                            Gesprek {thema.gesprekken.length - index}
-                          </span>
-                          <span className={`text-xs px-2 py-1 rounded-full ${statusKleur[gesprek.status]}`}>
-                            {statusTekst[gesprek.status]}
-                          </span>
+            <Eye className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+          </div>
+        </div>
+
+        {/* Rest van de pagina */}
+        <div className="max-w-2xl mx-auto space-y-6">
+          {themas.length === 0 ? (
+            <p className="text-gray-500">Er zijn nog geen thema's beschikbaar.</p>
+          ) : (
+            themas.map((thema) => (
+              <div key={thema.id} className="border rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-medium text-lg">{thema.titel}</h3>
+                  <button 
+                    onClick={() => startVervolggesprek(thema.id)}
+                    className="btn btn-secondary text-sm flex items-center gap-2"
+                  >
+                    <Plus size={16} />
+                    Nieuw gesprek
+                  </button>
+                </div>
+                
+                {thema.gesprekken.length === 0 ? (
+                  <p className="text-gray-500 text-sm">Nog geen gesprekken gestart</p>
+                ) : (
+                  <div className="space-y-2">
+                    {thema.gesprekken.map((gesprek, index) => (
+                      <div key={gesprek.id} className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-gray-50 rounded-lg gap-2">
+                        <div className="flex items-center gap-3">
+                          <Calendar size={16} className="text-gray-400" />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium">
+                                Gesprek {thema.gesprekken.length - index}
+                              </span>
+                              <span className={`text-xs px-2 py-1 rounded-full ${statusKleur[gesprek.status]}`}>
+                                {statusTekst[gesprek.status]}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Gestart: {formatDate(gesprek.gestart_op)}
+                              {gesprek.beeindigd_op && ` • Afgerond: ${formatDate(gesprek.beeindigd_op)}`}
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-500">
-                          Gestart: {formatDate(gesprek.gestart_op)}
-                          {gesprek.beeindigd_op && ` • Afgerond: ${formatDate(gesprek.beeindigd_op)}`}
+                        <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
+                          {gesprek.status === 'Nog niet afgerond' && (
+                            <button
+                              onClick={() => navigate(`/gesprek?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
+                              className="btn btn-primary flex items-center gap-1 text-sm"
+                            >
+                              <Play size={16} /> Ga verder
+                            </button>
+                          )}
+                          {(gesprek.status === 'Nog niet afgerond' || gesprek.status === 'Afgerond') && (
+                            <button
+                              onClick={() => herstartGesprek(gesprek.id, thema.id)}
+                              className="btn btn-accent flex items-center gap-1 text-sm"
+                            >
+                              <RotateCcw size={16} /> Herstart
+                            </button>
+                          )}
+                          {gesprek.status === 'Afgerond' && (
+                            <button
+                              onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
+                              className="btn btn-primary flex items-center gap-1 text-sm"
+                            >
+                              <Eye size={16} /> Bekijk resultaat
+                            </button>
+                          )}
                         </div>
                       </div>
-                    </div>
-                    <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
-                      {gesprek.status === 'Nog niet afgerond' && (
-                        <button
-                          onClick={() => navigate(`/gesprek?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                          className="btn btn-primary flex items-center gap-1 text-sm"
-                        >
-                          <Play size={16} /> Ga verder
-                        </button>
-                      )}
-                      {(gesprek.status === 'Nog niet afgerond' || gesprek.status === 'Afgerond') && (
-                        <button
-                          onClick={() => herstartGesprek(gesprek.id, thema.id)}
-                          className="btn btn-accent flex items-center gap-1 text-sm"
-                        >
-                          <RotateCcw size={16} /> Herstart
-                        </button>
-                      )}
-                      {gesprek.status === 'Afgerond' && (
-                        <button
-                          onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                          className="btn btn-primary flex items-center gap-1 text-sm"
-                        >
-                          <Eye size={16} /> Bekijk resultaat
-                        </button>
-                      )}
-                    </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
-        ))
-      )}
+            ))
+          )}
+        </div>
+      </div>
     </div>
   )
 }

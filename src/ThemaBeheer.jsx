@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import Alert from './Alert'
-import React from 'react'
+import { ArrowLeft, Settings } from 'lucide-react'
 
 const tooltipData = {
   // Basis thema informatie
@@ -305,10 +305,30 @@ function ThemaBeheer() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Thema Beheren</h1>
-      {error && <Alert type="error" message={error} />}
-      {success && <Alert type="success" message={success} />}
+    <div className="page-container">
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <button 
+                onClick={() => navigate('/superadmin-portaal')}
+                className="btn btn-secondary flex items-center gap-2 w-fit"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Terug naar portaal
+              </button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema Beheren</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Beheer thema's en hun configuratie voor de AI-gesprekken.</p>
+              </div>
+            </div>
+            <Settings className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+          </div>
+        </div>
+
+                {error && <Alert type="error" message={error} />}
+        {success && <Alert type="success" message={success} />}
       
       {loading ? (
         <div>Laden...</div>
@@ -680,6 +700,7 @@ function ThemaBeheer() {
           <span className="ml-4 text-blue-700">Bezig met opslaan...</span>
         </div>
       )}
+      </div>
     </div>
   )
 }

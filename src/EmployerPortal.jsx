@@ -22,12 +22,12 @@ function EmployerPortal() {
 
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Welkom bij het werkgever portaal</h1>
 
-      <div className="max-w-4xl mx-auto pt-20 px-4 space-y-8">
+      <div className="max-w-4xl mx-auto pt-8 px-4 space-y-8">
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <BarChart3 className="text-[var(--kleur-primary)] w-8 h-8" />
             <div>
-              <h2 className="text-xl font-semibold">Organisatie Dashboard</h2>
+              <h2 className="text-xl font-semibold">Thema Dashboard</h2>
               <p className="text-sm text-gray-500">Bekijk thema's, scores en samenvattingen van alle medewerkers.</p>
             </div>
           </div>

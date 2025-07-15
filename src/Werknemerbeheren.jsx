@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { MailPlus, Pencil, Trash2, RefreshCw } from 'lucide-react'
+import { MailPlus, Pencil, Trash2, RefreshCw, ArrowLeft, Users } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import Alert from './Alert'
 
 function WerknemerBeheren() {
@@ -11,6 +12,7 @@ function WerknemerBeheren() {
   const [loading, setLoading] = useState(false)
   const [foutmelding, setFoutmelding] = useState('')
   const [succesmelding, setSuccesmelding] = useState('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchData()
@@ -135,10 +137,27 @@ function WerknemerBeheren() {
       <Alert type="success" message={succesmelding} onClose={() => setSuccesmelding('')} />
       <Alert type="error" message={foutmelding} onClose={() => setFoutmelding('')} />
 
-      <section>
-        <h1 className="text-2xl font-semibold mb-2">Werknemers beheren</h1>
-        <p className="text-kleur-muted">Nodig nieuwe medewerkers uit en beheer bestaande accounts.</p>
-      </section>
+      {/* Header */}
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <button 
+                onClick={() => navigate('/werkgever-portaal')}
+                className="btn btn-secondary flex items-center gap-2 w-fit"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Terug naar portaal
+              </button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Werknemers beheren</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Nodig nieuwe medewerkers uit en beheer bestaande accounts.</p>
+              </div>
+            </div>
+            <Users className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+          </div>
+        </div>
+      </div>
 
       <section className="bg-white shadow-md p-6 rounded-xl">
         <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
