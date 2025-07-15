@@ -500,7 +500,10 @@ function OrganisationDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-600">
+                          <span 
+                            className="text-sm text-gray-600 cursor-help"
+                            title="Resultaten zijn vanaf 4 medewerkers zichtbaar"
+                          >
                             {theme.voltooide_medewerkers} van {theme.totaal_medewerkers} voltooid
                           </span>
                         </div>
@@ -552,12 +555,7 @@ function OrganisationDashboard() {
                       </span>
                     )}
                     
-                    {theme.voltooide_medewerkers < 4 && (
-                      <span className="text-gray-500 text-sm font-medium flex items-center gap-1">
-                        <AlertCircle className="w-4 h-4" />
-                        {theme.voltooide_medewerkers}/4 voltooid
-                      </span>
-                    )}
+
                     
                     {/* Expand/collapse icon */}
                     <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
