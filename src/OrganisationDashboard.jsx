@@ -24,7 +24,7 @@ function OrganisationDashboard() {
   useEffect(() => {
     setError(null) // Reset error state
     fetchOrganisationThemes()
-  }, [fetchOrganisationThemes])
+  }, []) // Lege dependency array om circulaire dependency te voorkomen
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
