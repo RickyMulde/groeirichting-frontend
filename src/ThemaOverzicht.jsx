@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { Plus, RotateCcw, Calendar, Play, Eye, ArrowLeft } from 'lucide-react'
+import { Plus, RotateCcw, Calendar, Play, Eye, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
 
 function ThemaOverzicht() {
   const navigate = useNavigate()
   const [themas, setThemas] = useState([])
   const [loading, setLoading] = useState(true)
+  const [expandedThema, setExpandedThema] = useState(null)
 
   useEffect(() => {
     const fetchThemas = async () => {
@@ -17,10 +18,32 @@ function ThemaOverzicht() {
         return;
       }
 
-      // Haal eerst de thema's op
+      try {
+        // Haal thema data op via nieuwe API met werkgever configuratie
+        const response = await fetch(`https://groeirichting-backend.onrender.com/api/get-thema-data-werknemer/${user.id}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setThemas(data.thema_data || []);
+        } else {
+          console.error('Fout bij ophalen thema data:', response.status);
+          // Fallback naar oude methode
+          await fetchThemasFallback(user.id);
+        }
+      } catch (error) {
+        console.error('Fout bij ophalen thema data:', error);
+        // Fallback naar oude methode
+        await fetchThemasFallback(user.id);
+      }
+      
+      setLoading(false);
+    };
+
+    const fetchThemasFallback = async (userId) => {
+      // Oude methode als fallback
       const { data: themaData, error: themaError } = await supabase
         .from('themes')
-        .select('id, titel')
+        .select('id, titel, beschrijving')
         .eq('klaar_voor_gebruik', true)
         .eq('standaard_zichtbaar', true)
         .order('volgorde_index');
@@ -30,11 +53,10 @@ function ThemaOverzicht() {
         return;
       }
 
-      // Haal alle gesprekken op voor deze gebruiker
       const { data: gesprekData, error: gesprekError } = await supabase
         .from('gesprek')
         .select('id, theme_id, status, gestart_op, beeindigd_op')
-        .eq('werknemer_id', user.id)
+        .eq('werknemer_id', userId)
         .order('gestart_op', { ascending: false });
 
       if (gesprekError) {
@@ -54,11 +76,19 @@ function ThemaOverzicht() {
       // Combineer de data
       const lijst = themaData.map((t) => ({
         ...t,
-        gesprekken: gesprekkenPerThema[t.id] || []
+        gesprekken: gesprekkenPerThema[t.id] || [],
+        configuratie: {
+          actieve_maanden: [3, 6, 9],
+          verplicht: true,
+          actief: true,
+          anonimiseer_na_dagen: 60
+        },
+        is_gesprek_verwacht_deze_maand: false,
+        volgende_gesprek_datum: new Date(new Date().getFullYear() + 1, 2, 1), // 1 maart volgend jaar
+        heeft_openstaand_gesprek: false
       }));
       
       setThemas(lijst);
-      setLoading(false);
     };
 
     fetchThemas();
@@ -84,6 +114,20 @@ function ThemaOverzicht() {
       month: '2-digit', 
       year: 'numeric' 
     });
+  }
+
+  const formatVolgendeGesprekDatum = (datum) => {
+    if (!datum) return '';
+    const date = new Date(datum);
+    return date.toLocaleDateString('nl-NL', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric' 
+    });
+  }
+
+  const toggleThema = (themaId) => {
+    setExpandedThema(expandedThema === themaId ? null : themaId);
   }
 
   const startVervolggesprek = async (themeId) => {
@@ -182,75 +226,122 @@ function ThemaOverzicht() {
           </div>
         </div>
 
-        {/* Rest van de pagina */}
-        <div className="max-w-2xl mx-auto space-y-6">
+        {/* Thema's met harmonica structuur */}
+        <div className="max-w-4xl mx-auto space-y-6">
           {themas.length === 0 ? (
-            <p className="text-gray-500">Er zijn nog geen thema's beschikbaar.</p>
+            <div className="text-center py-12">
+              <p className="text-gray-500">Er zijn nog geen thema's beschikbaar.</p>
+            </div>
           ) : (
             themas.map((thema) => (
-              <div key={thema.id} className="border rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-lg">{thema.titel}</h3>
-                  <button 
-                    onClick={() => startVervolggesprek(thema.id)}
-                    className="btn btn-secondary text-sm flex items-center gap-2"
-                  >
-                    <Plus size={16} />
-                    Nieuw gesprek
-                  </button>
-                </div>
-                
-                {thema.gesprekken.length === 0 ? (
-                  <p className="text-gray-500 text-sm">Nog geen gesprekken gestart</p>
-                ) : (
-                  <div className="space-y-2">
-                    {thema.gesprekken.map((gesprek, index) => (
-                      <div key={gesprek.id} className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-gray-50 rounded-lg gap-2">
-                        <div className="flex items-center gap-3">
-                          <Calendar size={16} className="text-gray-400" />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium">
-                                Gesprek {thema.gesprekken.length - index}
-                              </span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${statusKleur[gesprek.status]}`}>
-                                {statusTekst[gesprek.status]}
-                              </span>
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Gestart: {formatDate(gesprek.gestart_op)}
-                              {gesprek.beeindigd_op && ` • Afgerond: ${formatDate(gesprek.beeindigd_op)}`}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-2 flex-wrap mt-2 md:mt-0">
-                          {gesprek.status === 'Nog niet afgerond' && (
-                            <button
-                              onClick={() => navigate(`/gesprek?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                              className="btn btn-primary flex items-center gap-1 text-sm"
-                            >
-                              <Play size={16} /> Ga verder
-                            </button>
-                          )}
-                          {(gesprek.status === 'Nog niet afgerond' || gesprek.status === 'Afgerond') && (
-                            <button
-                              onClick={() => herstartGesprek(gesprek.id, thema.id)}
-                              className="btn btn-accent flex items-center gap-1 text-sm"
-                            >
-                              <RotateCcw size={16} /> Herstart
-                            </button>
-                          )}
-                          {gesprek.status === 'Afgerond' && (
-                            <button
-                              onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                              className="btn btn-primary flex items-center gap-1 text-sm"
-                            >
-                              <Eye size={16} /> Bekijk resultaat
-                            </button>
-                          )}
-                        </div>
+              <div key={thema.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+                {/* Thema header */}
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{thema.titel}</h3>
+                      <p className="text-gray-600 text-sm mb-4">{thema.beschrijving || 'Geen beschrijving beschikbaar.'}</p>
+                      
+                      {/* Status informatie */}
+                      <div className="text-sm text-gray-600 mb-4">
+                        Volgende gesprek geopend per: {formatVolgendeGesprekDatum(thema.volgende_gesprek_datum)}
                       </div>
-                    ))}
+                    </div>
+                    
+                    {/* Actie knoppen */}
+                    <div className="flex gap-2 ml-4">
+                      {thema.heeft_openstaand_gesprek && (
+                        <button
+                          onClick={() => {
+                            const openstaandGesprek = thema.gesprekken.find(g => g.status === 'Nog niet afgerond');
+                            if (openstaandGesprek) {
+                              navigate(`/gesprek?theme_id=${thema.id}&gesprek_id=${openstaandGesprek.id}`);
+                            }
+                          }}
+                          className="btn btn-primary text-sm flex items-center gap-2"
+                        >
+                          <Play size={16} />
+                          Hervat Gesprek
+                        </button>
+                      )}
+                      {thema.is_gesprek_verwacht_deze_maand && !thema.heeft_openstaand_gesprek && (
+                        <button
+                          onClick={() => startVervolggesprek(thema.id)}
+                          className="btn btn-secondary text-sm flex items-center gap-2"
+                        >
+                          <Plus size={16} />
+                          Start Gesprek
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Harmonica toggle */}
+                  <div className="text-center mt-4">
+                    <button
+                      onClick={() => toggleThema(thema.id)}
+                      className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-2 mx-auto"
+                    >
+                      Bekijk overzicht vorige gesprekken en resultaten
+                      {expandedThema === thema.id ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Uitgeklapte content */}
+                {expandedThema === thema.id && (
+                  <div className="border-t border-gray-200 bg-gray-50">
+                    <div className="p-6">
+                      {thema.gesprekken.length === 0 ? (
+                        <div className="text-center py-8">
+                          <p className="text-gray-500">Nog geen eerdere resultaten zichtbaar</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {thema.gesprekken.map((gesprek, index) => (
+                            <div key={gesprek.id} className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-white rounded-lg border border-gray-100 gap-3">
+                              <div className="flex items-center gap-3">
+                                <Calendar size={16} className="text-gray-400" />
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium">
+                                      Gesprek {thema.gesprekken.length - index}
+                                    </span>
+                                    <span className={`text-xs px-2 py-1 rounded-full ${statusKleur[gesprek.status]}`}>
+                                      {statusTekst[gesprek.status]}
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    Gestart: {formatDate(gesprek.gestart_op)}
+                                    {gesprek.beeindigd_op && ` • Afgerond: ${formatDate(gesprek.beeindigd_op)}`}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 flex-wrap">
+                                {gesprek.status === 'Afgerond' && (
+                                  <button
+                                    onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
+                                    className="btn btn-primary flex items-center gap-1 text-sm"
+                                  >
+                                    <Eye size={16} /> Bekijk resultaat
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => herstartGesprek(gesprek.id, thema.id)}
+                                  className="btn btn-accent flex items-center gap-1 text-sm"
+                                >
+                                  <RotateCcw size={16} /> Herstart
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
