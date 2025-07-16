@@ -258,19 +258,19 @@ function ThemaOverzicht() {
                               navigate(`/gesprek?theme_id=${thema.id}&gesprek_id=${openstaandGesprek.id}`);
                             }
                           }}
-                          className="btn btn-primary text-sm flex items-center gap-2"
+                          className="btn btn-primary text-sm flex items-center gap-2 text-white"
                         >
                           <Play size={16} />
                           Hervat Gesprek
                         </button>
                       )}
-                      {thema.is_gesprek_verwacht_deze_maand && !thema.heeft_openstaand_gesprek && (
+                      {thema.kan_nieuw_gesprek_starten && !thema.heeft_openstaand_gesprek && (
                         <button
                           onClick={() => startVervolggesprek(thema.id)}
-                          className="btn btn-secondary text-sm flex items-center gap-2"
+                          className="btn btn-secondary text-sm flex items-center gap-2 text-white"
                         >
                           <Plus size={16} />
-                          Start Gesprek
+                          {thema.gesprekken.length === 0 ? 'Start Eerste Gesprek' : 'Start Nieuw Gesprek'}
                         </button>
                       )}
                     </div>
@@ -321,22 +321,22 @@ function ThemaOverzicht() {
                                   </div>
                                 </div>
                               </div>
-                              <div className="flex gap-2 flex-wrap">
-                                {gesprek.status === 'Afgerond' && (
-                                  <button
-                                    onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
-                                    className="btn btn-primary flex items-center gap-1 text-sm"
-                                  >
-                                    <Eye size={16} /> Bekijk resultaat
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => herstartGesprek(gesprek.id, thema.id)}
-                                  className="btn btn-accent flex items-center gap-1 text-sm"
-                                >
-                                  <RotateCcw size={16} /> Herstart
-                                </button>
-                              </div>
+                                                             <div className="flex gap-2 flex-wrap">
+                                 {gesprek.status === 'Afgerond' && (
+                                   <button
+                                     onClick={() => navigate(`/gesprek-resultaat?theme_id=${thema.id}&gesprek_id=${gesprek.id}`)}
+                                     className="btn btn-primary flex items-center gap-1 text-sm text-white"
+                                   >
+                                     <Eye size={16} /> Bekijk resultaat
+                                   </button>
+                                 )}
+                                 <button
+                                   onClick={() => herstartGesprek(gesprek.id, thema.id)}
+                                   className="btn btn-accent flex items-center gap-1 text-sm text-white"
+                                 >
+                                   <RotateCcw size={16} /> Herstart
+                                 </button>
+                               </div>
                             </div>
                           ))}
                         </div>
