@@ -158,8 +158,7 @@ function ThemaBeheer() {
               const vraagNr = index + 1
               formDataMetVragen[`vraag_${vraagNr}`] = vraag.tekst || ''
               formDataMetVragen[`vraag_${vraagNr}_doel`] = vraag.doel_vraag || ''
-            })
-            
+            })            
             // Laad score instructies uit themaData
             if (themaData.score_instructies) {
               setScoreInstructies({
