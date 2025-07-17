@@ -285,7 +285,7 @@ function GesprekResultaten() {
                   onClick={() => setSelectedRonde(ronde)}
                   className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[100px] text-white ${
                     selectedRonde === ronde
-                      ? 'bg-orange-500 shadow-sm'
+                      ? 'bg-[var(--kleur-secondary)] shadow-sm'
                       : 'bg-[var(--kleur-primary)] hover:bg-[var(--kleur-primary)]/90'
                   }`}
                 >
