@@ -286,7 +286,7 @@ function GesprekResultaten() {
                   className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[100px] text-white ${
                     selectedRonde === ronde
                       ? 'bg-orange-500 shadow-sm'
-                      : 'bg-blue-500 hover:bg-blue-600'
+                      : 'bg-[var(--kleur-primary)] hover:bg-[var(--kleur-primary)]/90'
                   }`}
                 >
                   Gesprek {ronde}
