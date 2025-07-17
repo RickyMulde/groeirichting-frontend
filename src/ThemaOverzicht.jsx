@@ -242,10 +242,7 @@ function ThemaOverzicht() {
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{thema.titel}</h3>
                       <p className="text-gray-600 text-sm mb-4">{thema.beschrijving || 'Geen beschrijving beschikbaar.'}</p>
                       
-                      {/* Status informatie */}
-                      <div className="text-sm text-gray-600 mb-4">
-                        Volgende gesprek geopend per: {formatVolgendeGesprekDatum(thema.volgende_gesprek_datum)}
-                      </div>
+
                     </div>
                     
                     {/* Actie knoppen */}
