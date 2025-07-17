@@ -10,6 +10,25 @@ function GesprekResultaten() {
   const [resultaten, setResultaten] = useState([])
   const [selectedRonde, setSelectedRonde] = useState(1)
   const [totalRondes] = useState(10) // Simuleer 10 gespreksrondes
+  
+  // Functie om datum te genereren voor een ronde
+  const getRondeDatum = (ronde) => {
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentMonth = now.getMonth()
+    
+    // Bereken datum voor deze ronde (elke 6 maanden)
+    const rondeYear = currentYear - Math.floor((totalRondes - ronde) / 2)
+    const rondeMonth = currentMonth - ((totalRondes - ronde) % 2) * 6
+    
+    const date = new Date(rondeYear, rondeMonth, 1)
+    const monthNames = [
+      'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+      'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
+    ]
+    
+    return `${monthNames[date.getMonth()]} ${date.getFullYear()}`
+  }
 
   useEffect(() => {
     const fetchResultaten = async () => {
@@ -283,13 +302,13 @@ function GesprekResultaten() {
                 <button
                   key={ronde}
                   onClick={() => setSelectedRonde(ronde)}
-                  className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[100px] text-white ${
+                  className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[140px] text-white ${
                     selectedRonde === ronde
                       ? 'bg-[var(--kleur-secondary)] shadow-sm'
                       : 'bg-[var(--kleur-primary)] hover:bg-[var(--kleur-primary)]/90'
                   }`}
                 >
-                  Gesprek {ronde}
+                  Resultaten {getRondeDatum(ronde)}
                 </button>
               ))}
             </div>
