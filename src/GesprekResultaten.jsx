@@ -8,6 +8,7 @@ function GesprekResultaten() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [resultaten, setResultaten] = useState([])
+  const [selectedRonde, setSelectedRonde] = useState(1)
 
   useEffect(() => {
     const fetchResultaten = async () => {
@@ -17,7 +18,7 @@ function GesprekResultaten() {
 
         // Voor nu gebruiken we dummy data
         // Later kunnen we dit vervangen door echte database calls
-        setResultaten(dummyResultaten)
+        setResultaten(dummyDataPerRonde[selectedRonde] || [])
       } catch (err) {
         console.error('Fout bij ophalen resultaten:', err)
         setError(err.message)
@@ -27,67 +28,185 @@ function GesprekResultaten() {
     }
 
     fetchResultaten()
-  }, [])
+  }, [selectedRonde])
 
-  // Dummy data voor 4 thema's zoals gevraagd
-  const dummyResultaten = [
-    {
-      id: '1',
-      themes: {
-        titel: 'Werkdruk en werk-privébalans',
-        beschrijving: 'Hoe ervaar je je werkdruk en werk-privébalans?'
+  // Dummy data voor 3 gespreksrondes met 4 thema's per ronde
+  const dummyDataPerRonde = {
+    1: [
+      {
+        id: '1-1',
+        themes: {
+          titel: 'Werkdruk en werk-privébalans',
+          beschrijving: 'Hoe ervaar je je werkdruk en werk-privébalans?'
+        },
+        samenvatting: 'De medewerker ervaart geen werkdruk aangezien hij/zij dagelijkse taken afkrijgt zonder invloed op het privéleven. Buiten werktijd is de medewerker niet bezig met werkgerelateerde zaken. De medewerker waardeert de gezamenlijke planning en teamwerk en ziet geen directe verbeterpunten voor de huidige samenwerking of planning. Indien de medewerker directeur zou zijn, zou hij/zij voorstellen om proactief meer commerciële kansen te benutten.',
+        vervolgacties: [
+          'Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.',
+          'Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.',
+          'Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.'
+        ],
+        score: 8
       },
-      samenvatting: 'De medewerker ervaart geen werkdruk aangezien hij/zij dagelijkse taken afkrijgt zonder invloed op het privéleven. Buiten werktijd is de medewerker niet bezig met werkgerelateerde zaken. De medewerker waardeert de gezamenlijke planning en teamwerk en ziet geen directe verbeterpunten voor de huidige samenwerking of planning. Indien de medewerker directeur zou zijn, zou hij/zij voorstellen om proactief meer commerciële kansen te benutten.',
-      vervolgacties: [
-        'Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.',
-        'Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.',
-        'Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.'
-      ],
-      score: 8
-    },
-    {
-      id: '2',
-      themes: {
-        titel: 'Teamwerk en samenwerking',
-        beschrijving: 'Hoe verloopt de samenwerking binnen je team?'
+      {
+        id: '1-2',
+        themes: {
+          titel: 'Teamwerk en samenwerking',
+          beschrijving: 'Hoe verloopt de samenwerking binnen je team?'
+        },
+        samenvatting: 'De medewerker ervaart een positieve werksfeer en goede samenwerking met collega\'s. Er is sprake van open communicatie en wederzijds respect. De medewerker voelt zich gewaardeerd en ondersteund door het team. Samenwerking verloopt soepel en er zijn duidelijke afspraken over verantwoordelijkheden.',
+        vervolgacties: [
+          'Organiseer regelmatige teamvergaderingen om de samenwerking te versterken.',
+          'Overweeg team building activiteiten om de banden verder aan te halen.',
+          'Evalueer periodiek de effectiviteit van de huidige samenwerkingsvormen.'
+        ],
+        score: 9
       },
-      samenvatting: 'De medewerker ervaart een positieve werksfeer en goede samenwerking met collega\'s. Er is sprake van open communicatie en wederzijds respect. De medewerker voelt zich gewaardeerd en ondersteund door het team. Samenwerking verloopt soepel en er zijn duidelijke afspraken over verantwoordelijkheden.',
-      vervolgacties: [
-        'Organiseer regelmatige teamvergaderingen om de samenwerking te versterken.',
-        'Overweeg team building activiteiten om de banden verder aan te halen.',
-        'Evalueer periodiek de effectiviteit van de huidige samenwerkingsvormen.'
-      ],
-      score: 9
-    },
-    {
-      id: '3',
-      themes: {
-        titel: 'Ontwikkeling en groei',
-        beschrijving: 'Welke mogelijkheden zie je voor je persoonlijke ontwikkeling?'
+      {
+        id: '1-3',
+        themes: {
+          titel: 'Ontwikkeling en groei',
+          beschrijving: 'Welke mogelijkheden zie je voor je persoonlijke ontwikkeling?'
+        },
+        samenvatting: 'De medewerker toont interesse in verdere ontwikkeling en groei binnen de organisatie. Er zijn duidelijke doelen gesteld en de medewerker is gemotiveerd om nieuwe vaardigheden te leren. De organisatie biedt goede mogelijkheden voor training en ontwikkeling.',
+        vervolgacties: [
+          'Stel samen met je leidinggevende een persoonlijk ontwikkelplan op.',
+          'Bekijk het aanbod van interne en externe trainingen.',
+          'Plan regelmatige evaluatiegesprekken over je ontwikkeling.'
+        ],
+        score: 7
       },
-      samenvatting: 'De medewerker toont interesse in verdere ontwikkeling en groei binnen de organisatie. Er zijn duidelijke doelen gesteld en de medewerker is gemotiveerd om nieuwe vaardigheden te leren. De organisatie biedt goede mogelijkheden voor training en ontwikkeling.',
-      vervolgacties: [
-        'Stel samen met je leidinggevende een persoonlijk ontwikkelplan op.',
-        'Bekijk het aanbod van interne en externe trainingen.',
-        'Plan regelmatige evaluatiegesprekken over je ontwikkeling.'
-      ],
-      score: 7
-    },
-    {
-      id: '4',
-      themes: {
-        titel: 'Organisatiecultuur en waarden',
-        beschrijving: 'Hoe ervaar je de cultuur en waarden van de organisatie?'
+      {
+        id: '1-4',
+        themes: {
+          titel: 'Organisatiecultuur en waarden',
+          beschrijving: 'Hoe ervaar je de cultuur en waarden van de organisatie?'
+        },
+        samenvatting: 'De medewerker voelt zich goed thuis in de organisatiecultuur en herkent zich in de kernwaarden. Er is sprake van een open en inclusieve cultuur waar diversiteit wordt gewaardeerd. De medewerker ervaart dat de organisatie haar waarden ook daadwerkelijk uitdraagt in de dagelijkse praktijk.',
+        vervolgacties: [
+          'Blijf actief betrokken bij initiatieven die de organisatiecultuur versterken.',
+          'Deel je ervaringen en suggesties voor verbetering met HR.',
+          'Neem deel aan activiteiten die de organisatiecultuur bevorderen.'
+        ],
+        score: 8
+      }
+    ],
+    2: [
+      {
+        id: '2-1',
+        themes: {
+          titel: 'Werkdruk en werk-privébalans',
+          beschrijving: 'Hoe ervaar je je werkdruk en werk-privébalans?'
+        },
+        samenvatting: 'Na het eerste gesprek zijn er enkele verbeteringen doorgevoerd. De medewerker ervaart nu een betere balans tussen werk en privé, mede door de flexibele werktijden die zijn ingevoerd. Er is meer ruimte voor ontspanning en de werkdruk voelt meer beheersbaar aan. De medewerker waardeert de proactieve aanpak van het management.',
+        vervolgacties: [
+          'Blijf de nieuwe werk-privébalans monitoren en evalueer regelmatig.',
+          'Overweeg verdere flexibilisering van werktijden indien gewenst.',
+          'Plan een vervolggesprek over 3 maanden om de voortgang te bespreken.'
+        ],
+        score: 9
       },
-      samenvatting: 'De medewerker voelt zich goed thuis in de organisatiecultuur en herkent zich in de kernwaarden. Er is sprake van een open en inclusieve cultuur waar diversiteit wordt gewaardeerd. De medewerker ervaart dat de organisatie haar waarden ook daadwerkelijk uitdraagt in de dagelijkse praktijk.',
-      vervolgacties: [
-        'Blijf actief betrokken bij initiatieven die de organisatiecultuur versterken.',
-        'Deel je ervaringen en suggesties voor verbetering met HR.',
-        'Neem deel aan activiteiten die de organisatiecultuur bevorderen.'
-      ],
-      score: 8
-    }
-  ]
+      {
+        id: '2-2',
+        themes: {
+          titel: 'Teamwerk en samenwerking',
+          beschrijving: 'Hoe verloopt de samenwerking binnen je team?'
+        },
+        samenvatting: 'De teamvergaderingen zijn succesvol geïmplementeerd en de samenwerking is verder verbeterd. Er is meer openheid in communicatie en teamleden durven elkaar beter aan te spreken. De medewerker voelt zich nog meer onderdeel van het team en ervaart een sterke teamgeest.',
+        vervolgacties: [
+          'Blijf de wekelijkse teamvergaderingen volhouden.',
+          'Organiseer een kwartaal team building activiteit.',
+          'Evalueer de effectiviteit van de nieuwe communicatiestructuren.'
+        ],
+        score: 9
+      },
+      {
+        id: '2-3',
+        themes: {
+          titel: 'Ontwikkeling en groei',
+          beschrijving: 'Welke mogelijkheden zie je voor je persoonlijke ontwikkeling?'
+        },
+        samenvatting: 'Het persoonlijk ontwikkelplan is opgesteld en de eerste trainingen zijn gevolgd. De medewerker heeft nieuwe vaardigheden ontwikkeld en voelt zich meer zelfverzekerd in zijn rol. Er zijn concrete doelen gesteld voor de komende periode en de medewerker is gemotiveerd om verder te groeien.',
+        vervolgacties: [
+          'Blijf het ontwikkelplan volgen en evalueer de voortgang.',
+          'Plan de volgende training of cursus in.',
+          'Bespreek met je leidinggevende welke nieuwe uitdagingen je kunt aangaan.'
+        ],
+        score: 8
+      },
+      {
+        id: '2-4',
+        themes: {
+          titel: 'Organisatiecultuur en waarden',
+          beschrijving: 'Hoe ervaar je de cultuur en waarden van de organisatie?'
+        },
+        samenvatting: 'De organisatiecultuur is verder versterkt door nieuwe initiatieven. Er is meer aandacht voor diversiteit en inclusie, en de medewerker ervaart dat de waarden nog sterker worden uitgedragen. De open cultuur heeft zich verder ontwikkeld en er is meer ruimte voor feedback en verbeteringen.',
+        vervolgacties: [
+          'Blijf actief deelnemen aan cultuurinitiatieven.',
+          'Deel je positieve ervaringen met nieuwe collega\'s.',
+          'Stel voor om een cultuurcommissie op te richten.'
+        ],
+        score: 9
+      }
+    ],
+    3: [
+      {
+        id: '3-1',
+        themes: {
+          titel: 'Werkdruk en werk-privébalans',
+          beschrijving: 'Hoe ervaar je je werkdruk en werk-privébalans?'
+        },
+        samenvatting: 'De werk-privébalans is nu optimaal. De medewerker ervaart geen stress meer en heeft voldoende tijd voor zowel werk als privé. De flexibele werktijden werken uitstekend en de medewerker voelt zich energiek en gemotiveerd. Er is een gezonde balans gevonden die duurzaam is.',
+        vervolgacties: [
+          'Blijf de huidige balans behouden en monitoren.',
+          'Deel je ervaringen met collega\'s die nog zoeken naar balans.',
+          'Plan een jaarlijkse evaluatie van je werk-privébalans.'
+        ],
+        score: 10
+      },
+      {
+        id: '3-2',
+        themes: {
+          titel: 'Teamwerk en samenwerking',
+          beschrijving: 'Hoe verloopt de samenwerking binnen je team?'
+        },
+        samenvatting: 'Het team functioneert uitstekend en er is sprake van een zeer sterke samenwerking. Alle teamleden werken effectief samen en er is een hoog niveau van vertrouwen. De communicatie is open en constructief, en het team presteert boven verwachting.',
+        vervolgacties: [
+          'Blijf de sterke teamdynamiek behouden.',
+          'Organiseer een teamretraite om de successen te vieren.',
+          'Deel best practices met andere teams in de organisatie.'
+        ],
+        score: 10
+      },
+      {
+        id: '3-3',
+        themes: {
+          titel: 'Ontwikkeling en groei',
+          beschrijving: 'Welke mogelijkheden zie je voor je persoonlijke ontwikkeling?'
+        },
+        samenvatting: 'De medewerker heeft significante groei doorgemaakt en heeft alle gestelde doelen behaald. Er zijn nieuwe vaardigheden ontwikkeld en de medewerker is klaar voor nieuwe uitdagingen. De organisatie erkent de groei en er zijn mogelijkheden voor verdere ontwikkeling.',
+        vervolgacties: [
+          'Bespreek promotiemogelijkheden met je leidinggevende.',
+          'Stel nieuwe, uitdagende doelen voor de komende periode.',
+          'Overweeg een mentorrol voor nieuwe collega\'s.'
+        ],
+        score: 9
+      },
+      {
+        id: '3-4',
+        themes: {
+          titel: 'Organisatiecultuur en waarden',
+          beschrijving: 'Hoe ervaar je de cultuur en waarden van de organisatie?'
+        },
+        samenvatting: 'De organisatiecultuur is uitstekend en de waarden worden volledig uitgedragen. Er is sprake van een zeer inclusieve en ondersteunende cultuur waar iedereen zich thuis voelt. De medewerker is trots op de organisatie en draagt actief bij aan de cultuur.',
+        vervolgacties: [
+          'Blijf een ambassadeur van de organisatiecultuur.',
+          'Neem deel aan initiatieven om de cultuur verder te versterken.',
+          'Deel je positieve ervaringen in externe netwerken.'
+        ],
+        score: 10
+      }
+    ]
+  }
 
   const getScoreColor = (score) => {
     if (!score) return 'text-gray-400'
@@ -149,6 +268,25 @@ function GesprekResultaten() {
               </div>
             </div>
             <FileText className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+          </div>
+        </div>
+
+        {/* Tabs voor gespreksrondes */}
+        <div className="mb-6">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            {[1, 2, 3].map((ronde) => (
+              <button
+                key={ronde}
+                onClick={() => setSelectedRonde(ronde)}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  selectedRonde === ronde
+                    ? 'bg-white text-[var(--kleur-primary)] shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Gesprek {ronde}
+              </button>
+            ))}
           </div>
         </div>
 
