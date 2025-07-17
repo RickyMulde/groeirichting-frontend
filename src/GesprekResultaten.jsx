@@ -9,6 +9,7 @@ function GesprekResultaten() {
   const [error, setError] = useState(null)
   const [resultaten, setResultaten] = useState([])
   const [selectedRonde, setSelectedRonde] = useState(1)
+  const [totalRondes] = useState(10) // Simuleer 10 gespreksrondes
 
   useEffect(() => {
     const fetchResultaten = async () => {
@@ -18,7 +19,9 @@ function GesprekResultaten() {
 
         // Voor nu gebruiken we dummy data
         // Later kunnen we dit vervangen door echte database calls
-        setResultaten(dummyDataPerRonde[selectedRonde] || [])
+        // Genereer dummy data voor alle rondes
+        const currentData = dummyDataPerRonde[selectedRonde] || dummyDataPerRonde[1]
+        setResultaten(currentData)
       } catch (err) {
         console.error('Fout bij ophalen resultaten:', err)
         setError(err.message)
@@ -273,20 +276,27 @@ function GesprekResultaten() {
 
         {/* Tabs voor gespreksrondes */}
         <div className="mb-6">
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-            {[1, 2, 3].map((ronde) => (
-              <button
-                key={ronde}
-                onClick={() => setSelectedRonde(ronde)}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                  selectedRonde === ronde
-                    ? 'bg-white text-[var(--kleur-primary)] shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Gesprek {ronde}
-              </button>
-            ))}
+          <div className="relative">
+            {/* Scroll container */}
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto scrollbar-hide">
+              {Array.from({ length: totalRondes }, (_, i) => i + 1).map((ronde) => (
+                <button
+                  key={ronde}
+                  onClick={() => setSelectedRonde(ronde)}
+                  className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[100px] ${
+                    selectedRonde === ronde
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Gesprek {ronde}
+                </button>
+              ))}
+            </div>
+            
+            {/* Scroll indicators */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-100 to-transparent pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none"></div>
           </div>
         </div>
 
