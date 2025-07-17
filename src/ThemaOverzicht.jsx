@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { Plus, RotateCcw, Calendar, Play, Eye, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react'
+import { Plus, RotateCcw, Calendar, Play, Eye, ArrowLeft, ChevronDown, ChevronUp, Clock } from 'lucide-react'
 
 function ThemaOverzicht() {
   const navigate = useNavigate()
@@ -264,14 +264,25 @@ function ThemaOverzicht() {
                           Hervat Gesprek
                         </button>
                       )}
-                      {thema.kan_nieuw_gesprek_starten && !thema.heeft_openstaand_gesprek && (
-                        <button
-                          onClick={() => startVervolggesprek(thema.id)}
-                          className="btn btn-secondary text-sm flex items-center gap-2 text-white"
-                        >
-                          <Plus size={16} />
-                          {thema.gesprekken.length === 0 ? 'Start Eerste Gesprek' : 'Start Nieuw Gesprek'}
-                        </button>
+                      {!thema.heeft_openstaand_gesprek && (
+                        thema.kan_nieuw_gesprek_starten ? (
+                          <button
+                            onClick={() => startVervolggesprek(thema.id)}
+                            className="btn btn-secondary text-sm flex items-center gap-2 text-white"
+                          >
+                            <Plus size={16} />
+                            {thema.gesprekken.length === 0 ? 'Start Eerste Gesprek' : 'Start Nieuw Gesprek'}
+                          </button>
+                        ) : (
+                          <button
+                            disabled
+                            className="btn btn-disabled text-sm flex items-center gap-2 text-gray-400 cursor-not-allowed"
+                            title="Gesprek kan alleen gestart worden in actieve maanden"
+                          >
+                            <Clock size={16} />
+                            Beschikbaar vanaf {formatVolgendeGesprekDatum(thema.volgende_gesprek_datum)}
+                          </button>
+                        )
                       )}
                     </div>
                   </div>

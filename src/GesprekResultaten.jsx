@@ -9,7 +9,8 @@ function GesprekResultaten() {
   const [error, setError] = useState(null)
   const [resultaten, setResultaten] = useState([])
   const [selectedRonde, setSelectedRonde] = useState(1)
-  const [totalRondes] = useState(10) // Simuleer 10 gespreksrondes
+  const [totalRondes] = useState(1) // Simuleer 1 gesprek (kan later aangepast worden naar meer)
+  const [showScrollIndicators, setShowScrollIndicators] = useState(false)
   
   // Functie om datum te genereren voor een ronde
   const getRondeDatum = (ronde) => {
@@ -294,30 +295,53 @@ function GesprekResultaten() {
         </div>
 
         {/* Tabs voor gespreksrondes */}
-        <div className="mb-6">
-          <div className="relative">
-            {/* Scroll container */}
-            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto scrollbar-hide">
-              {Array.from({ length: totalRondes }, (_, i) => i + 1).map((ronde) => (
-                <button
-                  key={ronde}
-                  onClick={() => setSelectedRonde(ronde)}
-                  className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[140px] text-white ${
-                    selectedRonde === ronde
-                      ? 'bg-[var(--kleur-secondary)] shadow-sm'
-                      : 'bg-[var(--kleur-primary)] hover:bg-[var(--kleur-primary)]/90'
-                  }`}
-                >
-                  Resultaten {getRondeDatum(ronde)}
-                </button>
-              ))}
+        {totalRondes > 1 && (
+          <div className="mb-6">
+            <div className="relative">
+              {/* Scroll container */}
+              <div 
+                className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto scrollbar-hide"
+                onScroll={(e) => {
+                  const { scrollLeft, scrollWidth, clientWidth } = e.target
+                  const hasOverflow = scrollWidth > clientWidth
+                  const isAtStart = scrollLeft === 0
+                  const isAtEnd = scrollLeft + clientWidth >= scrollWidth
+                  
+                  setShowScrollIndicators(hasOverflow && (!isAtStart || !isAtEnd))
+                }}
+                ref={(el) => {
+                  if (el) {
+                    // Check initial overflow
+                    const hasOverflow = el.scrollWidth > el.clientWidth
+                    setShowScrollIndicators(hasOverflow)
+                  }
+                }}
+              >
+                {Array.from({ length: totalRondes }, (_, i) => i + 1).map((ronde) => (
+                  <button
+                    key={ronde}
+                    onClick={() => setSelectedRonde(ronde)}
+                    className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[140px] text-white ${
+                      selectedRonde === ronde
+                        ? 'bg-[var(--kleur-secondary)] shadow-sm'
+                        : 'bg-[var(--kleur-primary)] hover:bg-[var(--kleur-primary)]/90'
+                    }`}
+                  >
+                    Resultaten {getRondeDatum(ronde)}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Scroll indicators - alleen tonen als er overflow is */}
+              {showScrollIndicators && (
+                <>
+                  <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-100 to-transparent pointer-events-none"></div>
+                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none"></div>
+                </>
+              )}
             </div>
-            
-            {/* Scroll indicators */}
-            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-100 to-transparent pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none"></div>
           </div>
-        </div>
+        )}
 
         {/* Thema resultaten */}
         <div className="space-y-6">
