@@ -280,7 +280,7 @@ function ThemaOverzicht() {
                   <div className="text-center mt-4">
                     <button
                       onClick={() => toggleThema(thema.id)}
-                      className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-2 mx-auto"
+                      className="btn btn-accent text-sm flex items-center justify-center gap-2 mx-auto"
                     >
                       Bekijk overzicht vorige gesprekken en resultaten
                       {expandedThema === thema.id ? (
