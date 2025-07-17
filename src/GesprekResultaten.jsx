@@ -15,30 +15,9 @@ function GesprekResultaten() {
         setLoading(true)
         setError(null)
 
-        // Haal huidige gebruiker op
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
-        if (userError || !user) {
-          throw new Error('Gebruiker niet ingelogd')
-        }
-
-        // Haal alle gesprekresultaten op voor deze werknemer
-        const { data: resultatenData, error: resultatenError } = await supabase
-          .from('gesprekresultaten')
-          .select(`
-            id,
-            theme_id,
-            samenvatting,
-            score,
-            gespreksronde,
-            gegenereerd_op,
-            themes!inner(titel, beschrijving)
-          `)
-          .eq('werknemer_id', user.id)
-          .order('gegenereerd_op', { ascending: false })
-
-        if (resultatenError) throw resultatenError
-
-        setResultaten(resultatenData || [])
+        // Voor nu gebruiken we dummy data
+        // Later kunnen we dit vervangen door echte database calls
+        setResultaten(dummyResultaten)
       } catch (err) {
         console.error('Fout bij ophalen resultaten:', err)
         setError(err.message)
@@ -175,7 +154,7 @@ function GesprekResultaten() {
 
         {/* Thema resultaten */}
         <div className="space-y-6">
-          {dummyResultaten.map((resultaat) => (
+          {resultaten.map((resultaat) => (
             <div key={resultaat.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
               {/* Thema header */}
               <div className="p-6 border-b border-gray-100">
