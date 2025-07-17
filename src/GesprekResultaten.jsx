@@ -259,7 +259,7 @@ function GesprekResultaten() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <button 
-                onClick={() => navigate('/employee-portal')}
+                onClick={() => navigate('/werknemer-portaal')}
                 className="btn btn-secondary flex items-center gap-2 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -283,10 +283,10 @@ function GesprekResultaten() {
                 <button
                   key={ronde}
                   onClick={() => setSelectedRonde(ronde)}
-                  className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[100px] ${
+                  className={`flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-colors min-w-[100px] text-white ${
                     selectedRonde === ronde
-                      ? 'bg-white text-gray-900 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-orange-500 shadow-sm'
+                      : 'bg-blue-500 hover:bg-blue-600'
                   }`}
                 >
                   Gesprek {ronde}
