@@ -11,6 +11,7 @@ function GesprekPagina() {
   const navigate = useNavigate();
   const chatContainerRef = useRef(null);
   const inputRef = useRef(null);
+  const completionButtonRef = useRef(null);
 
   if (!themeId) {
     return (
@@ -72,14 +73,29 @@ function GesprekPagina() {
     }
   }, [currentIndex, done])
 
-  // Auto-scroll naar beneden wanneer gesprek is afgerond
+  // Auto-scroll naar de knop wanneer gesprek is afgerond
   useEffect(() => {
-    if (done && chatContainerRef.current) {
+    if (done && completionButtonRef.current) {
       setTimeout(() => {
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-      }, 100);
+        completionButtonRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }, 500); // Iets langer wachten zodat alle content geladen is
     }
   }, [done]);
+
+  // Automatische navigatie naar thema overzicht na afronding
+  useEffect(() => {
+    if (done && themeId) {
+      // Wacht 3 seconden voordat we navigeren
+      const timer = setTimeout(() => {
+        navigate(`/thema-overzicht?completed_theme_id=${themeId}`);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [done, themeId, navigate]);
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
@@ -840,36 +856,22 @@ function GesprekPagina() {
             {/* Afronding bericht */}
             <div className="bg-green-100 text-green-800 p-4 rounded-xl">
               Bedankt voor je antwoorden. Je gesprek is opgeslagen.
-              {theme?.geeft_samenvatting ? ' Hieronder kun je de samenvatting bekijken.' : ' Dit thema geeft geen samenvatting.'}
             </div>
 
             <div className="bg-white p-4 rounded-xl border space-y-4">
               <h3 className="font-semibold text-[var(--kleur-primary)]">Je gesprek is afgerond!</h3>
               <p className="text-sm text-[var(--kleur-muted)]">
-                {theme?.geeft_samenvatting 
-                  ? 'Bekijk hieronder je antwoorden en ga naar de samenvatting om je resultaten te delen.'
-                  : 'Bekijk hieronder je antwoorden. Dit thema geeft geen samenvatting.'
-                }
+                Je wordt automatisch doorgestuurd naar je thema overzicht.
               </p>
               
-              {theme?.geeft_samenvatting && (
-                <button
-                  onClick={() => navigate(`/gesprek-resultaat?gesprek_id=${gesprekId}&theme_id=${themeId}`)}
-                  className="btn btn-primary w-full"
-                >
-                  Bekijk de samenvatting van je gesprek
-                </button>
-              )}
+              <button
+                ref={completionButtonRef}
+                onClick={() => navigate('/thema-overzicht')}
+                className="btn btn-primary w-full"
+              >
+                Ga naar thema overzicht
+              </button>
             </div>
-
-            <details className="bg-gray-50 p-4 rounded-xl">
-              <summary className="cursor-pointer font-medium text-[var(--kleur-muted)]">
-                Bekijk je antwoorden (klik om uit te klappen)
-              </summary>
-              <pre className="mt-2 text-xs border bg-white p-2 rounded overflow-auto max-h-40">
-                {JSON.stringify(antwoorden, null, 2)}
-              </pre>
-            </details>
           </div>
         )}
       </div>

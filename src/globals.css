@@ -99,6 +99,26 @@
   cursor: pointer;
 }
 
+/* === Theme Highlight Effects === */
+.theme-pulse {
+  animation: pulse 2s infinite;
+}
+
+.theme-glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.02);
+  }
+}
+
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 220px;

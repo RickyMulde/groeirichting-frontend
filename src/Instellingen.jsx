@@ -259,7 +259,7 @@ function Instellingen() {
                     <option value={180}>180 dagen</option>
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
-                    Na deze periode worden persoonlijke antwoorden automatisch verwijderd
+                    Na deze periode worden persoonlijke antwoorden automatisch geanonimiseerd
                   </p>
                 </div>
 

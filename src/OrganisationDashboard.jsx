@@ -377,7 +377,7 @@ function OrganisationDashboard() {
                 Terug naar portaal
               </button>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema Dashboard</h1>
                 <p className="text-gray-600 text-sm sm:text-base">Overzicht van alle thema's en resultaten</p>
               </div>
             </div>

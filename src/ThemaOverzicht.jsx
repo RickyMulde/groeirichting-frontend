@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import { Plus, RotateCcw, Calendar, Play, Eye, ArrowLeft, ChevronDown, ChevronUp, Clock } from 'lucide-react'
+import CompletionMessage from './CompletionMessage'
 
 function ThemaOverzicht() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [themas, setThemas] = useState([])
   const [loading, setLoading] = useState(true)
   const [expandedThema, setExpandedThema] = useState(null)
+  const [showCompletionMessage, setShowCompletionMessage] = useState(false)
+  const [completedThemeId, setCompletedThemeId] = useState(null)
+  const [highlightOpenThemes, setHighlightOpenThemes] = useState(false)
 
   useEffect(() => {
     const fetchThemas = async () => {
@@ -93,6 +98,39 @@ function ThemaOverzicht() {
 
     fetchThemas();
   }, []);
+
+  // Check voor completed_theme_id parameter en start melding/highlight
+  useEffect(() => {
+    const completedThemeId = searchParams.get('completed_theme_id');
+    
+    if (completedThemeId && themas.length > 0) {
+      setCompletedThemeId(completedThemeId);
+      setShowCompletionMessage(true);
+      
+      // Start 3 seconden timer voor highlight effect (alleen als er openstaande thema's zijn)
+      if (!allThemesCompleted()) {
+        const timer = setTimeout(() => {
+          setHighlightOpenThemes(true);
+        }, 3000);
+        
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [searchParams, themas]);
+
+  // Helper functie voor openstaande thema's
+  const getOpenThemes = () => {
+    return themas.filter(thema => 
+      thema.heeft_openstaand_gesprek || thema.kan_nieuw_gesprek_starten
+    );
+  };
+
+  // Helper functie om te checken of alle thema's afgerond zijn
+  const allThemesCompleted = () => {
+    return themas.length > 0 && themas.every(thema => 
+      !thema.heeft_openstaand_gesprek && !thema.kan_nieuw_gesprek_starten
+    );
+  };
 
   const statusKleur = {
     nieuw: 'bg-gray-100 text-gray-600',
@@ -205,6 +243,16 @@ function ThemaOverzicht() {
 
   return (
     <div className="page-container">
+      {/* Completion Message */}
+      {showCompletionMessage && (
+        <CompletionMessage
+          completedTheme={themas.find(t => t.id === completedThemeId)}
+          onClose={() => setShowCompletionMessage(false)}
+          onAutoClose={() => setShowCompletionMessage(false)}
+          allCompleted={allThemesCompleted()}
+        />
+      )}
+
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -233,8 +281,12 @@ function ThemaOverzicht() {
               <p className="text-gray-500">Er zijn nog geen thema's beschikbaar.</p>
             </div>
           ) : (
-            themas.map((thema) => (
-              <div key={thema.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+            themas.map((thema) => {
+              const isOpenTheme = thema.heeft_openstaand_gesprek || thema.kan_nieuw_gesprek_starten;
+              const highlightClass = highlightOpenThemes && isOpenTheme ? 'theme-pulse theme-glow' : '';
+              
+              return (
+                <div key={thema.id} className={`bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow ${highlightClass}`}>
                 {/* Thema header */}
                 <div className="p-6">
                   <div className="flex items-start justify-between">
@@ -353,7 +405,8 @@ function ThemaOverzicht() {
                   </div>
                 )}
               </div>
-            ))
+            );
+          })
           )}
         </div>
       </div>
