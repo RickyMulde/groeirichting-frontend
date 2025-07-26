@@ -85,17 +85,17 @@ function GesprekPagina() {
     }
   }, [done]);
 
-  // Automatische navigatie naar thema overzicht na afronding
+  // Automatische navigatie naar gesprek resultaten na afronding
   useEffect(() => {
-    if (done && themeId) {
+    if (done && themeId && gesprekId) {
       // Wacht 3 seconden voordat we navigeren
       const timer = setTimeout(() => {
-        navigate(`/thema-overzicht?completed_theme_id=${themeId}`);
+        navigate(`/gesprek-resultaat?theme_id=${themeId}&gesprek_id=${gesprekId}`);
       }, 3000);
       
       return () => clearTimeout(timer);
     }
-  }, [done, themeId, navigate]);
+  }, [done, themeId, gesprekId, navigate]);
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
@@ -861,15 +861,15 @@ function GesprekPagina() {
             <div className="bg-white p-4 rounded-xl border space-y-4">
               <h3 className="font-semibold text-[var(--kleur-primary)]">Je gesprek is afgerond!</h3>
               <p className="text-sm text-[var(--kleur-muted)]">
-                Je wordt automatisch doorgestuurd naar je thema overzicht.
+                Je wordt automatisch doorgestuurd naar je gesprek resultaten.
               </p>
               
               <button
                 ref={completionButtonRef}
-                onClick={() => navigate('/thema-overzicht')}
+                onClick={() => navigate(`/gesprek-resultaat?theme_id=${themeId}&gesprek_id=${gesprekId}`)}
                 className="btn btn-primary w-full"
               >
-                Ga naar thema overzicht
+                Bekijk gesprek resultaten
               </button>
             </div>
           </div>

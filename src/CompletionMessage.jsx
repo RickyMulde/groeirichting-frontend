@@ -10,10 +10,10 @@ const CompletionMessage = ({ completedTheme, onClose, onAutoClose, allCompleted 
       setIsVisible(true)
     }, 100)
 
-    // Auto close na 10 seconden
+    // Auto close na 20 seconden
     const autoCloseTimer = setTimeout(() => {
       onAutoClose()
-    }, 10000)
+    }, 20000)
 
     return () => {
       clearTimeout(timer)
