@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { ArrowLeft, FileText } from 'lucide-react'
 import { supabase } from './supabaseClient'
 
 function GesprekResultaat() {
@@ -284,11 +285,29 @@ function GesprekResultaat() {
   }
 
   return (
-    <div className="centered-page space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-[var(--kleur-primary)]">Samenvatting van je gesprek</h1>
-        <p className="text-[var(--kleur-muted)]">Bekijk hier de resultaten van je gesprek</p>
-      </div>
+    <div className="page-container">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <button 
+                onClick={() => navigate('/werknemer-portaal')}
+                className="btn btn-secondary flex items-center gap-2 w-fit"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Terug naar portaal
+              </button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Samenvatting van je gesprek</h1>
+                <p className="text-gray-600 text-sm sm:text-base">Bekijk hier de resultaten van je gesprek</p>
+              </div>
+            </div>
+            <FileText className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+          </div>
+        </div>
+
+        <div className="space-y-6">
 
       <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
         <div className="space-y-1">
@@ -331,6 +350,8 @@ function GesprekResultaat() {
           </ol>
         )}
       </section>
+        </div>
+      </div>
     </div>
   )
 }
