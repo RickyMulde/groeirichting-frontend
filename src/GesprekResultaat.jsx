@@ -125,6 +125,8 @@ function GesprekResultaat() {
                     samenvatting: resultData.samenvatting,
                     score: resultData.score,
                     magWerkgeverInzien: resultData.mag_werkgever_inzien,
+                    vervolgacties: resultData.vervolgacties || [],
+                    vervolgacties_toelichting: resultData.vervolgacties_toelichting || '',
                     themeId,
                     gesprekId
                   });
@@ -154,6 +156,8 @@ function GesprekResultaat() {
           samenvatting: resultData.samenvatting,
           score: resultData.score,
           magWerkgeverInzien: resultData.mag_werkgever_inzien,
+          vervolgacties: resultData.vervolgacties || [],
+          vervolgacties_toelichting: resultData.vervolgacties_toelichting || '',
           themeId,
           gesprekId
         })
@@ -246,11 +250,26 @@ function GesprekResultaat() {
 
       <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
         <h2 className="text-xl font-semibold mb-2">Mogelijke vervolgacties op basis van jouw antwoorden:</h2>
-        <ol className="list-decimal list-inside text-gray-700 space-y-1">
-          <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
-          <li>Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.</li>
-          <li>Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.</li>
-        </ol>
+        {gesprekData.vervolgacties && gesprekData.vervolgacties.length > 0 ? (
+          <>
+            <ol className="list-decimal list-inside text-gray-700 space-y-1">
+              {gesprekData.vervolgacties.map((actie, index) => (
+                <li key={index} className="leading-relaxed">{actie}</li>
+              ))}
+            </ol>
+            {gesprekData.vervolgacties_toelichting && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <ol className="list-decimal list-inside text-gray-700 space-y-1">
+            <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
+            <li>Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.</li>
+            <li>Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.</li>
+          </ol>
+        )}
       </section>
     </div>
   )

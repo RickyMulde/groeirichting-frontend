@@ -202,8 +202,14 @@ function GesprekResultaten() {
     return 'bg-red-500'
   }
 
-  // Dummy vervolgacties (zoals gevraagd)
-  const getDummyVervolgacties = (themaTitel) => {
+  // Functie om vervolgacties op te halen
+  const getVervolgacties = (resultaat) => {
+    // Als er echte vervolgacties zijn, gebruik die
+    if (resultaat.vervolgacties && resultaat.vervolgacties.length > 0) {
+      return resultaat.vervolgacties;
+    }
+
+    // Fallback naar dummy acties
     const acties = {
       'Werkdruk en werk-privébalans': [
         'Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.',
@@ -227,7 +233,7 @@ function GesprekResultaten() {
       ]
     }
     
-    return acties[themaTitel] || [
+    return acties[resultaat.themes.titel] || [
       'Plan een vervolggesprek met je leidinggevende.',
       'Bekijk het interne aanbod van workshops en trainingen.',
       'Neem contact op met de HR-afdeling voor persoonlijk advies.'
@@ -383,11 +389,11 @@ function GesprekResultaten() {
                       <TrendingUp className="w-4 h-4 text-orange-600" />
                       Vervolgacties
                     </h4>
-                    <ol className="list-decimal list-inside text-gray-700 space-y-2">
-                      {getDummyVervolgacties(resultaat.themes.titel).map((actie, index) => (
-                        <li key={index} className="leading-relaxed">{actie}</li>
-                      ))}
-                    </ol>
+                                         <ol className="list-decimal list-inside text-gray-700 space-y-2">
+                       {getVervolgacties(resultaat).map((actie, index) => (
+                         <li key={index} className="leading-relaxed">{actie}</li>
+                       ))}
+                     </ol>
                   </div>
                 </div>
               </div>
