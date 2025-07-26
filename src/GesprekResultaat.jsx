@@ -151,6 +151,66 @@ function GesprekResultaat() {
 
         const resultData = await response.json()
 
+        // Controleer of vervolgacties ontbreken
+        if (!resultData.vervolgacties || resultData.vervolgacties.length === 0) {
+          console.log('Geen vervolgacties gevonden, probeer ze te genereren...');
+          
+          try {
+            const generateResponse = await fetch(
+              'https://groeirichting-backend.onrender.com/api/genereer-samenvatting',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                },
+                body: JSON.stringify({
+                  theme_id: themeId,
+                  werknemer_id: user.id,
+                  gesprek_id: gesprekId
+                })
+              }
+            );
+
+            if (generateResponse.ok) {
+              const generateResult = await generateResponse.json();
+              console.log('Vervolgacties gegenereerd:', generateResult);
+              
+              // Wacht even zodat de backend tijd heeft om de data op te slaan
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
+              // Haal de data opnieuw op
+              const retryResponse = await fetch(
+                `https://groeirichting-backend.onrender.com/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                  }
+                }
+              );
+
+              if (retryResponse.ok) {
+                const updatedData = await retryResponse.json();
+                setGesprekData({
+                  themeTitle: themeData.titel,
+                  samenvatting: updatedData.samenvatting,
+                  score: updatedData.score,
+                  magWerkgeverInzien: updatedData.mag_werkgever_inzien,
+                  vervolgacties: updatedData.vervolgacties || [],
+                  vervolgacties_toelichting: updatedData.vervolgacties_toelichting || '',
+                  themeId,
+                  gesprekId
+                });
+                return;
+              }
+            }
+          } catch (error) {
+            console.error('Fout bij genereren vervolgacties:', error);
+          }
+        }
+
         setGesprekData({
           themeTitle: themeData.titel,
           samenvatting: resultData.samenvatting,
