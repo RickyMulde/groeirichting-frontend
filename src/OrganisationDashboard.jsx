@@ -262,7 +262,10 @@ function OrganisationDashboard() {
     if (themes.length === 0) return null
 
     const volledigVoltooid = themes.filter(t => t.samenvatting_status === 'volledig').length
-    const scores = themes.map(t => t.gemiddelde_score).filter(s => s !== null)
+    // Alleen scores meenemen van thema's met minimaal 4 voltooide medewerkers
+    const scores = themes
+      .filter(t => t.voltooide_medewerkers >= 4 && t.gemiddelde_score !== null)
+      .map(t => t.gemiddelde_score)
     const gemiddeldeScore = scores.length > 0 ? 
       (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '-'
 
@@ -449,10 +452,10 @@ function OrganisationDashboard() {
                           {theme.gemiddelde_score ? (
                             <>
                               <div 
-                                className={`w-16 h-16 rounded-full bg-gradient-to-br ${getScoreGradient(theme.gemiddelde_score)} flex items-center justify-center text-white font-bold text-lg shadow-lg cursor-pointer hover:scale-105 transition-transform`}
-                                onMouseEnter={() => handleTooltipShow(theme.theme_id)}
+                                className={`w-16 h-16 rounded-full bg-gradient-to-br ${getScoreGradient(theme.gemiddelde_score)} flex items-center justify-center text-white font-bold text-lg shadow-lg ${theme.voltooide_medewerkers >= 4 && theme.individuele_scores && theme.individuele_scores.length > 0 ? 'cursor-pointer hover:scale-105' : 'cursor-default'} transition-transform`}
+                                onMouseEnter={() => theme.voltooide_medewerkers >= 4 && theme.individuele_scores && theme.individuele_scores.length > 0 ? handleTooltipShow(theme.theme_id) : null}
                                 onMouseLeave={handleTooltipHide}
-                                title="Hover voor individuele scores"
+                                title={theme.voltooide_medewerkers >= 4 && theme.individuele_scores && theme.individuele_scores.length > 0 ? "Hover voor individuele scores" : "Gemiddelde score"}
                               >
                                 {theme.gemiddelde_score}
                               </div>
@@ -461,7 +464,7 @@ function OrganisationDashboard() {
                               </div>
                               
                               {/* Tooltip voor individuele scores */}
-                              {theme.individuele_scores && theme.individuele_scores.length > 0 && showTooltip === theme.theme_id && (
+                              {theme.voltooide_medewerkers >= 4 && theme.individuele_scores && theme.individuele_scores.length > 0 && showTooltip === theme.theme_id && (
                                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10">
                                   <div className="bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-xs">
                                     <div className="flex items-center gap-2 mb-2">

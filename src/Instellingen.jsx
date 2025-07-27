@@ -210,6 +210,9 @@ function Instellingen() {
                       Selecteer minimaal één maand
                     </p>
                   )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Selecteer in welke maanden jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
+                  </p>
                 </div>
 
                 {/* Overige instellingen */}
