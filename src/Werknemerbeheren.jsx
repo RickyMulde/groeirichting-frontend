@@ -236,15 +236,58 @@ function WerknemerBeheren() {
       {/* Bewerken modal */}
       {selectedWerknemer && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-xl space-y-4">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
             <h2 className="text-xl font-semibold">Werknemer bewerken</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <input value={selectedWerknemer.email} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, email: e.target.value })} placeholder="E-mailadres" />
-              <input value={selectedWerknemer.first_name} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, first_name: e.target.value })} placeholder="Voornaam" />
-              <input value={selectedWerknemer.middle_name || ''} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, middle_name: e.target.value })} placeholder="Tussenvoegsel" />
-              <input value={selectedWerknemer.last_name} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, last_name: e.target.value })} placeholder="Achternaam" />
-              <input type="date" value={selectedWerknemer.birthdate || ''} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, birthdate: e.target.value })} />
-              <input value={selectedWerknemer.gender} onChange={e => setSelectedWerknemer({ ...selectedWerknemer, gender: e.target.value })} placeholder="Geslacht" />
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">E-mailadres</label>
+                <input 
+                  value={selectedWerknemer.email} 
+                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, email: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Voornaam</label>
+                <input 
+                  value={selectedWerknemer.first_name} 
+                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, first_name: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tussenvoegsel</label>
+                <input 
+                  value={selectedWerknemer.middle_name || ''} 
+                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, middle_name: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Achternaam</label>
+                <input 
+                  value={selectedWerknemer.last_name} 
+                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, last_name: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Geboortedatum</label>
+                <input 
+                  type="date" 
+                  value={selectedWerknemer.birthdate || ''} 
+                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, birthdate: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Geslacht</label>
+                <input 
+                  value={selectedWerknemer.gender} 
+                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, gender: e.target.value })} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
             </div>
             <div className="flex justify-end gap-4 pt-4">
               <button onClick={handleCloseModal} className="btn btn-secondary">Annuleren</button>

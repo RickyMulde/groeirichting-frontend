@@ -78,7 +78,7 @@ function EmployeePortal() {
               <p className="text-sm text-gray-500">Beheer je profiel en voorkeuren.</p>
             </div>
           </div>
-          <button className="btn btn-secondary">Ga naar instellingen</button>
+          <Link to="/werknemer-instellingen" className="btn btn-secondary">Ga naar instellingen</Link>
         </section>
       </div>
     </div>

@@ -21,6 +21,7 @@ import GesprekResultaten from './GesprekResultaten'
 import ThemaOverzicht from './ThemaOverzicht'
 import OrganisationDashboard from './OrganisationDashboard'
 import EmployerProtectedRoute from './EmployerProtectedRoute'
+import WerknemerInstellingen from './WerknemerInstellingen'
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path="/redirect" element={<PostLoginRedirect />} />
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
         <Route path="/werknemer-portaal" element={<EmployeePortal />} />
+        <Route path="/werknemer-instellingen" element={<WerknemerInstellingen />} />
         <Route path="/superadmin-portaal" element={<SuperadminPortaal />} />
         <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
         <Route path="/superadmin/thema-beheer" element={<ThemaBeheerOverzicht />} />
