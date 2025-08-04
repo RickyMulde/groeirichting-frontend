@@ -282,11 +282,16 @@ function WerknemerBeheren() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Geslacht</label>
-                <input 
-                  value={selectedWerknemer.gender} 
+                <select 
+                  value={selectedWerknemer.gender || ''} 
                   onChange={e => setSelectedWerknemer({ ...selectedWerknemer, gender: e.target.value })} 
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                >
+                  <option value="">Selecteer geslacht</option>
+                  <option value="man">Man</option>
+                  <option value="vrouw">Vrouw</option>
+                  <option value="anders">Anders</option>
+                </select>
               </div>
             </div>
             <div className="flex justify-end gap-4 pt-4">

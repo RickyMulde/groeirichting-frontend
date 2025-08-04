@@ -447,7 +447,8 @@ function GesprekPagina() {
     try {
       const check = containsSensitiveInfo(input);
       if (check.flagged) {
-        setFoutmelding(check.reason);
+        voegChatBerichtToe('waarschuwing', check.reason, null, false);
+        setIsVerzenden(false);
         return;
       }
 
@@ -702,6 +703,8 @@ function GesprekPagina() {
           return 'bg-blue-50 text-blue-800 max-w-[80%]';
         case 'reactie':
           return 'bg-blue-50 text-blue-800 max-w-[80%] ml-auto';
+        case 'waarschuwing':
+          return 'bg-yellow-50 text-yellow-800 max-w-[80%] border border-yellow-200';
         default:
           return 'bg-gray-100 text-gray-800 max-w-[80%]';
       }
