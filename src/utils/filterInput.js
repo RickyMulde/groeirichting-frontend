@@ -56,3 +56,18 @@ export function containsSensitiveInfo(text) {
 
   return { flagged: false };
 }
+
+// Sanitize input om XSS en onbedoelde HTML rendering te voorkomen
+export const sanitizeInput = (input) => {
+  if (!input || typeof input !== 'string') {
+    return input;
+  }
+  
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+};

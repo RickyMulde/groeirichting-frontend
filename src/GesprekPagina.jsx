@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { supabase } from './supabaseClient'
-import { containsSensitiveInfo } from './utils/filterInput';
+import { containsSensitiveInfo, sanitizeInput } from './utils/filterInput';
 
 function GesprekPagina() {
   const [params] = useSearchParams()
@@ -37,6 +37,7 @@ function GesprekPagina() {
   const [vervolgvragenPerVasteVraag, setVervolgvragenPerVasteVraag] = useState({})
   const [isVerzenden, setIsVerzenden] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isGenereren, setIsGenereren] = useState(false); // Nieuwe state voor samenvatting genereren
   
   // Nieuwe state voor chat berichten
   const [chatBerichten, setChatBerichten] = useState([])
@@ -97,6 +98,31 @@ function GesprekPagina() {
     }
   }, [done, themeId, gesprekId, navigate]);
 
+  // Session monitoring - controleer elke minuut of sessie nog geldig is
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setFoutmelding('Je sessie is verlopen. Log opnieuw in.');
+          setTimeout(() => navigate('/login'), 2000);
+        }
+      } catch (error) {
+        console.error('Fout bij controleren sessie:', error);
+        // Alleen navigeren als het echt een sessie probleem is
+        if (error.message.includes('session') || error.message.includes('auth')) {
+          setFoutmelding('Je sessie is verlopen. Log opnieuw in.');
+          setTimeout(() => navigate('/login'), 2000);
+        }
+      }
+    };
+    
+    const interval = setInterval(checkSession, 60000); // Check elke minuut
+    
+    // Cleanup interval bij component unmount
+    return () => clearInterval(interval);
+  }, [navigate]);
+
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
     console.log('🔍 Start genereren samenvatting...');
@@ -110,10 +136,12 @@ function GesprekPagina() {
       return;
     }
 
+    setIsGenereren(true);
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData || !userData.user) {
         console.error('❌ Gebruiker niet gevonden');
+        setFoutmelding('Er is een probleem opgetreden. Probeer het later opnieuw.');
         return;
       }
 
@@ -137,12 +165,16 @@ function GesprekPagina() {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('❌ Fout bij genereren samenvatting:', response.status, errorText);
+        setFoutmelding('Er is een probleem opgetreden bij het genereren van de samenvatting. Probeer het later opnieuw.');
       } else {
         const result = await response.json();
         console.log('✅ Samenvatting succesvol gegenereerd:', result);
       }
     } catch (error) {
       console.error('❌ Fout bij genereren samenvatting:', error);
+      setFoutmelding('Er is een probleem opgetreden bij het genereren van de samenvatting. Controleer je internetverbinding.');
+    } finally {
+      setIsGenereren(false);
     }
   };
 
@@ -180,133 +212,137 @@ function GesprekPagina() {
 
   // startGesprek: nieuw of bestaand gesprek
   const startGesprek = async () => {
-    const { data, error: authError } = await supabase.auth.getUser();
-    const user = data?.user;
-    if (authError || !user) {
-      setFoutmelding('Gebruiker niet gevonden of niet ingelogd');
-      return;
-    }
+    try {
+      const { data, error: authError } = await supabase.auth.getUser();
+      const user = data?.user;
+      if (authError || !user) {
+        setFoutmelding('Gebruiker niet gevonden of niet ingelogd. Probeer opnieuw in te loggen.');
+        return;
+      }
 
-    if (gesprekIdFromUrl) {
-      // Bestaand gesprek ophalen
-      const { data: existingGesprek, error } = await supabase
-        .from('gesprek')
-        .select('id, status, werknemer_id')
-        .eq('id', gesprekIdFromUrl)
-        .single();
-      if (!existingGesprek || existingGesprek.werknemer_id !== user.id) {
-        setFoutmelding('Dit gesprek bestaat niet (meer) of je hebt geen toegang.');
-        return;
-      }
-      setGesprekId(existingGesprek.id);
-      if (existingGesprek.status === 'Afgerond') {
-        setDone(true);
-        return;
-      }
-      // Antwoorden ophalen
-      try {
-        const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-          },
-          body: JSON.stringify({ gesprek_id: existingGesprek.id })
-        });
-        if (response.ok) {
-          const { antwoorden } = await response.json();
-          setAntwoorden(antwoorden);
-          
-          // Reset chat berichten en voeg alles opnieuw toe in chronologische volgorde
-          setChatBerichten([]);
-          
-          // Voeg intro bericht toe als het bestaat
-          if (theme?.intro_prompt) {
-            voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
-          }
-          
-          // Voeg alle bestaande antwoorden toe aan chat berichten
-          antwoorden.forEach(antwoord => {
-            if (antwoord.vraag) {
-              voegChatBerichtToe('vraag', antwoord.vraag, antwoord.vraag_id, false);
-            }
-            if (antwoord.antwoord) {
-              voegChatBerichtToe('antwoord', antwoord.antwoord, antwoord.vraag_id, false);
-            }
-            // Voeg toelichtingen en reacties toe
-            if (antwoord.toelichting_type && antwoord.toelichting_inhoud) {
-              voegChatBerichtToe(antwoord.toelichting_type, antwoord.toelichting_inhoud, antwoord.vraag_id, false);
-            }
+      if (gesprekIdFromUrl) {
+        // Bestaand gesprek ophalen
+        const { data: existingGesprek, error } = await supabase
+          .from('gesprek')
+          .select('id, status, werknemer_id')
+          .eq('id', gesprekIdFromUrl)
+          .single();
+        if (!existingGesprek || existingGesprek.werknemer_id !== user.id) {
+          setFoutmelding('Dit gesprek bestaat niet (meer) of je hebt geen toegang.');
+          return;
+        }
+        setGesprekId(existingGesprek.id);
+        if (existingGesprek.status === 'Afgerond') {
+          setDone(true);
+          return;
+        }
+        // Antwoorden ophalen
+        try {
+          const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+            },
+            body: JSON.stringify({ gesprek_id: existingGesprek.id })
           });
-          
-          if (antwoorden.length === 0) {
+          if (response.ok) {
+            const { antwoorden } = await response.json();
+            setAntwoorden(antwoorden);
+            
+            // Reset chat berichten en voeg alles opnieuw toe in chronologische volgorde
+            setChatBerichten([]);
+            
+            // Voeg intro bericht toe als het bestaat
+            if (theme?.intro_prompt) {
+              voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+            }
+            
+            // Voeg alle bestaande antwoorden toe aan chat berichten
+            antwoorden.forEach(antwoord => {
+              if (antwoord.vraag) {
+                voegChatBerichtToe('vraag', antwoord.vraag, antwoord.vraag_id, false);
+              }
+              if (antwoord.antwoord) {
+                voegChatBerichtToe('antwoord', antwoord.antwoord, antwoord.vraag_id, false);
+              }
+              // Voeg toelichtingen en reacties toe
+              if (antwoord.toelichting_type && antwoord.toelichting_inhoud) {
+                voegChatBerichtToe(antwoord.toelichting_type, antwoord.toelichting_inhoud, antwoord.vraag_id, false);
+              }
+            });
+            
+            if (antwoorden.length === 0) {
+              setCurrentIndex(0);
+              // Voeg eerste vraag toe
+              if (vragen.length > 0) {
+                voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
+              }
+            } else {
+              const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
+              const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
+              
+              if (beantwoordeVasteVragen >= vasteVragen.length) {
+                setDone(true);
+              } else {
+                const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
+                const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
+                setCurrentIndex(nieuweIndex);
+                
+                // Voeg volgende vraag toe aan chat
+                voegChatBerichtToe('vraag', volgendeVasteVraag.tekst, volgendeVasteVraag.id, true);
+              }
+            }
+          } else if (response.status === 404) {
+            setAntwoorden([]);
             setCurrentIndex(0);
+            setChatBerichten([]);
+            
+            // Voeg intro bericht toe
+            if (theme?.intro_prompt) {
+              voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+            }
             // Voeg eerste vraag toe
             if (vragen.length > 0) {
               voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
             }
           } else {
-            const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
-            const beantwoordeVasteVragen = antwoorden.filter(a => a.type === 'vaste_vraag').length;
-            
-            if (beantwoordeVasteVragen >= vasteVragen.length) {
-              setDone(true);
-            } else {
-              const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
-              const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
-              setCurrentIndex(nieuweIndex);
-              
-              // Voeg volgende vraag toe aan chat
-              voegChatBerichtToe('vraag', volgendeVasteVraag.tekst, volgendeVasteVraag.id, true);
-            }
+            setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
           }
-        } else if (response.status === 404) {
-          setAntwoorden([]);
-          setCurrentIndex(0);
-          setChatBerichten([]);
-          
-          // Voeg intro bericht toe
-          if (theme?.intro_prompt) {
-            voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
-          }
-          // Voeg eerste vraag toe
-          if (vragen.length > 0) {
-            voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
-          }
-        } else {
+        } catch (error) {
           setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
         }
-      } catch (error) {
-        setFoutmelding('Fout bij ophalen antwoorden. Probeer het later opnieuw.');
+        return;
       }
-      return;
-    }
 
-    // Nieuw gesprek aanmaken
-    const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        werknemer_id: user.id,
-        theme_id: themeId,
-        status: 'Nog niet afgerond'
-      })
-    });
-    const result = await res.json();
-    if (res.ok && result.gesprek_id) {
-      setGesprekId(result.gesprek_id);
-      setAntwoorden([]);
-      setCurrentIndex(0);
-      
-      // Voeg intro bericht toe
-      if (theme?.intro_prompt) {
-        voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+      // Nieuw gesprek aanmaken
+      const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          werknemer_id: user.id,
+          theme_id: themeId,
+          status: 'Nog niet afgerond'
+        })
+      });
+      const result = await res.json();
+      if (res.ok && result.gesprek_id) {
+        setGesprekId(result.gesprek_id);
+        setAntwoorden([]);
+        setCurrentIndex(0);
+        
+        // Voeg intro bericht toe
+        if (theme?.intro_prompt) {
+          voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+        }
+        // Voeg eerste vraag toe
+        if (vragen.length > 0) {
+          voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
+        }
+      } else {
+        setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.');
       }
-      // Voeg eerste vraag toe
-      if (vragen.length > 0) {
-        voegChatBerichtToe('vraag', vragen[0].tekst, vragen[0].id, true);
-      }
-    } else {
+    } catch (error) {
       setFoutmelding('Er is een fout opgetreden bij het starten van het gesprek. Probeer het later opnieuw.');
     }
   };
@@ -441,11 +477,16 @@ function GesprekPagina() {
 
   const verstuurAntwoord = async (e) => {
     e.preventDefault();
-    if (!input.trim() || isVerzenden) return;
+    
+    // Voorkom lege antwoorden en dubbele submits
+    const cleanInput = sanitizeInput(input.trim());
+    if (!cleanInput || isVerzenden) {
+      return;
+    }
 
     setIsVerzenden(true);
     try {
-      const check = containsSensitiveInfo(input);
+      const check = containsSensitiveInfo(cleanInput);
       if (check.flagged) {
         voegChatBerichtToe('waarschuwing', check.reason, null, false);
         setIsVerzenden(false);
@@ -456,7 +497,7 @@ function GesprekPagina() {
       const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
       const nieuwAntwoord = {
         vraag: huidigeVraag?.tekst,
-        antwoord: input,
+        antwoord: cleanInput,
         type: isVasteVraag ? 'vaste_vraag' : 'vervolgvraag'
       };
       const nieuweAntwoorden = [...antwoorden, nieuwAntwoord];
@@ -465,7 +506,7 @@ function GesprekPagina() {
       console.log(`Totaal antwoorden: ${nieuweAntwoorden.length}`);
       
       // Voeg antwoord toe aan chat berichten
-      voegChatBerichtToe('antwoord', input, huidigeVraag.id, false);
+      voegChatBerichtToe('antwoord', cleanInput, huidigeVraag.id, false);
       
       setAntwoorden(nieuweAntwoorden);
       setInput('');
@@ -474,12 +515,16 @@ function GesprekPagina() {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData || !userData.user) {
         console.error('Gebruiker niet gevonden');
+        setFoutmelding('Er is een probleem opgetreden. Probeer het later opnieuw.');
         return;
       }
 
       // Sla het antwoord op in Supabase
-      const result = await slaGesprekOp(huidigeVraag.id, input, huidigeVraag?.tekst);
-      if (!result) return;
+      const result = await slaGesprekOp(huidigeVraag.id, cleanInput, huidigeVraag?.tekst);
+      if (!result) {
+        setFoutmelding('Er is een probleem opgetreden bij het opslaan van je antwoord. Probeer het opnieuw.');
+        return;
+      }
 
       if (isVasteVraag) {
         // We hebben een vaste vraag beantwoord
@@ -499,6 +544,12 @@ function GesprekPagina() {
             gpt_beperkingen: theme?.gpt_beperkingen || ''
           })
         });
+
+        if (!decideRes.ok) {
+          console.error('Fout bij ophalen vervolgvraag:', decideRes.status);
+          setFoutmelding('Er is een probleem opgetreden bij het genereren van de vervolgvraag. Probeer het opnieuw.');
+          return;
+        }
 
         const decide = await decideRes.json();
         
@@ -747,12 +798,20 @@ function GesprekPagina() {
             <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl max-w-md">
               <h3 className="font-medium mb-2">Er is een fout opgetreden</h3>
               <p className="text-sm mb-4">{foutmelding}</p>
-              <button 
-                onClick={() => navigate('/thema-overzicht')} 
-                className="btn btn-primary text-sm"
-              >
-                Terug naar thema overzicht
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="btn btn-primary text-sm"
+                >
+                  Probeer opnieuw
+                </button>
+                <button 
+                  onClick={() => navigate('/thema-overzicht')} 
+                  className="btn btn-secondary text-sm"
+                >
+                  Terug naar thema overzicht
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -812,7 +871,7 @@ function GesprekPagina() {
                   <div className="bg-gray-100 p-3 rounded-lg text-sm text-gray-500">
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                      Verwerken...
+                      AI denkt na...
                     </div>
                   </div>
                 </div>
@@ -834,10 +893,15 @@ function GesprekPagina() {
                     setInput(e.target.value);
                     if (foutmelding) setFoutmelding(null);
                   }}
+                  maxLength={1000}
                   className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm"
                   disabled={isVerzenden}
                 />
-                <button type="submit" className="btn btn-primary rounded-full px-3 w-12 h-10 flex items-center justify-center" disabled={isVerzenden}>
+                <button 
+                  type="submit" 
+                  className="btn btn-primary rounded-full px-3 w-12 h-10 flex items-center justify-center" 
+                  disabled={isVerzenden || !input.trim()}
+                >
                   {isVerzenden ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                   ) : (
@@ -860,6 +924,16 @@ function GesprekPagina() {
             <div className="bg-green-100 text-green-800 p-4 rounded-xl">
               Bedankt voor je antwoorden. Je gesprek is opgeslagen.
             </div>
+
+            {/* Loading state voor samenvatting */}
+            {isGenereren && (
+              <div className="bg-blue-50 text-blue-800 p-4 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                  Samenvatting wordt gegenereerd...
+                </div>
+              </div>
+            )}
 
             <div className="bg-white p-4 rounded-xl border space-y-4">
               <h3 className="font-semibold text-[var(--kleur-primary)]">Je gesprek is afgerond!</h3>
