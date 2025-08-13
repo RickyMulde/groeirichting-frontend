@@ -945,7 +945,7 @@ function GesprekPagina() {
                 >
                   {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : (isEersteGesprek ? 'Start gesprek' : 'Volgende')}
                 </button>
-                {antwoorden.some(a => a.antwoord !== null) && (
+                {antwoorden.some(a => a.antwoord !== null) && !done && (
                   <button
                     onClick={herstartGesprek}
                     className="btn btn-secondary px-4 py-2 rounded-full"
