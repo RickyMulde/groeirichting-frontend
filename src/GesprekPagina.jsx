@@ -38,6 +38,7 @@ function GesprekPagina() {
   const [isVerzenden, setIsVerzenden] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isGenereren, setIsGenereren] = useState(false); // Nieuwe state voor samenvatting genereren
+  const [isEersteGesprek, setIsEersteGesprek] = useState(true); // State voor bepalen welke intro te tonen
   
   // Nieuwe state voor chat berichten
   const [chatBerichten, setChatBerichten] = useState([])
@@ -53,6 +54,39 @@ function GesprekPagina() {
       isActief
     }
     setChatBerichten(prev => [...prev, nieuwBericht])
+  }
+
+  // Helper functie om laatste samenvatting op te halen
+  const haalLaatsteSamenvattingOp = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) return null;
+
+      const { data: eerdereGesprekken } = await supabase
+        .from('gesprek')
+        .select('id')
+        .eq('theme_id', themeId)
+        .eq('werknemer_id', userData.user.id)
+        .eq('status', 'Afgerond')
+        .order('gestart_op', { ascending: true });
+
+      if (eerdereGesprekken && eerdereGesprekken.length > 0) {
+        const { data: samenvattingData } = await supabase
+          .from('gesprekresultaten')
+          .select('samenvatting, gespreksronde')
+          .eq('theme_id', themeId)
+          .eq('werknemer_id', userData.user.id)
+          .order('gespreksronde', { ascending: false })
+          .limit(1)
+          .single();
+          
+        return samenvattingData;
+      }
+      return null;
+    } catch (error) {
+      console.error('Fout bij ophalen laatste samenvatting:', error);
+      return null;
+    }
   }
 
   // Auto-scroll naar beneden bij nieuwe berichten
@@ -220,6 +254,42 @@ function GesprekPagina() {
         return;
       }
 
+      // Check voor eerdere afgeronde gesprekken om te bepalen welke intro te tonen
+              // Update state voor gebruik in render
+        setIsEersteGesprek(true);
+      
+      try {
+        const { data: eerdereGesprekken } = await supabase
+          .from('gesprek')
+          .select('id')
+          .eq('theme_id', themeId)
+          .eq('werknemer_id', user.id)
+          .eq('status', 'Afgerond')
+          .order('gestart_op', { ascending: true });
+
+        if (eerdereGesprekken && eerdereGesprekken.length > 0) {
+          setIsEersteGesprek(false);
+          
+          // Haal de laatste samenvatting op
+          const { data: samenvattingData } = await supabase
+            .from('gesprekresultaten')
+            .select('samenvatting, gespreksronde')
+            .eq('theme_id', themeId)
+            .eq('werknemer_id', user.id)
+            .order('gespreksronde', { ascending: false })
+            .limit(1)
+            .single();
+            
+          if (samenvattingData) {
+            // Samenvatting wordt nu direct gebruikt in API calls
+          }
+        }
+      } catch (error) {
+        console.error('Fout bij ophalen eerdere gesprekken:', error);
+        // Fallback naar eerste gesprek bij fouten
+        setIsEersteGesprek(true);
+      }
+
       if (gesprekIdFromUrl) {
         // Bestaand gesprek ophalen
         const { data: existingGesprek, error } = await supabase
@@ -253,9 +323,15 @@ function GesprekPagina() {
             // Reset chat berichten en voeg alles opnieuw toe in chronologische volgorde
             setChatBerichten([]);
             
-            // Voeg intro bericht toe als het bestaat
-            if (theme?.intro_prompt) {
+            // Voeg intro bericht toe op basis van gespreksronde
+            if (isEersteGesprek && theme?.intro_prompt) {
               voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+            } else if (!isEersteGesprek) {
+              const samenvatting = await haalLaatsteSamenvattingOp();
+              if (samenvatting) {
+                const introTekst = `Dit is je ${samenvatting.gespreksronde === 1 ? 'tweede' : `${samenvatting.gespreksronde + 1}e`} gesprek over het thema ${theme?.titel}.\n\nHieronder zie je een korte samenvatting van wat je 6 maanden geleden hebt besproken.\nWe gebruiken deze terugblik om te kijken wat er is veranderd, wat er hetzelfde is gebleven en welke punten misschien nog aandacht vragen.\n\n**Samenvatting**\n${samenvatting.samenvatting}\n\nAls je hier klaar voor bent, kijken we stap voor stap hoe het nu gaat ten opzichte van de vorige keer.\nKlik op Volgende om te beginnen met de eerste vraag.`;
+                voegChatBerichtToe('toelichting', introTekst, null, false);
+              }
             }
             
             // Voeg alle bestaande antwoorden toe aan chat berichten
@@ -298,9 +374,15 @@ function GesprekPagina() {
             setCurrentIndex(0);
             setChatBerichten([]);
             
-            // Voeg intro bericht toe
-            if (theme?.intro_prompt) {
+            // Voeg intro bericht toe op basis van gespreksronde
+            if (isEersteGesprek && theme?.intro_prompt) {
               voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+            } else if (!isEersteGesprek) {
+              const samenvatting = await haalLaatsteSamenvattingOp();
+              if (samenvatting) {
+                const introTekst = `Dit is je ${samenvatting.gespreksronde === 1 ? 'tweede' : `${samenvatting.gespreksronde + 1}e`} gesprek over het thema ${theme?.titel}.\n\nHieronder zie je een korte samenvatting van wat je 6 maanden geleden hebt besproken.\nWe gebruiken deze terugblik om te kijken wat er is veranderd, wat er hetzelfde is gebleven en welke punten misschien nog aandacht vragen.\n\n**Samenvatting**\n${samenvatting.samenvatting}\n\nAls je hier klaar voor bent, kijken we stap voor stap hoe het nu gaat ten opzichte van de vorige keer.\nKlik op Volgende om te beginnen met de eerste vraag.`;
+                voegChatBerichtToe('toelichting', introTekst, null, false);
+              }
             }
             // Voeg eerste vraag toe
             if (vragen.length > 0) {
@@ -331,9 +413,15 @@ function GesprekPagina() {
         setAntwoorden([]);
         setCurrentIndex(0);
         
-        // Voeg intro bericht toe
-        if (theme?.intro_prompt) {
+        // Voeg intro bericht toe op basis van gespreksronde
+        if (isEersteGesprek && theme?.intro_prompt) {
           voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
+        } else if (!isEersteGesprek) {
+          const samenvatting = await haalLaatsteSamenvattingOp();
+          if (samenvatting) {
+            const introTekst = `Dit is je ${samenvatting.gespreksronde === 1 ? 'tweede' : `${samenvatting.gespreksronde + 1}e`} gesprek over het thema ${theme?.titel}.\n\nHieronder zie je een korte samenvatting van wat je 6 maanden geleden hebt besproken.\nWe gebruiken deze terugblik om te kijken wat er is veranderd, wat er hetzelfde is gebleven en welke punten misschien nog aandacht vragen.\n\n**Samenvatting**\n${samenvatting.samenvatting}\n\nAls je hier klaar voor bent, kijken we stap voor stap hoe het nu gaat ten opzichte van de vorige keer.\nKlik op Volgende om te beginnen met de eerste vraag.`;
+            voegChatBerichtToe('toelichting', introTekst, null, false);
+          }
         }
         // Voeg eerste vraag toe
         if (vragen.length > 0) {
@@ -382,7 +470,12 @@ function GesprekPagina() {
     setInput('');
     setFoutmelding(null);
     setChatBerichten([]); // Reset chat berichten
-    await startGesprek();
+    setIsEersteGesprek(true); // Reset naar eerste gesprek
+    
+    // Wacht even zodat de state is gereset voordat startGesprek wordt aangeroepen
+    setTimeout(async () => {
+      await startGesprek();
+    }, 0);
   };
 
   const slaGesprekOp = async (theme_question_id, antwoord, vraag_tekst = null) => {
@@ -531,6 +624,7 @@ function GesprekPagina() {
         console.log('Vaste vraag beantwoord:', huidigeVraag.tekst);
         
         // Vraag GPT of er een vervolgvraag moet komen
+        const samenvatting = await haalLaatsteSamenvattingOp();
         const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -541,7 +635,11 @@ function GesprekPagina() {
             gpt_doelstelling: theme?.gpt_doelstelling || '',
             prompt_style: theme?.prompt_style || '',
             ai_behavior: theme?.ai_behavior || '',
-            gpt_beperkingen: theme?.gpt_beperkingen || ''
+            gpt_beperkingen: theme?.gpt_beperkingen || '',
+            laatste_samenvatting: samenvatting ? {
+              samenvatting: samenvatting.samenvatting,
+              gespreksronde: samenvatting.gespreksronde
+            } : null
           })
         });
 
@@ -614,6 +712,7 @@ function GesprekPagina() {
           }
           
           // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 4 hebben)
+          const samenvatting = await haalLaatsteSamenvattingOp();
           const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -624,7 +723,11 @@ function GesprekPagina() {
               gpt_doelstelling: theme?.gpt_doelstelling || '',
               prompt_style: theme?.prompt_style || '',
               ai_behavior: theme?.ai_behavior || '',
-              gpt_beperkingen: theme?.gpt_beperkingen || ''
+              gpt_beperkingen: theme?.gpt_beperkingen || '',
+              laatste_samenvatting: samenvatting ? {
+                samenvatting: samenvatting.samenvatting,
+                gespreksronde: samenvatting.gespreksronde
+              } : null
             })
           });
 
@@ -820,7 +923,7 @@ function GesprekPagina() {
           <div className="flex-1 flex items-center justify-center p-4">
             <div className="space-y-4 max-w-md">
               <p className="bg-[var(--kleur-secondary)] p-4 rounded-2xl text-sm">
-                {theme?.intro_prompt || 'Welkom bij dit thema.'}
+                {isEersteGesprek ? (theme?.intro_prompt || 'Welkom bij dit thema.') : 'Je hebt eerder al over dit thema gesproken. Klik op Volgende om verder te gaan.'}
               </p>
               {antwoorden.some(a => a.antwoord !== null) && (
                 <div className="space-y-4">
@@ -840,7 +943,7 @@ function GesprekPagina() {
                   onClick={startGesprek}
                   className="btn btn-primary px-4 py-2 rounded-full"
                 >
-                  {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : 'Start gesprek'}
+                  {antwoorden.some(a => a.antwoord !== null) ? 'Ga verder' : (isEersteGesprek ? 'Start gesprek' : 'Volgende')}
                 </button>
                 {antwoorden.some(a => a.antwoord !== null) && (
                   <button
