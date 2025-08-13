@@ -443,7 +443,7 @@ function OrganisationDashboard() {
                     <div className="flex items-start gap-4 mb-3">
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold text-gray-900 mb-1">{theme.titel}</h3>
-                        <p className="text-gray-600 text-sm">{theme.beschrijving_werknemer}</p>
+                        <p className="text-gray-600 text-sm">{theme.beschrijving_werkgever || theme.beschrijving_werknemer}</p>
                       </div>
                       
                       {/* Score meter */}
