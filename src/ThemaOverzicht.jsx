@@ -48,10 +48,10 @@ function ThemaOverzicht() {
       // Oude methode als fallback
       const { data: themaData, error: themaError } = await supabase
         .from('themes')
-        .select('id, titel, beschrijving')
+        .select('id, titel, beschrijving_werknemer')
         .eq('klaar_voor_gebruik', true)
         .eq('standaard_zichtbaar', true)
-        .order('volgorde_index');
+        .order('volgorde_index', { ascending: true })
 
       if (themaError) {
         console.error("Fout bij laden thema's:", themaError);
@@ -292,7 +292,7 @@ function ThemaOverzicht() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{thema.titel}</h3>
-                      <p className="text-gray-600 text-sm mb-4">{thema.beschrijving || 'Geen beschrijving beschikbaar.'}</p>
+                      <p className="text-gray-600 text-sm mb-4">{thema.beschrijving_werknemer || 'Geen beschrijving beschikbaar.'}</p>
                       
 
                     </div>

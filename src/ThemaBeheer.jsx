@@ -8,7 +8,8 @@ import { ArrowLeft, Settings } from 'lucide-react'
 const tooltipData = {
   // Basis thema informatie
   titel: 'De naam van het thema zoals die getoond wordt aan werknemers en werkgevers.',
-  beschrijving: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
+  beschrijving_werknemer: 'Beschrijving die getoond wordt aan werknemers bij het starten van een gesprek.',
+  beschrijving_werkgever: 'Interne toelichting voor superadmins en werkgevers. Wordt niet getoond aan werknemers.',
   intro_prompt: 'Inleidingstekst voor werknemers. Wordt getoond vóór het invullen van de vragenlijst.',
   
   // 🎯 AI PROMPT CONFIGURATIE - Deze velden bepalen hoe de AI zich gedraagt
@@ -62,7 +63,7 @@ function ThemaBeheer() {
   const nieuwThema = id === 'nieuw'
   const [formData, setFormData] = useState({
     gebruik_gpt_vragen: false,
-    titel: '', beschrijving: '', klaar_voor_gebruik: false,
+    titel: '', beschrijving_werknemer: '', beschrijving_werkgever: '', klaar_voor_gebruik: false,
     voorgesteld_als_verplicht: false, standaard_zichtbaar: true,
     alleen_premium: false, alleen_concept: false, intro_prompt: '',
 
@@ -340,10 +341,10 @@ function ThemaBeheer() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Links: Titel, Beschrijving, Intro Prompt */}
               <div className="lg:col-span-2 space-y-4">
-                {['titel', 'beschrijving', 'intro_prompt'].map(key => (
+                {['titel', 'beschrijving_werknemer', 'intro_prompt'].map(key => (
                   <div key={key} className="mb-4">
                     <label className="block text-sm font-medium capitalize mb-1">
-                      {key.replace(/_/g, ' ')}
+                      {key === 'beschrijving_werknemer' ? 'Beschrijving (werknemer)' : key.replace(/_/g, ' ')}
                       {tooltipData[key] && (
                         <span
                           title={tooltipData[key]}
@@ -351,7 +352,7 @@ function ThemaBeheer() {
                         >🛈</span>
                       )}
                     </label>
-                    {key === 'beschrijving' ? (
+                    {key === 'beschrijving_werknemer' ? (
                       <textarea
                         name={key}
                         value={formData[key] || ''}
@@ -370,6 +371,26 @@ function ThemaBeheer() {
                     )}
                   </div>
                 ))}
+                
+                {/* Werkgever beschrijving */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">
+                    Beschrijving (werkgever)
+                    {tooltipData.beschrijving_werkgever && (
+                      <span
+                        title={tooltipData.beschrijving_werkgever}
+                        className="ml-2 cursor-help text-gray-400 hover:text-gray-600"
+                      >🛈</span>
+                    )}
+                  </label>
+                  <textarea
+                    name="beschrijving_werkgever"
+                    value={formData.beschrijving_werkgever || ''}
+                    onChange={handleChange}
+                    rows={3}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
               </div>
 
               {/* Rechts: Checkbox velden */}
@@ -620,7 +641,7 @@ function ThemaBeheer() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, val]) => {
                 if (key.startsWith('vraag_')) return null;
-                if (['titel', 'beschrijving', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag', 'gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].includes(key)) return null;
+                if (['titel', 'beschrijving_werknemer', 'intro_prompt', 'gpt_doelstelling', 'prompt_style', 'ai_behavior', 'gpt_beperkingen', 'thema_type', 'geeft_score', 'geeft_samenvatting', 'geeft_ai_advies', 'ai_configuratie', 'doel_vraag', 'gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].includes(key)) return null;
                 
                 return (
                   <div key={key} className="mb-4">

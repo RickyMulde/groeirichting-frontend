@@ -42,16 +42,16 @@ function Instellingen() {
         }
 
         // Haal thema's op
-        const { data, error } = await supabase
+        const { data: themaData, error: themaError } = await supabase
           .from('themes')
-          .select('id, titel, beschrijving, standaard_zichtbaar, klaar_voor_gebruik')
+          .select('id, titel, beschrijving_werknemer, standaard_zichtbaar, klaar_voor_gebruik')
           .eq('klaar_voor_gebruik', true)
-          .order('volgorde_index')
+          .order('volgorde_index', { ascending: true })
 
-        if (error) {
-          console.error('Fout bij ophalen thema\'s:', error)
+        if (themaError) {
+          console.error('Fout bij ophalen thema\'s:', themaError)
         } else {
-          const enriched = data.map((t) => ({
+          const enriched = themaData.map((t) => ({
             ...t,
             actief: t.standaard_zichtbaar
           }))
@@ -293,7 +293,7 @@ function Instellingen() {
                 <div key={thema.id} className="p-4 border rounded-xl shadow-sm bg-white flex flex-col justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-[var(--kleur-primary)]">{thema.titel}</h3>
-                    <p className="text-gray-600 text-sm mt-1">{thema.beschrijving || 'Geen beschrijving beschikbaar.'}</p>
+                    <p className="text-gray-600 text-sm mt-1">{thema.beschrijving_werknemer || 'Geen beschrijving beschikbaar.'}</p>
                   </div>
                   <div className="mt-4 flex items-center justify-between">
                     <label className="text-sm text-gray-700 mr-2">Zichtbaar voor medewerkers</label>

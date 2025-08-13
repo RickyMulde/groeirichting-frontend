@@ -24,8 +24,11 @@ function ThemaBeheerOverzicht() {
     }
 
     const fetchThemas = async () => {
-      const { data, error } = await supabase.from('themes').select('*')
-      if (!error) setThemas(data)
+      const { data: themaData, error: themaError } = await supabase
+        .from('themes')
+        .select('id, titel, beschrijving_werknemer, klaar_voor_gebruik, standaard_zichtbaar, alleen_premium, alleen_concept, volgorde_index')
+        .order('volgorde_index', { ascending: true })
+      if (!themaError) setThemas(themaData)
     }
 
     checkAuth()
@@ -71,7 +74,7 @@ function ThemaBeheerOverzicht() {
             <li key={thema.id} className="py-2 flex justify-between items-center">
               <div>
                 <span className="font-medium">{thema.titel}</span>
-                <p className="text-sm text-gray-600 mt-1">{thema.beschrijving}</p>
+                <p className="text-sm text-gray-600 mt-1">{thema.beschrijving_werknemer}</p>
               </div>
               <Link to={`/superadmin/thema/${thema.id}`} className="btn btn-accent text-sm">Bewerk</Link>
             </li>

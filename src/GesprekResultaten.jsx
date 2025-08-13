@@ -356,7 +356,7 @@ function GesprekResultaten() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{resultaat.themes.titel}</h3>
-                      <p className="text-gray-600 text-sm">{resultaat.themes.beschrijving}</p>
+                      <p className="text-gray-600 text-sm">{resultaat.themes.beschrijving_werknemer}</p>
                     </div>
                     
                     {/* Score rechtsbovenin */}
