@@ -845,6 +845,13 @@ function GesprekPagina() {
     }
   }
 
+  // Functie om HTML entities te decoderen
+  const decodeHtmlEntities = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+  };
+
   // Chat bericht component
   const ChatBericht = ({ bericht }) => {
     const getBerichtStyling = () => {
@@ -867,7 +874,7 @@ function GesprekPagina() {
     return (
       <div className={`flex ${bericht.type === 'antwoord' || bericht.type === 'reactie' ? 'justify-end' : 'justify-start'} mb-3`}>
         <div className={`p-3 rounded-lg text-sm ${getBerichtStyling()} ${bericht.isActief ? 'ring-2 ring-blue-400' : ''}`}>
-          {bericht.inhoud}
+          {decodeHtmlEntities(bericht.inhoud)}
         </div>
       </div>
     );

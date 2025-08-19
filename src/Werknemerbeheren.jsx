@@ -169,6 +169,23 @@ function WerknemerBeheren() {
             {loading ? 'Versturen...' : 'Uitnodigen'}
           </button>
         </form>
+        
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="text-sm text-blue-800">
+              <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
+              <p className="text-blue-700">
+                Jouw werknemer/teamlid ontvangt een mail, waarmee hij/zijn account kan aanmaken. Je hoeft verder niks te doen. 
+                Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Werknemerslijst */}
@@ -282,16 +299,17 @@ function WerknemerBeheren() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Geslacht</label>
-                <select 
-                  value={selectedWerknemer.gender || ''} 
-                  onChange={e => setSelectedWerknemer({ ...selectedWerknemer, gender: e.target.value })} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Selecteer geslacht</option>
-                  <option value="man">Man</option>
-                  <option value="vrouw">Vrouw</option>
-                  <option value="anders">Anders</option>
-                </select>
+                                 <select 
+                   value={selectedWerknemer.gender || ''} 
+                   onChange={e => setSelectedWerknemer({ ...selectedWerknemer, gender: e.target.value })} 
+                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                 >
+                   <option value="">Selecteer geslacht</option>
+                   <option value="man">Man</option>
+                   <option value="vrouw">Vrouw</option>
+                   <option value="niet-binair">Niet-binair</option>
+                   <option value="liever-niet-zeggen">Liever niet zeggen</option>
+                 </select>
               </div>
             </div>
             <div className="flex justify-end gap-4 pt-4">

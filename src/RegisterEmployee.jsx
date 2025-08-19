@@ -124,7 +124,13 @@ function RegisterEmployee() {
         <input type="text" placeholder="Tussenvoegsel (optioneel)" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
         <input type="text" placeholder="Achternaam" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
         <input type="date" placeholder="Geboortedatum" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} required />
-        <input type="text" placeholder="Geslacht (bijv. man, vrouw, non-binair)" value={gender} onChange={(e) => setGender(e.target.value)} required />
+        <select value={gender} onChange={(e) => setGender(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option value="">Selecteer geslacht *</option>
+          <option value="man">Man</option>
+          <option value="vrouw">Vrouw</option>
+          <option value="niet-binair">Niet-binair</option>
+          <option value="liever-niet-zeggen">Liever niet zeggen</option>
+        </select>
         <input type="password" placeholder="Wachtwoord" value={wachtwoord} onChange={(e) => setWachtwoord(e.target.value)} required />
         <input type="password" placeholder="Bevestig wachtwoord" value={bevestiging} onChange={(e) => setBevestiging(e.target.value)} required />
         <button type="submit" className="btn btn-primary w-full">Account aanmaken</button>
