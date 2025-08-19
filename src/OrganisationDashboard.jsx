@@ -19,12 +19,22 @@ function OrganisationDashboard() {
   const [summaryData, setSummaryData] = useState({})
   const [showTooltip, setShowTooltip] = useState(null)
   const [tooltipTimeout, setTooltipTimeout] = useState(null)
+  const [activeMonths, setActiveMonths] = useState([])
+  const [selectedMonth, setSelectedMonth] = useState(null)
+  const [employerId, setEmployerId] = useState(null)
 
   // Load data on mount
   useEffect(() => {
     setError(null) // Reset error state
     fetchOrganisationThemes()
   }, []) // Lege dependency array om circulaire dependency te voorkomen
+
+  // Haal werkgever instellingen op wanneer employerId beschikbaar is
+  useEffect(() => {
+    if (employerId) {
+      fetchEmployerSettings(employerId)
+    }
+  }, [employerId, fetchEmployerSettings])
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
@@ -80,6 +90,8 @@ function OrganisationDashboard() {
         throw new Error('Werkgever niet gevonden')
       }
 
+      setEmployerId(employer.id)
+
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`)
       
       if (!response.ok) {
@@ -97,6 +109,48 @@ function OrganisationDashboard() {
       endApiCall('fetchOrganisationThemes')
     }
   }, [navigate, startApiCall, endApiCall])
+
+  // Haal werkgever instellingen op voor actieve maanden
+  const fetchEmployerSettings = useCallback(async (employerId) => {
+    if (!employerId) return
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employerId}`)
+      
+      if (!response.ok) {
+        console.error('Fout bij ophalen werkgever instellingen')
+        return
+      }
+
+      const data = await response.json()
+      setActiveMonths(data.actieve_maanden || [3, 6, 9]) // Fallback naar standaard waarden
+      
+      // Bepaal laatste actieve maand als default selectie
+      if (data.actieve_maanden && data.actieve_maanden.length > 0) {
+        const currentYear = new Date().getFullYear()
+        const currentMonth = new Date().getMonth() + 1
+        
+        // Zoek de laatste actieve maand (nieuwste datum)
+        let lastActiveMonth = null
+        for (let year = currentYear; year >= currentYear - 1; year--) {
+          for (let month = 12; month >= 1; month--) {
+            if (data.actieve_maanden.includes(month)) {
+              const monthDate = new Date(year, month - 1, 1)
+              if (monthDate <= new Date()) {
+                lastActiveMonth = { year, month }
+                break
+              }
+            }
+          }
+          if (lastActiveMonth) break
+        }
+        
+        setSelectedMonth(lastActiveMonth || { year: currentYear, month: data.actieve_maanden[0] })
+      }
+    } catch (err) {
+      console.error('Fout bij ophalen werkgever instellingen:', err)
+    }
+  }, [])
 
   const fetchSummary = useCallback(async (themeId) => {
     if (summaryData[themeId]) return // Al opgehaald
@@ -257,6 +311,25 @@ function OrganisationDashboard() {
     return Math.round((completed / total) * 100)
   }, [])
 
+  // Helper functies voor maand selectie
+  const getMaandNaam = useCallback((month) => {
+    const maanden = [
+      'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+      'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
+    ]
+    return maanden[month - 1] || 'Onbekend'
+  }, [])
+
+  const getLaatsteDagVanMaand = useCallback((year, month) => {
+    return new Date(year, month, 0).getDate()
+  }, [])
+
+  const formatMaandDatum = useCallback((year, month) => {
+    const laatsteDag = getLaatsteDagVanMaand(year, month)
+    const maandNaam = getMaandNaam(month)
+    return `${laatsteDag} ${maandNaam} ${year}`
+  }, [getLaatsteDagVanMaand, getMaandNaam])
+
   // Memoized statistieken voor betere performance
   const dashboardStats = useMemo(() => {
     if (themes.length === 0) return null
@@ -396,11 +469,65 @@ function OrganisationDashboard() {
               </button>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema Dashboard</h1>
-                <p className="text-gray-600 text-sm sm:text-base">Overzicht van alle thema's en resultaten</p>
+                <p className="text-gray-600 text-sm sm:text-base">
+                  {selectedMonth 
+                    ? `Overzicht van alle thema's en resultaten - ${getMaandNaam(selectedMonth.month)} ${selectedMonth.year}`
+                    : 'Overzicht van alle thema\'s en resultaten'
+                  }
+                </p>
               </div>
             </div>
             <BarChart3 className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
           </div>
+
+          {/* Maand Selector */}
+          {activeMonths.length > 0 && selectedMonth && (
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <BarChart3 className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Selecteer periode</p>
+                    <p className="text-base font-medium text-gray-900">
+                      {getMaandNaam(selectedMonth.month)} {selectedMonth.year}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={`${selectedMonth.year}-${selectedMonth.month}`}
+                    onChange={(e) => {
+                      const [year, month] = e.target.value.split('-').map(Number)
+                      setSelectedMonth({ year, month })
+                    }}
+                    className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {activeMonths.map(month => {
+                      // Genereer opties voor huidige en vorige jaar
+                      const currentYear = new Date().getFullYear()
+                      const years = [currentYear, currentYear - 1]
+                      
+                      return years.map(year => {
+                        const monthDate = new Date(year, month - 1, 1)
+                        const isPastOrCurrent = monthDate <= new Date()
+                        
+                        if (isPastOrCurrent) {
+                          return (
+                            <option key={`${year}-${month}`} value={`${year}-${month}`}>
+                              {getMaandNaam(month)} {year}
+                            </option>
+                          )
+                        }
+                        return null
+                      })
+                    }).flat().filter(Boolean)}
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Statistieken */}
           {dashboardStats && (
@@ -455,7 +582,7 @@ function OrganisationDashboard() {
                   <p>Samenvattingen en scores worden automatisch gegenereerd als:</p>
                   <ul className="list-disc list-inside ml-2 space-y-1">
                     <li>Alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond</li>
-                    <li>Datum x (einde van de actieve maand is bereikt)</li>
+                    <li>Op de laatste dag van de actieve maand: {selectedMonth ? formatMaandDatum(selectedMonth.year, selectedMonth.month) : 'datum wordt geladen...'}</li>
                     <li>De samenvatting tussentijds wordt gegenereerd (mogelijk vanaf 4 werknemers/teamleden die de gesprekken/thema's hebben afgerond)</li>
                   </ul>
                 </div>
