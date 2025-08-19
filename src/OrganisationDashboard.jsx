@@ -29,6 +29,48 @@ function OrganisationDashboard() {
     fetchOrganisationThemes()
   }, []) // Lege dependency array om circulaire dependency te voorkomen
 
+  // Haal werkgever instellingen op voor actieve maanden
+  const fetchEmployerSettings = useCallback(async (employerId) => {
+    if (!employerId) return
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employerId}`)
+      
+      if (!response.ok) {
+        console.error('Fout bij ophalen werkgever instellingen')
+        return
+      }
+
+      const data = await response.json()
+      setActiveMonths(data.actieve_maanden || [3, 6, 9]) // Fallback naar standaard waarden
+      
+      // Bepaal laatste actieve maand als default selectie
+      if (data.actieve_maanden && data.actieve_maanden.length > 0) {
+        const currentYear = new Date().getFullYear()
+        const currentMonth = new Date().getMonth() + 1
+        
+        // Zoek de laatste actieve maand (nieuwste datum)
+        let lastActiveMonth = null
+        for (let year = currentYear; year >= currentYear - 1; year--) {
+          for (let month = 12; month >= 1; month--) {
+            if (data.actieve_maanden.includes(month)) {
+              const monthDate = new Date(year, month - 1, 1)
+              if (monthDate <= new Date()) {
+                lastActiveMonth = { year, month }
+                break
+              }
+            }
+          }
+          if (lastActiveMonth) break
+        }
+        
+        setSelectedMonth(lastActiveMonth || { year: currentYear, month: data.actieve_maanden[0] })
+      }
+    } catch (err) {
+      console.error('Fout bij ophalen werkgever instellingen:', err)
+    }
+  }, [])
+
   // Haal werkgever instellingen op wanneer employerId beschikbaar is
   useEffect(() => {
     if (employerId) {
@@ -109,48 +151,6 @@ function OrganisationDashboard() {
       endApiCall('fetchOrganisationThemes')
     }
   }, [navigate, startApiCall, endApiCall])
-
-  // Haal werkgever instellingen op voor actieve maanden
-  const fetchEmployerSettings = useCallback(async (employerId) => {
-    if (!employerId) return
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employerId}`)
-      
-      if (!response.ok) {
-        console.error('Fout bij ophalen werkgever instellingen')
-        return
-      }
-
-      const data = await response.json()
-      setActiveMonths(data.actieve_maanden || [3, 6, 9]) // Fallback naar standaard waarden
-      
-      // Bepaal laatste actieve maand als default selectie
-      if (data.actieve_maanden && data.actieve_maanden.length > 0) {
-        const currentYear = new Date().getFullYear()
-        const currentMonth = new Date().getMonth() + 1
-        
-        // Zoek de laatste actieve maand (nieuwste datum)
-        let lastActiveMonth = null
-        for (let year = currentYear; year >= currentYear - 1; year--) {
-          for (let month = 12; month >= 1; month--) {
-            if (data.actieve_maanden.includes(month)) {
-              const monthDate = new Date(year, month - 1, 1)
-              if (monthDate <= new Date()) {
-                lastActiveMonth = { year, month }
-                break
-              }
-            }
-          }
-          if (lastActiveMonth) break
-        }
-        
-        setSelectedMonth(lastActiveMonth || { year: currentYear, month: data.actieve_maanden[0] })
-      }
-    } catch (err) {
-      console.error('Fout bij ophalen werkgever instellingen:', err)
-    }
-  }, [])
 
   const fetchSummary = useCallback(async (themeId) => {
     if (summaryData[themeId]) return // Al opgehaald
