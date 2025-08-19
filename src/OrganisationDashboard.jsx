@@ -422,45 +422,9 @@ function OrganisationDashboard() {
                   <div className="p-2 bg-green-100 rounded-lg">
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
-                  <div className="flex-1">
+                  <div>
                     <p className="text-sm text-gray-500">Totale voortgang</p>
-                    <div className="flex items-center gap-3">
-                      {/* Cirkelvormige voortgangsmeter */}
-                      <div className="relative">
-                        <svg className="w-12 h-12 transform -rotate-90 transition-all duration-500 ease-in-out" viewBox="0 0 36 36">
-                          {/* Achtergrond cirkel */}
-                          <path
-                            className="text-gray-200"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                          {/* Voortgang cirkel */}
-                          <path
-                            className={`${dashboardStats.totaleVoortgang >= 75 ? 'text-green-500' : dashboardStats.totaleVoortgang >= 25 ? 'text-orange-500' : 'text-red-500'} transition-all duration-500 ease-in-out`}
-                            stroke="currentColor"
-                            strokeWidth="3"
-                            fill="none"
-                            strokeLinecap="round"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                            strokeDasharray={`${(dashboardStats.totaleVoortgang / 100) * 100}, 100`}
-                          />
-                        </svg>
-                        {/* Percentage in het midden */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-sm font-bold text-gray-700 transition-all duration-300">
-                            {dashboardStats.totaleVoortgang}%
-                          </span>
-                        </div>
-                      </div>
-                      {/* Checkmark voor 100% voltooid */}
-                      {dashboardStats.totaleVoortgang === 100 && (
-                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                          <CheckCircle className="w-3 h-3 text-white" />
-                        </div>
-                      )}
-                    </div>
+                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.totaleVoortgang}%</p>
                   </div>
                 </div>
               </div>
@@ -480,17 +444,21 @@ function OrganisationDashboard() {
           )}
           
           {/* Begeleidende tekst */}
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-6">
             <div className="flex items-start gap-3">
               <div className="p-1 bg-blue-100 rounded-lg">
                 <AlertCircle className="w-4 h-4 text-blue-600" />
               </div>
               <div>
                 <p className="text-blue-800 font-medium text-sm">Wanneer worden samenvattingen gegenereerd?</p>
-                <p className="text-blue-700 text-sm mt-1">
-                  Samenvattingen en scores worden automatisch gegenereerd als: alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond, 
-                  datum x (einde van de actieve maand is bereikt), of als de samenvatting tussentijds wordt gegenereerd (mogelijk vanaf 4 werknemers/teamleden die de gesprekken/thema's hebben afgerond).
-                </p>
+                <div className="text-blue-700 text-xs mt-2 space-y-1">
+                  <p>Samenvattingen en scores worden automatisch gegenereerd als:</p>
+                  <ul className="list-disc list-inside ml-2 space-y-1">
+                    <li>Alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond</li>
+                    <li>Datum x (einde van de actieve maand is bereikt)</li>
+                    <li>De samenvatting tussentijds wordt gegenereerd (mogelijk vanaf 4 werknemers/teamleden die de gesprekken/thema's hebben afgerond)</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
