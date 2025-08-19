@@ -31,12 +31,25 @@
   }
 
   input, select, textarea {
-    @apply w-1/2 px-3 py-1.5 rounded-lg border border-gray-300;
+    @apply w-full px-3 py-2 rounded-lg border border-gray-300;
     @apply mt-1 mb-2; /* tailwind klassen voor margins */
   }
 
   input:focus, textarea:focus, select:focus {
     @apply outline-none border-[var(--kleur-accent)] ring-1 ring-[var(--kleur-accent)];
+  }
+
+  .form-group {
+    @apply space-y-1;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-[var(--kleur-text)] mb-1;
+  }
+
+  .form-input {
+    @apply w-full px-3 py-2 rounded-lg border border-gray-300 transition-colors;
+    @apply focus:outline-none focus:border-[var(--kleur-accent)] focus:ring-1 focus:ring-[var(--kleur-accent)];
   }
 
   .btn {

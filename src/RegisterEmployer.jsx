@@ -74,56 +74,129 @@ function RegisterEmployer() {
 
       <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Maak een werkgever-account aan</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label>Bedrijfsnaam</label>
-          <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
-        </div>
-        <div>
-          <label>KvK-nummer</label>
-          <input type="text" value={kvk} onChange={(e) => setKvk(e.target.value)} required />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label>Voornaam</label>
-            <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Bedrijfsgegevens */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-[var(--kleur-primary)] border-b border-gray-200 pb-2">Bedrijfsgegevens</h3>
+          
+          <div className="form-group">
+            <label className="form-label">Bedrijfsnaam *</label>
+            <input 
+              type="text" 
+              value={companyName} 
+              onChange={(e) => setCompanyName(e.target.value)} 
+              required 
+              className="form-input"
+            />
           </div>
-          <div>
-            <label>Tussenvoegsel</label>
-            <input type="text" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
-          </div>
-          <div>
-            <label>Achternaam</label>
-            <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-          </div>
-        </div>
-        <div>
-          <label>Telefoonnummer</label>
-          <input type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
-        </div>
-        <div>
-          <label>E-mailadres</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label>Wachtwoord</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          </div>
-          <div>
-            <label>Bevestig wachtwoord</label>
-            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+          
+          <div className="form-group">
+            <label className="form-label">KvK-nummer *</label>
+            <input 
+              type="text" 
+              value={kvk} 
+              onChange={(e) => setKvk(e.target.value)} 
+              required 
+              className="form-input"
+            />
           </div>
         </div>
-        <div className="mt-6">
-          <button type="submit" disabled={loading} className="btn btn-primary">
+
+        {/* Persoonsgegevens */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-[var(--kleur-primary)] border-b border-gray-200 pb-2">Persoonsgegevens</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="form-group">
+              <label className="form-label">Voornaam *</label>
+              <input 
+                type="text" 
+                value={firstName} 
+                onChange={(e) => setFirstName(e.target.value)} 
+                required 
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tussenvoegsel</label>
+              <input 
+                type="text" 
+                value={middleName} 
+                onChange={(e) => setMiddleName(e.target.value)} 
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Achternaam *</label>
+              <input 
+                type="text" 
+                value={lastName} 
+                onChange={(e) => setLastName(e.target.value)} 
+                required 
+                className="form-input"
+              />
+            </div>
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">Telefoonnummer</label>
+            <input 
+              type="tel" 
+              value={contactPhone} 
+              onChange={(e) => setContactPhone(e.target.value)} 
+              className="form-input"
+            />
+          </div>
+        </div>
+
+        {/* Accountgegevens */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-[var(--kleur-primary)] border-b border-gray-200 pb-2">Accountgegevens</h3>
+          
+          <div className="form-group">
+            <label className="form-label">E-mailadres *</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+              className="form-input"
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="form-group">
+              <label className="form-label">Wachtwoord *</label>
+              <input 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Bevestig wachtwoord *</label>
+              <input 
+                type="password" 
+                value={confirmPassword} 
+                onChange={(e) => setConfirmPassword(e.target.value)} 
+                required 
+                className="form-input"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-4">
+          <button type="submit" disabled={loading} className="btn btn-primary w-full md:w-auto">
             {loading ? 'Bezig...' : 'Account aanmaken'}
           </button>
         </div>
       </form>
 
-      {error && <p className="mt-4 text-red-600">{error}</p>}
-      {success && <p className="mt-4 text-green-600">{success}</p>}
+      {error && <p className="mt-4 text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">{error}</p>}
+      {success && <p className="mt-4 text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">{success}</p>}
     </div>
   )
 }
