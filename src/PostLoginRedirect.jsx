@@ -15,6 +15,12 @@ function PostLoginRedirect() {
           return
         }
 
+        // Controleer eerst of e-mail is geverifieerd
+        if (!session.user?.email_confirmed_at) {
+          navigate('/verify-email')
+          return
+        }
+
         const { data, error } = await supabase
           .from('users')
           .select('role')

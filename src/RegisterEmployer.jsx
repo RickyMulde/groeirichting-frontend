@@ -44,7 +44,7 @@ function RegisterEmployer() {
       if (!response.ok) {
         setError(result.error || 'Registratie mislukt.')
       } else {
-        setSuccess('Account succesvol aangemaakt! Bevestig je e-mailadres via de ontvangen mail.')
+        setSuccess('Account succesvol aangemaakt! Controleer je e-mailadres voor de verificatielink om je account te activeren.')
         setCompanyName('')
         setFirstName('')
         setMiddleName('')

@@ -20,7 +20,7 @@ function EmployerProtectedRoute({ children }) {
         const { data: { user } } = await supabase.auth.getUser()
 
         if (!user?.email_confirmed_at) {
-          navigate('/login')
+          navigate('/verify-email')
           return
         }
 

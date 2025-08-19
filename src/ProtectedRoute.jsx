@@ -21,6 +21,7 @@ function ProtectedRoute({ children }) {
       } = await supabase.auth.getUser()
 
       if (!user?.email_confirmed_at) {
+        navigate('/verify-email')
         return
       }
 

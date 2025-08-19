@@ -100,10 +100,10 @@ function RegisterEmployee() {
         return
       }
 
-      setSuccesmelding('Je account is succesvol geregistreerd. Je wordt nu doorgestuurd...')
+      setSuccesmelding('Je account is succesvol geregistreerd! Controleer je e-mailadres voor de verificatielink om je account te activeren.')
       setTimeout(() => {
-        window.location.href = '/werknemer-portaal'
-      }, 2000)
+        window.location.href = '/verify-email'
+      }, 3000)
     }
   }
 

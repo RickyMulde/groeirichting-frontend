@@ -8,6 +8,7 @@ import Dashboard from './dashboard'
 import Werknemerbeheren from './Werknemerbeheren'
 import Instellingen from './Instellingen'
 import RegisterEmployee from './RegisterEmployee'
+import VerifyEmail from './VerifyEmail'
 import PostLoginRedirect from './PostLoginRedirect'
 import RegistratieVerplicht from './RegistratieVerplicht'
 import EmployeePortal from './EmployeePortal'
@@ -32,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registreer-werkgever" element={<RegisterEmployer />} />
         <Route path="/registreer-werknemer" element={<RegisterEmployee />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/werkgever-portaal" element={<EmployerPortal />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/werknemerbeheer" element={<Werknemerbeheren />} />
