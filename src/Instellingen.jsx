@@ -11,7 +11,8 @@ function Instellingen() {
     actieve_maanden: [3, 6, 9],
     verplicht: true,
     actief: true,
-    anonimiseer_na_dagen: 60
+    anonimiseer_na_dagen: 60,
+    organisatie_omschrijving: ''
   })
   const [configLoading, setConfigLoading] = useState(true)
   const [configSaving, setConfigSaving] = useState(false)
@@ -170,6 +171,33 @@ function Instellingen() {
             <Settings className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
           </div>
         </div>
+
+        {/* Organisatie Omschrijving */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4">Omschrijving organisatie/team</h2>
+            <div className="space-y-4">
+              <div>
+                <textarea
+                  value={werkgeverConfig.organisatie_omschrijving}
+                  onChange={(e) => setWerkgeverConfig(prev => ({ ...prev, organisatie_omschrijving: e.target.value }))}
+                  placeholder="Geef een korte bondige omschrijving van de werkzaamheden van de betreffende personen die de thema's gaan behandelen."
+                  className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent resize-none"
+                />
+              </div>
+              <div className="text-sm text-gray-600">
+                <p className="mb-2">Geef een korte bondige omschrijving van de werkzaamheden van de betreffende personen die de thema's gaan behandelen.</p>
+                <p className="italic">Hieronder 3 voorbeelden:</p>
+                <ul className="list-disc list-inside mt-1 space-y-1">
+                  <li>"Onze medewerkers plannen routes, ondersteunen zorgverleners en hebben veel telefonisch contact met cliënten en mantelzorgers."</li>
+                  <li>"Het team behandelt klantvragen over verzekeringen, verwerkt wijzigingen in polissen en voert administratieve werkzaamheden uit."</li>
+                  <li>"Onze medewerkers stellen orders samen, verwerken zendingen en zorgen dat alles op tijd de deur uit gaat. Het werk is fysiek en kent piekperiodes."</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Gespreksfrequentie Configuratie */}
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-6">

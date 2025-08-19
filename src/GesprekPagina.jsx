@@ -89,6 +89,32 @@ function GesprekPagina() {
     }
   }
 
+  // Helper functie om organisatie-omschrijving op te halen
+  const haalOrganisatieOmschrijvingOp = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) return null;
+
+      const { data: werknemer } = await supabase
+        .from('users')
+        .select('employer_id')
+        .eq('id', userData.user.id)
+        .single();
+
+      if (!werknemer?.employer_id) return null;
+
+      const response = await fetch(`https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`);
+      if (response.ok) {
+        const configData = await response.json();
+        return configData.organisatie_omschrijving || null;
+      }
+      return null;
+    } catch (error) {
+      console.error('Fout bij ophalen organisatie-omschrijving:', error);
+      return null;
+    }
+  }
+
   // Auto-scroll naar beneden bij nieuwe berichten
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -625,6 +651,7 @@ function GesprekPagina() {
         
         // Vraag GPT of er een vervolgvraag moet komen
         const samenvatting = await haalLaatsteSamenvattingOp();
+        const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
         const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -636,6 +663,7 @@ function GesprekPagina() {
             prompt_style: theme?.prompt_style || '',
             ai_behavior: theme?.ai_behavior || '',
             gpt_beperkingen: theme?.gpt_beperkingen || '',
+            organisatie_omschrijving: organisatieOmschrijving,
             laatste_samenvatting: samenvatting ? {
               samenvatting: samenvatting.samenvatting,
               gespreksronde: samenvatting.gespreksronde
@@ -715,6 +743,7 @@ function GesprekPagina() {
           
           // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 4 hebben)
           const samenvatting = await haalLaatsteSamenvattingOp();
+          const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
           const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -726,6 +755,7 @@ function GesprekPagina() {
               prompt_style: theme?.prompt_style || '',
               ai_behavior: theme?.ai_behavior || '',
               gpt_beperkingen: theme?.gpt_beperkingen || '',
+              organisatie_omschrijving: organisatieOmschrijving,
               laatste_samenvatting: samenvatting ? {
                 samenvatting: samenvatting.samenvatting,
                 gespreksronde: samenvatting.gespreksronde
