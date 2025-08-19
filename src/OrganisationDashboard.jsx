@@ -634,17 +634,12 @@ function OrganisationDashboard() {
                                       <span className="font-medium">Individuele scores (geanonimiseerd)</span>
                                     </div>
                                     <div className="space-y-1">
-                                      {theme.individuele_scores.slice(0, 5).map((score, index) => (
+                                      {theme.individuele_scores.map((score, index) => (
                                         <div key={index} className="flex items-center justify-between">
                                           <span className="text-gray-300">Score {index + 1}:</span>
                                           <span className={`font-medium ${getScoreColor(score)}`}>{score}</span>
                                         </div>
                                       ))}
-                                      {theme.individuele_scores.length > 5 && (
-                                        <div className="text-gray-400 text-xs mt-1">
-                                          +{theme.individuele_scores.length - 5} meer scores
-                                        </div>
-                                      )}
                                     </div>
                                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
                                   </div>
