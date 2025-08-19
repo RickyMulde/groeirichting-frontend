@@ -6,6 +6,7 @@ import Alert from './Alert'
 
 function WerknemerBeheren() {
   const [email, setEmail] = useState('')
+  const [functieOmschrijving, setFunctieOmschrijving] = useState('')
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [werknemers, setWerknemers] = useState([])
   const [selectedWerknemer, setSelectedWerknemer] = useState(null)
@@ -75,7 +76,8 @@ function WerknemerBeheren() {
       status: 'pending',
       created_by: userId,
       token,
-      expires_at: expiresAt
+      expires_at: expiresAt,
+      functie_omschrijving: functieOmschrijving.trim() || null
     })
 
     if (insertError) {
@@ -87,13 +89,20 @@ function WerknemerBeheren() {
     const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: email, name: 'Medewerker', employerId: profiel.employer_id.toString(), token })
+      body: JSON.stringify({ 
+        to: email, 
+        name: 'Medewerker', 
+        employerId: profiel.employer_id.toString(), 
+        token,
+        functieOmschrijving: functieOmschrijving.trim() || null
+      })
     })
 
     if (!response.ok) {
       setFoutmelding('Uitnodiging aangemaakt, maar e-mail verzenden is mislukt.')
     } else {
       setEmail('')
+      setFunctieOmschrijving('')
       setSuccesmelding('Uitnodiging succesvol verzonden!')
       setTimeout(() => setSuccesmelding(''), 5000)
       fetchData()
@@ -163,11 +172,42 @@ function WerknemerBeheren() {
         <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
           <MailPlus className="text-kleur-primary" /> Werknemer uitnodigen
         </h2>
-        <form onSubmit={handleInvite} className="flex flex-col sm:flex-row gap-4">
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mailadres" required />
-          <button type="submit" disabled={loading} className="btn btn-primary">
-            {loading ? 'Versturen...' : 'Uitnodigen'}
-          </button>
+        <form onSubmit={handleInvite} className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="E-mailadres" 
+              required 
+              className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+            />
+            <button type="submit" disabled={loading} className="btn btn-primary">
+              {loading ? 'Versturen...' : 'Uitnodigen'}
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-gray-700">
+              Voeg een korte omschrijving van de functie van deze werknemer toe
+            </label>
+            <input 
+              type="text" 
+              value={functieOmschrijving} 
+              onChange={(e) => setFunctieOmschrijving(e.target.value)} 
+              placeholder="Bijv. Planner thuiszorgroutes en ondersteuning zorgverleners" 
+              maxLength={100}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+            />
+            <div className="text-sm text-gray-600">
+              <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende werknemer/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Planner thuiszorgroutes en ondersteuning zorgverleners</li>
+                <li>Schadebehandelaar met telefonisch klantcontact</li>
+                <li>Logistiek medewerker orderverwerking en verzending</li>
+              </ul>
+            </div>
+          </div>
         </form>
         
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -197,6 +237,7 @@ function WerknemerBeheren() {
               <tr>
                 <th className="py-2">Naam</th>
                 <th className="py-2">E-mailadres</th>
+                <th className="py-2">Functie</th>
                 <th className="py-2">Status</th>
                 <th className="py-2">Acties</th>
               </tr>
@@ -211,6 +252,7 @@ function WerknemerBeheren() {
                 <tr key={w.id} className="border-b">
                   <td className="py-2">{w.first_name} {w.middle_name} {w.last_name}</td>
                   <td className="py-2">{w.email}</td>
+                  <td className="py-2 text-gray-600">{w.functie_omschrijving || '-'}</td>
                   <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
                   <td className="py-2 flex gap-2">
                     <button onClick={() => handleEdit(w)} className="text-white hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>

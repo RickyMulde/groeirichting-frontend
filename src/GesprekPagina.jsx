@@ -115,6 +115,28 @@ function GesprekPagina() {
     }
   }
 
+  // Helper functie om werknemer context op te halen
+  const haalWerknemerContextOp = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) return { functieOmschrijving: null, gender: null };
+
+      const { data: werknemer } = await supabase
+        .from('users')
+        .select('functie_omschrijving, gender')
+        .eq('id', userData.user.id)
+        .single();
+
+      return {
+        functieOmschrijving: werknemer?.functie_omschrijving || null,
+        gender: werknemer?.gender || null
+      };
+    } catch (error) {
+      console.error('Fout bij ophalen werknemer context:', error);
+      return { functieOmschrijving: null, gender: null };
+    }
+  }
+
   // Auto-scroll naar beneden bij nieuwe berichten
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -652,6 +674,7 @@ function GesprekPagina() {
         // Vraag GPT of er een vervolgvraag moet komen
         const samenvatting = await haalLaatsteSamenvattingOp();
         const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
+        const werknemerContext = await haalWerknemerContextOp();
         const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -664,6 +687,8 @@ function GesprekPagina() {
             ai_behavior: theme?.ai_behavior || '',
             gpt_beperkingen: theme?.gpt_beperkingen || '',
             organisatie_omschrijving: organisatieOmschrijving,
+                            functie_omschrijving: werknemerContext.functieOmschrijving,
+                gender: werknemerContext.gender,
             laatste_samenvatting: samenvatting ? {
               samenvatting: samenvatting.samenvatting,
               gespreksronde: samenvatting.gespreksronde
@@ -744,6 +769,7 @@ function GesprekPagina() {
           // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 4 hebben)
           const samenvatting = await haalLaatsteSamenvattingOp();
           const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
+          const werknemerContext = await haalWerknemerContextOp();
           const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -756,6 +782,8 @@ function GesprekPagina() {
               ai_behavior: theme?.ai_behavior || '',
               gpt_beperkingen: theme?.gpt_beperkingen || '',
               organisatie_omschrijving: organisatieOmschrijving,
+              functie_omschrijving: werknemerContext.functieOmschrijving,
+              gender: werknemerContext.gender,
               laatste_samenvatting: samenvatting ? {
                 samenvatting: samenvatting.samenvatting,
                 gespreksronde: samenvatting.gespreksronde
