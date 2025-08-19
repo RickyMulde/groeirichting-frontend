@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 function RegisterEmployer() {
   const [companyName, setCompanyName] = useState('')
-  const [kvk, setKvk] = useState('')
   const [firstName, setFirstName] = useState('')
   const [middleName, setMiddleName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -32,7 +31,6 @@ function RegisterEmployer() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           company_name: companyName,
-          kvk_number: kvk,
           contact_phone: contactPhone,
           email,
           password,
@@ -48,7 +46,6 @@ function RegisterEmployer() {
       } else {
         setSuccess('Account succesvol aangemaakt! Bevestig je e-mailadres via de ontvangen mail.')
         setCompanyName('')
-        setKvk('')
         setFirstName('')
         setMiddleName('')
         setLastName('')
@@ -89,22 +86,11 @@ function RegisterEmployer() {
               className="form-input"
             />
           </div>
-          
-          <div className="form-group">
-            <label className="form-label">KvK-nummer *</label>
-            <input 
-              type="text" 
-              value={kvk} 
-              onChange={(e) => setKvk(e.target.value)} 
-              required 
-              className="form-input"
-            />
-          </div>
         </div>
 
-        {/* Persoonsgegevens */}
+        {/* Contactpersoon */}
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[var(--kleur-primary)] border-b border-gray-200 pb-2">Persoonsgegevens</h3>
+          <h3 className="text-lg font-medium text-[var(--kleur-primary)] border-b border-gray-200 pb-2">Contactpersoon</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="form-group">
