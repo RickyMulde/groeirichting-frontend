@@ -651,18 +651,20 @@ function GesprekPagina() {
 
         const decide = await decideRes.json();
         
-        if (decide.toelichting) {
-          setToelichting(decide.toelichting);
-          voegChatBerichtToe('toelichting', decide.toelichting, huidigeVraag.id, false);
-          // Sla toelichting op in backend
-          slaToelichtingOp('toelichting', decide.toelichting, huidigeVraag.id);
-        }
-
+        // Eerst reactie tonen (als die er is)
         if (decide.reactie) {
           setReactie(decide.reactie);
           voegChatBerichtToe('reactie', decide.reactie, huidigeVraag.id, false);
           // Sla reactie op in backend
           slaToelichtingOp('reactie', decide.reactie, huidigeVraag.id);
+        }
+
+        // Dan toelichting tonen (als die er is)
+        if (decide.toelichting) {
+          setToelichting(decide.toelichting);
+          voegChatBerichtToe('toelichting', decide.toelichting, huidigeVraag.id, false);
+          // Sla toelichting op in backend
+          slaToelichtingOp('toelichting', decide.toelichting, huidigeVraag.id);
         }
 
         if (decide.doorgaan && decide.vervolgvraag) {
@@ -733,18 +735,20 @@ function GesprekPagina() {
 
           const decide = await decideRes.json();
           
-          if (decide.toelichting) {
-            setToelichting(decide.toelichting);
-            voegChatBerichtToe('toelichting', decide.toelichting, huidigeVraag.id, false);
-            // Sla toelichting op in backend
-            slaToelichtingOp('toelichting', decide.toelichting, huidigeVraag.id);
-          }
-
+          // Eerst reactie tonen (als die er is)
           if (decide.reactie) {
             setReactie(decide.reactie);
             voegChatBerichtToe('reactie', decide.reactie, huidigeVraag.id, false);
             // Sla reactie op in backend
             slaToelichtingOp('reactie', decide.reactie, huidigeVraag.id);
+          }
+
+          // Dan toelichting tonen (als die er is)
+          if (decide.toelichting) {
+            setToelichting(decide.toelichting);
+            voegChatBerichtToe('toelichting', decide.toelichting, huidigeVraag.id, false);
+            // Sla toelichting op in backend
+            slaToelichtingOp('toelichting', decide.toelichting, huidigeVraag.id);
           }
 
           if (decide.doorgaan && decide.vervolgvraag) {
