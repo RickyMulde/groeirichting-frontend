@@ -84,7 +84,7 @@ function EmployerPortal() {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto pt-8 px-4 space-y-8">
+      <div className="max-w-4xl mx-auto pt-8 px-4 space-y-4">
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <BarChart3 className="text-[var(--kleur-primary)] w-8 h-8" />

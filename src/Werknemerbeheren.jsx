@@ -254,9 +254,23 @@ function WerknemerBeheren() {
                   <td className="py-2">{w.email}</td>
                   <td className="py-2 text-gray-600">{w.functie_omschrijving || '-'}</td>
                   <td className="py-2 text-green-600 font-medium">Geactiveerd</td>
-                  <td className="py-2 flex gap-2">
-                    <button onClick={() => handleEdit(w)} className="text-white hover:underline text-sm flex items-center gap-1"><Pencil size={14} />Bewerken</button>
-                    <button onClick={() => handleDelete(w.id)} className="text-red-600 text-sm flex items-center"><Trash2 size={14} /></button>
+                  <td className="py-2">
+                    <div className="flex gap-3 justify-start">
+                      <button 
+                        onClick={() => handleEdit(w)} 
+                        className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                        title="Bewerken"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(w.id)} 
+                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
+                        title="Verwijderen"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -283,7 +297,13 @@ function WerknemerBeheren() {
                   <td className="py-2">{u.email}</td>
                   <td className="py-2 text-yellow-600 font-medium">Uitgenodigd</td>
                   <td className="py-2">
-                    <button onClick={() => handleResend(u)} className="text-white hover:underline text-sm flex items-center gap-1"><RefreshCw size={14} />Opnieuw versturen</button>
+                    <button 
+                      onClick={() => handleResend(u)} 
+                      className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                      title="Opnieuw versturen"
+                    >
+                      <RefreshCw size={16} />
+                    </button>
                   </td>
                 </tr>
               ))}
