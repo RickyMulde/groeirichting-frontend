@@ -1,14 +1,43 @@
-import { LogOut, BarChart3, Users, Settings } from 'lucide-react'
+import { useState } from 'react'
+import { BarChart3, Users, Settings, X } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 
 function EmployerPortal() {
   const navigate = useNavigate()
+  const [showWelcomeBalloons, setShowWelcomeBalloons] = useState(true)
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
     navigate('/')
   }
+
+  const closeBalloon = (balloonIndex) => {
+    // Sluit een specifiek ballonnetje
+    setShowWelcomeBalloons(false)
+  }
+
+  const closeAllBalloons = () => {
+    setShowWelcomeBalloons(false)
+  }
+
+  const welcomeSteps = [
+    {
+      title: "Vul een omschrijving van de werkzaamheden van je bedrijf/team in",
+      description: "Help je team om beter te begrijpen wat er van hen wordt verwacht",
+      icon: "🏢"
+    },
+    {
+      title: "Stel in, in welke maand de gesprekken moeten plaatsvinden",
+      description: "Plan je gesprekscyclus voor optimale resultaten",
+      icon: "📅"
+    },
+    {
+      title: "Nodig de betreffende werknemers/teamleden uit",
+      description: "Start je eerste gesprekken en begin met groeien",
+      icon: "👥"
+    }
+  ]
 
   return (
     <div className="page-container">
@@ -22,58 +51,45 @@ function EmployerPortal() {
 
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Welkom bij het werkgever portaal</h1>
 
-      {/* Onboarding Checklist */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-[var(--kleur-primary)] rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+      {/* Welkomst Ballonnetjes */}
+      {showWelcomeBalloons && (
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {welcomeSteps.map((step, index) => (
+              <div key={index} className="relative bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                {/* Kruisje om ballonnetje te sluiten */}
+                <button
+                  onClick={() => closeBalloon(index)}
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors duration-200 shadow-md"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+                
+                {/* Ballonnetje inhoud */}
+                <div className="text-center">
+                  <div className="text-3xl mb-3">{step.icon}</div>
+                  <h3 className="font-semibold text-gray-800 mb-2 text-sm leading-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex-1">
-            <h2 className="text-lg font-semibold text-[var(--kleur-primary)] mb-3">
-              🚀 Welkom! Laten we je account instellen
-            </h2>
-            <p className="text-gray-600 mb-4 text-sm">
-              Voltooi deze stappen om je account optimaal te benutten en je team te laten groeien.
-            </p>
-            
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-blue-100">
-                <div className="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0"></div>
-                <div className="flex-1">
-                  <span className="font-medium text-gray-800">Vul een omschrijving van de werkzaamheden van je bedrijf/team in</span>
-                  <p className="text-xs text-gray-500 mt-1">Help je team om beter te begrijpen wat er van hen wordt verwacht</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-blue-100">
-                <div className="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0"></div>
-                <div className="flex-1">
-                  <span className="font-medium text-gray-800">Stel in, in welke maand de gesprekken moeten plaatsvinden</span>
-                  <p className="text-xs text-gray-500 mt-1">Plan je gesprekscyclus voor optimale resultaten</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-blue-100">
-                <div className="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0"></div>
-                <div className="flex-1">
-                  <span className="font-medium text-gray-800">Nodig de betreffende werknemers/teamleden uit</span>
-                  <p className="text-xs text-gray-500 mt-1">Start je eerste gesprekken en begin met groeien</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-blue-200">
-              <p className="text-xs text-gray-500">
-                💡 <strong>Tip:</strong> Deze checklist verdwijnt automatisch na 30 dagen of wanneer je alle stappen hebt voltooid.
-              </p>
-            </div>
+          
+          {/* Sluit alle ballonnetjes knop */}
+          <div className="text-center mt-4">
+            <button
+              onClick={closeAllBalloons}
+              className="text-xs text-gray-500 hover:text-gray-700 underline transition-colors duration-200"
+            >
+              Sluit alle ballonnetjes
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="max-w-4xl mx-auto pt-8 px-4 space-y-8">
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
