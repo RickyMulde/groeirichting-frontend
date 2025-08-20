@@ -60,9 +60,10 @@ function EmployerPortal() {
                 {/* Kruisje om ballonnetje te sluiten */}
                 <button
                   onClick={() => closeBalloon(index)}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors duration-200 shadow-md"
+                  className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-lg border-2 border-white hover:scale-110"
+                  title="Sluit dit ballonnetje"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-4 h-4 font-bold" />
                 </button>
                 
                 {/* Ballonnetje inhoud */}
@@ -79,15 +80,7 @@ function EmployerPortal() {
             ))}
           </div>
           
-          {/* Sluit alle ballonnetjes knop */}
-          <div className="text-center mt-4">
-            <button
-              onClick={closeAllBalloons}
-              className="text-xs text-gray-500 hover:text-gray-700 underline transition-colors duration-200"
-            >
-              Sluit alle ballonnetjes
-            </button>
-          </div>
+
         </div>
       )}
 
