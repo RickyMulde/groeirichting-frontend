@@ -63,7 +63,7 @@ function EmployerPortal() {
                   className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-lg border-2 border-white hover:scale-110"
                   title="Sluit dit ballonnetje"
                 >
-                  <X className="w-4 h-4 font-bold" />
+                  <span className="text-white text-lg font-bold leading-none">×</span>
                 </button>
                 
                 {/* Ballonnetje inhoud */}
