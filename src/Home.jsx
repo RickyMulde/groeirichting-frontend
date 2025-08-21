@@ -16,7 +16,7 @@ function Home() {
             Wat kost het als je beste medewerker vertrekt of uitvalt?
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Verzuim en verloop zijn duur. GroeiRichting signaleert risico's vroeg, geeft inzicht in hoe werknemers in de wedstrijd staan en helpt de juiste richting op te groeien.
+            Verzuim en verloop zijn duur. GroeiRichting signaleert vroegtijdig risico's, geeft inzicht in hoe werknemers in de wedstrijd staan en helpt jouw organisatie de juiste richting op te groeien.
           </p>
           
           {/* Bullets */}
@@ -63,12 +63,12 @@ function Home() {
             <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
-            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
             <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
+            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
           </div>
         </div>
         
@@ -77,7 +77,7 @@ function Home() {
       </section>
 
       {/* Meer gesprekken, zonder extra tijd */}
-      <section className="py-16 px-6">
+      <section className="py-12 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken, zonder extra tijd</h2>
           
@@ -121,7 +121,7 @@ function Home() {
 
       {/* Wat levert het op */}
       <section>
-        <h2 className="text-2xl font-semibold text-center mb-12">Wat levert het op?</h2>
+        <h2 className="text-2xl font-semibold text-center mb-12">Wat levert GroeiRichting op?</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 bg-white shadow-md rounded-xl text-center">
             <BarChart className="mx-auto mb-4 text-[var(--kleur-primary)]" />
