@@ -65,32 +65,91 @@ function OrganisationDashboard() {
     }
   }, [])
 
-  const fetchOrganisationThemes = useCallback(async () => {
+  // Load data on mount - alleen bij eerste render
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        setError(null)
+        setLoading(true)
+        
+        // Haal gebruiker op
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error('Gebruiker niet ingelogd')
+        
+        // Haal werkgever op
+        const { data: employer, error: employerError } = await supabase
+          .from('employers')
+          .select('id')
+          .eq('contact_email', user.email)
+          .single()
+
+        if (employerError || !employer) {
+          throw new Error('Werkgever niet gevonden')
+        }
+
+        setEmployerId(employer.id)
+        
+        // Haal werkgever instellingen op
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employer.id}`)
+        
+        if (response.ok) {
+          const data = await response.json()
+          setActiveMonths(data.actieve_maanden || [3, 6, 9])
+          
+          // Bepaal laatste actieve maand als default selectie
+          if (data.actieve_maanden && data.actieve_maanden.length > 0) {
+            const currentYear = new Date().getFullYear()
+            const currentMonth = new Date().getMonth() + 1
+            
+            // Zoek de laatste actieve maand (nieuwste datum)
+            let lastActiveMonth = null
+            for (let year = currentYear; year >= currentYear - 1; year--) {
+              for (let month = 12; month >= 1; month--) {
+                if (data.actieve_maanden.includes(month)) {
+                  const monthDate = new Date(year, month - 1, 1)
+                  if (monthDate <= new Date()) {
+                    lastActiveMonth = { year, month }
+                    break
+                  }
+                }
+              }
+              if (lastActiveMonth) break
+            }
+            
+            const defaultMonth = lastActiveMonth || { year: currentYear, month: data.actieve_maanden[0] }
+            setSelectedMonth(defaultMonth)
+            
+            // Haal thema's op voor deze maand
+            await fetchThemesForPeriod(employer.id, defaultMonth)
+          }
+        } else {
+          // Fallback naar standaard waarden
+          setActiveMonths([3, 6, 9])
+          const currentYear = new Date().getFullYear()
+          const defaultMonth = { year: currentYear, month: 3 }
+          setSelectedMonth(defaultMonth)
+          await fetchThemesForPeriod(employer.id, defaultMonth)
+        }
+      } catch (err) {
+        console.error('Fout bij initialiseren:', err)
+        setError(err.message || 'Onbekende fout bij laden')
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    initializeData()
+  }, []) // Lege dependency array - alleen bij mount
+
+  // Haal thema's op voor een specifieke periode
+  const fetchThemesForPeriod = useCallback(async (employerId, month) => {
+    if (!employerId || !month) return
+    
     try {
-      setLoading(true)
-      setError(null) // Reset error state
       startApiCall('fetchOrganisationThemes')
       
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      const { data: employer, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('contact_email', user.email)
-        .single()
-
-      if (employerError || !employer) {
-        throw new Error('Werkgever niet gevonden')
-      }
-
-      setEmployerId(employer.id)
-
-      // Bouw URL met periode parameter als deze is geselecteerd
-      let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`
-      if (selectedMonth) {
-        const periode = `${selectedMonth.year}-${String(selectedMonth.month).padStart(2, '0')}`
-        url += `?periode=${periode}`
-      }
+      const periode = `${month.year}-${String(month.month).padStart(2, '0')}`
+      const url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}?periode=${periode}`
 
       const response = await fetch(url)
       
@@ -105,30 +164,16 @@ function OrganisationDashboard() {
       console.error('Fout bij ophalen thema\'s:', err)
       setError(err.message || 'Onbekende fout bij ophalen thema\'s')
     } finally {
-      setLoading(false)
       endApiCall('fetchOrganisationThemes')
     }
-  }, [startApiCall, endApiCall, selectedMonth])
-
-  // Load data on mount
-  useEffect(() => {
-    setError(null) // Reset error state
-    fetchOrganisationThemes()
-  }, [fetchOrganisationThemes])
-
-  // Haal werkgever instellingen op wanneer employerId beschikbaar is
-  useEffect(() => {
-    if (employerId) {
-      fetchEmployerSettings(employerId)
-    }
-  }, [employerId, fetchEmployerSettings])
+  }, [startApiCall, endApiCall])
 
   // Haal thema's opnieuw op wanneer de geselecteerde maand verandert
   useEffect(() => {
     if (employerId && selectedMonth) {
-      fetchOrganisationThemes()
+      fetchThemesForPeriod(employerId, selectedMonth)
     }
-  }, [employerId, selectedMonth, fetchOrganisationThemes])
+  }, [employerId, selectedMonth, fetchThemesForPeriod])
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
@@ -246,7 +291,7 @@ function OrganisationDashboard() {
       const data = await response.json()
 
       // Refresh thema's om nieuwe status te tonen
-      await fetchOrganisationThemes()
+      await fetchThemesForPeriod(employer.id, selectedMonth)
       
       // Haal nieuwe samenvatting op
       await fetchSummary(themeId)
@@ -256,7 +301,7 @@ function OrganisationDashboard() {
     } finally {
       setSummaryLoading(null)
     }
-  }, [fetchOrganisationThemes, fetchSummary])
+  }, [fetchThemesForPeriod, fetchSummary, selectedMonth])
 
   const toggleTheme = useCallback((themeId) => {
     if (expandedTheme === themeId) {
