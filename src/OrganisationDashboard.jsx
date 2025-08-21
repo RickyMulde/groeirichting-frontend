@@ -78,6 +78,13 @@ function OrganisationDashboard() {
     }
   }, [employerId, fetchEmployerSettings])
 
+  // Haal thema's opnieuw op wanneer de geselecteerde maand verandert
+  useEffect(() => {
+    if (employerId && selectedMonth) {
+      fetchOrganisationThemes()
+    }
+  }, [employerId, selectedMonth, fetchOrganisationThemes])
+
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
     if (tooltipTimeout) {
@@ -134,7 +141,14 @@ function OrganisationDashboard() {
 
       setEmployerId(employer.id)
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`)
+      // Bouw URL met periode parameter als deze is geselecteerd
+      let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`
+      if (selectedMonth) {
+        const periode = `${selectedMonth.year}-${String(selectedMonth.month).padStart(2, '0')}`
+        url += `?periode=${periode}`
+      }
+
+      const response = await fetch(url)
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
@@ -150,7 +164,7 @@ function OrganisationDashboard() {
       setLoading(false)
       endApiCall('fetchOrganisationThemes')
     }
-  }, [navigate, startApiCall, endApiCall])
+  }, [navigate, startApiCall, endApiCall, selectedMonth])
 
   const fetchSummary = useCallback(async (themeId) => {
     if (summaryData[themeId]) return // Al opgehaald
