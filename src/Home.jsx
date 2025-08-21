@@ -77,33 +77,45 @@ function Home() {
       </section>
 
       {/* Meer gesprekken, zonder extra tijd */}
-      <section className="py-16 px-6 text-center">
+      <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-lg text-[var(--kleur-muted)] mb-8">
-            Waarschijnlijk voer je nu één functioneringsgesprek per jaar. Misschien zelfs twee.<br />
-            Maar in zes maanden kan er veel gebeuren — óók bij je medewerkers. Stress, motivatie, werkdruk, samenwerking: het verandert sneller dan een jaarlijks gesprek kan bijhouden.
-          </p>
+          <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken, zonder extra tijd</h2>
           
-          <p className="text-lg text-[var(--kleur-muted)] mb-8">
-            Het risico? Problemen blijven onzichtbaar tot ze groot zijn. Dan kost het je geld, energie en misschien zelfs een waardevolle medewerker.
-          </p>
+          <div className="space-y-6 text-lg text-[var(--kleur-muted)]">
+            <p>
+              Waarschijnlijk voer je nu één functioneringsgesprek per jaar. Misschien zelfs twee.
+            </p>
+            
+            <p>
+              Maar in zes maanden kan er veel gebeuren — óók bij je medewerkers. Stress, motivatie, werkdruk, samenwerking: het verandert sneller dan een jaarlijks gesprek kan bijhouden.
+            </p>
+            
+            <div className="bg-red-50 border-l-4 border-red-400 p-4 my-6">
+              <p className="font-medium text-red-800">
+                Het risico? Problemen blijven onzichtbaar tot ze groot zijn. Dan kost het je geld, energie en misschien zelfs een waardevolle medewerker.
+              </p>
+            </div>
+            
+            <p className="text-center font-semibold text-[var(--kleur-primary)]">
+              GroeiRichting voorkomt dat.
+            </p>
+            
+            <p>
+              Breid het aantal gesprekken eenvoudig uit, zonder dat het jou of je managers meer tijd kost.
+            </p>
+            
+            <p>
+              Het platform voert de aanvullende rondes digitaal met je medewerkers, verzamelt hun input en zet dit om in heldere signalen. Jij krijgt alleen de samenvattingen en gespreksvoorstellen die er toe doen.
+            </p>
+            
+            <p>
+              Zo krijg je méér feedback en waardevolle signalen, terwijl jij juist minder tijd kwijt bent.
+            </p>
+          </div>
           
-          <p className="text-lg text-[var(--kleur-muted)] mb-8">
-            <strong>GroeiRichting voorkomt dat.</strong>
-          </p>
-          
-          <h2 className="text-2xl font-semibold mb-6">Meer gesprekken, zonder extra tijd</h2>
-          <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Breid het aantal gesprekken eenvoudig uit, zonder dat het jou of je managers meer tijd kost.
-          </p>
-          
-          <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Het platform voert de aanvullende rondes digitaal met je medewerkers, verzamelt hun input en zet dit om in heldere signalen. Jij krijgt alleen de samenvattingen en gespreksvoorstellen die er toe doen.
-          </p>
-          
-          <p className="text-lg text-[var(--kleur-muted)]">
-            Zo krijg je méér feedback en waardevolle signalen, terwijl jij juist minder tijd kwijt bent.
-          </p>
+          <div className="text-center mt-8">
+            <button className="btn btn-primary">Plan een demo</button>
+          </div>
         </div>
       </section>
 
