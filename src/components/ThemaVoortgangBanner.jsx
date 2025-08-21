@@ -74,7 +74,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       // Haal alle actieve thema's op
       const { data: themas, error: themaError } = await supabase
         .from('themes')
-        .select('id, titel, beschrijving')
+        .select('id, titel')
         .eq('klaar_voor_gebruik', true)
         .eq('standaard_zichtbaar', true)
         .order('volgorde_index', { ascending: true })
