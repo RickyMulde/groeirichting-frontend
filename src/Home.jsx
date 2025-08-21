@@ -16,7 +16,7 @@ function Home() {
             Wat kost het als je beste medewerker vertrekt of uitvalt?
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Verzuim en verloop zijn duur. GroeiRichting signaleert risico's vroeg, geeft leidinggevenden concrete gespreksvoorstellen en helpt teams duurzaam in balans te blijven.
+            Verzuim en verloop zijn duur. GroeiRichting signaleert risico's vroeg, geeft inzicht in hoe werknemers in de wedstrijd staan en helpt de juiste richting op te groeien.
           </p>
           
           {/* Bullets */}
