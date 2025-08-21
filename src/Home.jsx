@@ -59,16 +59,16 @@ function Home() {
         {/* Mini-stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ ___</div>
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
             <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">___%</div>
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
             <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">___</div>
-            <p className="text-[var(--kleur-muted)]">maanden gemiddelde terugkeer bij stress/uitval</p>
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
+            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
           </div>
         </div>
         
