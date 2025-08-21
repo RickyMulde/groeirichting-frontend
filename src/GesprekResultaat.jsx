@@ -9,6 +9,7 @@ function GesprekResultaat() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [gesprekData, setGesprekData] = useState(null)
+  const [vervolgactiesUitgeklapt, setVervolgactiesUitgeklapt] = useState(false)
 
   useEffect(() => {
     const fetchGesprekData = async () => {
@@ -328,26 +329,42 @@ function GesprekResultaat() {
       </section>
 
       <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
-        <h2 className="text-xl font-semibold mb-2">Mogelijke vervolgacties op basis van jouw antwoorden:</h2>
-        {gesprekData.vervolgacties && gesprekData.vervolgacties.length > 0 ? (
-          <>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Mogelijke vervolgacties op basis van jouw antwoorden:</h2>
+          <button
+            onClick={() => setVervolgactiesUitgeklapt(!vervolgactiesUitgeklapt)}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors flex items-center gap-2"
+          >
+            {vervolgactiesUitgeklapt ? 'Inklappen' : 'Uitklappen'}
+            {vervolgactiesUitgeklapt ? '▼' : '▶'}
+          </button>
+        </div>
+        
+        {vervolgactiesUitgeklapt ? (
+          gesprekData.vervolgacties && gesprekData.vervolgacties.length > 0 ? (
+            <>
+              <ol className="list-decimal list-inside text-gray-700 space-y-1">
+                {gesprekData.vervolgacties.map((actie, index) => (
+                  <li key={index} className="leading-relaxed">{actie}</li>
+                ))}
+              </ol>
+              {gesprekData.vervolgacties_toelichting && (
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
+                </div>
+              )}
+            </>
+          ) : (
             <ol className="list-decimal list-inside text-gray-700 space-y-1">
-              {gesprekData.vervolgacties.map((actie, index) => (
-                <li key={index} className="leading-relaxed">{actie}</li>
-              ))}
+              <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
+              <li>Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.</li>
+              <li>Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.</li>
             </ol>
-            {gesprekData.vervolgacties_toelichting && (
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
-              </div>
-            )}
-          </>
+          )
         ) : (
-          <ol className="list-decimal list-inside text-gray-700 space-y-1">
-            <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
-            <li>Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.</li>
-            <li>Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.</li>
-          </ol>
+          <div className="text-gray-600 text-sm">
+            <p>Klik op "Uitklappen" om de vervolgacties te bekijken</p>
+          </div>
         )}
       </section>
         </div>

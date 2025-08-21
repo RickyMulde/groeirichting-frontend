@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, TrendingUp, Calendar, AlertCircle } from 'lucide-react'
 import { supabase } from './supabaseClient'
+import Top3Actions from './components/Top3Actions'
 
 function GesprekResultaten() {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ function GesprekResultaten() {
   const [beschikbarePeriodes, setBeschikbarePeriodes] = useState([])
   const [actieveMaanden, setActieveMaanden] = useState([])
   const [werkgeverConfig, setWerkgeverConfig] = useState(null)
+  const [user, setUser] = useState(null)
+  const [uitgeklapteThemas, setUitgeklapteThemas] = useState(new Set())
 
   // Functie om maandnaam te krijgen
   const getMaandNaam = (maand) => {
@@ -100,6 +103,7 @@ function GesprekResultaten() {
         if (userError || !user) {
           throw new Error('Gebruiker niet ingelogd')
         }
+        setUser(user)
 
         // Haal werkgever configuratie op
         const { data: werknemer, error: werknemerError } = await supabase
@@ -240,6 +244,19 @@ function GesprekResultaten() {
     ]
   }
 
+  // Functie om thema uit te klappen/in te klappen
+  const toggleThemaUitklappen = (themaId) => {
+    setUitgeklapteThemas(prev => {
+      const nieuwe = new Set(prev);
+      if (nieuwe.has(themaId)) {
+        nieuwe.delete(themaId);
+      } else {
+        nieuwe.add(themaId);
+      }
+      return nieuwe;
+    });
+  };
+
   if (loading && !selectedPeriode) {
     return (
       <div className="page-container">
@@ -317,6 +334,15 @@ function GesprekResultaten() {
           </div>
         </div>
 
+        {/* Top 3 Vervolgacties */}
+        {selectedPeriode && (
+          <Top3Actions 
+            werknemerId={user?.id} 
+            periode={selectedPeriode.periode}
+            onRefresh={() => fetchData()}
+          />
+        )}
+
         {/* Loading state voor resultaten */}
         {loading && selectedPeriode && (
           <div className="flex items-center justify-center py-12">
@@ -385,15 +411,31 @@ function GesprekResultaten() {
 
                   {/* Vervolgacties */}
                   <div className="bg-orange-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-orange-600" />
-                      Vervolgacties
-                    </h4>
-                                         <ol className="list-decimal list-inside text-gray-700 space-y-2">
-                       {getVervolgacties(resultaat).map((actie, index) => (
-                         <li key={index} className="leading-relaxed">{actie}</li>
-                       ))}
-                     </ol>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-orange-600" />
+                        Vervolgacties
+                      </h4>
+                      <button
+                        onClick={() => toggleThemaUitklappen(resultaat.id)}
+                        className="text-orange-600 hover:text-orange-800 text-sm font-medium transition-colors flex items-center gap-2"
+                      >
+                        {uitgeklapteThemas.has(resultaat.id) ? 'Inklappen' : 'Uitklappen'}
+                        {uitgeklapteThemas.has(resultaat.id) ? '▼' : '▶'}
+                      </button>
+                    </div>
+                    
+                    {uitgeklapteThemas.has(resultaat.id) ? (
+                      <ol className="list-decimal list-inside text-gray-700 space-y-2 mt-3">
+                        {getVervolgacties(resultaat).map((actie, index) => (
+                          <li key={index} className="leading-relaxed">{actie}</li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <div className="text-gray-600 text-sm mt-3">
+                        <p>Klik op "Uitklappen" om de vervolgacties te bekijken</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
