@@ -329,16 +329,18 @@ function GesprekResultaat() {
       </section>
 
       <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Mogelijke vervolgacties op basis van jouw antwoorden:</h2>
-          <button
-            onClick={() => setVervolgactiesUitgeklapt(!vervolgactiesUitgeklapt)}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors flex items-center gap-2"
-          >
-            {vervolgactiesUitgeklapt ? 'Inklappen' : 'Uitklappen'}
-            {vervolgactiesUitgeklapt ? '▼' : '▶'}
-          </button>
-        </div>
+                          <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold">Vervolgacties per thema op basis van jouw antwoorden:</h2>
+                    <button
+                      onClick={() => setVervolgactiesUitgeklapt(!vervolgactiesUitgeklapt)}
+                      className="p-2 text-gray-600 hover:text-gray-800 transition-colors rounded-full hover:bg-gray-100"
+                      aria-label={vervolgactiesUitgeklapt ? 'Inklappen' : 'Uitklappen'}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={vervolgactiesUitgeklapt ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                      </svg>
+                    </button>
+                  </div>
         
         {vervolgactiesUitgeklapt ? (
           gesprekData.vervolgacties && gesprekData.vervolgacties.length > 0 ? (

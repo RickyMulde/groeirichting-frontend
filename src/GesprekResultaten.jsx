@@ -412,17 +412,19 @@ function GesprekResultaten() {
                   {/* Vervolgacties */}
                   <div className="bg-orange-50 rounded-lg p-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-orange-600" />
-                        Vervolgacties
-                      </h4>
-                      <button
-                        onClick={() => toggleThemaUitklappen(resultaat.id)}
-                        className="text-orange-600 hover:text-orange-800 text-sm font-medium transition-colors flex items-center gap-2"
-                      >
-                        {uitgeklapteThemas.has(resultaat.id) ? 'Inklappen' : 'Uitklappen'}
-                        {uitgeklapteThemas.has(resultaat.id) ? '▼' : '▶'}
-                      </button>
+                                          <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-orange-600" />
+                      Vervolgacties per thema
+                    </h4>
+                    <button
+                      onClick={() => toggleThemaUitklappen(resultaat.id)}
+                      className="p-2 text-gray-600 hover:text-gray-800 transition-colors rounded-full hover:bg-gray-100"
+                      aria-label={uitgeklapteThemas.has(resultaat.id) ? 'Inklappen' : 'Uitklappen'}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={uitgeklapteThemas.has(resultaat.id) ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                      </svg>
+                    </button>
                     </div>
                     
                     {uitgeklapteThemas.has(resultaat.id) ? (

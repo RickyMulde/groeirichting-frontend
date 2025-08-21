@@ -151,22 +151,32 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-md p-6 mb-6">
-      {/* Hoofdtitel */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h2 className="text-xl font-bold text-blue-900 mb-1">
-            🎯 Top 3 Prioriteiten voor Jouw Groei
-          </h2>
-          <p className="text-blue-700 text-sm">
-            Deze acties hebben de hoogste impact op basis van alle gevoerde gesprekken
-          </p>
-        </div>
-        <div className="text-right">
-          <div className="text-xs text-blue-600">
-            Gegenereerd op: {new Date(topActies.gegenereerd_op).toLocaleDateString('nl-NL')}
-          </div>
-        </div>
-      </div>
+             {/* Hoofdtitel */}
+       <div className="flex items-center justify-between mb-4">
+         <div>
+           <h2 className="text-xl font-bold text-blue-900 mb-1">
+             🎯 Top 3 Prioriteiten voor Jouw Groei
+           </h2>
+           <p className="text-blue-700 text-sm">
+             Deze acties hebben de hoogste impact op basis van alle gevoerde gesprekken
+           </p>
+         </div>
+         <div className="flex items-center gap-4">
+           <div className="text-xs text-blue-600">
+             Gegenereerd op: {new Date(topActies.gegenereerd_op).toLocaleDateString('nl-NL')}
+           </div>
+           {/* Refresh knop rechtsboven */}
+           <button
+             onClick={fetchTopActies}
+             className="text-gray-600 hover:text-gray-800 transition-colors p-2 rounded-full hover:bg-gray-100"
+             title="Vernieuwen / Opnieuw genereren"
+           >
+             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+             </svg>
+           </button>
+         </div>
+       </div>
 
       {/* Top 3 Acties */}
       <div className="space-y-4">
@@ -196,14 +206,16 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
                 </div>
               </div>
 
-              {/* Uitklap knop */}
-              <button
-                onClick={() => setExpandedActie(expandedActie === nummer ? null : nummer)}
-                className="ml-3 p-1 text-blue-600 hover:text-blue-800 transition-colors"
-                aria-label={expandedActie === nummer ? 'Inklappen' : 'Uitklappen'}
-              >
-                {expandedActie === nummer ? '▼' : '▶'}
-              </button>
+                             {/* Uitklap knop */}
+               <button
+                 onClick={() => setExpandedActie(expandedActie === nummer ? null : nummer)}
+                 className="ml-3 p-2 text-gray-600 hover:text-gray-800 transition-colors rounded-full hover:bg-gray-100"
+                 aria-label={expandedActie === nummer ? 'Inklappen' : 'Uitklappen'}
+               >
+                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedActie === nummer ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                 </svg>
+               </button>
             </div>
 
             {/* Uitklapbare toelichting */}
@@ -227,15 +239,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
         </div>
       )}
 
-      {/* Refresh/Generate knop */}
-      <div className="mt-4 pt-4 border-t border-blue-200">
-        <button
-          onClick={fetchTopActies}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
-        >
-          🔄 Vernieuwen / Opnieuw genereren
-        </button>
-      </div>
+      
     </div>
   )
 }
