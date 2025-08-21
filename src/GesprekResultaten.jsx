@@ -62,11 +62,35 @@ function GesprekResultaten() {
   }
 
   // Functie om beschikbare periodes te genereren
-  const genereerBeschikbarePeriodes = (actieveMaanden, accountAanmaakDatum) => {
+  const genereerBeschikbarePeriodes = async (actieveMaanden, accountAanmaakDatum, userId) => {
     const periodes = []
     const now = new Date()
     const huidigeJaar = now.getFullYear()
     const huidigeMaand = now.getMonth() + 1
+
+    // Haal alle gesprekken op voor deze gebruiker om te bepalen welke maanden daadwerkelijk data hebben
+    const { data: gesprekken, error: gesprekError } = await supabase
+      .from('gesprek')
+      .select('gestart_op')
+      .eq('werknemer_id', userId)
+      .is('geanonimiseerd_op', null)
+
+    if (gesprekError) {
+      console.error('Fout bij ophalen gesprekken voor periode filtering:', gesprekError)
+      return periodes
+    }
+
+    // Bepaal welke maanden daadwerkelijk gesprekken hebben
+    const maandenMetGesprekken = new Set()
+    if (gesprekken && gesprekken.length > 0) {
+      gesprekken.forEach(gesprek => {
+        const gesprekDatum = new Date(gesprek.gestart_op)
+        const gesprekJaar = gesprekDatum.getFullYear()
+        const gesprekMaand = gesprekDatum.getMonth() + 1
+        const periode = maakPeriodeString(gesprekJaar, gesprekMaand)
+        maandenMetGesprekken.add(periode)
+      })
+    }
 
     // Start vanaf account aanmaak datum of 2 jaar geleden (wat later is)
     const startJaar = Math.max(accountAanmaakDatum.getFullYear(), huidigeJaar - 2)
@@ -79,12 +103,16 @@ function GesprekResultaten() {
         }
         
         const periode = maakPeriodeString(jaar, maand)
-        periodes.push({
-          periode,
-          jaar,
-          maand,
-          label: `${getMaandNaam(maand)} ${jaar}`
-        })
+        
+        // Alleen toevoegen als er daadwerkelijk gesprekken zijn in deze periode
+        if (maandenMetGesprekken.has(periode)) {
+          periodes.push({
+            periode,
+            jaar,
+            maand,
+            label: `${getMaandNaam(maand)} ${jaar}`
+          })
+        }
       }
     }
 
@@ -124,7 +152,7 @@ function GesprekResultaten() {
 
         // Genereer beschikbare periodes
         const accountAanmaakDatum = new Date(werknemer.created_at)
-        const periodes = genereerBeschikbarePeriodes(config.actieve_maanden, accountAanmaakDatum)
+        const periodes = await genereerBeschikbarePeriodes(config.actieve_maanden, accountAanmaakDatum, user.id)
         setBeschikbarePeriodes(periodes)
 
         // Bepaal laatste actieve maand

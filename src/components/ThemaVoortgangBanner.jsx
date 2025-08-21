@@ -254,10 +254,10 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       {/* Link naar volledig overzicht */}
       <div className="text-center">
         <button
-          onClick={() => navigate('/thema-overzicht')}
+          onClick={() => navigate('/gesprek-resultaten')}
           className="btn btn-outline text-sm px-4 py-2 inline-flex items-center gap-2"
         >
-          Bekijk volledig thema overzicht
+          Bekijk alle gesprek resultaten
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
