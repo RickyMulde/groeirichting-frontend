@@ -13,25 +13,67 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            GroeiRichting – Inzicht. Gesprek. Samen. Groei.
+            Wat kost het als je beste medewerker vertrekt of uitvalt?
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            GroeiRichting helpt organisaties signalen te herkennen, betere gesprekken te voeren en medewerkers écht te betrekken. Eén platform. Voorkom uitval en stimuleer groei.
+            Verzuim en verloop zijn duur. GroeiRichting signaleert risico's vroeg, geeft leidinggevenden concrete gespreksvoorstellen en helpt teams duurzaam in balans te blijven.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button className="btn btn-primary">Plan een demo</button>
-            <button className="btn btn-accent">Bekijk hoe het werkt</button>
+          
+          {/* Bullets */}
+          <div className="space-y-3 mb-6">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]">Vroegtijdige signalen op individueel én teamniveau</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]">AI‑samenvattingen: sneller naar de kern, minder vergadertijd</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]">Eén platform: van signaal → gesprek → opvolging</p>
+            </div>
           </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <button className="btn btn-primary">Plan een demo</button>
+            <button className="btn btn-accent">Bekijk een 3‑min demo</button>
+          </div>
+
+          {/* Micro-trust */}
+          <p className="text-sm text-[var(--kleur-muted)] italic">
+            Gebouwd op inzichten uit HR, psychologie en praktijkervaring in het MKB.
+          </p>
         </div>
         <HeroIllustratie className="w-full h-auto" />
       </section>
 
-      {/* Wat is GroeiRichting */}
+      {/* Het probleem */}
       <section className="bg-gray-50 py-16 px-6 rounded-xl text-center">
-        <h2 className="text-2xl font-semibold mb-6">Wat is GroeiRichting?</h2>
-        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg">
-          GroeiRichting is een digitale gespreksassistent die de brug slaat tussen medewerkertevredenheidsonderzoeken en functioneringsgesprekken. Medewerkers vullen themagerichte vragen in en het platform vertaalt hun input naar duidelijke signalen en gespreksvoorstellen. Zo weet jij wat er écht speelt – en voer je gesprekken die verschil maken.
+        <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: het kost meer dan je denkt</h2>
+        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
+          Het vervangen van één professional kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Ondertussen blijft echte oorzaak vaak onzichtbaar tot het te laat is.
         </p>
+        
+        {/* Mini-stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ ___</div>
+            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">___%</div>
+            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">___</div>
+            <p className="text-[var(--kleur-muted)]">maanden gemiddelde terugkeer bij stress/uitval</p>
+          </div>
+        </div>
+        
+        {/* CTA */}
+        <button className="btn btn-primary">Plan een demo</button>
       </section>
 
       {/* Wat levert het op */}
