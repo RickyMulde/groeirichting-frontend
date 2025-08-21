@@ -99,6 +99,7 @@ function OrganisationDashboard() {
           
           // Haal alle gesprekken op voor deze werkgever om te bepalen welke maanden daadwerkelijk data hebben
           // Eerst alle werknemers van deze werkgever ophalen
+          console.log('🔍 Ophalen werknemers voor werkgever:', employer.id)
           const { data: werknemers, error: werknemersError } = await supabase
             .from('users')
             .select('id')
@@ -106,7 +107,7 @@ function OrganisationDashboard() {
             .eq('role', 'employee')
 
           if (werknemersError) {
-            console.error('Fout bij ophalen werknemers voor periode filtering:', werknemersError)
+            console.error('❌ Fout bij ophalen werknemers voor periode filtering:', werknemersError)
             // Fallback naar standaard waarden
             setActiveMonths([3, 6, 9])
             const currentYear = new Date().getFullYear()
@@ -116,8 +117,11 @@ function OrganisationDashboard() {
             return
           }
 
+          console.log('✅ Werknemers opgehaald:', werknemers?.length || 0)
+
           if (!werknemers || werknemers.length === 0) {
             // Geen werknemers gevonden, toon standaard waarden
+            console.log('⚠️ Geen werknemers gevonden, gebruik standaard waarden')
             setActiveMonths([3, 6, 9])
             setBeschikbarePeriodes([]) // Geen beschikbare periodes
             const currentYear = new Date().getFullYear()
@@ -129,6 +133,7 @@ function OrganisationDashboard() {
 
           // Haal alle gesprekken op van alle werknemers van deze werkgever
           const werknemerIds = werknemers.map(w => w.id)
+          console.log('🔍 Ophalen gesprekken voor werknemers:', werknemerIds)
           const { data: gesprekken, error: gesprekError } = await supabase
             .from('gesprek')
             .select('gestart_op')
@@ -136,7 +141,7 @@ function OrganisationDashboard() {
             .is('geanonimiseerd_op', null)
 
           if (gesprekError) {
-            console.error('Fout bij ophalen gesprekken voor periode filtering:', gesprekError)
+            console.error('❌ Fout bij ophalen gesprekken voor periode filtering:', gesprekError)
             // Fallback naar standaard waarden
             setActiveMonths([3, 6, 9])
             const currentYear = new Date().getFullYear()
