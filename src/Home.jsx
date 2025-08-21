@@ -41,7 +41,7 @@ function Home() {
           <div className="p-6 bg-white shadow-md rounded-xl text-center">
             <BarChart className="mx-auto mb-4 text-[var(--kleur-primary)]" />
             <h3 className="font-medium mb-2">Signalen herkennen</h3>
-            <p>Signaleer trends op persoonsniveau of over het hele team. Speel tijdig in op kansen of bedreigingen.</p>
+            <p>Signaleer trends op persoonsniveau of over het hele team. Voorkom uitval en voorkom verloop onder werknemers.</p>
           </div>
           <div className="p-6 bg-white shadow-md rounded-xl text-center">
             <MessageCircle className="mx-auto mb-4 text-[var(--kleur-accent)]" />

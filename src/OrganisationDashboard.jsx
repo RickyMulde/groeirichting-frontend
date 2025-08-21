@@ -579,9 +579,9 @@ function OrganisationDashboard() {
               <div>
                 <p className="text-blue-800 font-medium text-sm">Wanneer worden samenvattingen gegenereerd?</p>
                 <div className="text-blue-700 text-xs mt-2 space-y-1">
-                  <p>Samenvattingen en scores worden automatisch gegenereerd als:</p>
+                  <p>Samenvattingen en scores worden gegenereerd:</p>
                   <ul className="list-disc list-inside ml-2 space-y-1">
-                    <li>Alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond</li>
+                    <li>Als alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond</li>
                     <li>Op de laatste dag van de actieve maand: {selectedMonth ? formatMaandDatum(selectedMonth.year, selectedMonth.month) : 'datum wordt geladen...'}</li>
                     <li>De samenvatting tussentijds wordt gegenereerd (mogelijk vanaf 4 werknemers/teamleden die de gesprekken/thema's hebben afgerond)</li>
                   </ul>
