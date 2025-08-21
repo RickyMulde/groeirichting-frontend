@@ -5,7 +5,7 @@ import { supabase } from './supabaseClient'
 
 function EmployerPortal() {
   const navigate = useNavigate()
-  const [showWelcomeBalloons, setShowWelcomeBalloons] = useState(true)
+  const [closedBalloons, setClosedBalloons] = useState(new Set())
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -13,12 +13,13 @@ function EmployerPortal() {
   }
 
   const closeBalloon = (balloonIndex) => {
-    // Sluit een specifiek ballonnetje
-    setShowWelcomeBalloons(false)
+    // Sluit alleen het specifieke ballonnetje
+    setClosedBalloons(prev => new Set([...prev, balloonIndex]))
   }
 
   const closeAllBalloons = () => {
-    setShowWelcomeBalloons(false)
+    // Sluit alle ballonnetjes
+    setClosedBalloons(new Set([0, 1, 2]))
   }
 
   const welcomeSteps = [
@@ -52,11 +53,13 @@ function EmployerPortal() {
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Welkom bij het werkgever portaal</h1>
 
       {/* Welkomst Ballonnetjes */}
-      {showWelcomeBalloons && (
+      {closedBalloons.size < welcomeSteps.length && (
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {welcomeSteps.map((step, index) => (
-              <div key={index} className="relative bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              // Toon alleen ballonnetjes die niet zijn gesloten
+              !closedBalloons.has(index) && (
+                <div key={index} className="relative bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 {/* Kruisje om ballonnetje te sluiten */}
                 <button
                   onClick={() => closeBalloon(index)}
@@ -77,7 +80,7 @@ function EmployerPortal() {
                   </p>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
           
 

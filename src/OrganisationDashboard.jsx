@@ -578,14 +578,16 @@ function OrganisationDashboard() {
               </div>
               <div>
                 <p className="text-blue-800 font-medium text-sm">Wanneer worden samenvattingen gegenereerd?</p>
-                <div className="text-blue-700 text-xs mt-2 space-y-1">
-                  <p>Samenvattingen en scores worden gegenereerd:</p>
-                  <ul className="list-disc list-inside ml-2 space-y-1">
-                    <li>Als alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond</li>
-                    <li>Op de laatste dag van de actieve maand: {selectedMonth ? formatMaandDatum(selectedMonth.year, selectedMonth.month) : 'datum wordt geladen...'}</li>
-                    <li>De samenvatting tussentijds wordt gegenereerd (mogelijk vanaf 4 werknemers/teamleden die de gesprekken/thema's hebben afgerond)</li>
-                  </ul>
-                </div>
+                                 <div className="text-blue-700 text-xs mt-2 space-y-1">
+                   <p>Samenvattingen en scores worden automatisch gegenereerd:</p>
+                   <ul className="list-disc list-inside ml-2 space-y-1">
+                     <li>Als alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond (100% voortgang)</li>
+                     <li>Op de laatste dag van de actieve maand: {selectedMonth ? formatMaandDatum(selectedMonth.year, selectedMonth.month) : 'datum wordt geladen...'}</li>
+                   </ul>
+                   <p className="text-blue-600 mt-2 text-xs italic">
+                     💡 Dit gebeurt automatisch op de achtergrond, ook als je niet op de website bent
+                   </p>
+                 </div>
               </div>
             </div>
           </div>
@@ -689,8 +691,8 @@ function OrganisationDashboard() {
                   </div>
                   
                   <div className="flex items-center gap-4 ml-4">
-                    {/* Actie knoppen */}
-                    {theme.voltooide_medewerkers >= 4 && !theme.heeft_samenvatting && (
+                    {/* Actie knoppen - handmatig genereren uitgeschakeld */}
+                    {/* {theme.voltooide_medewerkers >= 4 && !theme.heeft_samenvatting && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -701,7 +703,7 @@ function OrganisationDashboard() {
                       >
                         {summaryLoading === theme.theme_id ? 'Genereren...' : 'Genereer samenvatting'}
                       </button>
-                    )}
+                    )} */}
                     
 
                   </div>
@@ -858,7 +860,8 @@ function OrganisationDashboard() {
                           'Er is nog geen samenvatting gegenereerd voor dit thema'
                         }
                       </p>
-                      {theme.voltooide_medewerkers >= 4 && (
+                      {/* Handmatig genereren uitgeschakeld */}
+                      {/* {theme.voltooide_medewerkers >= 4 && (
                         <button
                           onClick={() => generateSummary(theme.theme_id)}
                           disabled={summaryLoading === theme.theme_id}
@@ -866,7 +869,7 @@ function OrganisationDashboard() {
                         >
                           {summaryLoading === theme.theme_id ? 'Genereren...' : 'Genereer samenvatting'}
                         </button>
-                      )}
+                      )} */}
                     </div>
                   )}
                 </div>
