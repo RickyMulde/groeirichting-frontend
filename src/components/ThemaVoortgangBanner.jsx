@@ -88,8 +88,8 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         .select('theme_id, status, gestart_op')
         .eq('werknemer_id', userId)
         .is('geanonimiseerd_op', null)
-        .gte('gestart_op', `${gesprekPeriode}-01`)
-        .lt('gestart_op', `${gesprekPeriode + 1}-01`) // Volgende maand
+        .gte('gestart_op', `${gesprekJaar}-${String(gesprekMaand).padStart(2, '0')}-01`)
+        .lt('gestart_op', `${gesprekJaar}-${String(gesprekMaand + 1).padStart(2, '0')}-01`) // Volgende maand
         .order('gestart_op', { ascending: false })
 
       if (gesprekError) throw gesprekError
