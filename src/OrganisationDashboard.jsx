@@ -23,12 +23,6 @@ function OrganisationDashboard() {
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [employerId, setEmployerId] = useState(null)
 
-  // Load data on mount
-  useEffect(() => {
-    setError(null) // Reset error state
-    fetchOrganisationThemes()
-  }, []) // Lege dependency array om circulaire dependency te voorkomen
-
   // Haal werkgever instellingen op voor actieve maanden
   const fetchEmployerSettings = useCallback(async (employerId) => {
     if (!employerId) return
@@ -70,6 +64,57 @@ function OrganisationDashboard() {
       console.error('Fout bij ophalen werkgever instellingen:', err)
     }
   }, [])
+
+  const fetchOrganisationThemes = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null) // Reset error state
+      startApiCall('fetchOrganisationThemes')
+      
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      const { data: employer, error: employerError } = await supabase
+        .from('employers')
+        .select('id')
+        .eq('contact_email', user.email)
+        .single()
+
+      if (employerError || !employer) {
+        throw new Error('Werkgever niet gevonden')
+      }
+
+      setEmployerId(employer.id)
+
+      // Bouw URL met periode parameter als deze is geselecteerd
+      let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`
+      if (selectedMonth) {
+        const periode = `${selectedMonth.year}-${String(selectedMonth.month).padStart(2, '0')}`
+        url += `?periode=${periode}`
+      }
+
+      const response = await fetch(url)
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen thema's`)
+      }
+
+      const data = await response.json()
+      setThemes(data.thema_s || [])
+    } catch (err) {
+      console.error('Fout bij ophalen thema\'s:', err)
+      setError(err.message || 'Onbekende fout bij ophalen thema\'s')
+    } finally {
+      setLoading(false)
+      endApiCall('fetchOrganisationThemes')
+    }
+  }, [startApiCall, endApiCall, selectedMonth])
+
+  // Load data on mount
+  useEffect(() => {
+    setError(null) // Reset error state
+    fetchOrganisationThemes()
+  }, [fetchOrganisationThemes])
 
   // Haal werkgever instellingen op wanneer employerId beschikbaar is
   useEffect(() => {
@@ -120,51 +165,6 @@ function OrganisationDashboard() {
       }
     }
   }, [handleTooltipHide, tooltipTimeout])
-
-  const fetchOrganisationThemes = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null) // Reset error state
-      startApiCall('fetchOrganisationThemes')
-      
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      const { data: employer, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('contact_email', user.email)
-        .single()
-
-      if (employerError || !employer) {
-        throw new Error('Werkgever niet gevonden')
-      }
-
-      setEmployerId(employer.id)
-
-      // Bouw URL met periode parameter als deze is geselecteerd
-      let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employer.id}`
-      if (selectedMonth) {
-        const periode = `${selectedMonth.year}-${String(selectedMonth.month).padStart(2, '0')}`
-        url += `?periode=${periode}`
-      }
-
-      const response = await fetch(url)
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen thema's`)
-      }
-
-      const data = await response.json()
-      setThemes(data.thema_s || [])
-    } catch (err) {
-      console.error('Fout bij ophalen thema\'s:', err)
-      setError(err.message || 'Onbekende fout bij ophalen thema\'s')
-    } finally {
-      setLoading(false)
-      endApiCall('fetchOrganisationThemes')
-    }
-  }, [navigate, startApiCall, endApiCall, selectedMonth])
 
   const fetchSummary = useCallback(async (themeId) => {
     if (summaryData[themeId]) return // Al opgehaald
