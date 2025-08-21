@@ -69,7 +69,13 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
       } else {
         const errorText = await response.text()
         console.warn('⚠️ Top 3 acties genereren mislukt:', response.status, errorText)
-        setError('Kon top 3 acties niet genereren')
+        
+        try {
+          const errorData = JSON.parse(errorText)
+          setError(`Kon top 3 acties niet genereren: ${errorData.error}${errorData.details ? ` - ${errorData.details}` : ''}`)
+        } catch {
+          setError(`Kon top 3 acties niet genereren (${response.status})`)
+        }
       }
     } catch (err) {
       console.error('❌ Fout bij genereren top 3 acties:', err)
