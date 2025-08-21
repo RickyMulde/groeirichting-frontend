@@ -18,8 +18,19 @@ function Login() {
     })
 
     if (loginError) {
-      setError(loginError.message)
-      return
+      // Gebruiksvriendelijkere foutmeldingen
+      let userFriendlyError = loginError.message;
+      
+      if (loginError.message.includes('Email not confirmed')) {
+        userFriendlyError = 'Je e-mailadres is nog niet geverifieerd. Controleer je inbox en klik op de verificatielink voordat je probeert in te loggen.';
+      } else if (loginError.message.includes('Invalid login credentials')) {
+        userFriendlyError = 'Ongeldige inloggegevens. Controleer je e-mailadres en wachtwoord.';
+      } else if (loginError.message.includes('Too many requests')) {
+        userFriendlyError = 'Te veel inlogpogingen. Probeer het over een paar minuten opnieuw.';
+      }
+      
+      setError(userFriendlyError);
+      return;
     }
 
     // Na succesvolle login, ga naar de redirect pagina
@@ -59,6 +70,20 @@ function Login() {
         <button type="submit" className="btn btn-primary">Login</button>
       </form>
       {error && <p className="mt-4 text-red-600">{error}</p>}
+      
+      {error && error.includes('e-mailadres is nog niet geverifieerd') && (
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-blue-800 mb-2">
+            <strong>E-mailverificatie nodig?</strong>
+          </p>
+          <p className="text-blue-700 text-sm mb-3">
+            Klik op de verificatielink in je inbox, of vraag een nieuwe aan.
+          </p>
+          <Link to="/verify-email" className="text-blue-600 hover:text-blue-800 underline text-sm">
+            Verificatiepagina bezoeken →
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
