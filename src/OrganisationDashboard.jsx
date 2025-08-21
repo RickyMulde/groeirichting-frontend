@@ -98,10 +98,41 @@ function OrganisationDashboard() {
           const configActieveMaanden = data.actieve_maanden || [3, 6, 9]
           
           // Haal alle gesprekken op voor deze werkgever om te bepalen welke maanden daadwerkelijk data hebben
+          // Eerst alle werknemers van deze werkgever ophalen
+          const { data: werknemers, error: werknemersError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('employer_id', employer.id)
+            .eq('role', 'employee')
+
+          if (werknemersError) {
+            console.error('Fout bij ophalen werknemers voor periode filtering:', werknemersError)
+            // Fallback naar standaard waarden
+            setActiveMonths([3, 6, 9])
+            const currentYear = new Date().getFullYear()
+            const defaultMonth = { year: currentYear, month: 3 }
+            setSelectedMonth(defaultMonth)
+            await fetchThemesForPeriod(employer.id, defaultMonth)
+            return
+          }
+
+          if (!werknemers || werknemers.length === 0) {
+            // Geen werknemers gevonden, toon standaard waarden
+            setActiveMonths([3, 6, 9])
+            setBeschikbarePeriodes([]) // Geen beschikbare periodes
+            const currentYear = new Date().getFullYear()
+            const defaultMonth = { year: currentYear, month: 3 }
+            setSelectedMonth(defaultMonth)
+            await fetchThemesForPeriod(employer.id, defaultMonth)
+            return
+          }
+
+          // Haal alle gesprekken op van alle werknemers van deze werkgever
+          const werknemerIds = werknemers.map(w => w.id)
           const { data: gesprekken, error: gesprekError } = await supabase
             .from('gesprek')
             .select('gestart_op')
-            .eq('employer_id', employer.id)
+            .in('werknemer_id', werknemerIds)
             .is('geanonimiseerd_op', null)
 
           if (gesprekError) {
