@@ -31,14 +31,21 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       console.log('ThemaVoortgangBanner: Werknemer opgehaald:', werknemer)
 
       // Haal werkgever configuratie op voor actieve maanden
-      let config = { actieve_maanden: [3, 6, 9] } // Default fallback
+      let config = null
       try {
         const werkgeverResponse = await fetch(`https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
         if (werkgeverResponse.ok) {
           config = await werkgeverResponse.json()
+          console.log('ThemaVoortgangBanner: Werkgever config opgehaald:', config)
+        } else {
+          console.error('Fout bij ophalen werkgever configuratie:', werkgeverResponse.status)
+          // Gebruik standaard config als fallback
+          config = { actieve_maanden: [3, 6, 9] }
         }
       } catch (error) {
         console.error('Fout bij ophalen werkgever configuratie:', error)
+        // Gebruik standaard config als fallback
+        config = { actieve_maanden: [3, 6, 9] }
       }
 
       setWerkgeverConfig(config)
@@ -52,13 +59,13 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
 
       console.log('ThemaVoortgangBanner: Gesprek periode:', { gesprekJaar, gesprekMaand, gesprekPeriode })
 
-      // Check of de maand van het gesprek een actieve maand was
+      // Check of de maand van het gesprek een actieve maand was volgens werkgever instellingen
       const isGesprekMaandActief = config.actieve_maanden.includes(gesprekMaand)
-      console.log('ThemaVoortgangBanner: Is gesprek maand actief:', isGesprekMaandActief)
+      console.log('ThemaVoortgangBanner: Is gesprek maand actief volgens werkgever:', isGesprekMaandActief, 'Actieve maanden:', config.actieve_maanden)
 
       if (!isGesprekMaandActief) {
         // Gesprek was niet in een actieve maand, toon geen voortgang
-        console.log('ThemaVoortgangBanner: Gesprek was niet in actieve maand, toon geen voortgang')
+        console.log('ThemaVoortgangBanner: Gesprek was niet in actieve maand volgens werkgever instellingen, toon geen voortgang')
         setThemaVoortgang([])
         setLoading(false)
         return
