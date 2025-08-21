@@ -203,7 +203,8 @@ function GesprekResultaten() {
         )
 
         if (!response.ok) {
-          throw new Error('Fout bij ophalen resultaten')
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.details || errorData.error || 'Fout bij ophalen resultaten')
         }
 
         const data = await response.json()
