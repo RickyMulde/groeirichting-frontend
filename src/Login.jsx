@@ -8,6 +8,29 @@ function Login() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
+  // Functie om alle cached data te wissen
+  const clearAllData = async () => {
+    try {
+      // Logout van Supabase
+      await supabase.auth.signOut()
+      
+      // Clear localStorage
+      localStorage.clear()
+      
+      // Clear sessionStorage
+      sessionStorage.clear()
+      
+      // Reset form state
+      setEmail('')
+      setPassword('')
+      setError('')
+      
+      console.log('Alle data gewist')
+    } catch (error) {
+      console.error('Fout bij wissen data:', error)
+    }
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setError('')
@@ -84,6 +107,19 @@ function Login() {
           </Link>
         </div>
       )}
+      
+      {/* Debug knop voor het wissen van alle data */}
+      <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <p className="text-gray-700 text-sm mb-3">
+          <strong>Problemen met inloggen?</strong> Probeer alle opgeslagen gegevens te wissen:
+        </p>
+        <button 
+          onClick={clearAllData}
+          className="btn btn-accent text-sm"
+        >
+          Alle data wissen & opnieuw beginnen
+        </button>
+      </div>
     </div>
   )
 }
