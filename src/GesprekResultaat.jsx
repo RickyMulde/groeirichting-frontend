@@ -209,6 +209,9 @@ function GesprekResultaat() {
     fetchGesprekData()
   }, [params])
 
+  // Debug logging om te zien wat er gebeurt
+  console.log('GesprekResultaat state:', { gesprekDatum, userId, loading, error, gesprekData })
+
   if (loading) {
     return (
       <div className="centered-page space-y-6">
@@ -232,7 +235,7 @@ function GesprekResultaat() {
           <h2 className="text-xl text-red-800 mb-2">Fout bij laden</h2>
           <p className="text-red-600 mb-4">{error}</p>
           <button 
-            onClick={() => navigate('/employee-portal')} 
+            onClick={() => navigate('/werknemer-portaal')} 
             className="btn btn-primary"
           >
             Terug naar portaal
@@ -249,7 +252,7 @@ function GesprekResultaat() {
           <h2 className="text-xl text-yellow-800 mb-2">Geen samenvatting beschikbaar</h2>
           <p className="text-yellow-600 mb-4">Er is nog geen samenvatting beschikbaar voor dit gesprek.</p>
           <button 
-            onClick={() => navigate('/employee-portal')} 
+            onClick={() => navigate('/werknemer-portaal')} 
             className="btn btn-primary"
           >
             Terug naar portaal
@@ -284,12 +287,19 @@ function GesprekResultaat() {
 
         <div className="space-y-6">
 
-          {/* Voortgangssectie */}
-          {gesprekDatum && userId && (
+          {/* Voortgangssectie - Toon altijd als we de data hebben */}
+          {gesprekDatum && userId ? (
             <ThemaVoortgangBanner 
               gesprekDatum={gesprekDatum} 
               userId={userId} 
             />
+          ) : (
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+              <p className="text-gray-500">Voortgang wordt geladen...</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Gesprek datum: {gesprekDatum ? 'Ja' : 'Nee'} | User ID: {userId ? 'Ja' : 'Nee'}
+              </p>
+            </div>
           )}
 
           {/* Samenvatting sectie */}

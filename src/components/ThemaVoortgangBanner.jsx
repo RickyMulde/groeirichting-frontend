@@ -18,6 +18,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const haalThemaVoortgangOp = async () => {
     try {
       setLoading(true)
+      console.log('ThemaVoortgangBanner: Start ophalen voortgang voor:', { gesprekDatum, userId })
 
       // Haal eerst werknemer en werkgever op
       const { data: werknemer, error: werknemerError } = await supabase
@@ -27,6 +28,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         .single()
 
       if (werknemerError) throw werknemerError
+      console.log('ThemaVoortgangBanner: Werknemer opgehaald:', werknemer)
 
       // Haal werkgever configuratie op voor actieve maanden
       let config = { actieve_maanden: [3, 6, 9] } // Default fallback
@@ -40,6 +42,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       }
 
       setWerkgeverConfig(config)
+      console.log('ThemaVoortgangBanner: Werkgever config:', config)
 
       // Bepaal de actieve periode van het afgeronde gesprek
       const gesprekDatumObj = new Date(gesprekDatum)
@@ -47,11 +50,15 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       const gesprekMaand = gesprekDatumObj.getMonth() + 1
       const gesprekPeriode = `${gesprekJaar}-${String(gesprekMaand).padStart(2, '0')}`
 
+      console.log('ThemaVoortgangBanner: Gesprek periode:', { gesprekJaar, gesprekMaand, gesprekPeriode })
+
       // Check of de maand van het gesprek een actieve maand was
       const isGesprekMaandActief = config.actieve_maanden.includes(gesprekMaand)
+      console.log('ThemaVoortgangBanner: Is gesprek maand actief:', isGesprekMaandActief)
 
       if (!isGesprekMaandActief) {
         // Gesprek was niet in een actieve maand, toon geen voortgang
+        console.log('ThemaVoortgangBanner: Gesprek was niet in actieve maand, toon geen voortgang')
         setThemaVoortgang([])
         setLoading(false)
         return
@@ -66,6 +73,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         .order('volgorde_index', { ascending: true })
 
       if (themaError) throw themaError
+      console.log('ThemaVoortgangBanner: Thema\'s opgehaald:', themas)
 
       // Haal gesprekken op voor deze gebruiker in dezelfde periode
       const { data: gesprekken, error: gesprekError } = await supabase
@@ -78,6 +86,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         .order('gestart_op', { ascending: false })
 
       if (gesprekError) throw gesprekError
+      console.log('ThemaVoortgangBanner: Gesprekken opgehaald:', gesprekken)
 
       // Combineer data voor voortgang
       const voortgang = themas.map(thema => {
@@ -110,6 +119,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         }
       })
 
+      console.log('ThemaVoortgangBanner: Voortgang berekend:', voortgang)
       setThemaVoortgang(voortgang)
     } catch (error) {
       console.error('Fout bij ophalen thema voortgang:', error)
@@ -148,8 +158,35 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   }
 
   // Als er geen thema's zijn of geen actieve periode, toon niets
-  if (loading || themaVoortgang.length === 0) {
-    return null
+  if (loading) {
+    return (
+      <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
+        <div className="text-center py-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto mb-4"></div>
+          <p className="text-gray-500">Voortgang wordt geladen...</p>
+        </div>
+      </section>
+    )
+  }
+
+  // Als er geen thema's zijn, toon een bericht
+  if (themaVoortgang.length === 0) {
+    return (
+      <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">Jouw voortgang deze periode</h2>
+          <p className="text-sm text-[var(--kleur-muted)]">
+            Geen thema's beschikbaar voor deze periode
+          </p>
+        </div>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+          <p className="text-gray-500">Er zijn momenteel geen actieve thema's voor deze periode.</p>
+          <p className="text-xs text-gray-400 mt-2">
+            Debug: Gesprek datum: {gesprekDatum} | User ID: {userId} | Thema's: {themaVoortgang.length}
+          </p>
+        </div>
+      </section>
+    )
   }
 
   return (
