@@ -22,6 +22,7 @@ function OrganisationDashboard() {
   const [activeMonths, setActiveMonths] = useState([])
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [employerId, setEmployerId] = useState(null)
+  const [beschikbarePeriodes, setBeschikbarePeriodes] = useState([])
 
   // Haal werkgever instellingen op voor actieve maanden
   const fetchEmployerSettings = useCallback(async (employerId) => {
@@ -94,32 +95,69 @@ function OrganisationDashboard() {
         
         if (response.ok) {
           const data = await response.json()
-          setActiveMonths(data.actieve_maanden || [3, 6, 9])
+          const configActieveMaanden = data.actieve_maanden || [3, 6, 9]
           
-          // Bepaal laatste actieve maand als default selectie
-          if (data.actieve_maanden && data.actieve_maanden.length > 0) {
+          // Haal alle gesprekken op voor deze werkgever om te bepalen welke maanden daadwerkelijk data hebben
+          const { data: gesprekken, error: gesprekError } = await supabase
+            .from('gesprek')
+            .select('gestart_op')
+            .eq('employer_id', employer.id)
+            .is('geanonimiseerd_op', null)
+
+          if (gesprekError) {
+            console.error('Fout bij ophalen gesprekken voor periode filtering:', gesprekError)
+            // Fallback naar standaard waarden
+            setActiveMonths([3, 6, 9])
             const currentYear = new Date().getFullYear()
-            const currentMonth = new Date().getMonth() + 1
-            
-            // Zoek de laatste actieve maand (nieuwste datum)
-            let lastActiveMonth = null
-            for (let year = currentYear; year >= currentYear - 1; year--) {
-              for (let month = 12; month >= 1; month--) {
-                if (data.actieve_maanden.includes(month)) {
-                  const monthDate = new Date(year, month - 1, 1)
-                  if (monthDate <= new Date()) {
-                    lastActiveMonth = { year, month }
-                    break
-                  }
-                }
-              }
-              if (lastActiveMonth) break
-            }
-            
-            const defaultMonth = lastActiveMonth || { year: currentYear, month: data.actieve_maanden[0] }
+            const defaultMonth = { year: currentYear, month: 3 }
             setSelectedMonth(defaultMonth)
+            await fetchThemesForPeriod(employer.id, defaultMonth)
+            return
+          }
+
+          // Bepaal welke maanden daadwerkelijk gesprekken hebben
+          const maandenMetGesprekken = new Set()
+          const currentYear = new Date().getFullYear()
+          
+          gesprekken.forEach(gesprek => {
+            const gesprekDatum = new Date(gesprek.gestart_op)
+            const gesprekJaar = gesprekDatum.getFullYear()
+            const gesprekMaand = gesprekDatum.getMonth() + 1
             
-            // Haal thema's op voor deze maand
+            // Alleen maanden toevoegen die actief zijn volgens werkgever instellingen
+            if (configActieveMaanden.includes(gesprekMaand)) {
+              // Voeg huidige en vorige jaar toe als er gesprekken zijn
+              if (gesprekJaar === currentYear || gesprekJaar === currentYear - 1) {
+                maandenMetGesprekken.add(`${gesprekJaar}-${gesprekMaand}`)
+              }
+            }
+          })
+
+          // Converteer naar array en sorteer op datum (nieuwste eerst)
+          const beschikbarePeriodes = Array.from(maandenMetGesprekken)
+            .map(periode => {
+              const [jaar, maand] = periode.split('-').map(Number)
+              return { jaar, maand }
+            })
+            .sort((a, b) => {
+              if (a.jaar !== b.jaar) return b.jaar - a.jaar
+              return b.maand - a.maand
+            })
+
+          if (beschikbarePeriodes.length > 0) {
+            setActiveMonths(beschikbarePeriodes.map(p => p.maand))
+            setBeschikbarePeriodes(beschikbarePeriodes) // Sla beschikbare periodes op
+            setSelectedMonth(beschikbarePeriodes[0]) // Selecteer eerste (nieuwste) periode
+            
+            // Haal thema's op voor deze periode
+            await fetchThemesForPeriod(employer.id, beschikbarePeriodes[0])
+          } else {
+            // Geen gesprekken gevonden, toon standaard waarden
+            setActiveMonths([3, 6, 9])
+            setBeschikbarePeriodes([]) // Geen beschikbare periodes
+            const currentYear = new Date().getFullYear()
+            const defaultMonth = { year: currentYear, month: 3 }
+            setSelectedMonth(defaultMonth)
             await fetchThemesForPeriod(employer.id, defaultMonth)
           }
         } else {
@@ -563,25 +601,11 @@ function OrganisationDashboard() {
                     }}
                     className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {activeMonths.map(month => {
-                      // Genereer opties voor huidige en vorige jaar
-                      const currentYear = new Date().getFullYear()
-                      const years = [currentYear, currentYear - 1]
-                      
-                      return years.map(year => {
-                        const monthDate = new Date(year, month - 1, 1)
-                        const isPastOrCurrent = monthDate <= new Date()
-                        
-                        if (isPastOrCurrent) {
-                          return (
-                            <option key={`${year}-${month}`} value={`${year}-${month}`}>
-                              {getMaandNaam(month)} {year}
-                            </option>
-                          )
-                        }
-                        return null
-                      })
-                    }).flat().filter(Boolean)}
+                    {beschikbarePeriodes.map(({ jaar, maand }) => (
+                      <option key={`${jaar}-${maand}`} value={`${jaar}-${maand}`}>
+                        {getMaandNaam(maand)} {jaar}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
