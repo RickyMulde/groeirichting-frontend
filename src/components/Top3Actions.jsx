@@ -168,7 +168,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
                        {/* Refresh knop rechtsboven */}
             <button
               onClick={fetchTopActies}
-              className="text-gray-600 hover:text-gray-800 transition-colors p-2"
+              className="text-gray-600 hover:text-gray-800 transition-colors p-2 bg-transparent"
               title="Vernieuwen / Opnieuw genereren"
             >
              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,9 +190,9 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
               <div className="flex items-center space-x-3 flex-1">
                 {/* Nummer en prioriteit */}
                 <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                    {nummer}
-                  </div>
+                                     <div className="w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
+                     {nummer}
+                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getPrioriteitKleur(prioriteit)}`}>
                     {getPrioriteitIcon(prioriteit)} {prioriteit}
                   </span>
@@ -209,7 +209,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
                              {/* Uitklap knop */}
                <button
                  onClick={() => setExpandedActie(expandedActie === nummer ? null : nummer)}
-                 className="ml-3 p-2 text-gray-600 hover:text-gray-800 transition-colors"
+                 className="ml-3 p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
                  aria-label={expandedActie === nummer ? 'Inklappen' : 'Uitklappen'}
                >
                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

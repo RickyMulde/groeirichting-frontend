@@ -333,7 +333,7 @@ function GesprekResultaat() {
                     <h2 className="text-xl font-semibold">Vervolgacties per thema op basis van jouw antwoorden:</h2>
                                          <button
                        onClick={() => setVervolgactiesUitgeklapt(!vervolgactiesUitgeklapt)}
-                       className="p-2 text-gray-600 hover:text-gray-800 transition-colors"
+                       className="p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
                        aria-label={vervolgactiesUitgeklapt ? 'Inklappen' : 'Uitklappen'}
                      >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

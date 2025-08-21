@@ -418,7 +418,7 @@ function GesprekResultaten() {
                     </h4>
                                          <button
                        onClick={() => toggleThemaUitklappen(resultaat.id)}
-                       className="p-2 text-gray-600 hover:text-gray-800 transition-colors"
+                       className="p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
                        aria-label={uitgeklapteThemas.has(resultaat.id) ? 'Inklappen' : 'Uitklappen'}
                      >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
