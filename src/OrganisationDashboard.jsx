@@ -97,17 +97,6 @@ function OrganisationDashboard() {
     initializeData()
   }, [fetchThemes])
 
-  // Haal thema's opnieuw op wanneer de geselecteerde maand verandert
-  useEffect(() => {
-    console.log('🔄 useEffect triggered:', { employerId })
-    if (employerId) {
-      console.log('🚀 Start ophalen thema\'s voor werkgever:', employerId)
-      fetchThemes(employerId)
-    } else {
-      console.log('⏸️ Niet alle vereiste data beschikbaar voor het ophalen van thema\'s')
-    }
-  }, [employerId, fetchThemes])
-
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
     if (tooltipTimeout) {
