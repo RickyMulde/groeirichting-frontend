@@ -95,7 +95,7 @@ function OrganisationDashboard() {
     }
     
     initializeData()
-  }, [fetchThemes])
+  }, []) // Lege dependency array - alleen bij mount
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
