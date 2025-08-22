@@ -95,8 +95,7 @@ function OrganisationDashboard() {
           const data = await response.json()
           const configActieveMaanden = data.actieve_maanden || [3, 6, 9]
           
-          // Haal alle gesprekken op voor deze werkgever om te bepalen welke maanden daadwerkelijk data hebben
-          // Eerst alle werknemers van deze werkgever ophalen
+          // Haal alle werknemers van deze werkgever op
           console.log('🔍 Ophalen werknemers voor werkgever:', employer.id)
           const { data: werknemers, error: werknemersError } = await supabase
             .from('users')
