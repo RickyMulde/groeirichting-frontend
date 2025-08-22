@@ -24,47 +24,45 @@ function OrganisationDashboard() {
   const [employerId, setEmployerId] = useState(null)
   const [beschikbarePeriodes, setBeschikbarePeriodes] = useState([])
 
-  // Haal werkgever instellingen op voor actieve maanden
-  const fetchEmployerSettings = useCallback(async (employerId) => {
-    if (!employerId) return
-
+  // Haal thema's op voor een specifieke periode
+  const fetchThemesForPeriod = useCallback(async (employerId, month) => {
+    if (!employerId || !month) {
+      console.log('⚠️ fetchThemesForPeriod: Ontbrekende parameters:', { employerId, month })
+      return
+    }
+    
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employerId}`)
+      console.log('🔍 fetchThemesForPeriod gestart:', { employerId, month })
+      startApiCall('fetchOrganisationThemes')
+      
+      const periode = `${month.year}-${String(month.month).padStart(2, '0')}`
+      const url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}?periode=${periode}`
+      
+      console.log('🌐 API call naar:', url)
+
+      const response = await fetch(url)
+      
+      console.log('📡 API response status:', response.status)
       
       if (!response.ok) {
-        console.error('Fout bij ophalen werkgever instellingen')
-        return
+        const errorData = await response.json().catch(() => ({}))
+        console.error('❌ API fout:', errorData)
+        throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen thema's`)
       }
 
       const data = await response.json()
-      setActiveMonths(data.actieve_maanden || [3, 6, 9]) // Fallback naar standaard waarden
+      console.log('✅ API data ontvangen:', data)
+      console.log('📊 Aantal thema\'s:', data.thema_s?.length || 0)
       
-      // Bepaal laatste actieve maand als default selectie
-      if (data.actieve_maanden && data.actieve_maanden.length > 0) {
-        const currentYear = new Date().getFullYear()
-        const currentMonth = new Date().getMonth() + 1
-        
-        // Zoek de laatste actieve maand (nieuwste datum)
-        let lastActiveMonth = null
-        for (let year = currentYear; year >= currentYear - 1; year--) {
-          for (let month = 12; month >= 1; month--) {
-            if (data.actieve_maanden.includes(month)) {
-              const monthDate = new Date(year, month - 1, 1)
-              if (monthDate <= new Date()) {
-                lastActiveMonth = { year, month }
-                break
-              }
-            }
-          }
-          if (lastActiveMonth) break
-        }
-        
-        setSelectedMonth(lastActiveMonth || { year: currentYear, month: data.actieve_maanden[0] })
-      }
+      setThemes(data.thema_s || [])
+      console.log('🎯 Themes state bijgewerkt met', data.thema_s?.length || 0, 'thema\'s')
     } catch (err) {
-      console.error('Fout bij ophalen werkgever instellingen:', err)
+      console.error('❌ Fout bij ophalen thema\'s:', err)
+      setError(err.message || 'Onbekende fout bij ophalen thema\'s')
+    } finally {
+      endApiCall('fetchOrganisationThemes')
     }
-  }, [])
+  }, [startApiCall, endApiCall])
 
   // Load data on mount - alleen bij eerste render
   useEffect(() => {
@@ -215,37 +213,14 @@ function OrganisationDashboard() {
     initializeData()
   }, []) // Lege dependency array - alleen bij mount
 
-  // Haal thema's op voor een specifieke periode
-  const fetchThemesForPeriod = useCallback(async (employerId, month) => {
-    if (!employerId || !month) return
-    
-    try {
-      startApiCall('fetchOrganisationThemes')
-      
-      const periode = `${month.year}-${String(month.month).padStart(2, '0')}`
-      const url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}?periode=${periode}`
-
-      const response = await fetch(url)
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen thema's`)
-      }
-
-      const data = await response.json()
-      setThemes(data.thema_s || [])
-    } catch (err) {
-      console.error('Fout bij ophalen thema\'s:', err)
-      setError(err.message || 'Onbekende fout bij ophalen thema\'s')
-    } finally {
-      endApiCall('fetchOrganisationThemes')
-    }
-  }, [startApiCall, endApiCall])
-
   // Haal thema's opnieuw op wanneer de geselecteerde maand verandert
   useEffect(() => {
+    console.log('🔄 useEffect triggered:', { employerId, selectedMonth })
     if (employerId && selectedMonth) {
+      console.log('🚀 Start ophalen thema\'s voor periode:', selectedMonth)
       fetchThemesForPeriod(employerId, selectedMonth)
+    } else {
+      console.log('⏸️ Niet alle vereiste data beschikbaar voor het ophalen van thema\'s')
     }
   }, [employerId, selectedMonth, fetchThemesForPeriod])
 
@@ -633,6 +608,7 @@ function OrganisationDashboard() {
                     value={`${selectedMonth.year}-${selectedMonth.month}`}
                     onChange={(e) => {
                       const [year, month] = e.target.value.split('-').map(Number)
+                      console.log('📅 Maand selector gewijzigd:', { year, month, value: e.target.value })
                       setSelectedMonth({ year, month })
                     }}
                     className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
