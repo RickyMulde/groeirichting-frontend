@@ -220,8 +220,8 @@ function WerknemerBeheren() {
             <div className="text-sm text-blue-800">
               <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
               <p className="text-blue-700">
-                Jouw werknemer/teamlid ontvangt een mail, waarmee hij/zijn account kan aanmaken. Je hoeft verder niks te doen. 
-                Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden.
+                Jouw werknemer/teamlid ontvangt een mail, waarmee jouw werknemer/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
+                Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
               </p>
             </div>
           </div>
