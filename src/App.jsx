@@ -20,7 +20,7 @@ import GesprekPagina from './GesprekPagina'
 import GesprekResultaat from './GesprekResultaat'
 import GesprekResultaten from './GesprekResultaten'
 import ThemaOverzicht from './ThemaOverzicht'
-import OrganisationDashboard from './OrganisationDashboard'
+import Themadashboard from './Themadashboard'
 import EmployerProtectedRoute from './EmployerProtectedRoute'
 import WerknemerInstellingen from './WerknemerInstellingen'
 
@@ -50,9 +50,9 @@ function App() {
         <Route path="/gesprek" element={<GesprekPagina />} />
         <Route path="/gesprek-resultaat" element={<GesprekResultaat />} />
         <Route path="/gesprek-resultaten" element={<GesprekResultaten />} />
-        <Route path="/organisatie-dashboard" element={
+        <Route path="/thema-dashboard" element={
           <EmployerProtectedRoute>
-            <OrganisationDashboard />
+            <Themadashboard />
           </EmployerProtectedRoute>
         } />
       </Routes>

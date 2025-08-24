@@ -96,7 +96,7 @@ function EmployerPortal() {
               <p className="text-sm text-gray-500">Bekijk thema's, scores en samenvattingen van alle medewerkers.</p>
             </div>
           </div>
-          <Link to="/organisatie-dashboard" className="btn btn-primary">Ga naar dashboard</Link>
+                          <Link to="/thema-dashboard" className="btn btn-primary">Ga naar dashboard</Link>
         </section>
 
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">

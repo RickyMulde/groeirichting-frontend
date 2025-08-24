@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronDown, ChevronUp, ArrowLeft, BarChart3, Users, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react'
+import { ChevronDown, ChevronUp, ArrowLeft, BarChart3, Users, TrendingUp, AlertCircle, CheckCircle, Calendar } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import { usePerformanceMonitor, useApiPerformance } from './hooks/usePerformanceMonitor'
 
-function OrganisationDashboard() {
+function Themadashboard() {
   const navigate = useNavigate()
   
   // Performance monitoring
-  usePerformanceMonitor('OrganisationDashboard')
+  usePerformanceMonitor('Themadashboard')
   const { startApiCall, endApiCall } = useApiPerformance()
   
   const [themes, setThemes] = useState([])
@@ -20,16 +20,43 @@ function OrganisationDashboard() {
   const [showTooltip, setShowTooltip] = useState(null)
   const [tooltipTimeout, setTooltipTimeout] = useState(null)
   const [employerId, setEmployerId] = useState(null)
+  const [activeMonths, setActiveMonths] = useState([])
+  const [selectedMonth, setSelectedMonth] = useState(null)
+  const [monthLoading, setMonthLoading] = useState(true)
 
-  // Haal thema's op
-  const fetchThemes = useCallback(async (employerId) => {
+  // Haal werkgever instellingen op voor actieve maanden
+  const fetchEmployerSettings = useCallback(async (employerId) => {
+    if (!employerId) return
+    
+    try {
+      setMonthLoading(true)
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employerId}`)
+      
+      if (response.ok) {
+        const config = await response.json()
+        setActiveMonths(config.actieve_maanden || [])
+      } else {
+        // Fallback naar standaard maanden
+        setActiveMonths([3, 6, 9])
+      }
+    } catch (err) {
+      console.error('Fout bij ophalen werkgever instellingen:', err)
+      // Fallback naar standaard maanden
+      setActiveMonths([3, 6, 9])
+    } finally {
+      setMonthLoading(false)
+    }
+  }, [])
+
+  // Haal thema's op voor geselecteerde maand
+  const fetchThemes = useCallback(async (employerId, month = null) => {
     if (!employerId) {
       console.log('⚠️ fetchThemes: Ontbrekende employerId')
       return
     }
     
     try {
-      console.log('🔍 fetchThemes gestart voor werkgever:', employerId)
+      console.log('🔍 fetchThemes gestart voor werkgever:', employerId, 'maand:', month)
       startApiCall('fetchOrganisationThemes')
       
       const url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}`
@@ -48,10 +75,35 @@ function OrganisationDashboard() {
 
       const data = await response.json()
       console.log('✅ API data ontvangen:', data)
-      console.log('📊 Aantal thema\'s:', data.thema_s?.length || 0)
       
-      setThemes(data.thema_s || [])
-      console.log('🎯 Themes state bijgewerkt met', data.thema_s?.length || 0, 'thema\'s')
+      let filteredThemes = data.thema_s || []
+      
+      // Filter op basis van geselecteerde maand als die is ingesteld
+      if (month) {
+        const monthStart = new Date(new Date().getFullYear(), month - 1, 1)
+        const monthEnd = new Date(new Date().getFullYear(), month, 0, 23, 59, 59)
+        
+        filteredThemes = filteredThemes.filter(theme => {
+          // Alleen thema's tonen met voltooide medewerkers
+          if (theme.voltooide_medewerkers === 0) return false
+          
+          // Als er een samenvatting is, check de laatst_bijgewerkt_op datum
+          if (theme.laatst_bijgewerkt) {
+            const updateDate = new Date(theme.laatst_bijgewerkt)
+            return updateDate >= monthStart && updateDate <= monthEnd
+          }
+          
+          // Als er geen samenvatting is, kunnen we niet bepalen in welke maand het thema is afgerond
+          // We tonen deze thema's alleen als er geen maandfilter actief is
+          return false
+        })
+      } else {
+        // Als er geen maandfilter actief is, toon alle thema's met voltooide medewerkers
+        filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
+      }
+      
+      console.log('📊 Aantal gefilterde thema\'s:', filteredThemes.length)
+      setThemes(filteredThemes)
     } catch (err) {
       console.error('❌ Fout bij ophalen thema\'s:', err)
       setError(err.message || 'Onbekende fout bij ophalen thema\'s')
@@ -84,7 +136,10 @@ function OrganisationDashboard() {
 
         setEmployerId(employer.id)
         
-        // Haal thema's op
+        // Haal werkgever instellingen op
+        await fetchEmployerSettings(employer.id)
+        
+        // Haal thema's op (zonder maandfilter initieel)
         await fetchThemes(employer.id)
       } catch (err) {
         console.error('Fout bij initialiseren:', err)
@@ -95,7 +150,14 @@ function OrganisationDashboard() {
     }
     
     initializeData()
-  }, []) // Lege dependency array - alleen bij mount
+  }, [fetchEmployerSettings, fetchThemes])
+
+  // Update thema's wanneer maand wordt gewijzigd
+  useEffect(() => {
+    if (employerId && selectedMonth) {
+      fetchThemes(employerId, selectedMonth)
+    }
+  }, [employerId, selectedMonth, fetchThemes])
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
@@ -178,53 +240,6 @@ function OrganisationDashboard() {
     }
   }, [summaryData])
 
-  const generateSummary = useCallback(async (themeId) => {
-    try {
-      setSummaryLoading(themeId)
-      setError(null) // Reset error state
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      const { data: employer, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('contact_email', user.email)
-        .single()
-
-      if (employerError || !employer) {
-        throw new Error('Werkgever niet gevonden')
-      }
-
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/generate-organisation-summary`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          organisatie_id: employer.id,
-          theme_id: themeId
-        })
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `HTTP ${response.status}: Fout bij genereren samenvatting`)
-      }
-
-      const data = await response.json()
-
-      // Refresh thema's om nieuwe status te tonen
-      await fetchThemes(employer.id)
-      
-      // Haal nieuwe samenvatting op
-      await fetchSummary(themeId)
-    } catch (err) {
-      console.error('Fout bij genereren samenvatting:', err)
-      setError(err.message || 'Onbekende fout bij genereren samenvatting')
-    } finally {
-      setSummaryLoading(null)
-    }
-  }, [fetchThemes, fetchSummary])
-
   const toggleTheme = useCallback((themeId) => {
     if (expandedTheme === themeId) {
       setExpandedTheme(null)
@@ -290,6 +305,14 @@ function OrganisationDashboard() {
   const getProgressPercentage = useCallback((completed, total) => {
     if (total === 0) return 0
     return Math.round((completed / total) * 100)
+  }, [])
+
+  const getMonthName = useCallback((month) => {
+    const monthNames = [
+      'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+      'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
+    ]
+    return monthNames[month - 1] || month
   }, [])
 
   // Memoized statistieken voor betere performance
@@ -379,7 +402,7 @@ function OrganisationDashboard() {
                   Terug naar portaal
                 </button>
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Organisatie Dashboard</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema Dashboard</h1>
                   <p className="text-gray-600 text-sm sm:text-base">Overzicht van alle thema's en resultaten</p>
                 </div>
               </div>
@@ -439,6 +462,56 @@ function OrganisationDashboard() {
             <BarChart3 className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
           </div>
 
+          {/* Maandselecter */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Calendar className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Selecteer maand</h3>
+                <p className="text-gray-600 text-sm">Kies een maand om de resultaten te bekijken</p>
+              </div>
+            </div>
+            
+            {monthLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--kleur-primary)]"></div>
+                <span className="ml-2 text-gray-600">Maanden laden...</span>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                {activeMonths.map(month => (
+                  <button
+                    key={month}
+                    onClick={() => setSelectedMonth(selectedMonth === month ? null : month)}
+                    className={`p-3 border rounded-lg transition-colors ${
+                      selectedMonth === month
+                        ? 'bg-[var(--kleur-primary)] text-white border-[var(--kleur-primary)]'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="text-sm font-medium">{getMonthName(month)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            {selectedMonth && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800 text-sm">
+                  📅 Resultaten worden gefilterd op {getMonthName(selectedMonth)}
+                  <button
+                    onClick={() => setSelectedMonth(null)}
+                    className="ml-2 text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Filter verwijderen
+                  </button>
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Statistieken */}
           {dashboardStats && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -488,16 +561,16 @@ function OrganisationDashboard() {
               </div>
               <div>
                 <p className="text-blue-800 font-medium text-sm">Wanneer worden samenvattingen gegenereerd?</p>
-                                 <div className="text-blue-700 text-xs mt-2 space-y-1">
-                   <p>Samenvattingen en scores worden automatisch gegenereerd:</p>
-                   <ul className="list-disc list-inside ml-2 space-y-1">
-                     <li>Als alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond (100% voortgang)</li>
-                     <li>Op de laatste dag van de actieve maand: {new Date().getFullYear()} - {new Date().getMonth() + 1}</li>
-                   </ul>
-                   <p className="text-blue-600 mt-2 text-xs italic">
-                     💡 Dit gebeurt automatisch op de achtergrond, ook als je niet op de website bent
-                   </p>
-                 </div>
+                <div className="text-blue-700 text-xs mt-2 space-y-1">
+                  <p>Samenvattingen en scores worden automatisch gegenereerd:</p>
+                  <ul className="list-disc list-inside ml-2 space-y-1">
+                    <li>Als alle medewerkers/teamleden alle gesprekken/thema's hebben afgerond (100% voortgang)</li>
+                    <li>Op de laatste dag van de actieve maand: {new Date().getFullYear()} - {new Date().getMonth() + 1}</li>
+                  </ul>
+                  <p className="text-blue-600 mt-2 text-xs italic">
+                    💡 Dit gebeurt automatisch op de achtergrond, ook als je niet op de website bent
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -592,30 +665,8 @@ function OrganisationDashboard() {
                             ></div>
                           </div>
                         </div>
-                        
-
                       </div>
-                      
-
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 ml-4">
-                    {/* Actie knoppen - handmatig genereren uitgeschakeld */}
-                    {/* {theme.voltooide_medewerkers >= 4 && !theme.heeft_samenvatting && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          generateSummary(theme.theme_id)
-                        }}
-                        disabled={summaryLoading === theme.theme_id}
-                        className="btn btn-accent text-sm whitespace-nowrap"
-                      >
-                        {summaryLoading === theme.theme_id ? 'Genereren...' : 'Genereer samenvatting'}
-                      </button>
-                    )} */}
-                    
-
                   </div>
                 </div>
                 
@@ -770,16 +821,6 @@ function OrganisationDashboard() {
                           'Er is nog geen samenvatting gegenereerd voor dit thema'
                         }
                       </p>
-                      {/* Handmatig genereren uitgeschakeld */}
-                      {/* {theme.voltooide_medewerkers >= 4 && (
-                        <button
-                          onClick={() => generateSummary(theme.theme_id)}
-                          disabled={summaryLoading === theme.theme_id}
-                          className="btn btn-accent"
-                        >
-                          {summaryLoading === theme.theme_id ? 'Genereren...' : 'Genereer samenvatting'}
-                        </button>
-                      )} */}
                     </div>
                   )}
                 </div>
@@ -790,7 +831,16 @@ function OrganisationDashboard() {
 
         {visibleThemes.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Nog geen thema's beschikbaar</p>
+            <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <Calendar className="w-8 h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-600 font-medium mb-2">Nog geen resultaten beschikbaar</p>
+            <p className="text-gray-500 text-sm">
+              {selectedMonth 
+                ? `Er zijn geen thema's met voltooide medewerkers in ${getMonthName(selectedMonth)}`
+                : 'Selecteer een maand om de resultaten te bekijken'
+              }
+            </p>
           </div>
         )}
       </div>
@@ -798,4 +848,4 @@ function OrganisationDashboard() {
   )
 }
 
-export default OrganisationDashboard 
+export default Themadashboard
