@@ -2,14 +2,12 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronDown, ChevronUp, ArrowLeft, BarChart3, Users, TrendingUp, AlertCircle, CheckCircle, Calendar } from 'lucide-react'
 import { supabase } from './supabaseClient'
-import { usePerformanceMonitor, useApiPerformance } from './hooks/usePerformanceMonitor'
+
 
 function Themadashboard() {
   const navigate = useNavigate()
   
-  // Performance monitoring
-  usePerformanceMonitor('Themadashboard')
-  const { startApiCall, endApiCall } = useApiPerformance()
+
   
   const [themes, setThemes] = useState([])
   const [loading, setLoading] = useState(true)
@@ -57,7 +55,6 @@ function Themadashboard() {
     
     try {
       console.log('🔍 fetchThemes gestart voor werkgever:', employerId, 'maand:', month)
-      startApiCall('fetchOrganisationThemes')
       
       const url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}`
       
@@ -108,9 +105,9 @@ function Themadashboard() {
       console.error('❌ Fout bij ophalen thema\'s:', err)
       setError(err.message || 'Onbekende fout bij ophalen thema\'s')
     } finally {
-      endApiCall('fetchOrganisationThemes')
+      // Performance monitoring afgehandeld
     }
-  }, [startApiCall, endApiCall])
+  }, [])
 
   // Load data on mount
   useEffect(() => {
@@ -150,14 +147,14 @@ function Themadashboard() {
     }
     
     initializeData()
-  }, [fetchEmployerSettings, fetchThemes])
+  }, [])
 
   // Update thema's wanneer maand wordt gewijzigd
   useEffect(() => {
     if (employerId && selectedMonth) {
       fetchThemes(employerId, selectedMonth)
     }
-  }, [employerId, selectedMonth, fetchThemes])
+  }, [employerId, selectedMonth])
 
   // Tooltip management met debouncing
   const handleTooltipShow = useCallback((themeId) => {
