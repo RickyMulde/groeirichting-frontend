@@ -304,23 +304,29 @@ function Themadashboard() {
                         
                         {/* Alert indicator bij grote score verschillen */}
                         {theme.heeft_grote_score_verschillen && (
-                          <div className="absolute -top-1 -right-1">
-                            <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
+                          <div className="absolute -top-1 -right-1 group/alert">
+                            <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center cursor-help">
                               <span className="text-white text-xs font-bold">!</span>
+                            </div>
+                            
+                            {/* Alert tooltip */}
+                            <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-yellow-100 border border-yellow-300 text-yellow-800 text-xs rounded opacity-0 group-hover/alert:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
+                              Grote verschillen in scores
+                              <div className="absolute top-full right-2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-yellow-100"></div>
                             </div>
                           </div>
                         )}
                         
                         {/* Hover tooltip met individuele scores */}
                         {theme.individuele_scores && theme.individuele_scores.length > 0 && (
-                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-lg">
                             <div className="text-center">
                               <div className="font-semibold mb-1">Individuele scores:</div>
-                              <div className="text-xs">
+                              <div className="text-xs font-mono bg-gray-800 px-2 py-1 rounded">
                                 {theme.individuele_scores.join(', ')}
                               </div>
                               {theme.heeft_grote_score_verschillen && (
-                                <div className="text-yellow-300 text-xs mt-1">
+                                <div className="text-yellow-300 text-xs mt-1 font-semibold">
                                   ⚠️ Grote verschillen
                                 </div>
                               )}
