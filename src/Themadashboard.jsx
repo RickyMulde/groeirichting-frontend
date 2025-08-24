@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, BarChart3, Calendar, ChevronDown, ChevronUp, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react'
+import { ArrowLeft, BarChart3, Calendar, ChevronDown, ChevronUp, TrendingUp, CheckCircle, AlertCircle, Info } from 'lucide-react'
 import { supabase } from './supabaseClient'
 
 function Themadashboard() {
@@ -286,6 +286,31 @@ function Themadashboard() {
           </div>
         </div>
 
+        {/* Informatie over beschikbaarheid resultaten */}
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+              <Info className="w-5 h-5 text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">Wanneer zijn resultaten beschikbaar?</h3>
+              <div className="text-blue-800 space-y-1">
+                <p className="text-sm">De gespreksresultaten (samenvatting, score en verbeteradviezen) zijn pas zichtbaar:</p>
+                <ul className="text-sm space-y-1 ml-4">
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    Als alle uitgenodigde medewerkers/teamleden de thema's hebben afgerond
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    Op de eerste dag na de actieve maand
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Thema's */}
         <div className="space-y-6">
           {themes.map((theme) => (
@@ -332,6 +357,7 @@ function Themadashboard() {
                 
                 {/* Expand/collapse indicator */}
                 <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-3">Bekijk de samenvatting en concrete verbeteradviezen</p>
                   <div 
                     className="p-2 rounded-lg hover:bg-gray-100 transition-colors inline-block"
                     onClick={() => toggleTheme(theme.theme_id)}
@@ -349,7 +375,7 @@ function Themadashboard() {
               {expandedTheme === theme.theme_id && (
                 <div className="border-t border-gray-200 bg-gray-50">
                   {summaryLoading === theme.theme_id ? (
-                    <div className="text-center py-12">
+                    <div className="text-center py-6">
                       <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--kleur-primary)] mx-auto mb-4"></div>
                       <p className="text-gray-600 font-medium">Samenvatting laden...</p>
                     </div>
@@ -459,7 +485,7 @@ function Themadashboard() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-12">
+                    <div className="text-center py-6">
                       <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                         <AlertCircle className="w-8 h-8 text-gray-400" />
                       </div>
