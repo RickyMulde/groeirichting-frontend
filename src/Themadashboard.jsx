@@ -277,127 +277,54 @@ function Themadashboard() {
         <div className="space-y-6">
           {themes.map((theme) => (
             <div key={theme.theme_id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-              {/* Thema header - klikbaar */}
-              <div 
-                className={`relative cursor-pointer transition-transform duration-500 ${
-                  expandedTheme === theme.theme_id ? '' : 'hover:scale-[1.02]'
-                }`}
-                onMouseEnter={(e) => {
-                  if (expandedTheme !== theme.theme_id) {
-                    e.currentTarget.style.transform = 'rotateY(180deg)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (expandedTheme !== theme.theme_id) {
-                    e.currentTarget.style.transform = 'rotateY(0deg)'
-                  }
-                }}
-              >
-                {/* Voorkant - Normale thema info */}
-                <div className="p-6 hover:bg-gray-50 transition-colors backface-hidden">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{theme.titel}</h3>
-                      <p className="text-gray-600 text-sm mb-3">{theme.beschrijving_werkgever || theme.beschrijving_werknemer}</p>
-                      
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>Voltooid: {theme.voltooide_medewerkers} van {theme.totaal_medewerkers}</span>
-                      </div>
-                    </div>
+              {/* Thema header */}
+              <div className="p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{theme.titel}</h3>
+                    <p className="text-gray-600 text-sm mb-3">{theme.beschrijving_werkgever || theme.beschrijving_werknemer}</p>
                     
-                    {theme.gemiddelde_score && (
-                      <div className="flex-shrink-0">
-                        <div className="relative">
-                          <div 
-                            className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-105 ${
-                              theme.gemiddelde_score >= 8 ? 'bg-green-500' : 
-                              theme.gemiddelde_score >= 5 ? 'bg-orange-500' : 'bg-red-500'
-                            }`}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              if (expandedTheme === theme.theme_id) {
-                                // Als thema is uitgeklapt, klap in en toon flip-card
-                                setExpandedTheme(null)
-                                // Trigger flip-card effect
-                                const headerElement = e.currentTarget.closest('.relative.cursor-pointer')
-                                if (headerElement) {
-                                  headerElement.style.transform = 'rotateY(180deg)'
-                                }
-                              }
-                            }}
-                          >
-                            {theme.gemiddelde_score}
-                          </div>
-                          
-                          {/* Grote verschillen indicator */}
-                          {theme.heeft_grote_score_verschillen && (
-                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
-                              <span className="text-white text-xs font-bold">!</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span>Voltooid: {theme.voltooide_medewerkers} van {theme.totaal_medewerkers}</span>
+                    </div>
                   </div>
                   
-                  {/* Expand/collapse indicator */}
-                  <div className="text-center">
-                    <div 
-                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors inline-block"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleTheme(theme.theme_id)
-                      }}
-                    >
-                      {expandedTheme === theme.theme_id ? (
-                        <ChevronUp className="w-5 h-5 text-gray-400" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-gray-400" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Achterkant - Individuele scores */}
-                {theme.individuele_scores && theme.individuele_scores.length > 0 && expandedTheme !== theme.theme_id && (
-                  <div className="absolute inset-0 p-6 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl backface-hidden rotate-y-180">
-                    <div className="h-full flex flex-col justify-center relative">
-                      {/* Sluit knop */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          const headerElement = e.currentTarget.closest('.relative.cursor-pointer')
-                          if (headerElement) {
-                            headerElement.style.transform = 'rotateY(0deg)'
-                          }
-                        }}
-                        className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
-                      >
-                        <span className="text-gray-600 text-lg font-bold">×</span>
-                      </button>
-                      
-                      <div className="text-center">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-4">Individuele scores</h4>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          {theme.individuele_scores.map((score, index) => (
-                            <div key={index} className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
-                              <div className="text-2xl font-bold text-blue-600">{score}</div>
-                              <div className="text-xs text-gray-500">Score {index + 1}</div>
-                            </div>
-                          ))}
+                  {theme.gemiddelde_score && (
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        <div 
+                          className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg ${
+                            theme.gemiddelde_score >= 8 ? 'bg-green-500' : 
+                            theme.gemiddelde_score >= 5 ? 'bg-orange-500' : 'bg-red-500'
+                          }`}
+                        >
+                          {theme.gemiddelde_score}
                         </div>
                         
+                        {/* Grote verschillen indicator */}
                         {theme.heeft_grote_score_verschillen && (
-                          <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-lg text-sm">
-                            ⚠️ Grote verschillen gedetecteerd
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">!</span>
                           </div>
                         )}
-                        
-                        <p className="text-xs text-gray-600 mt-3">Klik op het kruisje om terug te keren</p>
                       </div>
                     </div>
+                  )}
+                </div>
+                
+                {/* Expand/collapse indicator */}
+                <div className="text-center">
+                  <div 
+                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors inline-block"
+                    onClick={() => toggleTheme(theme.theme_id)}
+                  >
+                    {expandedTheme === theme.theme_id ? (
+                      <ChevronUp className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    )}
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Uitgeklapte content */}
