@@ -272,19 +272,7 @@ function Themadashboard() {
               ))}
             </div>
             
-            {selectedMonth && (
-              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-blue-800 text-sm">
-                  📅 Resultaten worden gefilterd op {getMonthName(selectedMonth)}
-                  <button
-                    onClick={() => setSelectedMonth(null)}
-                    className="ml-2 text-blue-600 hover:text-blue-800 underline"
-                  >
-                    Filter verwijderen
-                  </button>
-                </p>
-              </div>
-            )}
+
           </div>
         </div>
 
@@ -302,12 +290,9 @@ function Themadashboard() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{theme.titel}</h3>
                     <p className="text-gray-600 text-sm mb-3">{theme.beschrijving_werkgever || theme.beschrijving_werknemer}</p>
                     
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span>Voltooid: {theme.voltooide_medewerkers} van {theme.totaal_medewerkers}</span>
-                      {theme.gemiddelde_score && (
-                        <span>Score: {theme.gemiddelde_score}</span>
-                      )}
-                    </div>
+                                         <div className="flex items-center gap-4 text-sm text-gray-600">
+                       <span>Voltooid: {theme.voltooide_medewerkers} van {theme.totaal_medewerkers}</span>
+                     </div>
                   </div>
                   
                   {theme.gemiddelde_score && (
