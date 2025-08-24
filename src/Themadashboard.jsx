@@ -15,6 +15,7 @@ function Themadashboard() {
   const [expandedTheme, setExpandedTheme] = useState(null)
   const [summaryData, setSummaryData] = useState({})
   const [summaryLoading, setSummaryLoading] = useState(null)
+  const [selectedScorePopup, setSelectedScorePopup] = useState(null)
 
   // Haal thema's op
   const fetchThemes = async (employerId, month = null) => {
@@ -293,10 +294,15 @@ function Themadashboard() {
                     <div className="flex-shrink-0">
                       <div className="relative">
                         <div 
-                          className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg ${
+                          className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg transition-transform ${
                             theme.gemiddelde_score >= 8 ? 'bg-green-500' : 
                             theme.gemiddelde_score >= 5 ? 'bg-orange-500' : 'bg-red-500'
-                          }`}
+                          } ${theme.individuele_scores && theme.individuele_scores.length > 0 ? 'cursor-pointer hover:scale-105' : ''}`}
+                          onClick={() => {
+                            if (theme.individuele_scores && theme.individuele_scores.length > 0) {
+                              setSelectedScorePopup(theme)
+                            }
+                          }}
                         >
                           {theme.gemiddelde_score}
                         </div>
@@ -480,6 +486,58 @@ function Themadashboard() {
           </div>
         )}
       </div>
+
+      {/* Score Popup */}
+      {selectedScorePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-full overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-semibold text-gray-900">Individuele Scores</h3>
+              <button 
+                onClick={() => setSelectedScorePopup(null)} 
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="text-2xl">×</span>
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <h4 className="text-lg font-medium text-gray-900 mb-2">{selectedScorePopup.titel}</h4>
+              <p className="text-sm text-gray-600">{selectedScorePopup.beschrijving_werkgever || selectedScorePopup.beschrijving_werknemer}</p>
+            </div>
+            
+            {selectedScorePopup.individuele_scores && selectedScorePopup.individuele_scores.length > 0 ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {selectedScorePopup.individuele_scores.map((score, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold text-blue-600">{score}</div>
+                      <div className="text-xs text-gray-500">Score {index + 1}</div>
+                    </div>
+                  ))}
+                </div>
+                
+                {selectedScorePopup.heeft_grote_score_verschillen && (
+                  <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-lg text-sm">
+                    ⚠️ Grote verschillen gedetecteerd
+                  </div>
+                )}
+                
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Gemiddelde Score</p>
+                    <p className="text-2xl font-bold text-gray-900">{selectedScorePopup.gemiddelde_score}</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-gray-500">Geen individuele scores beschikbaar</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
