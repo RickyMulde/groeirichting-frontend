@@ -21,7 +21,13 @@ function Themadashboard() {
     if (!employerId) return
     
     try {
-      const url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}`
+      let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}`
+      
+      // Voeg maand parameter toe aan URL als er een is geselecteerd
+      if (month) {
+        url += `?maand=${month}`
+      }
+      
       const response = await fetch(url)
       
       if (!response.ok) {
@@ -31,19 +37,10 @@ function Themadashboard() {
       const data = await response.json()
       let filteredThemes = data.thema_s || []
       
-      // Filter op basis van geselecteerde maand
+      // Filter op basis van geselecteerde maand (nu gedaan door backend)
       if (month) {
-        const monthStart = new Date(new Date().getFullYear(), month - 1, 1)
-        const monthEnd = new Date(new Date().getFullYear(), month, 0, 23, 59, 59)
-        
-        filteredThemes = filteredThemes.filter(theme => {
-          if (theme.voltooide_medewerkers === 0) return false
-          if (theme.laatst_bijgewerkt) {
-            const updateDate = new Date(theme.laatst_bijgewerkt)
-            return updateDate >= monthStart && updateDate <= monthEnd
-          }
-          return false
-        })
+        // Backend heeft al gefilterd, maar we kunnen nog extra validatie doen
+        filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
       } else {
         filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
       }
@@ -297,11 +294,41 @@ function Themadashboard() {
                   
                   {theme.gemiddelde_score && (
                     <div className="flex-shrink-0">
-                      <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg ${
-                        theme.gemiddelde_score >= 8 ? 'bg-green-500' : 
-                        theme.gemiddelde_score >= 5 ? 'bg-orange-500' : 'bg-red-500'
-                      }`}>
-                        {theme.gemiddelde_score}
+                      <div className="relative group">
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg ${
+                          theme.gemiddelde_score >= 8 ? 'bg-green-500' : 
+                          theme.gemiddelde_score >= 5 ? 'bg-orange-500' : 'bg-red-500'
+                        }`}>
+                          {theme.gemiddelde_score}
+                        </div>
+                        
+                        {/* Alert indicator bij grote score verschillen */}
+                        {theme.heeft_grote_score_verschillen && (
+                          <div className="absolute -top-1 -right-1">
+                            <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">!</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Hover tooltip met individuele scores */}
+                        {theme.individuele_scores && theme.individuele_scores.length > 0 && (
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                            <div className="text-center">
+                              <div className="font-semibold mb-1">Individuele scores:</div>
+                              <div className="text-xs">
+                                {theme.individuele_scores.join(', ')}
+                              </div>
+                              {theme.heeft_grote_score_verschillen && (
+                                <div className="text-yellow-300 text-xs mt-1">
+                                  ⚠️ Grote verschillen
+                                </div>
+                              )}
+                            </div>
+                            {/* Pijltje naar beneden */}
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
