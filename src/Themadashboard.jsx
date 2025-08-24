@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, BarChart3, Calendar } from 'lucide-react'
+import { ArrowLeft, BarChart3, Calendar, ChevronDown, ChevronUp, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react'
 import { supabase } from './supabaseClient'
 
 function Themadashboard() {
@@ -12,6 +12,9 @@ function Themadashboard() {
   const [employerId, setEmployerId] = useState(null)
   const [activeMonths, setActiveMonths] = useState([3, 6, 9])
   const [selectedMonth, setSelectedMonth] = useState(null)
+  const [expandedTheme, setExpandedTheme] = useState(null)
+  const [summaryData, setSummaryData] = useState({})
+  const [summaryLoading, setSummaryLoading] = useState(null)
 
   // Haal thema's op
   const fetchThemes = async (employerId, month = null) => {
@@ -61,6 +64,63 @@ function Themadashboard() {
       }
     } catch (err) {
       console.error('Fout bij ophalen werkgever instellingen:', err)
+    }
+  }
+
+  // Haal samenvatting op voor een thema
+  const fetchSummary = async (themeId) => {
+    if (summaryData[themeId]) return // Al opgehaald
+
+    try {
+      setSummaryLoading(themeId)
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      const { data: employer, error: employerError } = await supabase
+        .from('employers')
+        .select('id')
+        .eq('contact_email', user.email)
+        .single()
+
+      if (employerError || !employer) {
+        throw new Error('Werkgever niet gevonden')
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-summary/${employer.id}/${themeId}`)
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.log('Geen samenvatting gevonden voor thema:', themeId)
+          return
+        }
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen samenvatting`)
+      }
+
+      const data = await response.json()
+      setSummaryData(prev => ({
+        ...prev,
+        [themeId]: data
+      }))
+    } catch (err) {
+      console.error('Fout bij ophalen samenvatting:', err)
+      if (!err.message.includes('404') && !err.message.includes('Samenvatting niet gevonden')) {
+        setError(err.message)
+      }
+    } finally {
+      setSummaryLoading(null)
+    }
+  }
+
+  // Toggle thema uitklappen
+  const toggleTheme = (themeId) => {
+    if (expandedTheme === themeId) {
+      setExpandedTheme(null)
+    } else {
+      setExpandedTheme(themeId)
+      // Lazy loading: alleen samenvatting ophalen als nog niet geladen
+      if (!summaryData[themeId]) {
+        fetchSummary(themeId)
+      }
     }
   }
 
@@ -232,7 +292,11 @@ function Themadashboard() {
         <div className="space-y-6">
           {themes.map((theme) => (
             <div key={theme.theme_id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-              <div className="p-6">
+              {/* Thema header - klikbaar */}
+              <div 
+                className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => toggleTheme(theme.theme_id)}
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">{theme.titel}</h3>
@@ -257,7 +321,153 @@ function Themadashboard() {
                     </div>
                   )}
                 </div>
+                
+                {/* Expand/collapse indicator */}
+                <div className="text-center">
+                  <div className="p-2 rounded-lg hover:bg-gray-100 transition-colors inline-block">
+                    {expandedTheme === theme.theme_id ? (
+                      <ChevronUp className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    )}
+                  </div>
+                </div>
               </div>
+
+              {/* Uitgeklapte content */}
+              {expandedTheme === theme.theme_id && (
+                <div className="border-t border-gray-200 bg-gray-50">
+                  {summaryLoading === theme.theme_id ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--kleur-primary)] mx-auto mb-4"></div>
+                      <p className="text-gray-600 font-medium">Samenvatting laden...</p>
+                    </div>
+                  ) : summaryData[theme.theme_id] ? (
+                    <div className="p-6 space-y-6">
+                      {/* Samenvatting */}
+                      {summaryData[theme.theme_id].samenvatting && (
+                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                              <BarChart3 className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <h4 className="text-lg font-semibold text-gray-900">Samenvatting</h4>
+                          </div>
+                          <p className="text-gray-700 leading-relaxed">{summaryData[theme.theme_id].samenvatting}</p>
+                        </div>
+                      )}
+
+                      {/* Verbeteradviezen */}
+                      {summaryData[theme.theme_id].verbeteradvies && (
+                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-orange-100 rounded-lg">
+                              <TrendingUp className="w-5 h-5 text-orange-600" />
+                            </div>
+                            <h4 className="text-lg font-semibold text-gray-900">Verbeteradviezen</h4>
+                          </div>
+                          <p className="text-gray-700 leading-relaxed">{summaryData[theme.theme_id].verbeteradvies}</p>
+                        </div>
+                      )}
+
+                      {/* GPT Adviezen */}
+                      {summaryData[theme.theme_id].gpt_adviezen && (
+                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-green-100 rounded-lg">
+                              <CheckCircle className="w-5 h-5 text-green-600" />
+                            </div>
+                            <h4 className="text-lg font-semibold text-gray-900">AI Adviezen</h4>
+                          </div>
+                          <div className="space-y-4">
+                            {Object.entries(summaryData[theme.theme_id].gpt_adviezen).map(([key, advice], index) => (
+                              <div key={key} className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
+                                <div className="flex items-start gap-3">
+                                  <div className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                                    {index + 1}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h5 className="font-semibold text-blue-900 mb-2">
+                                      {key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                    </h5>
+                                    <p className="text-blue-800 leading-relaxed">{advice}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Signaalwoorden */}
+                      {summaryData[theme.theme_id].signaalwoorden && summaryData[theme.theme_id].signaalwoorden.length > 0 && (
+                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                              <AlertCircle className="w-5 h-5 text-purple-600" />
+                            </div>
+                            <h4 className="text-lg font-semibold text-gray-900">Signaalwoorden</h4>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {summaryData[theme.theme_id].signaalwoorden.map((word, index) => (
+                              <span key={index} className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium border border-purple-200">
+                                {word}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Metadata */}
+                      <div className="bg-gray-100 rounded-xl p-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <p className="text-gray-500">Laatst bijgewerkt</p>
+                            <p className="font-medium text-gray-900">
+                              {summaryData[theme.theme_id].laatst_bijgewerkt ? 
+                                new Date(summaryData[theme.theme_id].laatst_bijgewerkt).toLocaleDateString('nl-NL') : 
+                                'Onbekend'
+                              }
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500">Aantal gesprekken</p>
+                            <p className="font-medium text-gray-900">{summaryData[theme.theme_id].aantal_gesprekken || 0}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500">Gemiddelde score</p>
+                            <p className="text-gray-900">{summaryData[theme.theme_id].gemiddelde_score || '-'}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500">Status</p>
+                            <p className="font-medium text-gray-900 capitalize">
+                              {summaryData[theme.theme_id].samenvatting_status?.replace('_', ' ') || 'Onbekend'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                        <AlertCircle className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-600 font-medium mb-2">
+                        {theme.voltooide_medewerkers < 4 ? 
+                          'Samenvatting nog niet beschikbaar' : 
+                          'Geen samenvatting gevonden'
+                        }
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        {theme.voltooide_medewerkers < 4 ? 
+                          `Minimaal 4 medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/4 voltooid)` : 
+                          'Er is nog geen samenvatting gegenereerd voor dit thema'
+                        }
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
