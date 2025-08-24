@@ -23,7 +23,7 @@ function Themadashboard() {
   const [monthLoading, setMonthLoading] = useState(true)
 
   // Haal werkgever instellingen op voor actieve maanden
-  const fetchEmployerSettings = useCallback(async (employerId) => {
+  const fetchEmployerSettings = async (employerId) => {
     if (!employerId) return
     
     try {
@@ -44,10 +44,10 @@ function Themadashboard() {
     } finally {
       setMonthLoading(false)
     }
-  }, [])
+  }
 
   // Haal thema's op voor geselecteerde maand
-  const fetchThemes = useCallback(async (employerId, month = null) => {
+  const fetchThemes = async (employerId, month = null) => {
     if (!employerId) {
       console.log('⚠️ fetchThemes: Ontbrekende employerId')
       return
@@ -107,7 +107,7 @@ function Themadashboard() {
     } finally {
       // Performance monitoring afgehandeld
     }
-  }, [])
+  }
 
   // Load data on mount
   useEffect(() => {
@@ -123,7 +123,6 @@ function Themadashboard() {
         // Haal werkgever op
         const { data: employer, error: employerError } = await supabase
           .from('employers')
-          .select('id')
           .eq('contact_email', user.email)
           .single()
 
