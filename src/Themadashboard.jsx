@@ -16,17 +16,19 @@ function Themadashboard() {
   const [summaryData, setSummaryData] = useState({})
   const [summaryLoading, setSummaryLoading] = useState(null)
   const [selectedScorePopup, setSelectedScorePopup] = useState(null)
+  const [availablePeriods, setAvailablePeriods] = useState([])
+  const [selectedPeriod, setSelectedPeriod] = useState(null)
 
   // Haal thema's op
-  const fetchThemes = async (employerId, month = null) => {
+  const fetchThemes = async (employerId, period = null) => {
     if (!employerId) return
     
     try {
       let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}`
       
-      // Voeg maand parameter toe aan URL als er een is geselecteerd
-      if (month) {
-        url += `?maand=${month}`
+      // Voeg periode parameter toe aan URL als er een is geselecteerd
+      if (period) {
+        url += `?maand=${period.maand}&jaar=${period.jaar}`
       }
       
       const response = await fetch(url)
@@ -38,8 +40,8 @@ function Themadashboard() {
       const data = await response.json()
       let filteredThemes = data.thema_s || []
       
-      // Filter op basis van geselecteerde maand (nu gedaan door backend)
-      if (month) {
+      // Filter op basis van geselecteerde periode (nu gedaan door backend)
+      if (period) {
         // Backend heeft al gefilterd, maar we kunnen nog extra validatie doen
         filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
       } else {
@@ -62,6 +64,19 @@ function Themadashboard() {
       }
     } catch (err) {
       console.error('Fout bij ophalen werkgever instellingen:', err)
+    }
+  }
+
+  // Haal beschikbare periodes op
+  const fetchAvailablePeriods = async (employerId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}/available-periods`)
+      if (response.ok) {
+        const data = await response.json()
+        setAvailablePeriods(data.beschikbare_periodes || [])
+      }
+    } catch (err) {
+      console.error('Fout bij ophalen beschikbare periodes:', err)
     }
   }
 
@@ -144,6 +159,7 @@ function Themadashboard() {
         setEmployerId(employer.id)
         await fetchEmployerSettings(employer.id)
         await fetchThemes(employer.id)
+        await fetchAvailablePeriods(employer.id)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -154,20 +170,12 @@ function Themadashboard() {
     initializeData()
   }, [])
 
-  // Update thema's wanneer maand wordt gewijzigd
+  // Update thema's wanneer periode wordt gewijzigd
   useEffect(() => {
-    if (employerId && selectedMonth) {
-      fetchThemes(employerId, selectedMonth)
+    if (employerId && selectedPeriod) {
+      fetchThemes(employerId, selectedPeriod)
     }
-  }, [employerId, selectedMonth])
-
-  const getMonthName = (month) => {
-    const monthNames = [
-      'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
-      'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
-    ]
-    return monthNames[month - 1] || month
-  }
+  }, [employerId, selectedPeriod])
 
   if (loading) {
     return (
@@ -242,35 +250,39 @@ function Themadashboard() {
             </div>
           </div>
 
-          {/* Maandselecter */}
+          {/* Periodeselecter */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <Calendar className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Selecteer maand</h3>
-                <p className="text-gray-600 text-sm">Kies een maand om de resultaten te bekijken</p>
+                <h3 className="text-lg font-semibold text-gray-900">Selecteer periode</h3>
+                <p className="text-gray-600 text-sm">Kies een periode om de resultaten te bekijken</p>
               </div>
             </div>
             
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-              {activeMonths.map(month => (
-                <button
-                  key={month}
-                  onClick={() => setSelectedMonth(selectedMonth === month ? null : month)}
-                  className={`p-3 border rounded-lg transition-colors ${
-                    selectedMonth === month
-                      ? 'bg-[var(--kleur-primary)] text-white border-[var(--kleur-primary)]'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <span className="text-sm font-medium">{getMonthName(month)}</span>
-                </button>
-              ))}
-            </div>
-            
-
+            {availablePeriods.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {availablePeriods.map((period) => (
+                  <button
+                    key={period.periode}
+                    onClick={() => setSelectedPeriod(selectedPeriod?.periode === period.periode ? null : period)}
+                    className={`p-3 border rounded-lg transition-colors ${
+                      selectedPeriod?.periode === period.periode
+                        ? 'bg-[var(--kleur-primary)] text-white border-[var(--kleur-primary)]'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="text-sm font-medium">{period.label}</span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-gray-500 text-sm">Geen beschikbare periodes gevonden</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -478,9 +490,9 @@ function Themadashboard() {
             </div>
             <p className="text-gray-600 font-medium mb-2">Nog geen resultaten beschikbaar</p>
             <p className="text-gray-500 text-sm">
-              {selectedMonth 
-                ? `Er zijn geen thema's met voltooide medewerkers in ${getMonthName(selectedMonth)}`
-                : 'Selecteer een maand om de resultaten te bekijken'
+              {selectedPeriod 
+                ? `Er zijn geen thema's met voltooide medewerkers in ${selectedPeriod.label}`
+                : 'Selecteer een periode om de resultaten te bekijken'
               }
             </p>
           </div>
