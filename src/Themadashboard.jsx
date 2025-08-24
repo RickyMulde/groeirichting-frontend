@@ -508,13 +508,15 @@ function Themadashboard() {
             
             {selectedScorePopup.individuele_scores && selectedScorePopup.individuele_scores.length > 0 ? (
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {selectedScorePopup.individuele_scores.map((score, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-3 text-center">
-                      <div className="text-2xl font-bold text-blue-600">{score}</div>
-                      <div className="text-xs text-gray-500">Score {index + 1}</div>
-                    </div>
-                  ))}
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-700">Individuele scores:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedScorePopup.individuele_scores.map((score, index) => (
+                      <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                        {score}
+                      </span>
+                    ))}
+                  </div>
                 </div>
                 
                 {selectedScorePopup.heeft_grote_score_verschillen && (
