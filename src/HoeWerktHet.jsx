@@ -16,7 +16,7 @@ function HoeWerktHet() {
             Zo werkt GroeiRichting – eenvoudig voor iedereen in de organisatie.
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Of je nu leidinggevende of medewerker bent: het platform begeleidt het proces. Zo ontstaat een gesprekscultuur waarin groei centraal staat.
+            Of je nu leidinggevende of medewerker bent: het platform begeleidt het proces. Zo ontstaat een gesprekscultuur waarin groei centraal staat en verloop en verzuim worden voorkomen.
           </p>
           
           <button className="btn btn-primary">Plan een demo</button>
@@ -33,19 +33,19 @@ function HoeWerktHet() {
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Nodig je medewerkers uit – binnen 2 minuten geregeld.</p>
+                <p className="text-[var(--kleur-muted)]">Maak een account aan en nodig je medewerkers uit – That's it!</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Ontvang inzichten en signalen (individu + team).</p>
+                <p className="text-[var(--kleur-muted)]">Jouw medewerkers/ teamleden voeren de gesprekken met AI</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Krijg AI-gespreksvoorstellen en voer kortere, gerichtere gesprekken.</p>
+                <p className="text-[var(--kleur-muted)]">Ontvang inzichten en signalen (waar je op kunt sturen).</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Volg ontwikkeling via het dashboard.</p>
+                <p className="text-[var(--kleur-muted)]">Groei als organisatie en laat je medewerkers/ teamleden zien dat ze worden gehoord.</p>
               </div>
               
               <div className="pt-4">
@@ -211,6 +211,10 @@ function HoeWerktHet() {
                   <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                   <p className="text-[var(--kleur-muted)]">Meer eigenaarschap</p>
                 </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                  <p className="text-[var(--kleur-muted)]">Meer duidelijkheid en structuur</p>
+                </div>
               </div>
             </div>
           </div>
@@ -229,7 +233,7 @@ function HoeWerktHet() {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 max-w-2xl mx-auto">
             <Quote className="text-[var(--kleur-primary)] mx-auto mb-4" size={32} />
             <blockquote className="text-lg text-[var(--kleur-muted)] mb-4 italic">
-              "Sinds we met GroeiRichting werken, zien we eerder wat er wringt en voeren we gerichtere gesprekken."
+              "Sinds we met GroeiRichting werken, zien we eerder wat er wringt en nemen we direct actie."
             </blockquote>
             <p className="font-medium text-[var(--kleur-primary)]">– HR-manager (pilot)</p>
           </div>
