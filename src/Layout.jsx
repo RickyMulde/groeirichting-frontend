@@ -38,6 +38,9 @@ function Layout({ children }) {
           <Link to="/hoe-werkt-het" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
             Hoe werkt het
           </Link>
+          <Link to="/privacy-veiligheid" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
+            Privacy & Veiligheid
+          </Link>
         </nav>
 
         <div className="flex items-center space-x-3">
