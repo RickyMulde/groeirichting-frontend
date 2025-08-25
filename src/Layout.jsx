@@ -31,14 +31,23 @@ function Layout({ children }) {
       <header className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
         <div className="text-xl font-semibold text-kleur-primary">GroeiRichting</div>
 
-        <nav className="flex items-center space-x-4">
-          <Link to="/" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
+        <nav className="flex items-center space-x-1">
+          <Link 
+            to="/" 
+            className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+          >
             Home
           </Link>
-          <Link to="/hoe-werkt-het" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
+          <Link 
+            to="/hoe-werkt-het" 
+            className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+          >
             Hoe werkt het
           </Link>
-          <Link to="/privacy-veiligheid" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
+          <Link 
+            to="/privacy-veiligheid" 
+            className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+          >
             Privacy & Veiligheid
           </Link>
         </nav>
