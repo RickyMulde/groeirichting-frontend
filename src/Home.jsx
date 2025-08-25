@@ -122,22 +122,108 @@ function Home() {
 
       {/* Wat levert het op */}
       <section>
-        <h2 className="text-2xl font-semibold text-center mb-12">Wat levert GroeiRichting op?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 bg-white shadow-md rounded-xl text-center">
-            <BarChart className="mx-auto mb-4 text-[var(--kleur-primary)]" />
-            <h3 className="font-medium mb-2">Signalen herkennen</h3>
-            <p>Signaleer trends op persoonsniveau of over het hele team. Voorkom uitval en voorkom verloop onder werknemers.</p>
+        <h2 className="text-3xl font-bold text-center mb-4">De waarde van GroeiRichting</h2>
+        <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
+          Ontdek hoe GroeiRichting zowel werkgevers als werknemers helpt om te groeien en te verbeteren
+        </p>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Voor werkgevers */}
+          <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-3xl">🌍</span>
+              <h3 className="text-2xl font-bold text-[var(--kleur-primary)]">Voor werkgevers</h3>
+            </div>
+            <p className="text-[var(--kleur-muted)] mb-6 italic">
+              Waarom GroeiRichting waardevol is voor jouw organisatie
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Lagere verzuim- en verloopkosten</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Herken signalen van stress en ontevredenheid vóórdat mensen uitvallen of vertrekken.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Betere retentie en betrokkenheid</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers voelen zich gezien en blijven langer loyaal en productief.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Objectieve inzichten</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Overzichtelijke scores en adviezen per thema. Geen onderbuikgevoel, maar data.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Tijdbesparing</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Gesprekken en samenvattingen zijn voorbereid en gestructureerd. Jij kunt sneller schakelen.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Professionalisering zonder HR-afdeling</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Een slimme tool die zelfs kleine bedrijven toegang geeft tot inzichten van corporate niveau.</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="p-6 bg-white shadow-md rounded-xl text-center">
-            <MessageCircle className="mx-auto mb-4 text-[var(--kleur-accent)]" />
-            <h3 className="font-medium mb-2">Betere gesprekken</h3>
-            <p>GroeiRichting gaat verder dan een medewerkerstevredenheidsonderzoek. Ontdek wat jouw medewerkers echt denken en stuur bij met behulp van het dashboard met key trends.</p>
-          </div>
-          <div className="p-6 bg-white shadow-md rounded-xl text-center">
-            <Smile className="mx-auto mb-4 text-[var(--kleur-secondary)]" />
-            <h3 className="font-medium mb-2">Actieve betrokkenheid</h3>
-            <p>De input van jouw medewerkers is een belangrijk onderdeel in het functioneringsgesprek. GroeiRichting zorgt voor een doorlopend verbeteringsproces, waarbij medewerkers het gevoel krijgen dat hun input telt én wordt opgevolgd.</p>
+          
+          {/* Voor werknemers */}
+          <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-3xl">👩‍💼</span>
+              <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor werknemers</h3>
+            </div>
+            <p className="text-[var(--kleur-muted)] mb-6 italic">
+              Wat GroeiRichting voor jou betekent
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Echt gehoord worden</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Jouw stem telt, niet alleen tijdens één gesprek maar continu.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Veilig en laagdrempelig</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Je kunt je vrij uitspreken, ook over lastige onderwerpen.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Invloed op werk en toekomst</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Je draagt zelf bij aan verbeteringen en je loopbaanpad.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Tips om te groeien</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Je krijgt persoonlijke suggesties om werkplezier, balans of ontwikkeling te verbeteren.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Meer duidelijkheid en structuur</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Je weet altijd waar gesprekken over gaan en wat ermee gebeurt.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
