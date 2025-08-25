@@ -180,6 +180,10 @@ function HoeWerktHet() {
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                  <p className="text-[var(--kleur-muted)]">Voorkom uitval</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                   <p className="text-[var(--kleur-muted)]">Data voor beleid</p>
                 </div>
               </div>
@@ -198,7 +202,7 @@ function HoeWerktHet() {
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
-                  <p className="text-[var(--kleur-muted)]">Betere gesprekken</p>
+                  <p className="text-[var(--kleur-muted)]">Krijg tips om te groeien</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
