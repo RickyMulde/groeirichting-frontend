@@ -59,14 +59,42 @@ function HoeWerktHet() {
                 <BarChart className="text-[var(--kleur-primary)]" />
                 <h3 className="font-semibold text-[var(--kleur-primary)]">Dashboard Overzicht</h3>
               </div>
-              <div className="space-y-3">
-                <div className="h-3 bg-gray-200 rounded"></div>
-                <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+              
+              {/* Voortgangsbalk gesprekken */}
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-[var(--kleur-muted)]">Gesprekken afgerond</span>
+                  <span className="text-sm font-medium text-[var(--kleur-primary)]">8/10</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-[var(--kleur-primary)] h-2 rounded-full" style={{width: '80%'}}></div>
+                </div>
               </div>
+              
+              {/* AI samenvatting knop */}
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">AI-gespreksvoorstellen beschikbaar</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-blue-800">AI-samenvatting klaar</p>
+                    <p className="text-xs text-blue-600">3 nieuwe inzichten beschikbaar</p>
+                  </div>
+                  <button className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs rounded-lg transition-colors">
+                    Bekijk
+                  </button>
+                </div>
+              </div>
+              
+              {/* Verbeteradviezen */}
+              <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-green-800">Verbeteradviezen</p>
+                    <p className="text-xs text-green-600">5 acties klaar voor uitvoering</p>
+                  </div>
+                  <button className="px-3 py-1 bg-green-100 hover:bg-green-200 text-green-800 text-xs rounded-lg transition-colors">
+                    Bekijk
+                  </button>
+                </div>
               </div>
             </div>
           </div>
