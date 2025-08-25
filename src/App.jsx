@@ -3,6 +3,7 @@ import Layout from './Layout'
 import Login from './Login'
 import RegisterEmployer from './RegisterEmployer'
 import Home from './Home'
+import HoeWerktHet from './HoeWerktHet'
 import EmployerPortal from './EmployerPortal'
 import Dashboard from './dashboard'
 import Werknemerbeheren from './Werknemerbeheren'
@@ -30,6 +31,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/hoe-werkt-het" element={<HoeWerktHet />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registreer-werkgever" element={<RegisterEmployer />} />
         <Route path="/registreer-werknemer" element={<RegisterEmployee />} />

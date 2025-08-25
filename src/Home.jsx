@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
   Users, Quote, CheckCircle
@@ -205,7 +206,9 @@ function Home() {
       <section className="bg-[var(--kleur-primary)] text-white py-12 text-center rounded-xl">
         <h3 className="text-xl font-bold mb-4">Wil jij werken aan en met een team van gemotiveerde medewerkers die samen het bedrijf willen laten groeien in de richting die jij wilt?</h3>
         <p className="mb-6">Dan start je met GroeiRichting.</p>
-        <button className="btn btn-secondary">Hoe werkt het?</button>
+        <Link to="/hoe-werkt-het">
+          <button className="btn btn-secondary">Hoe werkt het?</button>
+        </Link>
       </section>
     </div>
   )

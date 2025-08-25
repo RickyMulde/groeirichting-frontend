@@ -32,7 +32,12 @@ function Layout({ children }) {
         <div className="text-xl font-semibold text-kleur-primary">GroeiRichting</div>
 
         <nav className="flex items-center space-x-4">
-          {/* Hier kun je later navigatielinks plaatsen */}
+          <Link to="/" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
+            Home
+          </Link>
+          <Link to="/hoe-werkt-het" className="text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] transition-colors">
+            Hoe werkt het
+          </Link>
         </nav>
 
         <div className="flex items-center space-x-3">
