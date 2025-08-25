@@ -170,8 +170,8 @@ function Home() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Professionalisering zonder HR-afdeling</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Een slimme tool die zelfs kleine bedrijven toegang geeft tot inzichten van corporate niveau.</p>
+                  <p className="font-medium text-[var(--kleur-text)]">Inzicht per team</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Geen gemiddeld cijfer voor het hele bedrijf, maar concrete signalen per team en rol. Zo krijgt elke teamleider grip op zijn eigen mensen.</p>
                 </div>
               </div>
             </div>

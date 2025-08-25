@@ -128,25 +128,28 @@ function HoeWerktHet() {
             
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <Smartphone className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Makkelijk via mobiel of desktop invullen.</p>
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <p className="text-[var(--kleur-muted)]">Je ontvangt een uitnodiging van je werkgever of teamleider</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Vragen zijn kort, themagericht en begrijpelijk.</p>
+                <p className="text-[var(--kleur-muted)]">Je voert gesprekken per thema, makkelijk via mobiel of desktop</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Hun input telt echt: antwoorden worden omgezet in acties.</p>
+                <p className="text-[var(--kleur-muted)]">Je krijgt een persoonlijke samenvatting en tips om te groeien</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-muted)]">Transparant: medewerkers zien terug dat hun feedback wordt besproken.</p>
+                <p className="text-[var(--kleur-muted)]">Samen werken jullie aan verbeteringen in de organisatie</p>
               </div>
               
               <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mt-6">
                 <p className="font-medium text-blue-800">
                   Medewerkers ervaren dat hun stem telt én opvolging krijgt.
+                </p>
+                <p className="text-xs text-blue-600 mt-2 italic">
+                  Jouw antwoorden worden zorgvuldig en vertrouwelijk verwerkt
                 </p>
               </div>
             </div>
