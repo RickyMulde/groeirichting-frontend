@@ -25,6 +25,7 @@ import ThemaOverzicht from './ThemaOverzicht'
 import Themadashboard from './Themadashboard'
 import EmployerProtectedRoute from './EmployerProtectedRoute'
 import WerknemerInstellingen from './WerknemerInstellingen'
+import UitlegPrivacy from './uitleg-privacy'
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
         <Route path="/werknemer-portaal" element={<EmployeePortal />} />
         <Route path="/werknemer-instellingen" element={<WerknemerInstellingen />} />
+        <Route path="/uitleg-privacy" element={<UitlegPrivacy />} />
         <Route path="/superadmin-portaal" element={<SuperadminPortaal />} />
         <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
         <Route path="/superadmin/thema-beheer" element={<ThemaBeheerOverzicht />} />

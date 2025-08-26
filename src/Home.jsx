@@ -294,7 +294,7 @@ function Home() {
 
       {/* Eindkreet */}
       <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">
-        <h3 className="text-xl font-bold mb-4">Wil jij werken aan en met een team van gemotiveerde medewerkers die samen het bedrijf willen laten groeien in de richting die jij wilt?</h3>
+        <h3 className="text-xl font-bold mb-4 text-white">Wil jij werken aan en met een team van gemotiveerde medewerkers die samen het bedrijf willen laten groeien in de richting die jij wilt?</h3>
         <p className="mb-6">Dan start je met GroeiRichting.</p>
         <Link to="/hoe-werkt-het">
           <button className="btn btn-secondary">Hoe werkt het?</button>

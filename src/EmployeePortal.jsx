@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 //import Navigatiebalk from './Navigatiebalk'
-import { Smile, History, Settings } from 'lucide-react'
+import { Smile, History, Settings, Shield } from 'lucide-react'
 
 function EmployeePortal() {
   const [user, setUser] = useState(null)
@@ -79,6 +79,17 @@ function EmployeePortal() {
             </div>
           </div>
           <Link to="/werknemer-instellingen" className="btn btn-secondary">Ga naar instellingen</Link>
+        </section>
+
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Shield className="text-[var(--kleur-primary)] w-8 h-8" />
+            <div>
+              <h2 className="text-xl font-semibold">Hoe gaan wij om met jouw gegevens?</h2>
+              <p className="text-sm text-gray-500">Lees meer over privacy, beveiliging en hoe we jouw gegevens beschermen.</p>
+            </div>
+          </div>
+          <Link to="/uitleg-privacy" className="btn btn-primary">Lees meer</Link>
         </section>
       </div>
     </div>
