@@ -8,7 +8,7 @@ import HeroIllustratie from './assets/hero.svg?react'
 
 function Home() {
   return (
-    <div className="space-y-24 bg-[var(--kleur-background)]">
+    <div className="space-y-16 bg-[var(--kleur-background)]">
 
       {/* Hero */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
@@ -51,7 +51,7 @@ function Home() {
       </section>
 
       {/* Het probleem */}
-      <section className="bg-gray-50 py-16 px-6 rounded-xl text-center">
+      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
         <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: het kost meer dan je denkt</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
           Het vervangen van één professional kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Ondertussen blijft echte oorzaak vaak onzichtbaar tot het te laat is.
@@ -78,7 +78,7 @@ function Home() {
       </section>
 
       {/* Meer gesprekken, zonder extra tijd */}
-      <section className="py-12 px-6">
+      <section className="py-8 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken, zonder extra tijd</h2>
           
@@ -114,7 +114,7 @@ function Home() {
             </p>
                
             <p>
-              Bijkomend voordeel: Ook jouw werknemers/ teamleden krijgen concrete vervolgacties om de motivatie te stimuleren en te groeien
+              Bijkomend voordeel: Ook jouw werknemers/ teamleden krijgen concrete vervolgacties om de motivatie te stimuleren en te groeien.
             </p>
           </div>
           
@@ -127,7 +127,7 @@ function Home() {
       {/* Wat levert het op */}
       <section>
         <h2 className="text-3xl font-bold text-center mb-4">De waarde van GroeiRichting</h2>
-        <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
+        <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
           Ontdek hoe GroeiRichting zowel werkgevers als werknemers helpt om te groeien en te verbeteren
         </p>
         
@@ -234,7 +234,7 @@ function Home() {
 
       {/* Voordelen van GroeiRichting */}
       <section>
-        <h2 className="text-2xl font-semibold text-center mb-12">Voordelen van GroeiRichting</h2>
+        <h2 className="text-2xl font-semibold text-center mb-8">Voordelen van GroeiRichting</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <div className="flex items-start gap-4">
             <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
@@ -242,7 +242,7 @@ function Home() {
           </div>
           <div className="flex items-start gap-4">
             <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>AI-samenvattingen die gesprekken efficiënter en gerichter maken</p>
+            <p>AI kan beter doorvragen en werkt drempelverlagend om informatie te delen</p>
           </div>
           <div className="flex items-start gap-4">
             <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
@@ -264,19 +264,19 @@ function Home() {
       </section>
 
       {/* Nadelen van huidige praktijk */}
-      <section className="bg-gray-100 py-16 px-6 rounded-xl">
+      <section className="bg-gray-100 py-12 px-6 rounded-xl">
         <h2 className="text-2xl font-semibold text-center mb-8">De nadelen van hoe het nu gaat</h2>
         <div className="max-w-3xl mx-auto space-y-4 text-[var(--kleur-muted)] text-center text-lg">
-          <p>Functioneringsgesprekken kosten veel tijd en zijn vaak oppervlakkig.</p>
+          <p>Functioneringsgesprekken kosten veel tijd en zijn soms oppervlakkig.</p>
           <p>Medewerkers zijn vaak al ontevreden vóór het gesprek plaatsvindt.</p>
-          <p>MT's hebben geen goed zicht op wat er écht speelt in het team.</p>
-          <p>MTO's zijn te algemeen en leiden zelden tot echte verandering.</p>
+          <p>HR wordt vaak opgepakt door iemand die het al druk heeft met andere zaken.</p>
+          <p>Traditionele medewerkertevredenheidsonderzoeken zijn vaak statische formulieren waar je net niks mee kunt.</p>
           <p>Leidinggevenden vinden het lastig om moeilijke onderwerpen bespreekbaar te maken.</p>
         </div>
       </section>
 
       {/* GroeiRichting als oplossing */}
-      <section className="py-16 px-6 text-center">
+      <section className="py-12 px-6 text-center">
         <h2 className="text-2xl font-semibold mb-6">GroeiRichting biedt de oplossing</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-6">
           Met thematische gesprekken, AI-ondersteuning en flexibele instellingen geef je richting aan ontwikkeling. Je krijgt als werkgever direct bruikbare input, terwijl medewerkers ervaren dat hun stem telt. Zo ontstaat een gesprekscultuur waarin groei centraal staat.
@@ -284,7 +284,7 @@ function Home() {
       </section>
 
       {/* Quote */}
-      <section className="bg-[var(--kleur-accent)] text-white p-12 rounded-xl text-center">
+      <section className="bg-[var(--kleur-accent)] text-white p-8 rounded-xl text-center">
         <Quote className="w-8 h-8 mx-auto mb-4" />
         <p className="text-lg italic max-w-2xl mx-auto">
           "Sinds we met GroeiRichting werken, hebben we écht inzicht in wat er speelt. We kunnen nu preventief handelen."
@@ -293,7 +293,7 @@ function Home() {
       </section>
 
       {/* Eindkreet */}
-      <section className="bg-[var(--kleur-primary)] text-white py-12 text-center rounded-xl">
+      <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">
         <h3 className="text-xl font-bold mb-4">Wil jij werken aan en met een team van gemotiveerde medewerkers die samen het bedrijf willen laten groeien in de richting die jij wilt?</h3>
         <p className="mb-6">Dan start je met GroeiRichting.</p>
         <Link to="/hoe-werkt-het">
