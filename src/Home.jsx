@@ -24,15 +24,15 @@ function Home() {
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Vroegtijdige signalen op individueel én teamniveau</p>
+              <p className="text-[var(--kleur-muted)]">Geen HR-afdeling? Geen probleem. Wij helpen je.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">AI‑samenvattingen: sneller naar de kern, minder vergadertijd</p>
+              <p className="text-[var(--kleur-muted)]">Geen statische formulieren, maar interactieve gesprekken met AI.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Eén platform: van signaal → gesprek → opvolging</p>
+              <p className="text-[var(--kleur-muted)]">Van signalen naar samenvattingen en richting.</p>
             </div>
           </div>
 
@@ -106,11 +106,15 @@ function Home() {
             </p>
             
             <p>
-              Het platform voert de aanvullende rondes digitaal met je medewerkers, verzamelt hun input en zet dit om in heldere signalen. Jij krijgt alleen de samenvattingen en gespreksvoorstellen die er toe doen.
+              Het platform laat jouw werknemers/ teamleden gesprekken voeren met AI, in verschillende thema's. Vervolgens verzamelt GroeiRichting input en zet dit om in heldere samenvattingen, signalen en concrete verbeteradviezen.
             </p>
             
             <p>
               Zo krijg je méér feedback en waardevolle signalen, terwijl jij juist minder tijd kwijt bent.
+            </p>
+               
+            <p>
+              Bijkomend voordeel: Ook jouw werknemers/ teamleden krijgen concrete vervolgacties om de motivatie te stimuleren en te groeien
             </p>
           </div>
           
