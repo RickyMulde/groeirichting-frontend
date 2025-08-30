@@ -36,7 +36,7 @@ function Instellingen() {
         }
 
         // Haal werkgever configuratie op
-        const response = await fetch(`https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen/${werkgever.id}`)
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}`)
         if (response.ok) {
           const configData = await response.json()
           setWerkgeverConfig(configData)
@@ -118,7 +118,7 @@ function Instellingen() {
       }
 
       // Sla configuratie op
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

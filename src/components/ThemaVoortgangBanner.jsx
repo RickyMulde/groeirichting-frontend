@@ -33,7 +33,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       // Haal werkgever configuratie op voor actieve maanden
       let config = null
       try {
-        const werkgeverResponse = await fetch(`https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
+        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
         if (werkgeverResponse.ok) {
           config = await werkgeverResponse.json()
           console.log('ThemaVoortgangBanner: Werkgever config opgehaald:', config)
@@ -145,7 +145,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const startVolgendThema = async (themaId) => {
     try {
       // Maak een nieuw gesprek aan
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

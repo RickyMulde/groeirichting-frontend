@@ -142,7 +142,7 @@ function GesprekResultaten() {
 
         if (werknemerError) throw werknemerError
 
-        const werkgeverResponse = await fetch(`https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
+        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
         let config = { actieve_maanden: [3, 6, 9] } // Default fallback
         if (werkgeverResponse.ok) {
           config = await werkgeverResponse.json()
@@ -192,7 +192,7 @@ function GesprekResultaten() {
 
         // Haal resultaten op via nieuwe bulk API
         const response = await fetch(
-          `https://groeirichting-backend.onrender.com/api/get-gespreksresultaten-bulk?werknemer_id=${user.id}&periode=${selectedPeriode.periode}`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/get-gespreksresultaten-bulk?werknemer_id=${user.id}&periode=${selectedPeriode.periode}`,
           {
             method: 'GET',
             headers: {

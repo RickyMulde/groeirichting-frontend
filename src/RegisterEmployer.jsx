@@ -26,7 +26,7 @@ function RegisterEmployer() {
         return
       }
 
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/register-employer', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

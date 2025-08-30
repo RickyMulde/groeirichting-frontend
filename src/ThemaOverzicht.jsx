@@ -25,7 +25,7 @@ function ThemaOverzicht() {
 
       try {
         // Haal thema data op via nieuwe API met werkgever configuratie
-        const response = await fetch(`https://groeirichting-backend.onrender.com/api/get-thema-data-werknemer/${user.id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/get-thema-data-werknemer/${user.id}`);
         
         if (response.ok) {
           const data = await response.json();
@@ -174,7 +174,7 @@ function ThemaOverzicht() {
       if (!user) return;
 
       // Maak een nieuw gesprek aan
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

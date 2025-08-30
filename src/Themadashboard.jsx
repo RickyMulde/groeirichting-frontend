@@ -24,7 +24,7 @@ function Themadashboard() {
     if (!employerId) return
     
     try {
-      let url = `${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}`
+      let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-themes/${employerId}`
       
       // Voeg periode parameter toe aan URL als er een is geselecteerd
       if (period) {
@@ -57,7 +57,7 @@ function Themadashboard() {
   // Haal werkgever instellingen op
   const fetchEmployerSettings = async (employerId) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/werkgever-gesprek-instellingen/${employerId}`)
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${employerId}`)
       if (response.ok) {
         const config = await response.json()
         setActiveMonths(config.actieve_maanden || [3, 6, 9])
@@ -70,7 +70,7 @@ function Themadashboard() {
   // Haal beschikbare periodes op
   const fetchAvailablePeriods = async (employerId) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-themes/${employerId}/available-periods`)
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/organisation-themes/${employerId}/available-periods`)
       if (response.ok) {
         const data = await response.json()
         setAvailablePeriods(data.beschikbare_periodes || [])
@@ -98,7 +98,7 @@ function Themadashboard() {
         throw new Error('Werkgever niet gevonden')
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://groeirichting-backend.onrender.com'}/api/organisation-summary/${employer.id}/${themeId}`)
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${employer.id}/${themeId}`)
       
       if (!response.ok) {
         if (response.status === 404) {

@@ -103,7 +103,7 @@ function GesprekPagina() {
 
       if (!werknemer?.employer_id) return null;
 
-      const response = await fetch(`https://groeirichting-backend.onrender.com/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`);
       if (response.ok) {
         const configData = await response.json();
         return configData.organisatie_omschrijving || null;
@@ -229,7 +229,7 @@ function GesprekPagina() {
 
       console.log('👤 Gebruiker gevonden:', userData.user.id);
 
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/genereer-samenvatting', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/genereer-samenvatting`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -356,7 +356,7 @@ function GesprekPagina() {
         }
         // Antwoorden ophalen
         try {
-          const response = await fetch('https://groeirichting-backend.onrender.com/api/get-conversation-answers', {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/get-conversation-answers`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -446,7 +446,7 @@ function GesprekPagina() {
       }
 
       // Nieuw gesprek aanmaken
-      const res = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -493,7 +493,7 @@ function GesprekPagina() {
     }
     if (gesprekId) {
       try {
-        await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -557,7 +557,7 @@ function GesprekPagina() {
     }
 
     // Sla het antwoord op in de nieuwe structuur
-    const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -592,7 +592,7 @@ function GesprekPagina() {
     }
 
     try {
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -675,7 +675,7 @@ function GesprekPagina() {
         const samenvatting = await haalLaatsteSamenvattingOp();
         const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
         const werknemerContext = await haalWerknemerContextOp();
-        const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
+        const decideRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/decide-followup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -770,7 +770,7 @@ function GesprekPagina() {
           const samenvatting = await haalLaatsteSamenvattingOp();
           const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
           const werknemerContext = await haalWerknemerContextOp();
-          const decideRes = await fetch('https://groeirichting-backend.onrender.com/api/decide-followup', {
+          const decideRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/decide-followup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -851,7 +851,7 @@ function GesprekPagina() {
       setDone(true);
       
       console.log('💾 Gesprek afronden...');
-      await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+              await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -886,7 +886,7 @@ function GesprekPagina() {
       } else {
         console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
         setDone(true);
-        await fetch('https://groeirichting-backend.onrender.com/api/save-conversation', {
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

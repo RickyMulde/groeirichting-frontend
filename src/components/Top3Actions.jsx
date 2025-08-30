@@ -48,7 +48,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
     try {
       console.log('🔄 Start generatie top 3 acties...')
       
-      const response = await fetch('https://groeirichting-backend.onrender.com/api/generate-top-actions', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

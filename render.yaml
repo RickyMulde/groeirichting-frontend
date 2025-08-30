@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: groeirichting-frontend
+    env: static
+    plan: free
+    buildCommand: npm run build:test
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_APP_ENV
+        value: test
+      - key: VITE_BACKEND_URL
+        value: https://groeirichting-backend.onrender.com
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+    autoDeploy: true

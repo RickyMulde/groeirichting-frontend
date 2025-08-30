@@ -7,7 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "env:test": "node switch-env.js test",
+    "env:production": "node switch-env.js production",
+    "dev:test": "npm run env:test && npm run dev",
+    "dev:production": "npm run env:production && npm run dev",
+    "build:test": "npm run env:test && npm run build",
+    "build:production": "npm run env:production && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",

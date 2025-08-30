@@ -86,7 +86,7 @@ function WerknemerBeheren() {
       return
     }
 
-    const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/send-invite`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -128,7 +128,7 @@ function WerknemerBeheren() {
   }
 
   const handleResend = async (invitation) => {
-    const response = await fetch('https://groeirichting-backend.onrender.com/api/send-invite', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/send-invite`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

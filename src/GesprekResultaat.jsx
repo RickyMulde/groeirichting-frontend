@@ -75,7 +75,7 @@ function GesprekResultaat() {
 
         // Haal samenvatting op via backend API met gesprek_id
         const response = await fetch(
-          `https://groeirichting-backend.onrender.com/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
           {
             method: 'GET',
             headers: {
@@ -93,7 +93,7 @@ function GesprekResultaat() {
               console.log('Parameters:', { theme_id: themeId, werknemer_id: user.id, gesprek_id: gesprekId });
               
               const generateResponse = await fetch(
-                'https://groeirichting-backend.onrender.com/api/genereer-samenvatting',
+                `${import.meta.env.VITE_API_BASE_URL}/api/genereer-samenvatting`,
                 {
                   method: 'POST',
                   headers: {
@@ -117,7 +117,7 @@ function GesprekResultaat() {
                 
                 // Probeer nu opnieuw de samenvatting op te halen
                 const retryResponse = await fetch(
-                  `https://groeirichting-backend.onrender.com/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
+                  `${import.meta.env.VITE_API_BASE_URL}/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
                   {
                     method: 'GET',
                     headers: {
@@ -157,7 +157,7 @@ function GesprekResultaat() {
           // Probeer vervolgacties op te halen als fallback
           try {
             const vervolgactiesResponse = await fetch(
-              `https://groeirichting-backend.onrender.com/api/generate-top-actions?theme_id=${themeId}&werknemer_id=${user.id}`,
+              `${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions?theme_id=${themeId}&werknemer_id=${user.id}`,
               {
                 method: 'GET',
                 headers: {

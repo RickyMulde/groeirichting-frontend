@@ -279,7 +279,7 @@ function ThemaBeheer() {
       payload.score_instructies = {...scoreInstructies};
 
       if (nieuwThema) {
-        const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/create-theme-with-questions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ thema: payload, vragen: vragenMetDoel })
@@ -289,7 +289,7 @@ function ThemaBeheer() {
         setSuccess('Thema en vragen opgeslagen')
         navigate('/superadmin-portaal')
       } else {
-        const response = await fetch('https://groeirichting-backend.onrender.com/api/create-theme-with-questions', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/create-theme-with-questions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ thema: { ...payload, id }, vragen: vragenMetDoel })
