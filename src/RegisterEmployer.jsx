@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { supabase } from './supabaseClient'
 
 function RegisterEmployer() {
+  const navigate = useNavigate()
   const [companyName, setCompanyName] = useState('')
   const [firstName, setFirstName] = useState('')
   const [middleName, setMiddleName] = useState('')
@@ -26,38 +28,54 @@ function RegisterEmployer() {
         return
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          company_name: companyName,
-          contact_phone: contactPhone,
-          email,
-          password,
-          first_name: firstName,
-          middle_name: middleName,
-          last_name: lastName
-        })
+      // Stap 1: Maak account aan via Supabase Auth met emailRedirectTo
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/werkgever-portaal`,
+          data: {
+            company_name: companyName,
+            contact_phone: contactPhone,
+            first_name: firstName,
+            middle_name: middleName,
+            last_name: lastName,
+            role: 'employer'
+          }
+        }
       })
 
-      const result = await response.json()
-      if (!response.ok) {
-        setError(result.error || 'Registratie mislukt.')
-      } else {
-        // Sla email op in localStorage voor verificatiepagina
-        localStorage.setItem('pendingVerificationEmail', email)
-        
+      if (authError) {
+        setError('Fout bij aanmaken account: ' + authError.message)
+        return
+      }
+
+      if (authData.user) {
+        // Stap 2: Voeg bedrijf toe aan database
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employer`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            company_name: companyName,
+            contact_phone: contactPhone,
+            email,
+            password,
+            first_name: firstName,
+            middle_name: middleName,
+            last_name: lastName,
+            user_id: authData.user.id // Stuur het Supabase user ID mee
+          })
+        })
+
+        const result = await response.json()
+        if (!response.ok) {
+          setError('Fout bij opslaan bedrijfsgegevens: ' + result.error)
+          return
+        }
+
         setSuccess('Account succesvol aangemaakt! Controleer je e-mailadres voor de verificatielink om je account te activeren.')
         
-        // Wacht even en ga dan naar verificatiepagina
-        setTimeout(() => {
-          if (result.redirectUrl) {
-            window.location.href = result.redirectUrl
-          } else {
-            window.location.href = `/verify-email?email=${encodeURIComponent(email)}`
-          }
-        }, 2000)
-        
+        // Reset form
         setCompanyName('')
         setFirstName('')
         setMiddleName('')
@@ -65,10 +83,10 @@ function RegisterEmployer() {
         setContactPhone('')
         setPassword('')
         setConfirmPassword('')
-        // Behoud email voor verificatiepagina
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')
+      console.error('Registration error:', err)
     } finally {
       setLoading(false)
     }
