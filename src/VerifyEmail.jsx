@@ -36,18 +36,54 @@ function VerifyEmail() {
     setMessage('')
 
     try {
+      // Probeer eerst de huidige gebruiker op te halen
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError || !user?.email) {
+        setMessage('Geen gebruiker gevonden. Log eerst in om een nieuwe verificatiemail aan te vragen.')
+        return
+      }
+
+      // Probeer via Supabase Auth resend
       const { error } = await supabase.auth.resend({
         type: 'signup',
-        email: (await supabase.auth.getUser()).data.user?.email
+        email: user.email
       })
 
       if (error) {
-        setMessage('Fout bij opnieuw versturen: ' + error.message)
+        console.error('Supabase resend error:', error)
+        
+        // Als Supabase resend faalt, probeer via backend
+        if (error.message?.includes('email address') || error.message?.includes('Type provided')) {
+          setMessage('Probeer een nieuwe verificatiemail aan te vragen via de backend...')
+          
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/resend-verification`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: user.email })
+            })
+            
+            const result = await response.json()
+            
+            if (response.ok) {
+              setMessage('Verificatie-e-mail opnieuw verzonden via backend! Controleer je inbox.')
+            } else {
+              setMessage('Fout bij opnieuw versturen: ' + (result.error || 'Onbekende fout'))
+            }
+          } catch (backendError) {
+            console.error('Backend resend error:', backendError)
+            setMessage('Beide methoden zijn mislukt. Neem contact op met support.')
+          }
+        } else {
+          setMessage('Fout bij opnieuw versturen: ' + error.message)
+        }
       } else {
         setMessage('Verificatie-e-mail opnieuw verzonden! Controleer je inbox.')
       }
     } catch (err) {
-      setMessage('Er is iets misgegaan bij het opnieuw versturen.')
+      console.error('Resend catch error:', err)
+      setMessage('Er is iets misgegaan bij het opnieuw versturen. Probeer het later opnieuw.')
     } finally {
       setResendLoading(false)
     }
