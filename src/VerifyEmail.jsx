@@ -9,26 +9,87 @@ function VerifyEmail() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    // Controleer of gebruiker al geverifieerd is
-    const checkVerification = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.email_confirmed_at) {
-        // Gebruiker is al geverifieerd, doorsturen naar juiste portaal
-        const { data: profile } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single()
+    // Controleer of er een auth hash in de URL staat (van verificatielink)
+    const handleAuthCallback = async () => {
+      const hash = window.location.hash
+      if (hash && hash.includes('access_token')) {
+        console.log('Auth callback detected, processing...')
         
-        if (profile?.role === 'employer') {
-          navigate('/werkgever-portaal')
-        } else if (profile?.role === 'employee') {
-          navigate('/werknemer-portaal')
+        try {
+          // Probeer de sessie op te halen na verificatie
+          const { data: { session }, error } = await supabase.auth.getSession()
+          
+          if (error) {
+            console.error('Session error:', error)
+            setMessage('Fout bij verwerken verificatie: ' + error.message)
+            return
+          }
+
+          if (session?.user) {
+            console.log('User verified:', session.user.email)
+            setMessage('E-mail succesvol geverifieerd! Je wordt doorgestuurd...')
+            
+            // Haal gebruikersrol op
+            const { data: profile, error: profileError } = await supabase
+              .from('users')
+              .select('role')
+              .eq('id', session.user.id)
+              .single()
+            
+            if (profileError) {
+              console.error('Profile error:', profileError)
+              setMessage('Verificatie succesvol, maar er is een probleem met je profiel.')
+              return
+            }
+            
+            // Stuur door naar juiste portaal
+            setTimeout(() => {
+              if (profile?.role === 'employer') {
+                navigate('/werkgever-portaal')
+              } else if (profile?.role === 'employee') {
+                navigate('/werknemer-portaal')
+              } else {
+                navigate('/login')
+              }
+            }, 2000)
+            
+            return
+          }
+        } catch (error) {
+          console.error('Auth callback error:', error)
+          setMessage('Er is iets misgegaan bij het verwerken van de verificatie.')
         }
       }
+      
+      // Als geen auth callback, controleer of gebruiker al geverifieerd is
+      const checkExistingVerification = async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user?.email_confirmed_at) {
+            console.log('User already verified:', user.email)
+            
+            // Haal gebruikersrol op en stuur door naar juiste portaal
+            const { data: profile } = await supabase
+              .from('users')
+              .select('role')
+              .eq('id', user.id)
+              .single()
+            
+            if (profile?.role === 'employer') {
+              navigate('/werkgever-portaal')
+            } else if (profile?.role === 'employee') {
+              navigate('/werknemer-portaal')
+            }
+          }
+        } catch (error) {
+          console.error('Check verification error:', error)
+        }
+      }
+
+      await checkExistingVerification()
     }
 
-    checkVerification()
+    handleAuthCallback()
   }, [navigate])
 
   // Haal emailadres op uit URL parameters
