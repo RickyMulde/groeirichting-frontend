@@ -44,15 +44,28 @@ function RegisterEmployer() {
       if (!response.ok) {
         setError(result.error || 'Registratie mislukt.')
       } else {
+        // Sla email op in localStorage voor verificatiepagina
+        localStorage.setItem('pendingVerificationEmail', email)
+        
         setSuccess('Account succesvol aangemaakt! Controleer je e-mailadres voor de verificatielink om je account te activeren.')
+        
+        // Wacht even en ga dan naar verificatiepagina
+        setTimeout(() => {
+          if (result.redirectUrl) {
+            window.location.href = result.redirectUrl
+          } else {
+            window.location.href = `/verify-email?email=${encodeURIComponent(email)}`
+          }
+        }, 2000)
+        
         setCompanyName('')
         setFirstName('')
         setMiddleName('')
         setLastName('')
         setContactPhone('')
-        setEmail('')
         setPassword('')
         setConfirmPassword('')
+        // Behoud email voor verificatiepagina
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')

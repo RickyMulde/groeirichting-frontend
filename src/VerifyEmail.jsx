@@ -31,55 +31,101 @@ function VerifyEmail() {
     checkVerification()
   }, [navigate])
 
+  // Haal emailadres op uit URL parameters
+  const getEmailFromUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search)
+    return urlParams.get('email')
+  }
+
+  const emailFromUrl = getEmailFromUrl()
+
   const handleResendVerification = async () => {
     setResendLoading(true)
     setMessage('')
 
     try {
-      // Probeer eerst de huidige gebruiker op te halen
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      let emailToUse = null
       
-      if (userError || !user?.email) {
-        setMessage('Geen gebruiker gevonden. Log eerst in om een nieuwe verificatiemail aan te vragen.')
+      // Methode 1: Probeer eerst de huidige gebruiker op te halen (als er een sessie is)
+      try {
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        if (!userError && user?.email) {
+          emailToUse = user.email
+        }
+      } catch (e) {
+        // Geen actieve sessie, geen probleem
+      }
+      
+      // Methode 2: Als geen sessie, probeer email uit URL parameters
+      if (!emailToUse) {
+        const urlParams = new URLSearchParams(window.location.search)
+        const emailFromUrl = urlParams.get('email')
+        if (emailFromUrl) {
+          emailToUse = emailFromUrl
+        }
+      }
+      
+      // Methode 3: Als nog steeds geen email, probeer localStorage (fallback)
+      if (!emailToUse) {
+        const storedEmail = localStorage.getItem('pendingVerificationEmail')
+        if (storedEmail) {
+          emailToUse = storedEmail
+        }
+      }
+      
+      // Methode 4: Als alle methoden falen, probeer email uit hash fragment (Supabase redirect)
+      if (!emailToUse) {
+        const hash = window.location.hash
+        if (hash) {
+          const hashParams = new URLSearchParams(hash.substring(1))
+          const emailFromHash = hashParams.get('email')
+          if (emailFromHash) {
+            emailToUse = emailFromHash
+          }
+        }
+      }
+      
+      if (!emailToUse) {
+        setMessage('Geen e-mailadres gevonden. Probeer de verificatielink opnieuw te openen of ga terug naar de registratiepagina.')
         return
       }
 
-      // Probeer via Supabase Auth resend
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: user.email
-      })
+      // Probeer eerst via Supabase Auth resend
+      try {
+        const { error } = await supabase.auth.resend({
+          type: 'signup',
+          email: emailToUse
+        })
 
-      if (error) {
-        console.error('Supabase resend error:', error)
-        
-        // Als Supabase resend faalt, probeer via backend
-        if (error.message?.includes('email address') || error.message?.includes('Type provided')) {
-          setMessage('Probeer een nieuwe verificatiemail aan te vragen via de backend...')
-          
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/resend-verification`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: user.email })
-            })
-            
-            const result = await response.json()
-            
-            if (response.ok) {
-              setMessage('Verificatie-e-mail opnieuw verzonden via backend! Controleer je inbox.')
-            } else {
-              setMessage('Fout bij opnieuw versturen: ' + (result.error || 'Onbekende fout'))
-            }
-          } catch (backendError) {
-            console.error('Backend resend error:', backendError)
-            setMessage('Beide methoden zijn mislukt. Neem contact op met support.')
-          }
+        if (error) {
+          console.error('Supabase resend error:', error)
+          throw error // Ga door naar backend fallback
         } else {
-          setMessage('Fout bij opnieuw versturen: ' + error.message)
+          setMessage('Verificatie-e-mail opnieuw verzonden! Controleer je inbox.')
+          return
         }
-      } else {
-        setMessage('Verificatie-e-mail opnieuw verzonden! Controleer je inbox.')
+      } catch (supabaseError) {
+        // Als Supabase resend faalt, probeer via backend
+        console.log('Supabase resend faalt, probeer via backend...')
+        
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/resend-verification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailToUse })
+          })
+          
+          const result = await response.json()
+          
+          if (response.ok) {
+            setMessage('Verificatie-e-mail opnieuw verzonden via backend! Controleer je inbox.')
+          } else {
+            setMessage('Fout bij opnieuw versturen: ' + (result.error || 'Onbekende fout'))
+          }
+        } catch (backendError) {
+          console.error('Backend resend error:', backendError)
+          setMessage('Beide methoden zijn mislukt. Neem contact op met support.')
+        }
       }
     } catch (err) {
       console.error('Resend catch error:', err)
@@ -141,6 +187,11 @@ function VerifyEmail() {
             <p className="text-blue-800 mb-4">
               We hebben je een verificatielink gestuurd naar je e-mailadres.
             </p>
+            {emailFromUrl && (
+              <p className="text-blue-700 text-sm mb-2">
+                <strong>E-mailadres:</strong> {emailFromUrl}
+              </p>
+            )}
             <p className="text-blue-700 text-sm">
               Klik op de link in de e-mail om je account te activeren.
             </p>
