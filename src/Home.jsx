@@ -283,7 +283,7 @@ function Home() {
             <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
               <h3 className="font-semibold text-white mb-3 text-left">"We gebruiken al MTO-formulieren."</h3>
               <p className="text-white text-sm text-left">
-                Goed bezig! Alleen: een formulier vraagt nooit dóór naar de achterliggende gedachte. GroeiRichting wel. Zo krijg je soms antwoorden op vragen die je niet eens had bedacht.
+                Goed bezig. Alleen: traditionele medewerkertevredenheidsonderzoeken zijn vaak statische formulieren. Met GroeiRichting worden er gesprekken gevoerd en signalen verzameld.
               </p>
             </div>
             
