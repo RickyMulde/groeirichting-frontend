@@ -263,15 +263,49 @@ function Home() {
         </div>
       </section>
 
-      {/* Nadelen van huidige praktijk */}
-      <section className="bg-gray-100 py-12 px-6 rounded-xl">
-        <h2 className="text-2xl font-semibold text-center mb-8">De nadelen van hoe het nu gaat</h2>
-        <div className="max-w-3xl mx-auto space-y-4 text-[var(--kleur-muted)] text-center text-lg">
-          <p>Functioneringsgesprekken kosten veel tijd en zijn soms oppervlakkig.</p>
-          <p>Medewerkers zijn vaak al ontevreden vóór het gesprek plaatsvindt.</p>
-          <p>HR wordt vaak opgepakt door iemand die het al druk heeft met andere zaken.</p>
-          <p>Traditionele medewerkertevredenheidsonderzoeken zijn vaak statische formulieren waar je net niks mee kunt.</p>
-          <p>Leidinggevenden vinden het lastig om moeilijke onderwerpen bespreekbaar te maken.</p>
+      {/* Twijfels sectie */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">Twijfels? Logisch.</h2>
+          <p className="text-xl text-[var(--kleur-muted)] mb-12">Maar met GroeiRichting zijn ze sneller weg dan je denkt.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Grid item 1 */}
+            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"Mijn werknemers willen niet met AI praten."</h3>
+              <p className="text-[var(--kleur-muted)] text-sm text-left">
+                Sterker nog, dat doen ze nu al (ChatGPT, Copilot, etc.). Het verschil: met GroeiRichting komt die input bij jou terug als bruikbare inzichten, in plaats van nergens.
+              </p>
+            </div>
+            
+            {/* Grid item 2 */}
+            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"We gebruiken al MTO-formulieren."</h3>
+              <p className="text-[var(--kleur-muted)] text-sm text-left">
+                Goed bezig! Alleen: een formulier vraagt nooit dóór naar de achterliggende gedachte. GroeiRichting wel. Zo krijg je soms antwoorden op vragen die je niet eens had bedacht.
+              </p>
+            </div>
+            
+            {/* Grid item 3 */}
+            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"We voeren al 2 functioneringsgesprekken per jaar."</h3>
+              <p className="text-[var(--kleur-muted)] text-sm text-left">
+                Prima, maar er kan veel gebeuren in 6 maanden. Bovendien vertellen medewerkers soms méér tegen AI dan rechtstreeks tegen hun leidinggevende.
+              </p>
+            </div>
+            
+            {/* Grid item 4 */}
+            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"Weer een extra tool?"</h3>
+              <p className="text-[var(--kleur-muted)] text-sm text-left">
+                Behoud van medewerkers is belangrijker dan ooit. Extra gespreksmomenten vergroten de kans dat signalen tijdig boven tafel komen. GroeiRichting maakt dat laagdrempelig en effectief.
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-12">
+            <p className="text-lg font-medium text-[var(--kleur-primary)]">Heb je nog vragen?</p>
+          </div>
         </div>
       </section>
 
