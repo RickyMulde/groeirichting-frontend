@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
+import ContactForm from './components/ContactForm'
 
 function Home() {
   return (
@@ -271,40 +272,43 @@ function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Grid item 1 */}
-            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
-              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"Mijn werknemers willen niet met AI praten."</h3>
-              <p className="text-[var(--kleur-muted)] text-sm text-left">
+            <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-white mb-3 text-left">"Mijn werknemers willen niet met AI praten."</h3>
+              <p className="text-white text-sm text-left">
                 Sterker nog, dat doen ze nu al (ChatGPT, Copilot, etc.). Het verschil: met GroeiRichting komt die input bij jou terug als bruikbare inzichten, in plaats van nergens.
               </p>
             </div>
             
             {/* Grid item 2 */}
-            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
-              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"We gebruiken al MTO-formulieren."</h3>
-              <p className="text-[var(--kleur-muted)] text-sm text-left">
+            <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-white mb-3 text-left">"We gebruiken al MTO-formulieren."</h3>
+              <p className="text-white text-sm text-left">
                 Goed bezig! Alleen: een formulier vraagt nooit dóór naar de achterliggende gedachte. GroeiRichting wel. Zo krijg je soms antwoorden op vragen die je niet eens had bedacht.
               </p>
             </div>
             
             {/* Grid item 3 */}
-            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
-              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"We voeren al 2 functioneringsgesprekken per jaar."</h3>
-              <p className="text-[var(--kleur-muted)] text-sm text-left">
+            <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-white mb-3 text-left">"We voeren al 2 functioneringsgesprekken per jaar."</h3>
+              <p className="text-white text-sm text-left">
                 Prima, maar er kan veel gebeuren in 6 maanden. Bovendien vertellen medewerkers soms méér tegen AI dan rechtstreeks tegen hun leidinggevende.
               </p>
             </div>
             
             {/* Grid item 4 */}
-            <div className="bg-[var(--kleur-secondary)] bg-opacity-20 p-6 rounded-xl">
-              <h3 className="font-semibold text-[var(--kleur-text)] mb-3 text-left">"Weer een extra tool?"</h3>
-              <p className="text-[var(--kleur-muted)] text-sm text-left">
+            <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
+              <h3 className="font-semibold text-white mb-3 text-left">"Weer een extra tool?"</h3>
+              <p className="text-white text-sm text-left">
                 Behoud van medewerkers is belangrijker dan ooit. Extra gespreksmomenten vergroten de kans dat signalen tijdig boven tafel komen. GroeiRichting maakt dat laagdrempelig en effectief.
               </p>
             </div>
           </div>
           
           <div className="mt-12">
-            <p className="text-lg font-medium text-[var(--kleur-primary)]">Heb je nog vragen?</p>
+            <p className="text-lg font-medium text-[var(--kleur-primary)] mb-8">Heb je nog vragen?</p>
+            
+            {/* Contactformulier */}
+            <ContactForm />
           </div>
         </div>
       </section>
