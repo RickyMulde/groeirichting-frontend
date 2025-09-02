@@ -64,6 +64,12 @@ function Layout({ children }) {
               Offerte
             </Link>
             <Link 
+              to="/contact" 
+              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+            >
+              Contact
+            </Link>
+            <Link 
               to="/privacy-veiligheid" 
               className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
             >
@@ -125,6 +131,13 @@ function Layout({ children }) {
                 className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
               >
                 Offerte
+              </Link>
+              <Link 
+                to="/contact" 
+                onClick={closeMobileMenu}
+                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Contact
               </Link>
               <Link 
                 to="/privacy-veiligheid" 
