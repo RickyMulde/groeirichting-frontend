@@ -158,7 +158,6 @@ function RegisterEmployee() {
               checked={toestemmingAvg} 
               onChange={(e) => setToestemmingAvg(e.target.checked)}
               className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              required
             />
             <span className="text-sm text-blue-900 font-medium">Ik geef toestemming voor verwerking van mijn antwoorden.</span>
           </label>
