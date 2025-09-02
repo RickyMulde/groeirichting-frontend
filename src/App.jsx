@@ -27,6 +27,7 @@ import EmployerProtectedRoute from './EmployerProtectedRoute'
 import WerknemerInstellingen from './WerknemerInstellingen'
 import UitlegPrivacy from './uitleg-privacy'
 import Offerte from './Offerte'
+import Contact from './Contact'
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/offerte" element={<Offerte />} />
         <Route path="/hoe-werkt-het" element={<HoeWerktHet />} />
         <Route path="/privacy-veiligheid" element={<PrivacyVeiligheid />} />
