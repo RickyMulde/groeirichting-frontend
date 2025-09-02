@@ -52,16 +52,16 @@ function Layout({ children }) {
               Home
             </Link>
             <Link 
-              to="/offerte" 
-              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              Offerte
-            </Link>
-            <Link 
               to="/hoe-werkt-het" 
               className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
             >
               Hoe werkt het
+            </Link>
+            <Link 
+              to="/offerte" 
+              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+            >
+              Offerte
             </Link>
             <Link 
               to="/privacy-veiligheid" 
@@ -113,18 +113,18 @@ function Layout({ children }) {
                 Home
               </Link>
               <Link 
-                to="/offerte" 
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Offerte
-              </Link>
-              <Link 
                 to="/hoe-werkt-het" 
                 onClick={closeMobileMenu}
                 className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
               >
                 Hoe werkt het
+              </Link>
+              <Link 
+                to="/offerte" 
+                onClick={closeMobileMenu}
+                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Offerte
               </Link>
               <Link 
                 to="/privacy-veiligheid" 

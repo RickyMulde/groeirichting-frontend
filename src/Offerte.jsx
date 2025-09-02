@@ -65,12 +65,9 @@ function Offerte() {
       </div>
 
       {/* ROI-prikkel */}
-      <div className="bg-red-50 border-l-4 border-red-400 p-6 rounded-r-xl">
-        <h2 className="text-xl font-semibold text-red-800 mb-3">
-          Verloop en verzuim zijn kostbaar
-        </h2>
-        <p className="text-red-700 text-lg">
-          Het vertrek van je beste medewerker of uitval van je hardste werker kan je bedrijf duizenden euro's kosten. GroeiRichting helpt je die risico's tijdig te signaleren en voorkomen.
+      <div className="bg-gray-50 border-l-2 border-[var(--kleur-primary)] p-4 rounded-r-lg">
+        <p className="text-[var(--kleur-muted)]">
+          Verloop en verzuim zijn kostbaar. Het vertrek van je beste medewerker of uitval van je hardste werker kan je bedrijf duizenden euro's kosten. GroeiRichting helpt je die risico's tijdig te signaleren en voorkomen.
         </p>
       </div>
 
