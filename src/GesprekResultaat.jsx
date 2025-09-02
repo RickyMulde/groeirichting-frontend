@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileText } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import ThemaVoortgangBanner from './components/ThemaVoortgangBanner'
+import ThemaEvaluatieModal from './components/ThemaEvaluatieModal'
 
 function GesprekResultaat() {
   const navigate = useNavigate()
@@ -13,6 +14,12 @@ function GesprekResultaat() {
   const [vervolgactiesUitgeklapt, setVervolgactiesUitgeklapt] = useState(false)
   const [gesprekDatum, setGesprekDatum] = useState(null)
   const [userId, setUserId] = useState(null)
+  
+  // Evaluatie modal state
+  const [showEvaluatieModal, setShowEvaluatieModal] = useState(false)
+  const [evaluatieLoading, setEvaluatieLoading] = useState(false)
+  const [evaluatieError, setEvaluatieError] = useState(null)
+  const [heeftEvaluatie, setHeeftEvaluatie] = useState(false)
 
   useEffect(() => {
     const fetchGesprekData = async () => {
@@ -72,6 +79,38 @@ function GesprekResultaat() {
 
         // Sla gesprek datum op voor het voortgang component
         setGesprekDatum(gesprekData.gestart_op)
+
+        // Controleer of er al een evaluatie is voor dit gesprek
+        try {
+          const evaluatieResponse = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/check-thema-evaluatie?gesprek_id=${gesprekId}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+              }
+            }
+          );
+
+          if (evaluatieResponse.ok) {
+            const evaluatieData = await evaluatieResponse.json();
+            setHeeftEvaluatie(evaluatieData.heeft_evaluatie);
+            
+            // Als er geen evaluatie is, toon de modal
+            if (!evaluatieData.heeft_evaluatie) {
+              setShowEvaluatieModal(true);
+            }
+          } else {
+            console.error('Fout bij controleren evaluatie:', evaluatieResponse.status);
+            // Bij fout, toon modal als fallback
+            setShowEvaluatieModal(true);
+          }
+        } catch (evaluatieError) {
+          console.error('Fout bij controleren evaluatie:', evaluatieError);
+          // Bij fout, toon modal als fallback
+          setShowEvaluatieModal(true);
+        }
 
         // Haal samenvatting op via backend API met gesprek_id
         const response = await fetch(
@@ -209,8 +248,62 @@ function GesprekResultaat() {
     fetchGesprekData()
   }, [params])
 
+  // Functie om evaluatie score op te slaan
+  const handleScoreSubmit = async (score) => {
+    try {
+      setEvaluatieLoading(true);
+      setEvaluatieError(null);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('Gebruiker niet ingelogd');
+      }
+
+      const themeId = params.get('theme_id');
+      const gesprekId = params.get('gesprek_id');
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/save-thema-evaluatie`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          },
+          body: JSON.stringify({
+            werknemer_id: user.id,
+            theme_id: themeId,
+            gesprek_id: gesprekId,
+            score: score
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Fout bij opslaan evaluatie');
+      }
+
+      // Succesvol opgeslagen
+      setHeeftEvaluatie(true);
+      setShowEvaluatieModal(false);
+      setEvaluatieLoading(false);
+
+    } catch (error) {
+      console.error('Fout bij opslaan evaluatie:', error);
+      setEvaluatieError(error.message);
+      setEvaluatieLoading(false);
+    }
+  };
+
+  // Functie om modal te sluiten
+  const handleCloseModal = () => {
+    setShowEvaluatieModal(false);
+    setEvaluatieError(null);
+  };
+
   // Debug logging om te zien wat er gebeurt
-  console.log('GesprekResultaat state:', { gesprekDatum, userId, loading, error, gesprekData })
+  console.log('GesprekResultaat state:', { gesprekDatum, userId, loading, error, gesprekData, showEvaluatieModal, heeftEvaluatie })
 
   if (loading) {
     return (
@@ -365,6 +458,16 @@ function GesprekResultaat() {
           </section>
         </div>
       </div>
+
+      {/* Thema Evaluatie Modal */}
+      <ThemaEvaluatieModal
+        isOpen={showEvaluatieModal}
+        onClose={handleCloseModal}
+        themeTitle={gesprekData?.themeTitle}
+        onScoreSubmit={handleScoreSubmit}
+        loading={evaluatieLoading}
+        error={evaluatieError}
+      />
     </div>
   )
 }
