@@ -26,6 +26,7 @@ import Themadashboard from './Themadashboard'
 import EmployerProtectedRoute from './EmployerProtectedRoute'
 import WerknemerInstellingen from './WerknemerInstellingen'
 import UitlegPrivacy from './uitleg-privacy'
+import Offerte from './Offerte'
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/offerte" element={<Offerte />} />
         <Route path="/hoe-werkt-het" element={<HoeWerktHet />} />
         <Route path="/privacy-veiligheid" element={<PrivacyVeiligheid />} />
         <Route path="/login" element={<Login />} />
