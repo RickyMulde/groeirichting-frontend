@@ -26,10 +26,12 @@ function ContactForm() {
     setError('')
     
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify(formData)
       })

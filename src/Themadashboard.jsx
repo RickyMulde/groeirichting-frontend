@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, BarChart3, Calendar, ChevronDown, ChevronUp, TrendingUp, CheckCircle, AlertCircle, Info } from 'lucide-react'
+import { ArrowLeft, BarChart3, Calendar, ChevronDown, ChevronUp, TrendingUp, CheckCircle, AlertCircle, Info, Users } from 'lucide-react'
 import { supabase } from './supabaseClient'
+import { useTeams } from './contexts/TeamsContext'
+import TeamSelector from './components/TeamSelector'
 
 function Themadashboard() {
   const navigate = useNavigate()
+  const { teams, selectedTeam, selectTeam } = useTeams()
   
   const [themes, setThemes] = useState([])
   const [loading, setLoading] = useState(true)
@@ -31,7 +34,12 @@ function Themadashboard() {
         url += `?maand=${period.maand}&jaar=${period.jaar}`
       }
       
-      const response = await fetch(url)
+      const { data: { session } } = await supabase.auth.getSession()
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      })
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: Fout bij ophalen thema's`)
@@ -57,7 +65,12 @@ function Themadashboard() {
   // Haal werkgever instellingen op
   const fetchEmployerSettings = async (employerId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${employerId}`)
+      const { data: { session } } = await supabase.auth.getSession()
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${employerId}`, {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      })
       if (response.ok) {
         const config = await response.json()
         setActiveMonths(config.actieve_maanden || [3, 6, 9])
@@ -70,7 +83,12 @@ function Themadashboard() {
   // Haal beschikbare periodes op
   const fetchAvailablePeriods = async (employerId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/organisation-themes/${employerId}/available-periods`)
+      const { data: { session } } = await supabase.auth.getSession()
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/organisation-themes/${employerId}/available-periods`, {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      })
       if (response.ok) {
         const data = await response.json()
         setAvailablePeriods(data.beschikbare_periodes || [])
@@ -98,7 +116,19 @@ function Themadashboard() {
         throw new Error('Werkgever niet gevonden')
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${employer.id}/${themeId}`)
+      const { data: { session } } = await supabase.auth.getSession()
+      let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${employer.id}/${themeId}`
+      
+      // Voeg team filtering toe als team is geselecteerd
+      if (selectedTeam) {
+        url += `?team_id=${selectedTeam}`
+      }
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      })
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -175,7 +205,7 @@ function Themadashboard() {
     if (employerId && selectedPeriod) {
       fetchThemes(employerId, selectedPeriod)
     }
-  }, [employerId, selectedPeriod])
+  }, [employerId, selectedPeriod, selectedTeam])
 
   if (loading) {
     return (
@@ -248,6 +278,18 @@ function Themadashboard() {
                 Overzicht van alle thema's en resultaten
               </p>
             </div>
+          </div>
+
+          {/* Team Selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Filter op Team
+            </label>
+            <TeamSelector
+              onTeamSelect={selectTeam}
+              selectedTeamId={selectedTeam}
+              className="max-w-md"
+            />
           </div>
 
           {/* Periodeselecter */}

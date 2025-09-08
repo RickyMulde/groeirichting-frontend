@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './Layout'
+import { TeamsProvider } from './contexts/TeamsContext'
 import Login from './Login'
 import RegisterEmployer from './RegisterEmployer'
 import Home from './Home'
@@ -7,7 +8,7 @@ import HoeWerktHet from './HoeWerktHet'
 import PrivacyVeiligheid from './PrivacyVeiligheid'
 import EmployerPortal from './EmployerPortal'
 import Dashboard from './dashboard'
-import Werknemerbeheren from './Werknemerbeheren'
+import BeheerTeamsWerknemers from './BeheerTeamsWerknemers'
 import Instellingen from './Instellingen'
 import RegisterEmployee from './RegisterEmployee'
 import VerifyEmail from './VerifyEmail'
@@ -32,8 +33,9 @@ import Contact from './Contact'
 
 function App() {
   return (
-    <Layout>
-      <Routes>
+    <TeamsProvider>
+      <Layout>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/offerte" element={<Offerte />} />
@@ -45,7 +47,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/werkgever-portaal" element={<EmployerPortal />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/werknemerbeheer" element={<Werknemerbeheren />} />
+        <Route path="/beheer-teams-werknemers" element={<BeheerTeamsWerknemers />} />
         <Route path="/instellingen" element={<Instellingen />} />
         <Route path="/redirect" element={<PostLoginRedirect />} />
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
@@ -66,7 +68,8 @@ function App() {
           </EmployerProtectedRoute>
         } />
       </Routes>
-    </Layout>
+      </Layout>
+    </TeamsProvider>
   )
 }
 

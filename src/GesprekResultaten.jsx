@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, FileText, TrendingUp, Calendar, AlertCircle } from 'lucide-react'
+import { ArrowLeft, FileText, TrendingUp, Calendar, AlertCircle, Users } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import Top3Actions from './components/Top3Actions'
+import { useTeams } from './contexts/TeamsContext'
+import TeamSelector from './components/TeamSelector'
 
 function GesprekResultaten() {
   const navigate = useNavigate()
+  const { teams, selectedTeam, selectTeam } = useTeams()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [resultaten, setResultaten] = useState([])
@@ -142,7 +145,12 @@ function GesprekResultaten() {
 
         if (werknemerError) throw werknemerError
 
-        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
+        const { data: { session } } = await supabase.auth.getSession()
+        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        })
         let config = { actieve_maanden: [3, 6, 9] } // Default fallback
         if (werkgeverResponse.ok) {
           config = await werkgeverResponse.json()
@@ -190,17 +198,22 @@ function GesprekResultaten() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        // Haal resultaten op via nieuwe bulk API
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/get-gespreksresultaten-bulk?werknemer_id=${user.id}&periode=${selectedPeriode.periode}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-            }
+        // Haal resultaten op via nieuwe bulk API met team filtering
+        const { data: { session } } = await supabase.auth.getSession()
+        let url = `${import.meta.env.VITE_API_BASE_URL}/api/get-gespreksresultaten-bulk?werknemer_id=${user.id}&periode=${selectedPeriode.periode}`
+        
+        // Voeg team filtering toe als team is geselecteerd
+        if (selectedTeam) {
+          url += `&team_id=${selectedTeam}`
+        }
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
           }
-        )
+        })
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
@@ -219,7 +232,7 @@ function GesprekResultaten() {
     }
 
     fetchResultaten()
-  }, [selectedPeriode])
+  }, [selectedPeriode, selectedTeam])
 
   const getScoreColor = (score) => {
     if (!score) return 'text-gray-400'
@@ -335,8 +348,20 @@ function GesprekResultaten() {
                 <p className="text-gray-600 text-sm sm:text-base">Bekijk hier de samenvattingen en vervolgacties van je afgeronde gesprekken</p>
               </div>
             </div>
-            <FileText className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
+            <Users className="text-[var(--kleur-primary)] w-6 h-6 sm:w-8 sm:h-8 self-start sm:self-center" />
           </div>
+        </div>
+
+        {/* Team Selector */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Filter op Team
+          </label>
+          <TeamSelector
+            onTeamSelect={selectTeam}
+            selectedTeamId={selectedTeam}
+            className="max-w-md"
+          />
         </div>
 
         {/* Maandselectie */}

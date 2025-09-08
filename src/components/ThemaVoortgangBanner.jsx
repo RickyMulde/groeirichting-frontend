@@ -33,7 +33,12 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       // Haal werkgever configuratie op voor actieve maanden
       let config = null
       try {
-        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`)
+        const { data: { session } } = await supabase.auth.getSession()
+        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        })
         if (werkgeverResponse.ok) {
           config = await werkgeverResponse.json()
           console.log('ThemaVoortgangBanner: Werkgever config opgehaald:', config)
@@ -145,9 +150,13 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const startVolgendThema = async (themaId) => {
     try {
       // Maak een nieuw gesprek aan
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           werknemer_id: userId,
           theme_id: themaId,

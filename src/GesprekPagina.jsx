@@ -103,7 +103,12 @@ function GesprekPagina() {
 
       if (!werknemer?.employer_id) return null;
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`);
+      const { data: { session } } = await supabase.auth.getSession()
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`, {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      });
       if (response.ok) {
         const configData = await response.json();
         return configData.organisatie_omschrijving || null;
@@ -229,11 +234,12 @@ function GesprekPagina() {
 
       console.log('👤 Gebruiker gevonden:', userData.user.id);
 
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/genereer-samenvatting`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({
           theme_id: themeId,
@@ -356,11 +362,12 @@ function GesprekPagina() {
         }
         // Antwoorden ophalen
         try {
+          const { data: { session } } = await supabase.auth.getSession()
           const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/get-conversation-answers`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+              'Authorization': `Bearer ${session?.access_token}`
             },
             body: JSON.stringify({ gesprek_id: existingGesprek.id })
           });
@@ -446,9 +453,13 @@ function GesprekPagina() {
       }
 
       // Nieuw gesprek aanmaken
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           werknemer_id: user.id,
           theme_id: themeId,
@@ -493,9 +504,13 @@ function GesprekPagina() {
     }
     if (gesprekId) {
       try {
+        const { data: { session } } = await supabase.auth.getSession()
         await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
           body: JSON.stringify({
             werknemer_id: user.id,
             theme_id: themeId,
@@ -557,9 +572,13 @@ function GesprekPagina() {
     }
 
     // Sla het antwoord op in de nieuwe structuur
+    const { data: { session } } = await supabase.auth.getSession()
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.access_token}`
+      },
       body: JSON.stringify({
         werknemer_id: user.id,
         theme_id: themeId,
@@ -592,9 +611,13 @@ function GesprekPagina() {
     }
 
     try {
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           werknemer_id: user.id,
           theme_id: themeId,
@@ -675,9 +698,13 @@ function GesprekPagina() {
         const samenvatting = await haalLaatsteSamenvattingOp();
         const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
         const werknemerContext = await haalWerknemerContextOp();
+        const { data: { session } } = await supabase.auth.getSession()
         const decideRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/decide-followup`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
           body: JSON.stringify({
             thema: theme?.titel || 'Thema',
             gespreksgeschiedenis: nieuweAntwoorden,
@@ -770,9 +797,13 @@ function GesprekPagina() {
           const samenvatting = await haalLaatsteSamenvattingOp();
           const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
           const werknemerContext = await haalWerknemerContextOp();
+          const { data: { session } } = await supabase.auth.getSession()
           const decideRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/decide-followup`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token}`
+            },
             body: JSON.stringify({
               thema: theme?.titel || 'Thema',
               gespreksgeschiedenis: nieuweAntwoorden,
@@ -851,9 +882,13 @@ function GesprekPagina() {
       setDone(true);
       
       console.log('💾 Gesprek afronden...');
+              const { data: { session } } = await supabase.auth.getSession()
               await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           werknemer_id: (await supabase.auth.getUser()).data.user.id,
           theme_id: themeId,
@@ -886,9 +921,13 @@ function GesprekPagina() {
       } else {
         console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
         setDone(true);
+        const { data: { session } } = await supabase.auth.getSession()
         await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
           body: JSON.stringify({
             werknemer_id: (await supabase.auth.getUser()).data.user.id,
             theme_id: themeId,

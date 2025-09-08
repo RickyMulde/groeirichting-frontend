@@ -25,7 +25,12 @@ function ThemaOverzicht() {
 
       try {
         // Haal thema data op via nieuwe API met werkgever configuratie
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/get-thema-data-werknemer/${user.id}`);
+        const { data: { session } } = await supabase.auth.getSession()
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/get-thema-data-werknemer/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        });
         
         if (response.ok) {
           const data = await response.json();
@@ -174,9 +179,13 @@ function ThemaOverzicht() {
       if (!user) return;
 
       // Maak een nieuw gesprek aan
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           werknemer_id: user.id,
           theme_id: themeId,

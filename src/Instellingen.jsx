@@ -36,7 +36,12 @@ function Instellingen() {
         }
 
         // Haal werkgever configuratie op
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}`)
+        const { data: { session } } = await supabase.auth.getSession()
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        })
         if (response.ok) {
           const configData = await response.json()
           setWerkgeverConfig(configData)
@@ -118,9 +123,13 @@ function Instellingen() {
       }
 
       // Sla configuratie op
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           werkgever_id: werkgever.id,
           ...werkgeverConfig

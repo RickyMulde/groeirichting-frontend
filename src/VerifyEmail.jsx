@@ -170,9 +170,13 @@ function VerifyEmail() {
         console.log('Supabase resend faalt, probeer via backend...')
         
         try {
+          const { data: { session } } = await supabase.auth.getSession()
           const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/resend-verification`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token}`
+            },
             body: JSON.stringify({ email: emailToUse })
           })
           

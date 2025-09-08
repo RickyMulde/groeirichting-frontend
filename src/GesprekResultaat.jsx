@@ -82,13 +82,14 @@ function GesprekResultaat() {
 
         // Controleer of er al een evaluatie is voor dit gesprek
         try {
+          const { data: { session } } = await supabase.auth.getSession()
           const evaluatieResponse = await fetch(
             `${import.meta.env.VITE_API_BASE_URL}/api/check-thema-evaluatie?gesprek_id=${gesprekId}`,
             {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                'Authorization': `Bearer ${session?.access_token}`
               }
             }
           );
@@ -113,13 +114,14 @@ function GesprekResultaat() {
         }
 
         // Haal samenvatting op via backend API met gesprek_id
+        const { data: { session } } = await supabase.auth.getSession()
         const response = await fetch(
           `${import.meta.env.VITE_API_BASE_URL}/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
           {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+              'Authorization': `Bearer ${session?.access_token}`
             }
           }
         )
@@ -131,13 +133,14 @@ function GesprekResultaat() {
               console.log('Geen samenvatting gevonden, probeer er een te genereren...');
               console.log('Parameters:', { theme_id: themeId, werknemer_id: user.id, gesprek_id: gesprekId });
               
+              const { data: { session } } = await supabase.auth.getSession()
               const generateResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/api/genereer-samenvatting`,
                 {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                    'Authorization': `Bearer ${session?.access_token}`
                   },
                   body: JSON.stringify({
                     theme_id: themeId,
@@ -155,13 +158,14 @@ function GesprekResultaat() {
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 
                 // Probeer nu opnieuw de samenvatting op te halen
+                const { data: { session } } = await supabase.auth.getSession()
                 const retryResponse = await fetch(
                   `${import.meta.env.VITE_API_BASE_URL}/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
                   {
                     method: 'GET',
                     headers: {
                       'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                      'Authorization': `Bearer ${session?.access_token}`
                     }
                   }
                 );
@@ -195,13 +199,14 @@ function GesprekResultaat() {
 
           // Probeer vervolgacties op te halen als fallback
           try {
+            const { data: { session } } = await supabase.auth.getSession()
             const vervolgactiesResponse = await fetch(
               `${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions?theme_id=${themeId}&werknemer_id=${user.id}`,
               {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                  'Authorization': `Bearer ${session?.access_token}`
                 }
               }
             );
@@ -262,13 +267,14 @@ function GesprekResultaat() {
       const themeId = params.get('theme_id');
       const gesprekId = params.get('gesprek_id');
 
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/save-thema-evaluatie`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+            'Authorization': `Bearer ${session?.access_token}`
           },
           body: JSON.stringify({
             werknemer_id: user.id,

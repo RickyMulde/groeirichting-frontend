@@ -103,11 +103,11 @@ function EmployerPortal() {
           <div className="flex items-center gap-4">
             <Users className="text-[var(--kleur-accent)] w-8 h-8" />
             <div>
-              <h2 className="text-xl font-semibold">Werknemers beheren</h2>
-              <p className="text-sm text-gray-500">Nodig medewerkers uit, beheer accounts of verwijder gebruikers.</p>
+              <h2 className="text-xl font-semibold">Teams en Werknemers beheren</h2>
+              <p className="text-sm text-gray-500">Beheer teams, nodig medewerkers uit en beheer accounts.</p>
             </div>
           </div>
-          <Link to="/werknemerbeheer" className="btn btn-accent">Beheer werknemers</Link>
+          <Link to="/beheer-teams-werknemers" className="btn btn-accent">Beheer teams en werknemers</Link>
         </section>
 
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -48,11 +48,12 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
     try {
       console.log('🔄 Start generatie top 3 acties...')
       
+      const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({
           werknemer_id: werknemerId,
