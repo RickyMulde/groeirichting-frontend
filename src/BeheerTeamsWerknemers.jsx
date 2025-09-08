@@ -20,11 +20,12 @@ function BeheerTeamsWerknemers() {
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [email, setEmail] = useState('')
   const [functieOmschrijving, setFunctieOmschrijving] = useState('')
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   const navigate = useNavigate()
 
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+  }, [selectedTeam, refreshTrigger])
 
   const fetchData = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
@@ -68,12 +69,11 @@ function BeheerTeamsWerknemers() {
       console.error('Error fetching data:', error)
       setFoutmelding('Fout bij ophalen van gegevens')
     }
-  }, [selectedTeam])
+  }, [selectedTeam, refreshTrigger])
 
   const handleInviteSent = (result) => {
     setSuccesmelding(`Uitnodiging verzonden naar ${result.email}`)
-    // Refresh data via useEffect dependency
-    fetchData()
+    setRefreshTrigger(prev => prev + 1)
   }
 
   // Inline uitnodiging functionaliteit (van oude Werknemerbeheren.jsx)
@@ -120,7 +120,7 @@ function BeheerTeamsWerknemers() {
         setFunctieOmschrijving('')
         setSuccesmelding('Uitnodiging succesvol verzonden!')
         setTimeout(() => setSuccesmelding(''), 5000)
-        fetchData()
+        setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
       console.error('Error sending invite:', error)
@@ -152,7 +152,7 @@ function BeheerTeamsWerknemers() {
       } else {
         setSuccesmelding('Wijzigingen opgeslagen')
         handleCloseModal()
-        fetchData()
+        setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
       console.error('Error saving changes:', error)
@@ -181,7 +181,7 @@ function BeheerTeamsWerknemers() {
 
       if (response.ok) {
         setSuccesmelding('Uitnodiging opnieuw verzonden')
-        fetchData()
+        setRefreshTrigger(prev => prev + 1)
       } else {
         const errorData = await response.json()
         setFoutmelding(errorData.error || 'Fout bij opnieuw versturen uitnodiging')
@@ -219,7 +219,7 @@ function BeheerTeamsWerknemers() {
         setFoutmelding('Fout bij verwijderen werknemer')
       } else {
         setSuccesmelding('Werknemer verwijderd')
-        fetchData()
+        setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
       console.error('Error deleting user:', error)
