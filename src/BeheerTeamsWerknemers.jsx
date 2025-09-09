@@ -110,6 +110,19 @@ function BeheerTeamsWerknemers() {
     }
 
     try {
+      // Haal employer_id op
+      const { data: currentUser } = await supabase
+        .from('users')
+        .select('employer_id')
+        .eq('id', session.user.id)
+        .single()
+
+      if (!currentUser?.employer_id) {
+        setFoutmelding('Geen werkgever gevonden')
+        setLoading(false)
+        return
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/send-invite`, {
         method: 'POST',
         headers: { 
@@ -119,6 +132,8 @@ function BeheerTeamsWerknemers() {
         body: JSON.stringify({ 
           to: email, 
           name: 'Medewerker', 
+          employerId: currentUser.employer_id,
+          token: crypto.randomUUID(),
           teamId: selectedTeam,
           functieOmschrijving: functieOmschrijving.trim() || null
         })
