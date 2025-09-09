@@ -111,13 +111,33 @@ export const TeamsProvider = ({ children }) => {
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
+      if (user) {
+        // Haal user data op uit database (inclusief role)
+        const { data: userData } = await supabase
+          .from('users')
+          .select('id, email, role, employer_id')
+          .eq('id', user.id)
+          .single()
+        setUser(userData)
+      } else {
+        setUser(null)
+      }
     }
     getUser()
 
     // Luister naar auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        // Haal user data op uit database (inclusief role)
+        const { data: userData } = await supabase
+          .from('users')
+          .select('id, email, role, employer_id')
+          .eq('id', session.user.id)
+          .single()
+        setUser(userData)
+      } else {
+        setUser(null)
+      }
     })
 
     return () => subscription.unsubscribe()
