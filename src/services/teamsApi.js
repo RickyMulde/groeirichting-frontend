@@ -60,7 +60,8 @@ export const createTeam = async (naam) => {
       throw new Error(errorData.error || `HTTP ${response.status}: Fout bij aanmaken team`)
     }
 
-    return await response.json()
+    const data = await response.json()
+    return data.team
   } catch (error) {
     console.error('Fout bij aanmaken team:', error)
     throw error
