@@ -74,11 +74,30 @@ function BeheerTeamsWerknemers() {
           
           // Filter uitnodigingen waarvan de email al bestaat bij actieve werknemers
           const actieveEmails = allWerknemers.map(w => w.email.toLowerCase())
-          const gefilterdeUitnodigingen = (uitnodigingenData || []).filter(uitnodiging => 
-            !actieveEmails.includes(uitnodiging.email.toLowerCase())
+          
+          // Extra check: controleer ook of er al een actieve gebruiker bestaat met dit email
+          const gefilterdeUitnodigingen = await Promise.all(
+            (uitnodigingenData || []).map(async (uitnodiging) => {
+              // Check of email al bestaat bij actieve werknemers
+              if (actieveEmails.includes(uitnodiging.email.toLowerCase())) {
+                return null
+              }
+              
+              // Extra check: controleer of er al een actieve gebruiker bestaat
+              const { data: bestaandeUser } = await supabase
+                .from('users')
+                .select('id, email')
+                .eq('email', uitnodiging.email)
+                .eq('role', 'employee')
+                .single()
+              
+              return bestaandeUser ? null : uitnodiging
+            })
           )
           
-          setUitnodigingen(gefilterdeUitnodigingen)
+          // Filter null values
+          const geldigeUitnodigingen = gefilterdeUitnodigingen.filter(Boolean)
+          setUitnodigingen(geldigeUitnodigingen)
       } else {
         console.error('Geen employer_id gevonden voor gebruiker')
         setUitnodigingen([])

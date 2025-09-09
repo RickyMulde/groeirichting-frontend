@@ -93,13 +93,13 @@ const TeamSelector = ({ onTeamSelect, selectedTeamId, className = '' }) => {
               <button
                 key={team.id}
                 onClick={() => handleTeamSelect(team.id)}
-                className={`flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
-                  selectedTeamId === team.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                className={`flex items-center w-full px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
+                  selectedTeamId === team.id ? 'bg-gray-100' : 'bg-white'
                 }`}
               >
-                <Users className="w-4 h-4 mr-3 text-gray-400" />
-                <span className="flex-1">{team.naam}</span>
-                <span className="text-xs text-gray-500">
+                <Users className="w-4 h-4 mr-3 text-gray-600" />
+                <span className="flex-1 text-gray-900">{team.naam}</span>
+                <span className="text-xs text-gray-600">
                   {team.aantal_leden || 0} {team.aantal_leden === 1 ? 'lid' : 'leden'}
                 </span>
               </button>
