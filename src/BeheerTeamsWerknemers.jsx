@@ -31,7 +31,7 @@ function BeheerTeamsWerknemers() {
     if (!session) return
 
     try {
-      // Haal teams op via backend API
+      // Haal teams op via backend API (bevat al werknemers data)
       const teamsResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/teams`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
@@ -41,31 +41,47 @@ function BeheerTeamsWerknemers() {
       if (teamsResponse.ok) {
         const teamsData = await teamsResponse.json()
         // Teams worden al beheerd door TeamsContext, dus we hoeven ze hier niet te zetten
+        
+        // Haal alle werknemers uit de teams data
+        let allWerknemers = []
+        if (teamsData.teams) {
+          teamsData.teams.forEach(team => {
+            if (team.leden) {
+              allWerknemers = allWerknemers.concat(team.leden)
+            }
+          })
+        }
+        
+        // Filter op geselecteerd team als nodig
+        if (selectedTeam) {
+          const selectedTeamData = teamsData.teams?.find(team => team.id === selectedTeam)
+          setWerknemers(selectedTeamData?.leden || [])
+        } else {
+          setWerknemers(allWerknemers)
+        }
+      }
+
+      // Haal eerst de gebruiker op om employer_id te krijgen
+      const { data: currentUser } = await supabase
+        .from('users')
+        .select('employer_id')
+        .eq('id', session.user.id)
+        .single()
+
+      if (!currentUser?.employer_id) {
+        console.error('Geen employer_id gevonden voor gebruiker')
+        setFoutmelding('Geen werkgever gevonden')
+        return
       }
 
       // Haal uitnodigingen op via Supabase (gefilterd op employer)
       const { data: uitnodigingenData } = await supabase
         .from('invitations')
         .select('*')
-        .eq('employer_id', session.user.user_metadata.employer_id)
+        .eq('employer_id', currentUser.employer_id)
         .order('created_at', { ascending: false })
 
       setUitnodigingen(uitnodigingenData || [])
-
-      // Haal werknemers op via Supabase (gefilterd op employer en team als geselecteerd)
-      let werknemersQuery = supabase
-        .from('users')
-        .select('*')
-        .eq('role', 'employee')
-        .eq('employer_id', session.user.user_metadata.employer_id)
-        .order('created_at', { ascending: false })
-
-      if (selectedTeam) {
-        werknemersQuery = werknemersQuery.eq('team_id', selectedTeam)
-      }
-
-      const { data: werknemersData } = await werknemersQuery
-      setWerknemers(werknemersData || [])
     } catch (error) {
       console.error('Error fetching data:', error)
       setFoutmelding('Fout bij ophalen van gegevens')
