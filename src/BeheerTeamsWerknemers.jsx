@@ -102,9 +102,9 @@ function BeheerTeamsWerknemers() {
       return
     }
 
-    // Valideer dat een team is geselecteerd
+    // Valideer dat een team is geselecteerd (niet "Totaal")
     if (!selectedTeam) {
-      setFoutmelding('Selecteer eerst een team')
+      setFoutmelding('Selecteer eerst een specifiek team om uit te nodigen')
       setLoading(false)
       return
     }

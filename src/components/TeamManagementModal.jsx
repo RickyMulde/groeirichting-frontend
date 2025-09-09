@@ -26,7 +26,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
       setShowCreateForm(false)
       clearError()
     }
-  }, [isOpen, clearError])
+  }, [isOpen])
 
   // Team aanmaken
   const handleCreateTeam = async (e) => {
