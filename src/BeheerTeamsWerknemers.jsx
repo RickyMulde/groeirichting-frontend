@@ -318,7 +318,16 @@ function BeheerTeamsWerknemers() {
         <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
           <div className="p-6">
             <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
-              <MailPlus className="text-kleur-primary" /> Werknemer uitnodigen
+              <MailPlus className="text-kleur-primary" /> 
+              {selectedTeam ? (
+                <>
+                  Werknemer uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
+                </>
+              ) : (
+                <>
+                  Werknemer uitnodigen <span className="text-sm text-gray-500">(niet mogelijk vanuit Totaal. Selecteer een team)</span>
+                </>
+              )}
             </h2>
             
             <form onSubmit={handleInvite} className="space-y-4">
