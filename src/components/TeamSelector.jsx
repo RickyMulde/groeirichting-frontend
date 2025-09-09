@@ -100,7 +100,7 @@ const TeamSelector = ({ onTeamSelect, selectedTeamId, className = '' }) => {
                 <Users className="w-4 h-4 mr-3 text-gray-400" />
                 <span className="flex-1">{team.naam}</span>
                 <span className="text-xs text-gray-500">
-                  {team.members_count || 0} {team.members_count === 1 ? 'lid' : 'leden'}
+                  {team.aantal_leden || 0} {team.aantal_leden === 1 ? 'lid' : 'leden'}
                 </span>
               </button>
             ))}

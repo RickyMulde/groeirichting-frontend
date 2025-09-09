@@ -105,8 +105,22 @@ export const TeamsProvider = ({ children }) => {
   useEffect(() => {
     if (user && user.role === 'employer') {
       fetchTeams()
+    } else if (!user) {
+      // Reset teams als user uitlogt
+      dispatch({ type: 'SET_TEAMS', payload: [] })
     }
   }, [user])
+
+  // Teams ook ophalen bij page load
+  useEffect(() => {
+    const checkUserAndFetchTeams = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user && user.role === 'employer') {
+        fetchTeams()
+      }
+    }
+    checkUserAndFetchTeams()
+  }, [])
 
   // Team leden ophalen wanneer team wordt geselecteerd
   useEffect(() => {
@@ -120,13 +134,22 @@ export const TeamsProvider = ({ children }) => {
   // Teams ophalen
   const fetchTeams = async (includeArchived = false) => {
     try {
+      console.log('🔄 Teams ophalen...')
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
       const teams = await teamsApi.getTeams(includeArchived)
+      console.log('✅ Teams opgehaald:', teams)
       dispatch({ type: 'SET_TEAMS', payload: teams })
     } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: error.message })
+      console.error('❌ Fout bij ophalen teams:', error)
+      // Alleen error tonen als het niet een sessie probleem is
+      if (!error.message.includes('sessie')) {
+        dispatch({ type: 'SET_ERROR', payload: error.message })
+      } else {
+        // Bij sessie probleem, teams leegmaken
+        dispatch({ type: 'SET_TEAMS', payload: [] })
+      }
     }
   }
 

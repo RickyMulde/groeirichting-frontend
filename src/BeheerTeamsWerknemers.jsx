@@ -68,15 +68,21 @@ function BeheerTeamsWerknemers() {
         .eq('id', session.user.id)
         .single()
 
-      if (currentUser?.employer_id) {
-        const { data: uitnodigingenData } = await supabase
-          .from('invitations')
-          .select('*')
-          .eq('employer_id', currentUser.employer_id)
-          .in('status', ['pending', 'revoked', 'expired'])
-          .order('created_at', { ascending: false })
+        if (currentUser?.employer_id) {
+          let uitnodigingenQuery = supabase
+            .from('invitations')
+            .select('*')
+            .eq('employer_id', currentUser.employer_id)
+            .in('status', ['pending', 'revoked', 'expired'])
+            .order('created_at', { ascending: false })
 
-        setUitnodigingen(uitnodigingenData || [])
+          // Filter op team als een specifiek team is geselecteerd
+          if (selectedTeam) {
+            uitnodigingenQuery = uitnodigingenQuery.eq('team_id', selectedTeam)
+          }
+
+          const { data: uitnodigingenData } = await uitnodigingenQuery
+          setUitnodigingen(uitnodigingenData || [])
       } else {
         console.error('Geen employer_id gevonden voor gebruiker')
         setUitnodigingen([])

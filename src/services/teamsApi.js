@@ -6,9 +6,14 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 // Helper functie om authorization header op te halen
 const getAuthHeaders = async () => {
   const { data: { session } } = await supabase.auth.getSession()
+  
+  if (!session?.access_token) {
+    throw new Error('Geen geldige sessie gevonden')
+  }
+  
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${session?.access_token}`
+    'Authorization': `Bearer ${session.access_token}`
   }
 }
 
