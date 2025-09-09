@@ -74,11 +74,12 @@ function BeheerTeamsWerknemers() {
         return
       }
 
-      // Haal uitnodigingen op via Supabase (gefilterd op employer)
+      // Haal uitnodigingen op via Supabase (gefilterd op employer, exclusief geaccepteerde)
       const { data: uitnodigingenData } = await supabase
         .from('invitations')
         .select('*')
         .eq('employer_id', currentUser.employer_id)
+        .in('status', ['pending', 'revoked', 'expired'])
         .order('created_at', { ascending: false })
 
       setUitnodigingen(uitnodigingenData || [])
