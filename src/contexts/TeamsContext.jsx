@@ -131,7 +131,7 @@ export const TeamsProvider = ({ children }) => {
       // Reset teams als user uitlogt
       dispatch({ type: 'SET_TEAMS', payload: [] })
     }
-  }, [user, fetchTeams])
+  }, [user]) // Verwijder fetchTeams uit dependencies om hoisting probleem te voorkomen
 
   // Team leden ophalen wanneer team wordt geselecteerd
   useEffect(() => {
