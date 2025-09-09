@@ -85,6 +85,28 @@ export const TeamsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(teamsReducer, initialState)
   const [user, setUser] = React.useState(null)
 
+  // Teams ophalen
+  const fetchTeams = useCallback(async (includeArchived = false) => {
+    try {
+      console.log('🔄 Teams ophalen...')
+      dispatch({ type: 'SET_LOADING', payload: true })
+      dispatch({ type: 'CLEAR_ERROR' })
+      
+      const teams = await teamsApi.getTeams(includeArchived)
+      console.log('✅ Teams opgehaald:', teams)
+      dispatch({ type: 'SET_TEAMS', payload: teams })
+    } catch (error) {
+      console.error('❌ Fout bij ophalen teams:', error)
+      // Alleen error tonen als het niet een sessie probleem is
+      if (!error.message.includes('sessie')) {
+        dispatch({ type: 'SET_ERROR', payload: error.message })
+      } else {
+        // Bij sessie probleem, teams leegmaken
+        dispatch({ type: 'SET_TEAMS', payload: [] })
+      }
+    }
+  }, [])
+
   // User ophalen bij mount
   useEffect(() => {
     const getUser = async () => {
@@ -119,28 +141,6 @@ export const TeamsProvider = ({ children }) => {
       dispatch({ type: 'SET_MEMBERS', payload: [] })
     }
   }, [state.selectedTeam])
-
-  // Teams ophalen
-  const fetchTeams = useCallback(async (includeArchived = false) => {
-    try {
-      console.log('🔄 Teams ophalen...')
-      dispatch({ type: 'SET_LOADING', payload: true })
-      dispatch({ type: 'CLEAR_ERROR' })
-      
-      const teams = await teamsApi.getTeams(includeArchived)
-      console.log('✅ Teams opgehaald:', teams)
-      dispatch({ type: 'SET_TEAMS', payload: teams })
-    } catch (error) {
-      console.error('❌ Fout bij ophalen teams:', error)
-      // Alleen error tonen als het niet een sessie probleem is
-      if (!error.message.includes('sessie')) {
-        dispatch({ type: 'SET_ERROR', payload: error.message })
-      } else {
-        // Bij sessie probleem, teams leegmaken
-        dispatch({ type: 'SET_TEAMS', payload: [] })
-      }
-    }
-  }, [])
 
   // Team leden ophalen
   const fetchTeamMembers = async (teamId) => {
