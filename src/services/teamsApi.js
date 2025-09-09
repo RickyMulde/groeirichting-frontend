@@ -30,7 +30,8 @@ export const getTeams = async (includeArchived = false) => {
       throw new Error(errorData.error || `HTTP ${response.status}: Fout bij ophalen teams`)
     }
 
-    return await response.json()
+    const data = await response.json()
+    return data.teams || []
   } catch (error) {
     console.error('Fout bij ophalen teams:', error)
     throw error
