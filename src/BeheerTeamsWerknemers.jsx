@@ -1,11 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from './supabaseClient'
-import { Trash2, RefreshCw, ArrowLeft, Users, Settings, Plus, MailPlus, Pencil } from 'lucide-react'
+import { Trash2, RefreshCw, ArrowLeft, Users, Settings, MailPlus, Pencil } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTeams } from './contexts/TeamsContext'
 import TeamManagementModal from './components/TeamManagementModal'
 import TeamSelector from './components/TeamSelector'
-import InviteModal from './components/InviteModal'
 import Alert from './Alert'
 
 function BeheerTeamsWerknemers() {
@@ -17,10 +16,10 @@ function BeheerTeamsWerknemers() {
   const [foutmelding, setFoutmelding] = useState('')
   const [succesmelding, setSuccesmelding] = useState('')
   const [showTeamModal, setShowTeamModal] = useState(false)
-  const [showInviteModal, setShowInviteModal] = useState(false)
   const [email, setEmail] = useState('')
   const [functieOmschrijving, setFunctieOmschrijving] = useState('')
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [isInviteExpanded, setIsInviteExpanded] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -44,19 +43,21 @@ function BeheerTeamsWerknemers() {
         // Teams worden al beheerd door TeamsContext, dus we hoeven ze hier niet te zetten
       }
 
-      // Haal uitnodigingen op via Supabase (deze hebben we nog niet geconverteerd naar backend API)
+      // Haal uitnodigingen op via Supabase (gefilterd op employer)
       const { data: uitnodigingenData } = await supabase
         .from('invitations')
         .select('*')
+        .eq('employer_id', session.user.user_metadata.employer_id)
         .order('created_at', { ascending: false })
 
       setUitnodigingen(uitnodigingenData || [])
 
-      // Haal werknemers op via Supabase (gefilterd op team als geselecteerd)
+      // Haal werknemers op via Supabase (gefilterd op employer en team als geselecteerd)
       let werknemersQuery = supabase
         .from('users')
         .select('*')
         .eq('role', 'employee')
+        .eq('employer_id', session.user.user_metadata.employer_id)
         .order('created_at', { ascending: false })
 
       if (selectedTeam) {
@@ -71,10 +72,6 @@ function BeheerTeamsWerknemers() {
     }
   }, [selectedTeam, refreshTrigger])
 
-  const handleInviteSent = (result) => {
-    setSuccesmelding(`Uitnodiging verzonden naar ${result.email}`)
-    setRefreshTrigger(prev => prev + 1)
-  }
 
   // Inline uitnodiging functionaliteit (van oude Werknemerbeheren.jsx)
   const handleInvite = async (e) => {
@@ -118,6 +115,7 @@ function BeheerTeamsWerknemers() {
       } else {
         setEmail('')
         setFunctieOmschrijving('')
+        setIsInviteExpanded(false)
         setSuccesmelding('Uitnodiging succesvol verzonden!')
         setTimeout(() => setSuccesmelding(''), 5000)
         setRefreshTrigger(prev => prev + 1)
@@ -264,13 +262,6 @@ function BeheerTeamsWerknemers() {
                 <Settings className="w-4 h-4" />
                 <span>Beheer Teams</span>
               </button>
-              <button
-                onClick={() => setShowInviteModal(true)}
-                className="btn btn-primary flex items-center space-x-2"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Werknemer Uitnodigen</span>
-              </button>
             </div>
           </div>
         </div>
@@ -293,64 +284,78 @@ function BeheerTeamsWerknemers() {
           />
         </div>
 
-        {/* Inline Uitnodiging Form */}
-        <div className="bg-white shadow-md p-6 rounded-xl mb-8">
-          <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
-            <MailPlus className="text-kleur-primary" /> Werknemer uitnodigen
-          </h2>
-          <form onSubmit={handleInvite} className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder="E-mailadres" 
-                required 
-                className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
-              />
-              <button type="submit" disabled={loading || !selectedTeam} className="btn btn-primary">
-                {loading ? 'Versturen...' : 'Uitnodigen'}
-              </button>
-            </div>
+        {/* Uitnodiging Harmonica */}
+        <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
+          <div className="p-6">
+            <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
+              <MailPlus className="text-kleur-primary" /> Werknemer uitnodigen
+            </h2>
             
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
-                Voeg een korte omschrijving van de functie van deze werknemer toe
-              </label>
-              <input 
-                type="text" 
-                value={functieOmschrijving} 
-                onChange={(e) => setFunctieOmschrijving(e.target.value)} 
-                placeholder="Bijv. Planner thuiszorgroutes en ondersteuning zorgverleners" 
-                maxLength={100}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
-              />
-              <div className="text-sm text-gray-600">
-                <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende werknemer/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
-                <ul className="list-disc list-inside space-y-1">
-                  <li>Planner thuiszorgroutes en ondersteuning zorgverleners</li>
-                  <li>Schadebehandelaar met telefonisch klantcontact</li>
-                  <li>Logistiek medewerker orderverwerking en verzending</li>
-                </ul>
+            <form onSubmit={handleInvite} className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <input 
+                  type="email" 
+                  value={email} 
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (e.target.value.length > 0) {
+                      setIsInviteExpanded(true)
+                    }
+                  }}
+                  onFocus={() => setIsInviteExpanded(true)}
+                  placeholder="E-mailadres" 
+                  required 
+                  className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                />
+                <button type="submit" disabled={loading || !selectedTeam} className="btn btn-primary">
+                  {loading ? 'Versturen...' : 'Uitnodigen'}
+                </button>
               </div>
-            </div>
-          </form>
-          
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-0.5">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              
+              {/* Harmonica inhoud */}
+              <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                isInviteExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+              }`}>
+                <div className="space-y-3 pt-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Voeg een korte omschrijving van de functie van deze werknemer toe
+                  </label>
+                  <input 
+                    type="text" 
+                    value={functieOmschrijving} 
+                    onChange={(e) => setFunctieOmschrijving(e.target.value)} 
+                    placeholder="Bijv. Planner thuiszorgroutes en ondersteuning zorgverleners" 
+                    maxLength={100}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                  />
+                  <div className="text-sm text-gray-600">
+                    <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende werknemer/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Planner thuiszorgroutes en ondersteuning zorgverleners</li>
+                      <li>Schadebehandelaar met telefonisch klantcontact</li>
+                      <li>Logistiek medewerker orderverwerking en verzending</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
+                      <p className="text-blue-700">
+                        Jouw werknemer/teamlid ontvangt een mail, waarmee jouw werknemer/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
+                        Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="text-sm text-blue-800">
-                <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
-                <p className="text-blue-700">
-                  Jouw werknemer/teamlid ontvangt een mail, waarmee jouw werknemer/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
-                  Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
-                </p>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -529,11 +534,6 @@ function BeheerTeamsWerknemers() {
       <TeamManagementModal
         isOpen={showTeamModal}
         onClose={() => setShowTeamModal(false)}
-      />
-      <InviteModal
-        isOpen={showInviteModal}
-        onClose={() => setShowInviteModal(false)}
-        onInviteSent={handleInviteSent}
       />
 
       {/* Werknemer Bewerken Modal */}
