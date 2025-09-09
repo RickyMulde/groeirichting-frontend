@@ -31,34 +31,23 @@ function BeheerTeamsWerknemers() {
     if (!session) return
 
     try {
-      // Haal teams op via backend API (bevat al werknemers data)
-      const teamsResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/teams`, {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
+      // Teams worden al beheerd door TeamsContext, dus we gebruiken die data
+      // Haal alle werknemers uit de teams data uit context
+      let allWerknemers = []
+      if (teams && teams.length > 0) {
+        teams.forEach(team => {
+          if (team.leden) {
+            allWerknemers = allWerknemers.concat(team.leden)
+          }
+        })
+      }
       
-      if (teamsResponse.ok) {
-        const teamsData = await teamsResponse.json()
-        // Teams worden al beheerd door TeamsContext, dus we hoeven ze hier niet te zetten
-        
-        // Haal alle werknemers uit de teams data
-        let allWerknemers = []
-        if (teamsData.teams) {
-          teamsData.teams.forEach(team => {
-            if (team.leden) {
-              allWerknemers = allWerknemers.concat(team.leden)
-            }
-          })
-        }
-        
-        // Filter op geselecteerd team als nodig
-        if (selectedTeam) {
-          const selectedTeamData = teamsData.teams?.find(team => team.id === selectedTeam)
-          setWerknemers(selectedTeamData?.leden || [])
-        } else {
-          setWerknemers(allWerknemers)
-        }
+      // Filter op geselecteerd team als nodig
+      if (selectedTeam) {
+        const selectedTeamData = teams?.find(team => team.id === selectedTeam)
+        setWerknemers(selectedTeamData?.leden || [])
+      } else {
+        setWerknemers(allWerknemers)
       }
 
       // Haal uitnodigingen op via Supabase (gefilterd op employer, exclusief geaccepteerde)
@@ -82,7 +71,14 @@ function BeheerTeamsWerknemers() {
           }
 
           const { data: uitnodigingenData } = await uitnodigingenQuery
-          setUitnodigingen(uitnodigingenData || [])
+          
+          // Filter uitnodigingen waarvan de email al bestaat bij actieve werknemers
+          const actieveEmails = allWerknemers.map(w => w.email.toLowerCase())
+          const gefilterdeUitnodigingen = (uitnodigingenData || []).filter(uitnodiging => 
+            !actieveEmails.includes(uitnodiging.email.toLowerCase())
+          )
+          
+          setUitnodigingen(gefilterdeUitnodigingen)
       } else {
         console.error('Geen employer_id gevonden voor gebruiker')
         setUitnodigingen([])
@@ -91,7 +87,7 @@ function BeheerTeamsWerknemers() {
       console.error('Error fetching data:', error)
       setFoutmelding('Fout bij ophalen van gegevens')
     }
-  }, [selectedTeam, refreshTrigger])
+  }, [selectedTeam, refreshTrigger, teams])
 
 
   // Inline uitnodiging functionaliteit (van oude Werknemerbeheren.jsx)

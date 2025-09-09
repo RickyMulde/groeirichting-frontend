@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect, useState } from 'react'
+import React, { createContext, useContext, useReducer, useEffect, useState, useCallback } from 'react'
 import { supabase } from '../supabaseClient'
 import * as teamsApi from '../services/teamsApi'
 
@@ -109,18 +109,7 @@ export const TeamsProvider = ({ children }) => {
       // Reset teams als user uitlogt
       dispatch({ type: 'SET_TEAMS', payload: [] })
     }
-  }, [user])
-
-  // Teams ook ophalen bij page load
-  useEffect(() => {
-    const checkUserAndFetchTeams = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user && user.role === 'employer') {
-        fetchTeams()
-      }
-    }
-    checkUserAndFetchTeams()
-  }, [])
+  }, [user, fetchTeams])
 
   // Team leden ophalen wanneer team wordt geselecteerd
   useEffect(() => {
@@ -132,7 +121,7 @@ export const TeamsProvider = ({ children }) => {
   }, [state.selectedTeam])
 
   // Teams ophalen
-  const fetchTeams = async (includeArchived = false) => {
+  const fetchTeams = useCallback(async (includeArchived = false) => {
     try {
       console.log('🔄 Teams ophalen...')
       dispatch({ type: 'SET_LOADING', payload: true })
@@ -151,7 +140,7 @@ export const TeamsProvider = ({ children }) => {
         dispatch({ type: 'SET_TEAMS', payload: [] })
       }
     }
-  }
+  }, [])
 
   // Team leden ophalen
   const fetchTeamMembers = async (teamId) => {
