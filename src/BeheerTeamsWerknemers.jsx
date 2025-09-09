@@ -61,28 +61,26 @@ function BeheerTeamsWerknemers() {
         }
       }
 
-      // Haal eerst de gebruiker op om employer_id te krijgen
+      // Haal uitnodigingen op via Supabase (gefilterd op employer, exclusief geaccepteerde)
       const { data: currentUser } = await supabase
         .from('users')
         .select('employer_id')
         .eq('id', session.user.id)
         .single()
 
-      if (!currentUser?.employer_id) {
+      if (currentUser?.employer_id) {
+        const { data: uitnodigingenData } = await supabase
+          .from('invitations')
+          .select('*')
+          .eq('employer_id', currentUser.employer_id)
+          .in('status', ['pending', 'revoked', 'expired'])
+          .order('created_at', { ascending: false })
+
+        setUitnodigingen(uitnodigingenData || [])
+      } else {
         console.error('Geen employer_id gevonden voor gebruiker')
-        setFoutmelding('Geen werkgever gevonden')
-        return
+        setUitnodigingen([])
       }
-
-      // Haal uitnodigingen op via Supabase (gefilterd op employer, exclusief geaccepteerde)
-      const { data: uitnodigingenData } = await supabase
-        .from('invitations')
-        .select('*')
-        .eq('employer_id', currentUser.employer_id)
-        .in('status', ['pending', 'revoked', 'expired'])
-        .order('created_at', { ascending: false })
-
-      setUitnodigingen(uitnodigingenData || [])
     } catch (error) {
       console.error('Error fetching data:', error)
       setFoutmelding('Fout bij ophalen van gegevens')
