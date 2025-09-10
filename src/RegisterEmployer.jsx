@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { supabase } from './supabaseClient'
 
 function RegisterEmployer() {
   const [companyName, setCompanyName] = useState('')
@@ -27,7 +28,7 @@ function RegisterEmployer() {
       }
 
       const { data: { session } } = await supabase.auth.getSession()
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employer`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register-employer`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
