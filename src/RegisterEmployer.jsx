@@ -27,41 +27,30 @@ function RegisterEmployer() {
         return
       }
 
-      // Geen Authorization header voor registratie - gebruiker is nog niet ingelogd
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employer`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+      // Direct Supabase signup - geen backend call meer
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${import.meta.env.VITE_FRONTEND_URL}/verify-email`
+        }
+      })
+
+      if (error) {
+        setError(error.message || 'Registratie mislukt.')
+      } else {
+        // Sla extra gegevens op voor later gebruik
+        localStorage.setItem('pendingEmployerData', JSON.stringify({
           company_name: companyName,
           contact_phone: contactPhone,
-          email,
-          password,
           first_name: firstName,
           middle_name: middleName,
           last_name: lastName
-        })
-      })
-
-      const result = await response.json()
-      if (!response.ok) {
-        setError(result.error || 'Registratie mislukt.')
-      } else {
-        // Sla email op in localStorage voor verificatiepagina
-        localStorage.setItem('pendingVerificationEmail', email)
+        }))
         
         setSuccess('Account succesvol aangemaakt! Controleer je e-mailadres voor de verificatielink om je account te activeren.')
         
-        // Wacht even en ga dan naar verificatiepagina
-        setTimeout(() => {
-          if (result.redirectUrl) {
-            window.location.href = result.redirectUrl
-          } else {
-            window.location.href = `/verify-email?email=${encodeURIComponent(email)}`
-          }
-        }, 2000)
-        
+        // Reset form
         setCompanyName('')
         setFirstName('')
         setMiddleName('')
@@ -69,7 +58,7 @@ function RegisterEmployer() {
         setContactPhone('')
         setPassword('')
         setConfirmPassword('')
-        // Behoud email voor verificatiepagina
+        setEmail('')
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')

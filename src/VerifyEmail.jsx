@@ -8,6 +8,55 @@ function VerifyEmail() {
   const [resendLoading, setResendLoading] = useState(false)
   const [message, setMessage] = useState('')
 
+  // Handle employer provisioning after email verification
+  const handleEmployerProvisioning = async (user) => {
+    try {
+      // Haal opgeslagen employer data op
+      const pendingData = localStorage.getItem('pendingEmployerData')
+      if (!pendingData) {
+        setMessage('Geen bedrijfsgegevens gevonden. Ga terug naar registratie.')
+        return
+      }
+
+      const employerData = JSON.parse(pendingData)
+      
+      // Haal access token op
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        setMessage('Geen toegangstoken gevonden. Probeer opnieuw in te loggen.')
+        return
+      }
+
+      // Roep provisioning endpoint aan
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify(employerData)
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        // Verwijder opgeslagen data
+        localStorage.removeItem('pendingEmployerData')
+        setMessage('Account succesvol ingericht! Je wordt doorgestuurd naar je portaal...')
+        
+        // Stuur door naar werkgever portaal
+        setTimeout(() => {
+          navigate('/werkgever-portaal')
+        }, 2000)
+      } else {
+        setMessage('Fout bij inrichten account: ' + (result.error || 'Onbekende fout'))
+      }
+    } catch (error) {
+      console.error('Provisioning error:', error)
+      setMessage('Er is iets misgegaan bij het inrichten van je account.')
+    }
+  }
+
   useEffect(() => {
     // Controleer of er een auth hash in de URL staat (van verificatielink)
     const handleAuthCallback = async () => {
@@ -27,31 +76,10 @@ function VerifyEmail() {
 
           if (session?.user) {
             console.log('User verified:', session.user.email)
-            setMessage('E-mail succesvol geverifieerd! Je wordt doorgestuurd...')
+            setMessage('E-mail succesvol geverifieerd! Account wordt ingericht...')
             
-            // Haal gebruikersrol op
-            const { data: profile, error: profileError } = await supabase
-              .from('users')
-              .select('role')
-              .eq('id', session.user.id)
-              .single()
-            
-            if (profileError) {
-              console.error('Profile error:', profileError)
-              setMessage('Verificatie succesvol, maar er is een probleem met je profiel.')
-              return
-            }
-            
-            // Stuur door naar juiste portaal
-            setTimeout(() => {
-              if (profile?.role === 'employer') {
-                navigate('/werkgever-portaal')
-              } else if (profile?.role === 'employee') {
-                navigate('/werknemer-portaal')
-              } else {
-                navigate('/login')
-              }
-            }, 2000)
+            // Probeer provisioning voor employer
+            await handleEmployerProvisioning(session.user)
             
             return
           }
