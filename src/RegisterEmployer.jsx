@@ -32,7 +32,10 @@ function RegisterEmployer() {
         email,
         password,
         options: {
-          emailRedirectTo: `${import.meta.env.VITE_FRONTEND_URL}/na-verificatie`
+          emailRedirectTo: `${import.meta.env.VITE_FRONTEND_URL}/na-verificatie`,
+          data: {
+            email_confirm: true  // Skip e-mail verificatie
+          }
         }
       })
 
