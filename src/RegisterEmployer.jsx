@@ -30,13 +30,8 @@ function RegisterEmployer() {
       // Volledig via Supabase Auth - geen backend nodig
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
-        options: {
-          emailRedirectTo: `${import.meta.env.VITE_FRONTEND_URL}/na-verificatie`,
-          data: {
-            email_confirm: true  // Skip e-mail verificatie
-          }
-        }
+        password
+        // Geen options - skip e-mail verificatie volledig
       })
 
       if (error) {
