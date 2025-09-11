@@ -77,12 +77,11 @@ function RegisterEmployee() {
       return
     }
 
-    const { data: { session } } = await supabase.auth.getSession()
+    // Geen Authorization header voor registratie - gebruiker is nog niet ingelogd
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employee`, {
       method: 'POST',
       headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session?.access_token}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         token,
