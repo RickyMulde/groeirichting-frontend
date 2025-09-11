@@ -29,6 +29,7 @@ import WerknemerInstellingen from './WerknemerInstellingen'
 import UitlegPrivacy from './uitleg-privacy'
 import Offerte from './Offerte'
 import Contact from './Contact'
+import NaVerificatie from './NaVerificatie'
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         <Route path="/registreer-werkgever" element={<RegisterEmployer />} />
         <Route path="/registreer-werknemer" element={<RegisterEmployee />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/na-verificatie" element={<NaVerificatie />} />
         <Route path="/werkgever-portaal" element={<EmployerPortal />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/beheer-teams-werknemers" element={<BeheerTeamsWerknemers />} />

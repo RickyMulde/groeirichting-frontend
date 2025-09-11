@@ -27,19 +27,19 @@ function RegisterEmployer() {
         return
       }
 
-      // Direct Supabase signup - geen backend call meer
+      // Volledig via Supabase Auth - geen backend nodig
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${import.meta.env.VITE_FRONTEND_URL}/verify-email`
+          emailRedirectTo: `${import.meta.env.VITE_FRONTEND_URL}/na-verificatie`
         }
       })
 
       if (error) {
         setError(error.message || 'Registratie mislukt.')
       } else {
-        // Sla extra gegevens op voor later gebruik
+        // Sla extra gegevens op voor provisioning na verificatie
         localStorage.setItem('pendingEmployerData', JSON.stringify({
           company_name: companyName,
           contact_phone: contactPhone,

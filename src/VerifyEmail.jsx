@@ -27,7 +27,7 @@ function VerifyEmail() {
         return
       }
 
-      // Roep provisioning endpoint aan
+      // Roep provisioning endpoint aan via backend
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`, {
         method: 'POST',
         headers: {
