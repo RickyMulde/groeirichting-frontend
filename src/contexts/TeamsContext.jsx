@@ -113,11 +113,16 @@ export const TeamsProvider = ({ children }) => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         // Haal user data op uit database (inclusief role)
-        const { data: userData } = await supabase
+        const { data: userDataArray, error: userError } = await supabase
           .from('users')
           .select('id, email, role, employer_id')
           .eq('id', user.id)
-          .single()
+          .limit(1)
+        
+        const userData = userDataArray?.[0] || null
+        if (userError) {
+          console.error('Error fetching user data:', userError)
+        }
         setUser(userData)
       } else {
         setUser(null)
@@ -129,11 +134,16 @@ export const TeamsProvider = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         // Haal user data op uit database (inclusief role)
-        const { data: userData } = await supabase
+        const { data: userDataArray, error: userError } = await supabase
           .from('users')
           .select('id, email, role, employer_id')
           .eq('id', session.user.id)
-          .single()
+          .limit(1)
+        
+        const userData = userDataArray?.[0] || null
+        if (userError) {
+          console.error('Error fetching user data:', userError)
+        }
         setUser(userData)
       } else {
         setUser(null)
