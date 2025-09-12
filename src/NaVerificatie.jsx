@@ -11,11 +11,17 @@ function NaVerificatie() {
   // Check if user is already provisioned
   const checkProvisioning = async (userId) => {
     try {
-      const { data: user } = await supabase
+      const { data: userArray, error: userError } = await supabase
         .from('users')
         .select('id, employer_id, role')
         .eq('id', userId)
-        .single()
+        .limit(1)
+      
+      const user = userArray?.[0] || null
+      if (userError) {
+        console.error('Check provisioning error:', userError)
+        return false
+      }
 
       return user?.employer_id && user?.role === 'employer'
     } catch (error) {
