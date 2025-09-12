@@ -41,14 +41,38 @@ function RegisterEmployer() {
         }
       })
 
-      console.log('🔧 Supabase signUp response:', { data, error })
-
+      // 🚨 ROBUUSTE ERROR- EN STATUSLOGGING
       if (error) {
-        console.error('🚨 Supabase signUp error:', error)
+        console.error('🚨 SignUp error:', error)
+        console.error('🚨 Error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+          cause: error.cause
+        })
         setError(error.message || 'Registratie mislukt.')
-      } else if (data.user && !data.user.email_confirmed_at) {
-        // E-mail verificatie vereist - dit is normaal!
-        console.log('✅ Account aangemaakt, e-mail verificatie vereist')
+      } else {
+        console.log('✅ SignUp data:', data)
+        
+        // Wanneer email-verificatie verplicht is:
+        if (!data.session) {
+          console.info('📧 Sign-up gestart. Controleer je e-mail voor verificatie.')
+        }
+        
+        // Identity conflict (account bestaat al)
+        const identities = data.user?.identities ?? []
+        if (identities.length === 0) {
+          console.warn('⚠️ Dit e-mailadres lijkt al te bestaan. Probeer in te loggen of wachtwoord reset.')
+        }
+        
+        // User details logging
+        console.log('👤 User details:', {
+          id: data.user?.id,
+          email: data.user?.email,
+          email_confirmed_at: data.user?.email_confirmed_at,
+          identities_count: identities.length,
+          session_exists: !!data.session
+        })
         
         // Sla extra gegevens op voor provisioning na verificatie
         localStorage.setItem('pendingEmployerData', JSON.stringify({
@@ -70,10 +94,6 @@ function RegisterEmployer() {
         setPassword('')
         setConfirmPassword('')
         setEmail('')
-      } else {
-        // Direct ingelogd (e-mail verificatie uit) - onwaarschijnlijk maar mogelijk
-        console.log('✅ Account aangemaakt en direct ingelogd')
-        setSuccess('Account succesvol aangemaakt!')
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')
