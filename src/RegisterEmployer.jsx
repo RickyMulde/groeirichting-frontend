@@ -24,14 +24,20 @@ function RegisterEmployer() {
     try {
       if (password !== confirmPassword) {
         setError('Wachtwoorden komen niet overeen.')
+        setLoading(false) // 🚨 FIX: Reset loading state
         return
       }
 
       // Volledig via Supabase Auth - geen backend nodig
+      const frontendUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin
+      console.log('🔧 Frontend URL for redirect:', frontendUrl)
+      
       const { data, error } = await supabase.auth.signUp({
         email,
-        password
-        // Geen options - skip e-mail verificatie volledig
+        password,
+        options: {
+          emailRedirectTo: `${frontendUrl}/na-verificatie`
+        }
       })
 
       if (error) {
