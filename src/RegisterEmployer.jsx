@@ -54,15 +54,15 @@ function RegisterEmployer() {
       } else {
         console.log('✅ SignUp data:', data)
         
-        // Wanneer email-verificatie verplicht is:
+        // Handige extra logging voor account-bestaat-al detectie
+        const identities = data.user?.identities ?? []
+        
         if (!data.session) {
-          console.info('📧 Sign-up gestart. Controleer je e-mail voor verificatie.')
+          console.info('📧 Sign-up gestart; e-mailverificatie vereist.')
         }
         
-        // Identity conflict (account bestaat al)
-        const identities = data.user?.identities ?? []
         if (identities.length === 0) {
-          console.warn('⚠️ Dit e-mailadres lijkt al te bestaan. Probeer in te loggen of wachtwoord reset.')
+          console.warn('⚠️ E-mailadres bestaat mogelijk al; probeer inloggen of wachtwoord reset.')
         }
         
         // User details logging
