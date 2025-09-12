@@ -30,7 +30,8 @@ function RegisterEmployer() {
 
       // Volledig via Supabase Auth - geen backend nodig
       const frontendUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin
-      console.log('🔧 Frontend URL for redirect:', frontendUrl)
+      
+      console.log('🔧 Attempting Supabase signUp with:', { email, hasPassword: !!password, frontendUrl })
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -40,9 +41,15 @@ function RegisterEmployer() {
         }
       })
 
+      console.log('🔧 Supabase signUp response:', { data, error })
+
       if (error) {
+        console.error('🚨 Supabase signUp error:', error)
         setError(error.message || 'Registratie mislukt.')
-      } else {
+      } else if (data.user && !data.user.email_confirmed_at) {
+        // E-mail verificatie vereist - dit is normaal!
+        console.log('✅ Account aangemaakt, e-mail verificatie vereist')
+        
         // Sla extra gegevens op voor provisioning na verificatie
         localStorage.setItem('pendingEmployerData', JSON.stringify({
           company_name: companyName,
@@ -63,6 +70,10 @@ function RegisterEmployer() {
         setPassword('')
         setConfirmPassword('')
         setEmail('')
+      } else {
+        // Direct ingelogd (e-mail verificatie uit) - onwaarschijnlijk maar mogelijk
+        console.log('✅ Account aangemaakt en direct ingelogd')
+        setSuccess('Account succesvol aangemaakt!')
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')
