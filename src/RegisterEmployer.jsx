@@ -28,51 +28,32 @@ function RegisterEmployer() {
         return
       }
 
-      // Volledig via Supabase Auth - geen backend nodig
+      // Nieuwe flow: gebruik backend endpoint voor verificatie via Resend
       const frontendUrl = import.meta.env.VITE_FRONTEND_URL
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+      const redirectTo = `${frontendUrl}/na-verificatie`
       
-      console.log('🔧 Attempting Supabase signUp with:', { email, hasPassword: !!password, frontendUrl })
+      console.log('🔧 Attempting signup via backend:', { email, hasPassword: !!password, redirectTo })
       
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${frontendUrl}/na-verificatie`
-        }
+      const response = await fetch(`${apiBaseUrl}/api/auth/signup-init`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          redirectTo
+        })
       })
 
-      // 🚨 ROBUUSTE ERROR- EN STATUSLOGGING
-      if (error) {
-        console.error('🚨 SignUp error:', error)
-        console.error('🚨 Error details:', {
-          message: error.message,
-          status: error.status,
-          name: error.name,
-          cause: error.cause
-        })
-        setError(error.message || 'Registratie mislukt.')
+      const result = await response.json()
+
+      if (!response.ok) {
+        console.error('🚨 Backend signup error:', result)
+        setError(result.error || 'Registratie mislukt.')
       } else {
-        console.log('✅ SignUp data:', data)
-        
-        // Handige extra logging voor account-bestaat-al detectie
-        const identities = data.user?.identities ?? []
-        
-        if (!data.session) {
-          console.info('📧 Sign-up gestart; e-mailverificatie vereist.')
-        }
-        
-        if (identities.length === 0) {
-          console.warn('⚠️ E-mailadres bestaat mogelijk al; probeer inloggen of wachtwoord reset.')
-        }
-        
-        // User details logging
-        console.log('👤 User details:', {
-          id: data.user?.id,
-          email: data.user?.email,
-          email_confirmed_at: data.user?.email_confirmed_at,
-          identities_count: identities.length,
-          session_exists: !!data.session
-        })
+        console.log('✅ Backend signup success:', result)
         
         // Sla extra gegevens op voor provisioning na verificatie
         localStorage.setItem('pendingEmployerData', JSON.stringify({
