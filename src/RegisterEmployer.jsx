@@ -29,7 +29,7 @@ function RegisterEmployer() {
       }
 
       // Volledig via Supabase Auth - geen backend nodig
-      const frontendUrl = import.meta.env.VITE_FRONTEND_URL || window.location.origin
+      const frontendUrl = import.meta.env.VITE_FRONTEND_URL
       
       console.log('🔧 Attempting Supabase signUp with:', { email, hasPassword: !!password, frontendUrl })
       
