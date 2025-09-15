@@ -134,6 +134,40 @@ function VerifyEmail() {
         }
       }
       
+      // Check voor Supabase redirect (status 303) - nieuwe methode
+      // Als we op /na-verificatie komen zonder parameters, kan het een redirect zijn
+      if (window.location.pathname === '/na-verificatie' && !hash && !searchParams.has('token')) {
+        console.log('Supabase redirect detected, checking session...')
+        
+        try {
+          // Wacht even en controleer of de sessie is bijgewerkt
+          setTimeout(async () => {
+            const { data: { session }, error } = await supabase.auth.getSession()
+            
+            if (error) {
+              console.error('Session error:', error)
+              setMessage('Fout bij verwerken verificatie: ' + error.message)
+              return
+            }
+
+            if (session?.user && session.user.email_confirmed_at) {
+              console.log('User verified via redirect:', session.user.email)
+              setMessage('E-mail succesvol geverifieerd! Account wordt ingericht...')
+              
+              // Probeer provisioning voor employer
+              await handleEmployerProvisioning(session.user)
+              
+              return
+            } else {
+              setMessage('Verificatie wordt verwerkt... Probeer de pagina te verversen.')
+            }
+          }, 1000)
+        } catch (error) {
+          console.error('Redirect verification error:', error)
+          setMessage('Er is iets misgegaan bij het verwerken van de verificatie.')
+        }
+      }
+      
       // Als geen auth callback, controleer of gebruiker al geverifieerd is
       const checkExistingVerification = async () => {
         try {
