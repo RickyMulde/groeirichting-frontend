@@ -31,11 +31,18 @@ export default function ProvisionEmployer() {
         console.log('[ProvisionEmployer] User ID:', user.id);
 
         // Roep backend provisioning endpoint aan
+        const session = await supabase.auth.getSession();
+        const accessToken = session.data.session?.access_token;
+        
+        console.log('[ProvisionEmployer] Access token:', accessToken ? 'Present' : 'Missing');
+        console.log('[ProvisionEmployer] Employer data:', employerData);
+        console.log('[ProvisionEmployer] API URL:', `${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`);
+        
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+            'Authorization': `Bearer ${accessToken}`
           },
           body: JSON.stringify({
             ...employerData,
@@ -43,10 +50,17 @@ export default function ProvisionEmployer() {
           })
         });
 
+        console.log('[ProvisionEmployer] Response status:', response.status);
+        console.log('[ProvisionEmployer] Response headers:', Object.fromEntries(response.headers.entries()));
+
         if (!response.ok) {
           const errorData = await response.json();
+          console.error('[ProvisionEmployer] Error response:', errorData);
           throw new Error(errorData.error || 'Provisioning mislukt');
         }
+
+        const result = await response.json();
+        console.log('[ProvisionEmployer] Success response:', result);
 
         console.log('[ProvisionEmployer] Provisioning succesvol');
         
@@ -66,7 +80,20 @@ export default function ProvisionEmployer() {
         setStatus('error');
       }
     };
+
+    // Timeout na 30 seconden
+    const timeout = setTimeout(() => {
+      console.error('[ProvisionEmployer] Timeout - provisioning duurt te lang');
+      setErrorMsg('Provisioning duurt te lang. Probeer het opnieuw.');
+      setStatus('error');
+    }, 30000);
+
     run();
+
+    // Cleanup timeout
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [nav]);
 
   if (status === 'provisioning' || status === 'idle') {
