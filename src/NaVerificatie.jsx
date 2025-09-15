@@ -1,164 +1,101 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { supabase } from './supabaseClient'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from './supabaseClient';
 
-function NaVerificatie() {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
-  const [message, setMessage] = useState('')
-  const [provisioning, setProvisioning] = useState(false)
-
-  // Check if user is already provisioned
-  const checkProvisioning = async (userId) => {
-    try {
-      const { data: userArray, error: userError } = await supabase
-        .from('users')
-        .select('id, employer_id, role')
-        .eq('id', userId)
-        .limit(1)
-      
-      const user = userArray?.[0] || null
-      if (userError) {
-        console.error('Check provisioning error:', userError)
-        return false
-      }
-
-      return user?.employer_id && user?.role === 'employer'
-    } catch (error) {
-      console.error('Check provisioning error:', error)
-      return false
-    }
-  }
-
-  // Provision employer data
-  const provisionEmployer = async (employerData) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.access_token) {
-        throw new Error('Geen toegangstoken gevonden')
-      }
-
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(employerData)
-      })
-
-      const result = await response.json()
-
-      if (response.ok) {
-        return { success: true, data: result }
-      } else {
-        throw new Error(result.error || 'Provisioning mislukt')
-      }
-    } catch (error) {
-      console.error('Provisioning error:', error)
-      throw error
-    }
-  }
+export default function NaVerificatie() {
+  const nav = useNavigate();
+  const [status, setStatus] = useState('idle'); // 'idle'|'verifying'|'success'|'error'
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    const handleBootstrap = async () => {
+    const run = async () => {
       try {
-        setLoading(true)
-        setMessage('')
-
-        // Get current session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        setStatus('verifying');
+        console.log('[NaVerificatie] Start verificatie...');
         
-        if (sessionError) {
-          setMessage('Fout bij ophalen sessie: ' + sessionError.message)
-          return
+        const params = new URLSearchParams(window.location.search);
+        const token_hash = params.get('token_hash') || '';
+        let type = (params.get('type') || 'email').toLowerCase();
+
+        // Normaliseer type: voor e-mailverificatie moet supabase-js v2 'email' krijgen
+        if (type !== 'email') type = 'email';
+
+        console.log('[NaVerificatie] Params:', { token_hash: token_hash.substring(0, 10) + '...', type });
+
+        if (!token_hash) {
+          throw new Error('Ontbrekende token_hash in de verificatielink.');
         }
 
-        if (!session?.user) {
-          setMessage('Geen actieve sessie gevonden. Probeer opnieuw in te loggen.')
-          return
-        }
+        const { data, error } = await supabase.auth.verifyOtp({ token_hash, type: 'email' });
+        if (error) throw error;
 
-        const userId = session.user.id
-
-        // Check if already provisioned
-        const isProvisioned = await checkProvisioning(userId)
+        console.log('[NaVerificatie] Verificatie succesvol:', data);
+        setStatus('success');
         
-        if (isProvisioned) {
-          setMessage('Account is al ingericht. Je wordt doorgestuurd...')
-          setTimeout(() => navigate('/werkgever-portaal'), 1000)
-          return
-        }
-
-        // Check for pending data
-        const pendingData = localStorage.getItem('pendingEmployerData')
-        if (!pendingData) {
-          setMessage('Geen bedrijfsgegevens gevonden. Ga terug naar registratie.')
-          return
-        }
-
-        const employerData = JSON.parse(pendingData)
+        // Kleine delay voor UX, dan doorsturen
+        setTimeout(() => {
+          // Check of er pending employer data is voor provisioning
+          const pendingData = localStorage.getItem('pendingEmployerData');
+          if (pendingData) {
+            console.log('[NaVerificatie] Pending employer data gevonden, doorsturen naar provisioning');
+            nav('/provision-employer', { replace: true });
+          } else {
+            console.log('[NaVerificatie] Geen pending data, doorsturen naar werkgever portaal');
+            nav('/werkgever-portaal', { replace: true });
+          }
+        }, 1500);
         
-        // Provision employer
-        setProvisioning(true)
-        setMessage('Account wordt ingericht...')
-        
-        await provisionEmployer(employerData)
-        
-        // Clean up
-        localStorage.removeItem('pendingEmployerData')
-        
-        setMessage('Account succesvol ingericht! Je wordt doorgestuurd...')
-        setTimeout(() => navigate('/werkgever-portaal'), 2000)
-
-      } catch (error) {
-        console.error('Bootstrap error:', error)
-        setMessage('Fout bij inrichten account: ' + error.message)
-      } finally {
-        setLoading(false)
-        setProvisioning(false)
+      } catch (e) {
+        console.error('[NaVerificatie] Verificatie mislukt:', e);
+        setErrorMsg(e?.message ?? 'Onbekende fout tijdens bevestigen.');
+        setStatus('error');
       }
-    }
+    };
+    run();
+  }, [nav]);
 
-    handleBootstrap()
-  }, [navigate])
-
-  if (loading) {
+  if (status === 'verifying' || status === 'idle') {
     return (
-      <div className="page-container max-w-2xl">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold mb-4">Account wordt ingericht...</h1>
-          <p className="text-gray-600">Even geduld, we zetten je account klaar.</p>
+      <div className="page-container max-w-md mx-auto">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold text-[var(--kleur-primary)]">Bevestigen…</h1>
+          <p className="text-gray-600">Even geduld, je e-mailadres wordt geverifieerd.</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
         </div>
       </div>
-    )
+    );
   }
-
+  
+  if (status === 'success') {
+    return (
+      <div className="page-container max-w-md mx-auto">
+        <div className="text-center space-y-4">
+          <div className="text-green-600 text-6xl">✅</div>
+          <h1 className="text-2xl font-bold text-[var(--kleur-primary)]">Gelukt!</h1>
+          <p className="text-gray-600">Je e-mailadres is geverifieerd. Je wordt doorgestuurd…</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
-    <div className="page-container max-w-2xl">
-      <div className="text-center space-y-6">
-        <h1 className="text-2xl font-semibold text-[var(--kleur-primary)]">
-          Account Inrichten
-        </h1>
-        
-        {message && (
-          <div className={`p-4 rounded-lg ${
-            message.includes('Fout') || message.includes('mislukt') 
-              ? 'bg-red-50 border border-red-200 text-red-700'
-              : 'bg-green-50 border border-green-200 text-green-700'
-          }`}>
-            {message}
-          </div>
-        )}
-
-        {provisioning && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-700">Account wordt ingericht...</p>
-          </div>
-        )}
+    <div className="page-container max-w-md mx-auto">
+      <div className="text-center space-y-4">
+        <div className="text-red-600 text-6xl">❌</div>
+        <h1 className="text-2xl font-bold text-[var(--kleur-primary)]">Verificatie mislukt</h1>
+        <p className="text-gray-600">{errorMsg}</p>
+        <button
+          className="btn btn-primary"
+          onClick={() => window.location.reload()}
+        >
+          Opnieuw proberen
+        </button>
+        <div className="mt-4">
+          <a href="/registreer-werkgever" className="text-[var(--kleur-accent)] hover:underline">
+            Terug naar registratie
+          </a>
+        </div>
       </div>
     </div>
-  )
+  );
 }
-
-export default NaVerificatie
