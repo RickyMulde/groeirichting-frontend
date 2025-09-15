@@ -139,9 +139,9 @@ function VerifyEmail() {
       if (window.location.pathname === '/na-verificatie' && !hash && !searchParams.has('token')) {
         console.log('Supabase redirect detected, checking session...')
         
-        try {
-          // Wacht even en controleer of de sessie is bijgewerkt
-          setTimeout(async () => {
+        // Wacht even en controleer of de sessie is bijgewerkt
+        setTimeout(async () => {
+          try {
             const { data: { session }, error } = await supabase.auth.getSession()
             
             if (error) {
@@ -161,11 +161,11 @@ function VerifyEmail() {
             } else {
               setMessage('Verificatie wordt verwerkt... Probeer de pagina te verversen.')
             }
-          }, 1000)
-        } catch (error) {
-          console.error('Redirect verification error:', error)
-          setMessage('Er is iets misgegaan bij het verwerken van de verificatie.')
-        }
+          } catch (error) {
+            console.error('Redirect verification error:', error)
+            setMessage('Er is iets misgegaan bij het verwerken van de verificatie.')
+          }
+        }, 1000)
       }
       
       // Als geen auth callback, controleer of gebruiker al geverifieerd is
