@@ -58,11 +58,14 @@ function VerifyEmail() {
   }
 
   useEffect(() => {
-    // Controleer of er een auth hash in de URL staat (van verificatielink)
+    // Controleer of er een auth callback is (hash fragment of query parameters)
     const handleAuthCallback = async () => {
       const hash = window.location.hash
+      const searchParams = new URLSearchParams(window.location.search)
+      
+      // Check voor hash fragment (oude methode)
       if (hash && hash.includes('access_token')) {
-        console.log('Auth callback detected, processing...')
+        console.log('Auth callback detected (hash), processing...')
         
         try {
           // Probeer de sessie op te halen na verificatie
@@ -85,6 +88,48 @@ function VerifyEmail() {
           }
         } catch (error) {
           console.error('Auth callback error:', error)
+          setMessage('Er is iets misgegaan bij het verwerken van de verificatie.')
+        }
+      }
+      
+      // Check voor query parameters (nieuwe methode voor Supabase verificatie links)
+      if (searchParams.has('token') && searchParams.get('type') === 'signup') {
+        console.log('Supabase verification link detected, processing...')
+        
+        try {
+          // Supabase verwerkt de verificatie automatisch via de URL
+          // We hoeven alleen te wachten tot de sessie wordt bijgewerkt
+          const { data: { session }, error } = await supabase.auth.getSession()
+          
+          if (error) {
+            console.error('Session error:', error)
+            setMessage('Fout bij verwerken verificatie: ' + error.message)
+            return
+          }
+
+          if (session?.user && session.user.email_confirmed_at) {
+            console.log('User verified:', session.user.email)
+            setMessage('E-mail succesvol geverifieerd! Account wordt ingericht...')
+            
+            // Probeer provisioning voor employer
+            await handleEmployerProvisioning(session.user)
+            
+            return
+          } else {
+            // Wacht even en probeer opnieuw (Supabase heeft tijd nodig om te verwerken)
+            setTimeout(async () => {
+              const { data: { session: retrySession } } = await supabase.auth.getSession()
+              if (retrySession?.user?.email_confirmed_at) {
+                console.log('User verified on retry:', retrySession.user.email)
+                setMessage('E-mail succesvol geverifieerd! Account wordt ingericht...')
+                await handleEmployerProvisioning(retrySession.user)
+              } else {
+                setMessage('Verificatie wordt verwerkt... Probeer de pagina te verversen.')
+              }
+            }, 2000)
+          }
+        } catch (error) {
+          console.error('Verification callback error:', error)
           setMessage('Er is iets misgegaan bij het verwerken van de verificatie.')
         }
       }
