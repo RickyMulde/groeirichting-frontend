@@ -13,29 +13,65 @@ export default function NaVerificatie() {
         setStatus('verifying');
         console.log('[NaVerificatie] Start verificatie...');
         
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token') || '';
-        const type = params.get('type') || 'signup';
-
-        console.log('[NaVerificatie] Params:', { token: token.substring(0, 10) + '...', type });
-
-        if (!token) {
-          throw new Error('Ontbrekende token in de verificatielink.');
+        // Supabase handelt verificatie af en stuurt gebruiker door met hash fragment
+        const hash = window.location.hash;
+        const search = window.location.search;
+        
+        console.log('[NaVerificatie] Hash:', hash);
+        console.log('[NaVerificatie] Search:', search);
+        
+        // Controleer of er een actieve sessie is (verificatie is al afgehandeld door Supabase)
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('[NaVerificatie] Session error:', sessionError);
+          throw new Error('Fout bij ophalen sessie: ' + sessionError.message);
         }
+        
+        if (session && session.user) {
+          console.log('[NaVerificatie] Actieve sessie gevonden:', session.user.email);
+          console.log('[NaVerificatie] Email confirmed:', session.user.email_confirmed_at);
+          
+          // Controleer of email daadwerkelijk geverifieerd is
+          if (session.user.email_confirmed_at) {
+            console.log('[NaVerificatie] Email is geverifieerd, verificatie succesvol');
+            setStatus('success');
+            
+            // Kleine delay voor UX, dan doorsturen
+            setTimeout(() => {
+              // Check of er pending employer data is voor provisioning
+              const pendingData = localStorage.getItem('pendingEmployerData');
+              if (pendingData) {
+                console.log('[NaVerificatie] Pending employer data gevonden, doorsturen naar provisioning');
+                nav('/provision-employer', { replace: true });
+              } else {
+                console.log('[NaVerificatie] Geen pending data, doorsturen naar werkgever portaal');
+                nav('/werkgever-portaal', { replace: true });
+              }
+            }, 1500);
+          } else {
+            throw new Error('E-mailadres is nog niet geverifieerd. Controleer je inbox voor de verificatielink.');
+          }
+        } else {
+          throw new Error('Geen actieve sessie gevonden. Klik op de verificatielink in je e-mail.');
+        }
+        
+      } catch (e) {
+        console.error('[NaVerificatie] Verificatie mislukt:', e);
+        setErrorMsg(e?.message ?? 'Onbekende fout tijdens bevestigen.');
+        setStatus('error');
+      }
+    };
 
-        // Gebruik de juiste verificatie methode voor Supabase
-        const { data, error } = await supabase.auth.verifyOtp({ 
-          token_hash: token, 
-          type: 'email' 
-        });
-        if (error) throw error;
-
-        console.log('[NaVerificatie] Verificatie succesvol:', data);
+    // Luister naar auth state changes (voor als verificatie asynchroon gebeurt)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[NaVerificatie] Auth state change:', event, session?.user?.email);
+      
+      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
+        console.log('[NaVerificatie] User signed in and email confirmed via auth state change');
         setStatus('success');
         
-        // Kleine delay voor UX, dan doorsturen
         setTimeout(() => {
-          // Check of er pending employer data is voor provisioning
           const pendingData = localStorage.getItem('pendingEmployerData');
           if (pendingData) {
             console.log('[NaVerificatie] Pending employer data gevonden, doorsturen naar provisioning');
@@ -45,14 +81,15 @@ export default function NaVerificatie() {
             nav('/werkgever-portaal', { replace: true });
           }
         }, 1500);
-        
-      } catch (e) {
-        console.error('[NaVerificatie] Verificatie mislukt:', e);
-        setErrorMsg(e?.message ?? 'Onbekende fout tijdens bevestigen.');
-        setStatus('error');
       }
-    };
+    });
+
     run();
+
+    // Cleanup subscription
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, [nav]);
 
   if (status === 'verifying' || status === 'idle') {
