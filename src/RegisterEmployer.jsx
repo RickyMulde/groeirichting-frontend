@@ -28,32 +28,25 @@ function RegisterEmployer() {
         return
       }
 
-      // Nieuwe flow: gebruik backend endpoint voor verificatie via Resend
-      const frontendUrl = import.meta.env.VITE_FRONTEND_URL
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+      // Direct Supabase signup - verstuurt automatisch verificatie email via SMTP
+      const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'https://groeirichting-frontend.onrender.com'
       const redirectTo = `${frontendUrl}/na-verificatie`
       
-      console.log('🔧 Attempting signup via backend:', { email, hasPassword: !!password, redirectTo })
+      console.log('🔧 Attempting direct Supabase signup:', { email, hasPassword: !!password, redirectTo })
       
-      const response = await fetch(`${apiBaseUrl}/api/auth/signup-init`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          redirectTo
-        })
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectTo
+        }
       })
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        console.error('🚨 Backend signup error:', result)
-        setError(result.error || 'Registratie mislukt.')
+      if (error) {
+        console.error('🚨 Supabase signup error:', error)
+        setError(error.message || 'Registratie mislukt.')
       } else {
-        console.log('✅ Backend signup success:', result)
+        console.log('✅ Supabase signup success:', data)
         
         // Sla extra gegevens op voor provisioning na verificatie
         localStorage.setItem('pendingEmployerData', JSON.stringify({

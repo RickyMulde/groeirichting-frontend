@@ -258,46 +258,17 @@ function VerifyEmail() {
         return
       }
 
-      // Probeer eerst via Supabase Auth resend
-      try {
-        const { error } = await supabase.auth.resend({
-          type: 'signup',
-          email: emailToUse
-        })
+      // Gebruik Supabase Auth resend - verstuurt via SMTP
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: emailToUse
+      })
 
-        if (error) {
-          console.error('Supabase resend error:', error)
-          throw error // Ga door naar backend fallback
-        } else {
-          setMessage('Verificatie-e-mail opnieuw verzonden! Controleer je inbox.')
-          return
-        }
-      } catch (supabaseError) {
-        // Als Supabase resend faalt, probeer via backend
-        console.log('Supabase resend faalt, probeer via backend...')
-        
-        try {
-          const { data: { session } } = await supabase.auth.getSession()
-          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/resend-verification`, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${session?.access_token}`
-            },
-            body: JSON.stringify({ email: emailToUse })
-          })
-          
-          const result = await response.json()
-          
-          if (response.ok) {
-            setMessage('Verificatie-e-mail opnieuw verzonden via backend! Controleer je inbox.')
-          } else {
-            setMessage('Fout bij opnieuw versturen: ' + (result.error || 'Onbekende fout'))
-          }
-        } catch (backendError) {
-          console.error('Backend resend error:', backendError)
-          setMessage('Beide methoden zijn mislukt. Neem contact op met support.')
-        }
+      if (error) {
+        console.error('Supabase resend error:', error)
+        setMessage('Fout bij opnieuw versturen: ' + error.message)
+      } else {
+        setMessage('Verificatie-e-mail opnieuw verzonden! Controleer je inbox.')
       }
     } catch (err) {
       console.error('Resend catch error:', err)
