@@ -64,17 +64,11 @@ function RegisterEmployer() {
           last_name: lastName
         }))
         
-        setSuccess('Account succesvol aangemaakt! Controleer je e-mailadres voor de verificatielink om je account te activeren.')
+        // Sla email op voor verificatie pagina
+        localStorage.setItem('pendingVerificationEmail', email)
         
-        // Reset form
-        setCompanyName('')
-        setFirstName('')
-        setMiddleName('')
-        setLastName('')
-        setContactPhone('')
-        setPassword('')
-        setConfirmPassword('')
-        setEmail('')
+        // Stuur door naar verificatie pagina
+        window.location.href = '/verify-email?email=' + encodeURIComponent(email)
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')
