@@ -14,19 +14,20 @@ export default function NaVerificatie() {
         console.log('[NaVerificatie] Start verificatie...');
         
         const params = new URLSearchParams(window.location.search);
-        const token_hash = params.get('token_hash') || '';
-        let type = (params.get('type') || 'email').toLowerCase();
+        const token = params.get('token') || '';
+        const type = params.get('type') || 'signup';
 
-        // Normaliseer type: voor e-mailverificatie moet supabase-js v2 'email' krijgen
-        if (type !== 'email') type = 'email';
+        console.log('[NaVerificatie] Params:', { token: token.substring(0, 10) + '...', type });
 
-        console.log('[NaVerificatie] Params:', { token_hash: token_hash.substring(0, 10) + '...', type });
-
-        if (!token_hash) {
-          throw new Error('Ontbrekende token_hash in de verificatielink.');
+        if (!token) {
+          throw new Error('Ontbrekende token in de verificatielink.');
         }
 
-        const { data, error } = await supabase.auth.verifyOtp({ token_hash, type: 'email' });
+        // Gebruik de juiste verificatie methode voor Supabase
+        const { data, error } = await supabase.auth.verifyOtp({ 
+          token_hash: token, 
+          type: 'email' 
+        });
         if (error) throw error;
 
         console.log('[NaVerificatie] Verificatie succesvol:', data);
