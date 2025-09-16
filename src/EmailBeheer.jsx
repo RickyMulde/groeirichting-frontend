@@ -13,7 +13,7 @@ function EmailBeheer() {
   const fetchTemplates = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/email-templates');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/email-templates`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -31,7 +31,7 @@ function EmailBeheer() {
 
   const sendTestEmail = async (templateId) => {
     try {
-      const response = await fetch('/api/test-email', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/test-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -59,7 +59,7 @@ function EmailBeheer() {
 
   const toggleTemplateStatus = async (templateId, currentStatus) => {
     try {
-      const response = await fetch(`/api/email-templates/${templateId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/email-templates/${templateId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
