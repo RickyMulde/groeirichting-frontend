@@ -5,6 +5,8 @@ function EmailBeheer() {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [previewTemplate, setPreviewTemplate] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     fetchTemplates();
@@ -84,6 +86,16 @@ function EmailBeheer() {
     }
   };
 
+  const showTemplatePreview = (template) => {
+    setPreviewTemplate(template);
+    setShowPreview(true);
+  };
+
+  const closePreview = () => {
+    setShowPreview(false);
+    setPreviewTemplate(null);
+  };
+
   if (loading) {
     return (
       <div className="page-container">
@@ -150,14 +162,20 @@ function EmailBeheer() {
                     {template.is_active ? 'Actief' : 'Inactief'}
                   </button>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-4">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                   <button
                     onClick={() => sendTestEmail(template.id)}
-                    className="text-blue-600 hover:text-blue-900"
+                    className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
                   >
                     Testmail
                   </button>
-                  <button className="text-gray-600 hover:text-gray-900">
+                  <button
+                    onClick={() => showTemplatePreview(template)}
+                    className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
+                  >
+                    Preview
+                  </button>
+                  <button className="px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600">
                     Bewerken
                   </button>
                 </td>
@@ -172,6 +190,86 @@ function EmailBeheer() {
           </div>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && previewTemplate && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Preview: {previewTemplate.naam}</h2>
+              <button
+                onClick={closePreview}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-gray-700">Onderwerp:</h3>
+                <p className="text-gray-900">{previewTemplate.onderwerp}</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-700">Doelgroep:</h3>
+                <span className={`px-2 py-1 text-xs rounded-full ${
+                  previewTemplate.doelgroep === 'werkgever' 
+                    ? 'bg-blue-100 text-blue-800' 
+                    : 'bg-green-100 text-green-800'
+                }`}>
+                  {previewTemplate.doelgroep}
+                </span>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-700">Trigger:</h3>
+                <p className="text-gray-900">{previewTemplate.trigger_event}</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-700">Omschrijving:</h3>
+                <p className="text-gray-900">{previewTemplate.omschrijving}</p>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-gray-700">HTML Content:</h3>
+                <div className="border rounded p-4 bg-gray-50 max-h-64 overflow-y-auto">
+                  <pre className="text-sm text-gray-800 whitespace-pre-wrap">
+                    {previewTemplate.html_content}
+                  </pre>
+                </div>
+              </div>
+              
+              {previewTemplate.text_content && (
+                <div>
+                  <h3 className="font-semibold text-gray-700">Text Content:</h3>
+                  <div className="border rounded p-4 bg-gray-50 max-h-32 overflow-y-auto">
+                    <pre className="text-sm text-gray-800 whitespace-pre-wrap">
+                      {previewTemplate.text_content}
+                    </pre>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                onClick={() => sendTestEmail(previewTemplate.id)}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Verstuur Testmail
+              </button>
+              <button
+                onClick={closePreview}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                Sluiten
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
