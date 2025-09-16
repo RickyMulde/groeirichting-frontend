@@ -31,6 +31,7 @@ import Offerte from './Offerte'
 import Contact from './Contact'
 import NaVerificatie from './NaVerificatie'
 import ProvisionEmployer from './ProvisionEmployer'
+import EmailBeheer from './EmailBeheer'
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
         <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
         <Route path="/superadmin/thema-beheer" element={<ThemaBeheerOverzicht />} />
         <Route path="/superadmin/gebruikers-beheer" element={<GebruikersBeheer />} />
+        <Route path="/superadmin/email-beheer" element={<EmailBeheer />} />
         <Route path="/thema-overzicht" element={<ThemaOverzicht />} />
         <Route path="/gesprek" element={<GesprekPagina />} />
         <Route path="/gesprek-resultaat" element={<GesprekResultaat />} />

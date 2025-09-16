@@ -53,16 +53,16 @@ function SuperadminPortaal() {
           <Link to="/superadmin/gebruikers-beheer" className="btn btn-accent">Beheer gebruikers</Link>
         </section>
 
-        {/* 3. Blanco - nog in te vullen */}
+        {/* 3. Email Beheer */}
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Settings className="text-[var(--kleur-secondary)] w-8 h-8" />
             <div>
-              <h2 className="text-xl font-semibold">Systeem instellingen</h2>
-              <p className="text-sm text-gray-500">Platform-brede instellingen en configuraties (nog in ontwikkeling).</p>
+              <h2 className="text-xl font-semibold">Email Beheer</h2>
+              <p className="text-sm text-gray-500">Beheer alle email templates, bekijk verzendstatus en configureer email instellingen.</p>
             </div>
           </div>
-          <button className="btn btn-secondary" disabled>Binnenkort beschikbaar</button>
+          <Link to="/superadmin/email-beheer" className="btn btn-secondary">Ga naar email beheer</Link>
         </section>
       </div>
     </div>
