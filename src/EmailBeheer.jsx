@@ -121,68 +121,70 @@ function EmailBeheer() {
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Email Beheer</h1>
       
       <div className="bg-white shadow-md rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Naam</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doelgroep</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trigger</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acties</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {templates.map((template) => (
-              <tr key={template.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{template.naam}</div>
-                  <div className="text-sm text-gray-500">{template.omschrijving}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    template.doelgroep === 'werkgever' 
-                      ? 'bg-blue-100 text-blue-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
-                    {template.doelgroep}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {template.trigger_event}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => toggleTemplateStatus(template.id, template.is_active)}
-                    className={`px-2 py-1 text-xs rounded-full cursor-pointer ${
-                      template.is_active 
-                        ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                        : 'bg-red-100 text-red-800 hover:bg-red-200'
-                    }`}
-                  >
-                    {template.is_active ? 'Actief' : 'Inactief'}
-                  </button>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                  <button
-                    onClick={() => sendTestEmail(template.id)}
-                    className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
-                  >
-                    Testmail
-                  </button>
-                  <button
-                    onClick={() => showTemplatePreview(template)}
-                    className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
-                  >
-                    Preview
-                  </button>
-                  <button className="px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600">
-                    Bewerken
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[800px]">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Naam</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Doelgroep</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Trigger</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Preview</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Testmail</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {templates.map((template) => (
+                <tr key={template.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-4">
+                    <div className="text-sm font-medium text-gray-900">{template.naam}</div>
+                    <div className="text-sm text-gray-500">{template.omschrijving}</div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      template.doelgroep === 'werkgever' 
+                        ? 'bg-blue-100 text-blue-800' 
+                        : 'bg-green-100 text-green-800'
+                    }`}>
+                      {template.doelgroep}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {template.trigger_event}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => toggleTemplateStatus(template.id, template.is_active)}
+                      className={`px-2 py-1 text-xs rounded-full cursor-pointer ${
+                        template.is_active 
+                          ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                          : 'bg-red-100 text-red-800 hover:bg-red-200'
+                      }`}
+                    >
+                      {template.is_active ? 'Actief' : 'Inactief'}
+                    </button>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <button
+                      onClick={() => showTemplatePreview(template)}
+                      className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
+                    >
+                      Preview
+                    </button>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <button
+                      onClick={() => sendTestEmail(template.id)}
+                      className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+                    >
+                      Testmail
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         
         {templates.length === 0 && (
           <div className="text-center py-8 text-gray-500">
