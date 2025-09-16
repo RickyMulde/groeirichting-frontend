@@ -31,16 +31,20 @@ export default function NaVerificatie() {
         if (session && session.user) {
           console.log('[NaVerificatie] Actieve sessie gevonden:', session.user.email);
           console.log('[NaVerificatie] Email confirmed:', session.user.email_confirmed_at);
+          console.log('[NaVerificatie] User ID:', session.user.id);
+          console.log('[NaVerificatie] Session expires at:', session.expires_at);
           
           // Controleer of email daadwerkelijk geverifieerd is
           if (session.user.email_confirmed_at) {
             console.log('[NaVerificatie] Email is geverifieerd, verificatie succesvol');
             setStatus('success');
             
-            // Kleine delay voor UX, dan doorsturen
+            // Wacht langer om zeker te zijn dat verificatie volledig is verwerkt
             setTimeout(() => {
               // Check of er pending employer data is voor provisioning
               const pendingData = localStorage.getItem('pendingEmployerData');
+              console.log('[NaVerificatie] Pending data check:', pendingData ? 'Found' : 'Not found');
+              
               if (pendingData) {
                 console.log('[NaVerificatie] Pending employer data gevonden, doorsturen naar provisioning');
                 nav('/provision-employer', { replace: true });
@@ -48,9 +52,13 @@ export default function NaVerificatie() {
                 console.log('[NaVerificatie] Geen pending data, doorsturen naar werkgever portaal');
                 nav('/werkgever-portaal', { replace: true });
               }
-            }, 1500);
+            }, 3000); // Verhoogd van 1500 naar 3000ms
           } else {
-            throw new Error('E-mailadres is nog niet geverifieerd. Controleer je inbox voor de verificatielink.');
+            console.log('[NaVerificatie] Email nog niet geverifieerd, wachten op verificatie...');
+            // Wacht en probeer opnieuw
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
           }
         } else {
           throw new Error('Geen actieve sessie gevonden. Klik op de verificatielink in je e-mail.');

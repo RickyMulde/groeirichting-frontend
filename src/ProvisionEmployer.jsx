@@ -22,13 +22,39 @@ export default function ProvisionEmployer() {
         const employerData = JSON.parse(pendingData);
         console.log('[ProvisionEmployer] Pending data:', employerData);
 
-        // Haal huidige gebruiker op
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        // Haal huidige gebruiker op met retry logica
+        let user = null;
+        let userError = null;
+        let retryCount = 0;
+        const maxRetries = 3;
+
+        while (retryCount < maxRetries && !user) {
+          console.log(`[ProvisionEmployer] Attempt ${retryCount + 1} to get user...`);
+          
+          const { data: userData, error: error } = await supabase.auth.getUser();
+          user = userData?.user;
+          userError = error;
+
+          if (userError || !user) {
+            console.log(`[ProvisionEmployer] User fetch failed (attempt ${retryCount + 1}):`, userError);
+            retryCount++;
+            
+            if (retryCount < maxRetries) {
+              console.log('[ProvisionEmployer] Retrying in 2 seconds...');
+              await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+          } else {
+            console.log('[ProvisionEmployer] User fetched successfully:', user.email);
+            console.log('[ProvisionEmployer] Email confirmed:', user.email_confirmed_at);
+          }
+        }
+
         if (userError || !user) {
-          throw new Error('Gebruiker niet gevonden');
+          throw new Error(`Gebruiker niet gevonden na ${maxRetries} pogingen: ${userError?.message || 'Onbekende fout'}`);
         }
 
         console.log('[ProvisionEmployer] User ID:', user.id);
+        console.log('[ProvisionEmployer] User email confirmed at:', user.email_confirmed_at);
 
         // Roep backend provisioning endpoint aan
         const session = await supabase.auth.getSession();
@@ -81,12 +107,12 @@ export default function ProvisionEmployer() {
       }
     };
 
-    // Timeout na 30 seconden
+    // Timeout na 60 seconden (verhoogd voor retry logica)
     const timeout = setTimeout(() => {
       console.error('[ProvisionEmployer] Timeout - provisioning duurt te lang');
-      setErrorMsg('Provisioning duurt te lang. Probeer het opnieuw.');
+      setErrorMsg('Provisioning duurt te lang. Dit kan komen doordat de verificatie nog niet volledig is verwerkt. Probeer de pagina te verversen of probeer het opnieuw.');
       setStatus('error');
-    }, 30000);
+    }, 60000);
 
     run();
 
