@@ -23,8 +23,16 @@ function Layout({ children }) {
   }, [])
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/')
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Logout error:', error)
+        return
+      }
+      navigate('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }
 
   const toggleMobileMenu = () => {
