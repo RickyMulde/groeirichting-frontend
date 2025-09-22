@@ -28,12 +28,17 @@ function WerknemerInstellingen() {
 
   const fetchUserData = async () => {
     try {
+      console.log('🔄 Werknemer instellingen: Ophalen gebruikersdata...')
+      
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
+        console.error('❌ Geen gebruiker gevonden, redirect naar login')
         navigate('/login')
         return
       }
+      console.log('✅ Gebruiker gevonden:', user.email)
 
+      console.log('🔄 Ophalen gebruikersgegevens uit database...')
       const { data, error } = await supabase
         .from('users')
         .select('email, first_name, middle_name, last_name, birthdate, gender')
@@ -41,15 +46,16 @@ function WerknemerInstellingen() {
         .single()
 
       if (error) {
-        console.error('Fout bij ophalen gebruikersgegevens:', error)
-        setFoutmelding('Fout bij ophalen gegevens')
+        console.error('❌ Fout bij ophalen gebruikersgegevens:', error)
+        setFoutmelding(`Fout bij ophalen gegevens: ${error.message}`)
         return
       }
 
+      console.log('✅ Gebruikersgegevens opgehaald:', data)
       setUserData(data)
     } catch (error) {
-      console.error('Fout:', error)
-      setFoutmelding('Er is een fout opgetreden')
+      console.error('❌ Onverwachte fout bij ophalen data:', error)
+      setFoutmelding(`Er is een fout opgetreden: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -94,7 +100,8 @@ function WerknemerInstellingen() {
         .eq('id', user.id)
 
       if (updateError) {
-        setFoutmelding('Fout bij opslaan gegevens')
+        console.error('❌ Fout bij opslaan gegevens:', updateError)
+        setFoutmelding(`Fout bij opslaan gegevens: ${updateError.message}`)
         setSaving(false)
         return
       }
@@ -106,7 +113,8 @@ function WerknemerInstellingen() {
         })
 
         if (passwordError) {
-          setFoutmelding('Fout bij wijzigen wachtwoord')
+          console.error('❌ Fout bij wijzigen wachtwoord:', passwordError)
+          setFoutmelding(`Fout bij wijzigen wachtwoord: ${passwordError.message}`)
           setSaving(false)
           return
         }
@@ -119,7 +127,8 @@ function WerknemerInstellingen() {
         })
 
         if (emailError) {
-          setFoutmelding('Fout bij wijzigen emailadres')
+          console.error('❌ Fout bij wijzigen emailadres:', emailError)
+          setFoutmelding(`Fout bij wijzigen emailadres: ${emailError.message}`)
           setSaving(false)
           return
         }
@@ -139,8 +148,8 @@ function WerknemerInstellingen() {
       setTimeout(() => setSuccesmelding(''), 5000)
 
     } catch (error) {
-      console.error('Fout bij opslaan:', error)
-      setFoutmelding('Er is een fout opgetreden bij het opslaan')
+      console.error('❌ Fout bij opslaan:', error)
+      setFoutmelding(`Er is een fout opgetreden bij het opslaan: ${error.message}`)
     } finally {
       setSaving(false)
     }
