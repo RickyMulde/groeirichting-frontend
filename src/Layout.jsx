@@ -10,33 +10,16 @@ function Layout({ children }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        console.log('🔄 Layout: Initialiseren authenticatie...')
-        
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
-        if (error) {
-          console.error('❌ Layout: Fout bij ophalen sessie:', error)
-        } else {
-          console.log('✅ Layout: Sessie opgehaald:', !!session)
-        }
-        
-        setSession(session)
-      } catch (error) {
-        console.error('❌ Layout: Onverwachte fout bij initialiseren auth:', error)
-        setSession(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    initializeAuth()
+    // Direct loading uitschakelen en sessie ophalen
+    setIsLoading(false)
+    
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
 
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('🔄 Layout: Auth state changed:', !!session)
       setSession(session)
     })
 
