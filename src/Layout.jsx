@@ -13,9 +13,20 @@ function Layout({ children }) {
     // Direct loading uitschakelen en sessie ophalen
     setIsLoading(false)
     
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.warn('⚠️ Layout: Sessie ophalen gefaald, maar doorgaan:', error.message)
+        }
+        setSession(session)
+      } catch (error) {
+        console.warn('⚠️ Layout: Network error bij sessie ophalen, maar doorgaan:', error.message)
+        setSession(null)
+      }
+    }
+
+    initializeAuth()
 
     const {
       data: { subscription }
@@ -23,7 +34,25 @@ function Layout({ children }) {
       setSession(session)
     })
 
-    return () => subscription.unsubscribe()
+    // Network status listener voor WiFi problemen
+    const handleOnline = () => {
+      console.log('🌐 Layout: Internet verbinding hersteld')
+      // Herlaad sessie bij herstel van verbinding
+      initializeAuth()
+    }
+
+    const handleOffline = () => {
+      console.log('📡 Layout: Internet verbinding verloren')
+    }
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      subscription.unsubscribe()
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
   }, [])
 
   const handleLogout = async () => {
