@@ -20,9 +20,15 @@ function Instellingen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('🔄 Starten met ophalen data voor instellingen...')
+        
         // Haal werkgever ID op
         const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+        if (!user) {
+          console.error('❌ Geen gebruiker gevonden')
+          return
+        }
+        console.log('✅ Gebruiker gevonden:', user.email)
 
         const { data: werkgever, error: werkgeverError } = await supabase
           .from('employers')
@@ -31,23 +37,41 @@ function Instellingen() {
           .single()
 
         if (werkgeverError) {
-          console.error('Fout bij ophalen werkgever:', werkgeverError)
+          console.error('❌ Fout bij ophalen werkgever:', werkgeverError)
           return
         }
+        console.log('✅ Werkgever gevonden:', werkgever.id)
 
         // Haal werkgever configuratie op
         const { data: { session } } = await supabase.auth.getSession()
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}`, {
+        if (!session?.access_token) {
+          console.error('❌ Geen access token gevonden')
+          return
+        }
+
+        console.log('🔄 Ophalen werkgever configuratie...')
+        const configUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}`
+        console.log('API URL:', configUrl)
+        
+        const response = await fetch(configUrl, {
           headers: {
-            'Authorization': `Bearer ${session?.access_token}`
+            'Authorization': `Bearer ${session.access_token}`
           }
         })
+        
+        console.log('Configuratie response status:', response.status)
+        
         if (response.ok) {
           const configData = await response.json()
+          console.log('✅ Configuratie data ontvangen:', configData)
           setWerkgeverConfig(configData)
+        } else {
+          const errorText = await response.text()
+          console.error('❌ Fout bij ophalen configuratie:', response.status, errorText)
         }
 
         // Haal thema's op
+        console.log('🔄 Ophalen thema\'s...')
         const { data: themaData, error: themaError } = await supabase
           .from('themes')
           .select('id, titel, beschrijving_werknemer, beschrijving_werkgever, standaard_zichtbaar, klaar_voor_gebruik')
@@ -55,8 +79,9 @@ function Instellingen() {
           .order('volgorde_index', { ascending: true })
 
         if (themaError) {
-          console.error('Fout bij ophalen thema\'s:', themaError)
+          console.error('❌ Fout bij ophalen thema\'s:', themaError)
         } else {
+          console.log('✅ Thema\'s gevonden:', themaData.length)
           const enriched = themaData.map((t) => ({
             ...t,
             actief: t.standaard_zichtbaar
@@ -64,7 +89,7 @@ function Instellingen() {
           setThemas(enriched)
         }
       } catch (error) {
-        console.error('Fout bij ophalen data:', error)
+        console.error('❌ Onverwachte fout bij ophalen data:', error)
       } finally {
         setLoading(false)
         setConfigLoading(false)
@@ -106,10 +131,14 @@ function Instellingen() {
   const saveConfiguratie = async () => {
     try {
       setConfigSaving(true)
+      console.log('🔄 Opslaan configuratie...', werkgeverConfig)
       
       // Haal werkgever ID op
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) {
+        console.error('❌ Geen gebruiker gevonden bij opslaan')
+        return
+      }
 
       const { data: werkgever, error: werkgeverError } = await supabase
         .from('employers')
@@ -118,32 +147,45 @@ function Instellingen() {
         .single()
 
       if (werkgeverError) {
-        console.error('Fout bij ophalen werkgever:', werkgeverError)
+        console.error('❌ Fout bij ophalen werkgever bij opslaan:', werkgeverError)
         return
       }
 
       // Sla configuratie op
       const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        console.error('❌ Geen access token bij opslaan')
+        return
+      }
+
+      const saveData = {
+        werkgever_id: werkgever.id,
+        ...werkgeverConfig
+      }
+      console.log('📤 Data die wordt opgeslagen:', saveData)
+
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`
+          'Authorization': `Bearer ${session.access_token}`
         },
-        body: JSON.stringify({
-          werkgever_id: werkgever.id,
-          ...werkgeverConfig
-        })
+        body: JSON.stringify(saveData)
       })
 
+      console.log('Opslaan response status:', response.status)
+
       if (response.ok) {
+        const result = await response.json()
+        console.log('✅ Configuratie succesvol opgeslagen:', result)
         alert('Configuratie succesvol opgeslagen!')
       } else {
         const errorData = await response.json()
+        console.error('❌ Fout bij opslaan:', errorData)
         alert(`Fout bij opslaan: ${errorData.error}`)
       }
     } catch (error) {
-      console.error('Fout bij opslaan configuratie:', error)
+      console.error('❌ Onverwachte fout bij opslaan configuratie:', error)
       alert('Er is een fout opgetreden bij het opslaan')
     } finally {
       setConfigSaving(false)
