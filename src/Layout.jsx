@@ -6,16 +6,37 @@ import { Menu, X } from 'lucide-react'
 function Layout({ children }) {
   const [session, setSession] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
+    const initializeAuth = async () => {
+      try {
+        console.log('🔄 Layout: Initialiseren authenticatie...')
+        
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('❌ Layout: Fout bij ophalen sessie:', error)
+        } else {
+          console.log('✅ Layout: Sessie opgehaald:', !!session)
+        }
+        
+        setSession(session)
+      } catch (error) {
+        console.error('❌ Layout: Onverwachte fout bij initialiseren auth:', error)
+        setSession(null)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    initializeAuth()
 
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('🔄 Layout: Auth state changed:', !!session)
       setSession(session)
     })
 
@@ -41,6 +62,18 @@ function Layout({ children }) {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
+  }
+
+  // Toon loading state tijdens initialisatie
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--kleur-background)]">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
+          <p className="text-[var(--kleur-muted)]">Laden...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
