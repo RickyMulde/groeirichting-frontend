@@ -3,12 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, TrendingUp, Calendar, AlertCircle, Users } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import Top3Actions from './components/Top3Actions'
-import { useTeams } from './contexts/TeamsContext'
-import TeamSelector from './components/TeamSelector'
 
 function GesprekResultaten() {
   const navigate = useNavigate()
-  const { teams, selectedTeam, selectTeam } = useTeams()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [resultaten, setResultaten] = useState([])
@@ -198,14 +195,9 @@ function GesprekResultaten() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        // Haal resultaten op via nieuwe bulk API met team filtering
+        // Haal resultaten op via nieuwe bulk API (alleen eigen resultaten)
         const { data: { session } } = await supabase.auth.getSession()
-        let url = `${import.meta.env.VITE_API_BASE_URL}/api/get-gespreksresultaten-bulk?werknemer_id=${user.id}&periode=${selectedPeriode.periode}`
-        
-        // Voeg team filtering toe als team is geselecteerd
-        if (selectedTeam) {
-          url += `&team_id=${selectedTeam}`
-        }
+        const url = `${import.meta.env.VITE_API_BASE_URL}/api/get-gespreksresultaten-bulk?werknemer_id=${user.id}&periode=${selectedPeriode.periode}`
         
         const response = await fetch(url, {
           method: 'GET',
@@ -232,7 +224,7 @@ function GesprekResultaten() {
     }
 
     fetchResultaten()
-  }, [selectedPeriode, selectedTeam])
+  }, [selectedPeriode])
 
   const getScoreColor = (score) => {
     if (!score) return 'text-gray-400'
@@ -352,17 +344,6 @@ function GesprekResultaten() {
           </div>
         </div>
 
-        {/* Team Selector */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Filter op Team
-          </label>
-          <TeamSelector
-            onTeamSelect={selectTeam}
-            selectedTeamId={selectedTeam}
-            className="max-w-md"
-          />
-        </div>
 
         {/* Maandselectie */}
         <div className="mb-6">
