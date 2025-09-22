@@ -16,6 +16,7 @@ function Instellingen() {
   })
   const [configLoading, setConfigLoading] = useState(true)
   const [configSaving, setConfigSaving] = useState(false)
+  const [foutmelding, setFoutmelding] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +69,8 @@ function Instellingen() {
         } else {
           const errorText = await response.text()
           console.error('❌ Fout bij ophalen configuratie:', response.status, errorText)
+          // Toon foutmelding aan gebruiker in plaats van fallback waarden
+          setFoutmelding(`Kon configuratie niet laden: ${response.status} ${errorText}`)
         }
 
         // Haal thema's op
@@ -80,6 +83,7 @@ function Instellingen() {
 
         if (themaError) {
           console.error('❌ Fout bij ophalen thema\'s:', themaError)
+          setFoutmelding(`Kon thema's niet laden: ${themaError.message}`)
         } else {
           console.log('✅ Thema\'s gevonden:', themaData.length)
           const enriched = themaData.map((t) => ({
@@ -90,6 +94,7 @@ function Instellingen() {
         }
       } catch (error) {
         console.error('❌ Onverwachte fout bij ophalen data:', error)
+        setFoutmelding(`Onverwachte fout: ${error.message}`)
       } finally {
         setLoading(false)
         setConfigLoading(false)
@@ -203,6 +208,23 @@ function Instellingen() {
   return (
     <div className="page-container">
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-8">
+        {/* Foutmelding */}
+        {foutmelding && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <p className="text-red-800 font-medium">Er is een fout opgetreden</p>
+                <p className="text-red-700 text-sm">{foutmelding}</p>
+              </div>
+              <button 
+                onClick={() => setFoutmelding('')} 
+                className="btn btn-primary text-sm"
+              >
+                Sluiten
+              </button>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -261,6 +283,16 @@ function Instellingen() {
               <div className="text-center py-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
                 <p className="text-gray-600 mt-2">Configuratie laden...</p>
+              </div>
+            ) : foutmelding ? (
+              <div className="text-center py-4">
+                <p className="text-red-600">Configuratie kon niet worden geladen. Probeer de pagina te vernieuwen.</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="btn btn-primary mt-2"
+                >
+                  Pagina vernieuwen
+                </button>
               </div>
             ) : (
               <div className="space-y-6">

@@ -31,14 +31,22 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
   // Team aanmaken
   const handleCreateTeam = async (e) => {
     e.preventDefault()
-    if (!teamName.trim()) return
+    console.log('🔄 Team aanmaken gestart:', teamName.trim())
+    
+    if (!teamName.trim()) {
+      console.log('❌ Geen team naam ingevuld')
+      return
+    }
 
     try {
       setIsSubmitting(true)
-      await createTeam(teamName.trim())
+      console.log('🔄 createTeam functie aangeroepen...')
+      const result = await createTeam(teamName.trim())
+      console.log('✅ Team succesvol aangemaakt:', result)
       setTeamName('')
       setShowCreateForm(false)
     } catch (error) {
+      console.error('❌ Fout bij aanmaken team:', error)
       // Error wordt al afgehandeld in context
     } finally {
       setIsSubmitting(false)
