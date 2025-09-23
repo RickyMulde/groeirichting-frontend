@@ -335,89 +335,105 @@ function BeheerTeamsWerknemers() {
           />
         </div>
 
-        {/* Uitnodiging Harmonica */}
-        <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
-          <div className="p-6">
-            <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
-              <MailPlus className="text-kleur-primary" /> 
-              {selectedTeam ? (
-                <>
-                  Werknemer uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
-                </>
-              ) : (
-                <>
-                  Werknemer uitnodigen <span className="text-sm text-gray-500">(niet mogelijk vanuit Totaal. Selecteer een team)</span>
-                </>
-              )}
-            </h2>
-            
-            <form onSubmit={handleInvite} className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input 
-                  type="email" 
-                  value={email} 
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                    if (e.target.value.length > 0) {
-                      setIsInviteExpanded(true)
-                    }
-                  }}
-                  onFocus={() => setIsInviteExpanded(true)}
-                  placeholder="E-mailadres" 
-                  required 
-                  className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
-                />
-                <button type="submit" disabled={loading || !selectedTeam} className="btn btn-primary">
-                  {loading ? 'Versturen...' : 'Uitnodigen'}
-                </button>
-              </div>
+        {/* Uitnodiging Harmonica - Alleen zichtbaar als specifiek team geselecteerd */}
+        {selectedTeam && (
+          <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
+                <MailPlus className="text-kleur-primary" /> 
+                Werknemer uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
+              </h2>
               
-              {/* Harmonica inhoud */}
-              <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                isInviteExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-              }`}>
-                <div className="space-y-3 pt-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Voeg een korte omschrijving van de functie van deze werknemer toe
-                  </label>
+              <form onSubmit={handleInvite} className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <input 
-                    type="text" 
-                    value={functieOmschrijving} 
-                    onChange={(e) => setFunctieOmschrijving(e.target.value)} 
-                    placeholder="Bijv. Planner thuiszorgroutes en ondersteuning zorgverleners" 
-                    maxLength={100}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                    type="email" 
+                    value={email} 
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (e.target.value.length > 0) {
+                        setIsInviteExpanded(true)
+                      }
+                    }}
+                    onFocus={() => setIsInviteExpanded(true)}
+                    placeholder="E-mailadres" 
+                    required 
+                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
                   />
-                  <div className="text-sm text-gray-600">
-                    <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende werknemer/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Planner thuiszorgroutes en ondersteuning zorgverleners</li>
-                      <li>Schadebehandelaar met telefonisch klantcontact</li>
-                      <li>Logistiek medewerker orderverwerking en verzending</li>
-                    </ul>
-                  </div>
+                  <button type="submit" disabled={loading} className="btn btn-primary">
+                    {loading ? 'Versturen...' : 'Uitnodigen'}
+                  </button>
                 </div>
                 
-                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-0.5">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                {/* Harmonica inhoud */}
+                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                  isInviteExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                  <div className="space-y-3 pt-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Voeg een korte omschrijving van de functie van deze werknemer toe
+                    </label>
+                    <input 
+                      type="text" 
+                      value={functieOmschrijving} 
+                      onChange={(e) => setFunctieOmschrijving(e.target.value)} 
+                      placeholder="Bijv. Planner thuiszorgroutes en ondersteuning zorgverleners" 
+                      maxLength={100}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                    />
+                    <div className="text-sm text-gray-600">
+                      <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende werknemer/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>Planner thuiszorgroutes en ondersteuning zorgverleners</li>
+                        <li>Schadebehandelaar met telefonisch klantcontact</li>
+                        <li>Logistiek medewerker orderverwerking en verzending</li>
+                      </ul>
                     </div>
-                    <div className="text-sm text-blue-800">
-                      <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
-                      <p className="text-blue-700">
-                        Jouw werknemer/teamlid ontvangt een mail, waarmee jouw werknemer/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
-                        Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
-                      </p>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="text-sm text-blue-800">
+                        <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
+                        <p className="text-blue-700">
+                          Jouw werknemer/teamlid ontvangt een mail, waarmee jouw werknemer/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
+                          Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Team aanmaken sectie - Alleen zichtbaar als geen specifiek team geselecteerd */}
+        {!selectedTeam && (
+          <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-xl font-medium mb-2 text-gray-900">
+                Maak (eerst) een team aan
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Je kunt één team aanmaken voor het hele bedrijf of meerdere teams om per team resultaten in te zien. 
+                Let op: Resultaten worden pas gegenereerd als minimaal 4 werknemers/teamleden de gesprekken hebben afgerond. (Als een team 4 werknemers/teamleden heeft en één werknemer/teamlid rond het gesprek niet af, dan zijn er dus geen resultaten beschikbaar.)
+              </p>
+              <button
+                onClick={() => setShowTeamModal(true)}
+                className="btn btn-primary flex items-center space-x-2"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Beheer teams</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Teams Overzicht */}
         <div className="mb-8">
