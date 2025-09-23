@@ -336,7 +336,7 @@ function BeheerTeamsWerknemers() {
         </div>
 
         {/* Uitnodiging Harmonica - Alleen zichtbaar als specifiek team geselecteerd */}
-        {selectedTeam && (
+        {selectedTeam !== null && selectedTeam !== undefined && (
           <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
@@ -414,7 +414,7 @@ function BeheerTeamsWerknemers() {
         )}
 
         {/* Team aanmaken sectie - Alleen zichtbaar als geen specifiek team geselecteerd */}
-        {!selectedTeam && (
+        {(selectedTeam === null || selectedTeam === undefined) && (
           <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-medium mb-2 text-gray-900">
