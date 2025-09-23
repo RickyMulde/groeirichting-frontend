@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 
 const SEOHead = ({ 
   title, 
@@ -13,26 +13,66 @@ const SEOHead = ({
   const fullKeywords = keywords || 'AI gesprekken, werkgever werknemer, kunstmatige intelligentie, gespreksvoering, groei, ontwikkeling, HR, personeel';
   const fullCanonical = canonical || 'https://groeirichting.nl/';
 
-  return (
-    <Helmet>
-      <title>{fullTitle}</title>
-      <meta name="description" content={fullDescription} />
-      <meta name="keywords" content={fullKeywords} />
-      <link rel="canonical" href={fullCanonical} />
-      
-      {/* Open Graph */}
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={fullDescription} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:type" content={ogType} />
-      <meta property="og:url" content={fullCanonical} />
-      
-      {/* Twitter */}
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={fullDescription} />
-      <meta name="twitter:image" content={ogImage} />
-    </Helmet>
-  );
+  useEffect(() => {
+    // Update document title
+    document.title = fullTitle;
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', fullDescription);
+    }
+    
+    // Update meta keywords
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', fullKeywords);
+    }
+    
+    // Update canonical URL
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = fullCanonical;
+    
+    // Update Open Graph tags
+    const updateMetaTag = (property, content) => {
+      let meta = document.querySelector(`meta[property="${property}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('property', property);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    updateMetaTag('og:title', fullTitle);
+    updateMetaTag('og:description', fullDescription);
+    updateMetaTag('og:image', ogImage);
+    updateMetaTag('og:type', ogType);
+    updateMetaTag('og:url', fullCanonical);
+    
+    // Update Twitter tags
+    const updateTwitterTag = (name, content) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    updateTwitterTag('twitter:title', fullTitle);
+    updateTwitterTag('twitter:description', fullDescription);
+    updateTwitterTag('twitter:image', ogImage);
+    
+  }, [fullTitle, fullDescription, fullKeywords, fullCanonical, ogImage, ogType]);
+
+  return null; // This component doesn't render anything
 };
 
 export default SEOHead;
