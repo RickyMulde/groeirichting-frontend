@@ -3,15 +3,15 @@ import { useEffect, useRef } from 'react'
 // Custom hook voor performance monitoring
 export const usePerformanceMonitor = (componentName) => {
   const renderCount = useRef(0)
-  const lastRenderTime = useRef(performance.now())
+  const lastRenderTime = useRef(typeof performance !== 'undefined' ? performance.now() : Date.now())
 
   useEffect(() => {
     renderCount.current += 1
-    const currentTime = performance.now()
+    const currentTime = typeof performance !== 'undefined' ? performance.now() : Date.now()
     const timeSinceLastRender = currentTime - lastRenderTime.current
     
     // Log performance metrics in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.log(`[${componentName}] Render #${renderCount.current} - Time since last render: ${timeSinceLastRender.toFixed(2)}ms`)
     }
     
@@ -21,7 +21,7 @@ export const usePerformanceMonitor = (componentName) => {
   // Return performance metrics
   return {
     renderCount: renderCount.current,
-    timeSinceLastRender: performance.now() - lastRenderTime.current
+    timeSinceLastRender: typeof performance !== 'undefined' ? performance.now() - lastRenderTime.current : 0
   }
 }
 
@@ -30,14 +30,14 @@ export const useApiPerformance = () => {
   const apiCallTimes = useRef({})
 
   const startApiCall = (callName) => {
-    apiCallTimes.current[callName] = performance.now()
+    apiCallTimes.current[callName] = typeof performance !== 'undefined' ? performance.now() : Date.now()
   }
 
   const endApiCall = (callName) => {
     if (apiCallTimes.current[callName]) {
-      const duration = performance.now() - apiCallTimes.current[callName]
+      const duration = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - apiCallTimes.current[callName]
       
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.log(`[API] ${callName} took ${duration.toFixed(2)}ms`)
       }
       
