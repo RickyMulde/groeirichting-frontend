@@ -44,61 +44,68 @@ function ThemaOverzicht() {
         console.error('Fout bij ophalen thema data:', error);
         // Fallback naar oude methode
         await fetchThemasFallback(user.id);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     };
 
     const fetchThemasFallback = async (userId) => {
-      // Oude methode als fallback
-      const { data: themaData, error: themaError } = await supabase
-        .from('themes')
-        .select('id, titel, beschrijving_werknemer')
-        .eq('klaar_voor_gebruik', true)
-        .eq('standaard_zichtbaar', true)
-        .order('volgorde_index', { ascending: true })
+      try {
+        // Oude methode als fallback
+        const { data: themaData, error: themaError } = await supabase
+          .from('themes')
+          .select('id, titel, beschrijving_werknemer')
+          .eq('klaar_voor_gebruik', true)
+          .eq('standaard_zichtbaar', true)
+          .order('volgorde_index', { ascending: true })
 
-      if (themaError) {
-        console.error("Fout bij laden thema's:", themaError);
-        return;
-      }
-
-      const { data: gesprekData, error: gesprekError } = await supabase
-        .from('gesprek')
-        .select('id, theme_id, status, gestart_op, beeindigd_op')
-        .eq('werknemer_id', userId)
-        .order('gestart_op', { ascending: false });
-
-      if (gesprekError) {
-        console.error("Fout bij laden gesprekken:", gesprekError);
-        return;
-      }
-
-      // Groepeer gesprekken per thema
-      const gesprekkenPerThema = {};
-      gesprekData?.forEach(gesprek => {
-        if (!gesprekkenPerThema[gesprek.theme_id]) {
-          gesprekkenPerThema[gesprek.theme_id] = [];
+        if (themaError) {
+          console.error("Fout bij laden thema's:", themaError);
+          setThemas([]);
+          return;
         }
-        gesprekkenPerThema[gesprek.theme_id].push(gesprek);
-      });
 
-      // Combineer de data
-      const lijst = themaData.map((t) => ({
-        ...t,
-        gesprekken: gesprekkenPerThema[t.id] || [],
-        configuratie: {
-          actieve_maanden: [3, 6, 9],
-          verplicht: true,
-          actief: true,
-          anonimiseer_na_dagen: 60
-        },
-        is_gesprek_verwacht_deze_maand: false,
-        volgende_gesprek_datum: new Date(new Date().getFullYear() + 1, 2, 1), // 1 maart volgend jaar
-        heeft_openstaand_gesprek: false
-      }));
-      
-      setThemas(lijst);
+        const { data: gesprekData, error: gesprekError } = await supabase
+          .from('gesprek')
+          .select('id, theme_id, status, gestart_op, beeindigd_op')
+          .eq('werknemer_id', userId)
+          .order('gestart_op', { ascending: false });
+
+        if (gesprekError) {
+          console.error("Fout bij laden gesprekken:", gesprekError);
+          setThemas([]);
+          return;
+        }
+
+        // Groepeer gesprekken per thema
+        const gesprekkenPerThema = {};
+        gesprekData?.forEach(gesprek => {
+          if (!gesprekkenPerThema[gesprek.theme_id]) {
+            gesprekkenPerThema[gesprek.theme_id] = [];
+          }
+          gesprekkenPerThema[gesprek.theme_id].push(gesprek);
+        });
+
+        // Combineer de data
+        const lijst = themaData.map((t) => ({
+          ...t,
+          gesprekken: gesprekkenPerThema[t.id] || [],
+          configuratie: {
+            actieve_maanden: [3, 6, 9],
+            verplicht: true,
+            actief: true,
+            anonimiseer_na_dagen: 60
+          },
+          is_gesprek_verwacht_deze_maand: false,
+          volgende_gesprek_datum: new Date(new Date().getFullYear() + 1, 2, 1), // 1 maart volgend jaar
+          heeft_openstaand_gesprek: false
+        }));
+        
+        setThemas(lijst);
+      } catch (error) {
+        console.error('Fout bij fallback data ophalen:', error);
+        setThemas([]);
+      }
     };
 
     fetchThemas();
