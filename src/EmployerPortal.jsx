@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BarChart3, Users, Settings, X, CheckCircle, XCircle } from 'lucide-react'
+import { BarChart3, Users, Settings, X, CheckCircle, XCircle, Calendar, Users2, Target, Lightbulb, CheckCircle2 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 
@@ -8,10 +8,35 @@ function EmployerPortal() {
   const [taken, setTaken] = useState([])
   const [loading, setLoading] = useState(true)
   const [employerId, setEmployerId] = useState(null)
+  const [verborgen, setVerborgen] = useState(false)
+  const [showImplementatieplan, setShowImplementatieplan] = useState(false)
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
     navigate('/')
+  }
+
+  const verbergTakenlijst = async () => {
+    if (!employerId) return
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${employerId}/verberg-takenlijst`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (response.ok) {
+        setVerborgen(true)
+      } else {
+        console.error('Fout bij verbergen takenlijst:', response.status)
+      }
+    } catch (error) {
+      console.error('Fout bij verbergen takenlijst:', error)
+    }
   }
 
   // Haal taken status op
@@ -46,6 +71,7 @@ function EmployerPortal() {
         if (response.ok) {
           const data = await response.json()
           setTaken(data.taken || [])
+          setVerborgen(data.verborgen || false)
         } else {
           console.error('Fout bij ophalen taken status:', response.status)
         }
@@ -69,13 +95,35 @@ function EmployerPortal() {
         </button>
       </div> */}
 
-      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Welkom bij het werkgever portaal</h1>
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">Welkom bij het werkgever portaal</h1>
+      
+      {/* Toelichting */}
+      <div className="mb-6">
+        <p className="text-gray-600 text-sm leading-relaxed mb-4">
+          Op deze pagina navigeer je eenvoudig naar de verschillende onderdelen van het GroeiPortaal of bekijk het implementatieplan.
+        </p>
+        <button 
+          onClick={() => setShowImplementatieplan(true)}
+          className="btn btn-outline text-sm"
+        >
+          Implementatieplan
+        </button>
+      </div>
 
       {/* Takenlijst */}
-      {!loading && taken.length > 0 && (
+      {!loading && taken.length > 0 && !verborgen && (
         <div className="mb-8">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Opstart taken</h2>
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 relative">
+            {/* Kruisje om sectie te verbergen */}
+            <button
+              onClick={verbergTakenlijst}
+              className="absolute top-4 right-4 w-8 h-8 bg-[var(--kleur-primary)] hover:bg-[var(--kleur-primary-dark)] text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:scale-110"
+              title="Verberg deze sectie"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 pr-12">Opstart taken</h2>
             <div className="space-y-4">
               {taken.map((taak, index) => (
                 <div key={taak.id} className="flex items-start gap-4 p-4 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
@@ -147,6 +195,102 @@ function EmployerPortal() {
           <Link to="/instellingen" className="btn btn-secondary">Ga naar instellingen</Link>
         </section>
       </div>
+
+      {/* Implementatieplan Modal */}
+      {showImplementatieplan && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-[var(--kleur-primary)]">Implementatieplan</h2>
+                  <p className="text-sm text-gray-600 mt-1">Krijg je medewerkers mee, zodat jullie samen kunnen groeien.</p>
+                </div>
+                <button
+                  onClick={() => setShowImplementatieplan(false)}
+                  className="w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Stappen */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Bepaal in welke maanden de gespreksrondes moeten plaatsen</h3>
+                    <p className="text-sm text-gray-600">(Bijvoorbeeld in rustige(re) maanden (maar niet in vakanties).</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Start elke gespreksronde met een kickoff om elke werknemer enthousiast te krijgen</h3>
+                    <p className="text-sm text-gray-600">(Hoe hoger de deelname, des te concreter de Verbeteradviezen zijn)</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <div className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Zorg dat alle werknemers de gesprekken in de actieve periodes doorlopen</h3>
+                    <p className="text-sm text-gray-600">(Stimuleer en herinner je werknemers of blok een moment in hun agenda af.)</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="flex-shrink-0 w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Organiseer een follow-up om concrete invulling te geven aan de verbeteradviezen en afspraken te maken</h3>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tips sectie */}
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-yellow-800 mb-3">Tips:</h3>
+                    <ul className="space-y-2 text-sm text-yellow-700">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                        <span>Bekijk in Teams en Werknemers welke teams en werknemers een account hebben en/of zijn uitgenodigd.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                        <span>Betrek je werknemers bij het plan voor een zo hoog mogelijke deelname.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                        <span>Volg Verbeteradviezen op en bespreek dit met je werknemers om samen te groeien.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-xl">
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowImplementatieplan(false)}
+                  className="btn btn-primary"
+                >
+                  Sluiten
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
