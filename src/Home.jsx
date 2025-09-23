@@ -15,7 +15,7 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Wat kost het als je beste medewerker vertrekt of uitvalt?
+            Verbind met je mensen. Groei samen verder.
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
             Verzuim en verloop zijn duur. GroeiRichting signaleert vroegtijdig risico's, geeft inzicht in hoe werknemers in de wedstrijd staan en helpt jouw organisatie de juiste richting op te groeien.
@@ -283,7 +283,7 @@ function Home() {
             <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
               <h3 className="font-semibold text-white mb-3 text-left">"We gebruiken al MTO-formulieren."</h3>
               <p className="text-white text-sm text-left">
-                Goed bezig. Alleen: traditionele medewerkertevredenheidsonderzoeken zijn vaak statische formulieren. Met GroeiRichting worden er gesprekken gevoerd en signalen verzameld.
+                Goed bezig. Alleen: traditionele medewerkertevredenheidsonderzoeken zijn vaak statische formulieren. Met GroeiRichting worden er gesprekken gevoerd en wordt er doorgevraagd en meer signalen verzameld.
               </p>
             </div>
             
