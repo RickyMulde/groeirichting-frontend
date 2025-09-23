@@ -99,11 +99,9 @@ function BeheerTeamsWerknemers() {
           const geldigeUitnodigingen = gefilterdeUitnodigingen.filter(Boolean)
           setUitnodigingen(geldigeUitnodigingen)
       } else {
-        console.error('Geen employer_id gevonden voor gebruiker')
         setUitnodigingen([])
       }
     } catch (error) {
-      console.error('Error fetching data:', error)
       setFoutmelding('Fout bij ophalen van gegevens')
     }
   }, [selectedTeam, refreshTrigger, teams])
@@ -172,7 +170,6 @@ function BeheerTeamsWerknemers() {
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
-      console.error('Error sending invite:', error)
       setFoutmelding('Fout bij verzenden uitnodiging')
     }
 
@@ -204,7 +201,6 @@ function BeheerTeamsWerknemers() {
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
-      console.error('Error saving changes:', error)
       setFoutmelding('Fout bij opslaan wijzigingen')
     }
   }
@@ -236,7 +232,6 @@ function BeheerTeamsWerknemers() {
         setFoutmelding(errorData.error || 'Fout bij opnieuw versturen uitnodiging')
       }
     } catch (error) {
-      console.error('Error resending invite:', error)
       setFoutmelding('Fout bij opnieuw versturen uitnodiging')
     }
   }
@@ -271,7 +266,6 @@ function BeheerTeamsWerknemers() {
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
-      console.error('Error deleting user:', error)
       setFoutmelding('Fout bij verwijderen werknemer')
     }
   }
@@ -420,10 +414,24 @@ function BeheerTeamsWerknemers() {
               <h2 className="text-xl font-medium mb-2 text-gray-900">
                 Maak (eerst) een team aan
               </h2>
-              <p className="text-gray-600 mb-6">
-                Je kunt één team aanmaken voor het hele bedrijf of meerdere teams om per team resultaten in te zien. 
-                Let op: Resultaten worden pas gegenereerd als minimaal 4 werknemers/teamleden de gesprekken hebben afgerond. (Als een team 4 werknemers/teamleden heeft en één werknemer/teamlid rond het gesprek niet af, dan zijn er dus geen resultaten beschikbaar.)
+              <p className="text-gray-600 mb-4">
+                Je kunt één team aanmaken voor het hele bedrijf of meerdere teams om per team resultaten in te zien.
               </p>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div className="text-sm text-amber-800">
+                    <p className="font-medium mb-1">Let op:</p>
+                    <p className="text-amber-700">
+                      Resultaten worden pas gegenereerd als minimaal 4 werknemers/teamleden de gesprekken hebben afgerond. (Als een team 4 werknemers/teamleden heeft en één werknemer/teamlid rond het gesprek niet af, dan zijn er dus geen resultaten beschikbaar.)
+                    </p>
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={() => setShowTeamModal(true)}
                 className="btn btn-primary flex items-center space-x-2"
@@ -484,9 +492,6 @@ function BeheerTeamsWerknemers() {
                     Team
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Functie
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Aangemeld
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -509,9 +514,6 @@ function BeheerTeamsWerknemers() {
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {getTeamName(werknemer.team_id)}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {werknemer.functie_omschrijving || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(werknemer.created_at).toLocaleDateString('nl-NL')}

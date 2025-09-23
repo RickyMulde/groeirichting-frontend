@@ -11,50 +11,36 @@ export default function NaVerificatie() {
     const run = async () => {
       try {
         setStatus('verifying');
-        console.log('[NaVerificatie] Start verificatie...');
         
         // Supabase handelt verificatie af en stuurt gebruiker door met hash fragment
         const hash = window.location.hash;
         const search = window.location.search;
         
-        console.log('[NaVerificatie] Hash:', hash);
-        console.log('[NaVerificatie] Search:', search);
-        
         // Controleer of er een actieve sessie is (verificatie is al afgehandeld door Supabase)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
-          console.error('[NaVerificatie] Session error:', sessionError);
           throw new Error('Fout bij ophalen sessie: ' + sessionError.message);
         }
         
         if (session && session.user) {
-          console.log('[NaVerificatie] Actieve sessie gevonden:', session.user.email);
-          console.log('[NaVerificatie] Email confirmed:', session.user.email_confirmed_at);
-          console.log('[NaVerificatie] User ID:', session.user.id);
-          console.log('[NaVerificatie] Session expires at:', session.expires_at);
           
           // Controleer of email daadwerkelijk geverifieerd is
           if (session.user.email_confirmed_at) {
-            console.log('[NaVerificatie] Email is geverifieerd, verificatie succesvol');
             setStatus('success');
             
             // Wacht langer om zeker te zijn dat verificatie volledig is verwerkt
             setTimeout(() => {
               // Check of er pending employer data is voor provisioning
               const pendingData = localStorage.getItem('pendingEmployerData');
-              console.log('[NaVerificatie] Pending data check:', pendingData ? 'Found' : 'Not found');
               
               if (pendingData) {
-                console.log('[NaVerificatie] Pending employer data gevonden, doorsturen naar provisioning');
                 nav('/provision-employer', { replace: true });
               } else {
-                console.log('[NaVerificatie] Geen pending data, doorsturen naar werkgever portaal');
                 nav('/werkgever-portaal', { replace: true });
               }
             }, 3000); // Verhoogd van 1500 naar 3000ms
           } else {
-            console.log('[NaVerificatie] Email nog niet geverifieerd, wachten op verificatie...');
             // Wacht en probeer opnieuw
             setTimeout(() => {
               window.location.reload();
@@ -65,7 +51,6 @@ export default function NaVerificatie() {
         }
         
       } catch (e) {
-        console.error('[NaVerificatie] Verificatie mislukt:', e);
         setErrorMsg(e?.message ?? 'Onbekende fout tijdens bevestigen.');
         setStatus('error');
       }
@@ -73,19 +58,14 @@ export default function NaVerificatie() {
 
     // Luister naar auth state changes (voor als verificatie asynchroon gebeurt)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[NaVerificatie] Auth state change:', event, session?.user?.email);
-      
       if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
-        console.log('[NaVerificatie] User signed in and email confirmed via auth state change');
         setStatus('success');
         
         setTimeout(() => {
           const pendingData = localStorage.getItem('pendingEmployerData');
           if (pendingData) {
-            console.log('[NaVerificatie] Pending employer data gevonden, doorsturen naar provisioning');
             nav('/provision-employer', { replace: true });
           } else {
-            console.log('[NaVerificatie] Geen pending data, doorsturen naar werkgever portaal');
             nav('/werkgever-portaal', { replace: true });
           }
         }, 1500);

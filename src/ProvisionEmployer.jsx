@@ -11,7 +11,6 @@ export default function ProvisionEmployer() {
     const run = async () => {
       try {
         setStatus('provisioning');
-        console.log('[ProvisionEmployer] Start provisioning...');
 
         // Haal pending employer data op
         const pendingData = localStorage.getItem('pendingEmployerData');
@@ -20,7 +19,6 @@ export default function ProvisionEmployer() {
         }
 
         const employerData = JSON.parse(pendingData);
-        console.log('[ProvisionEmployer] Pending data:', employerData);
 
         // Haal huidige gebruiker op met retry logica
         let user = null;
@@ -29,23 +27,16 @@ export default function ProvisionEmployer() {
         const maxRetries = 3;
 
         while (retryCount < maxRetries && !user) {
-          console.log(`[ProvisionEmployer] Attempt ${retryCount + 1} to get user...`);
-          
           const { data: userData, error: error } = await supabase.auth.getUser();
           user = userData?.user;
           userError = error;
 
           if (userError || !user) {
-            console.log(`[ProvisionEmployer] User fetch failed (attempt ${retryCount + 1}):`, userError);
             retryCount++;
             
             if (retryCount < maxRetries) {
-              console.log('[ProvisionEmployer] Retrying in 2 seconds...');
               await new Promise(resolve => setTimeout(resolve, 2000));
             }
-          } else {
-            console.log('[ProvisionEmployer] User fetched successfully:', user.email);
-            console.log('[ProvisionEmployer] Email confirmed:', user.email_confirmed_at);
           }
         }
 
@@ -53,16 +44,9 @@ export default function ProvisionEmployer() {
           throw new Error(`Gebruiker niet gevonden na ${maxRetries} pogingen: ${userError?.message || 'Onbekende fout'}`);
         }
 
-        console.log('[ProvisionEmployer] User ID:', user.id);
-        console.log('[ProvisionEmployer] User email confirmed at:', user.email_confirmed_at);
-
         // Roep backend provisioning endpoint aan
         const session = await supabase.auth.getSession();
         const accessToken = session.data.session?.access_token;
-        
-        console.log('[ProvisionEmployer] Access token:', accessToken ? 'Present' : 'Missing');
-        console.log('[ProvisionEmployer] Employer data:', employerData);
-        console.log('[ProvisionEmployer] API URL:', `${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`);
         
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`, {
           method: 'POST',
@@ -76,19 +60,12 @@ export default function ProvisionEmployer() {
           })
         });
 
-        console.log('[ProvisionEmployer] Response status:', response.status);
-        console.log('[ProvisionEmployer] Response headers:', Object.fromEntries(response.headers.entries()));
-
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('[ProvisionEmployer] Error response:', errorData);
           throw new Error(errorData.error || 'Provisioning mislukt');
         }
 
         const result = await response.json();
-        console.log('[ProvisionEmployer] Success response:', result);
-
-        console.log('[ProvisionEmployer] Provisioning succesvol');
         
         // Verwijder pending data
         localStorage.removeItem('pendingEmployerData');
@@ -101,7 +78,6 @@ export default function ProvisionEmployer() {
         }, 1500);
         
       } catch (e) {
-        console.error('[ProvisionEmployer] Provisioning mislukt:', e);
         setErrorMsg(e?.message ?? 'Onbekende fout tijdens provisioning.');
         setStatus('error');
       }
@@ -109,7 +85,6 @@ export default function ProvisionEmployer() {
 
     // Timeout na 60 seconden (verhoogd voor retry logica)
     const timeout = setTimeout(() => {
-      console.error('[ProvisionEmployer] Timeout - provisioning duurt te lang');
       setErrorMsg('Provisioning duurt te lang. Dit kan komen doordat de verificatie nog niet volledig is verwerkt. Probeer de pagina te verversen of probeer het opnieuw.');
       setStatus('error');
     }, 60000);

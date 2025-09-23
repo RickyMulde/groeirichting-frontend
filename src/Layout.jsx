@@ -17,11 +17,9 @@ function Layout({ children }) {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
         if (error) {
-          console.warn('⚠️ Layout: Sessie ophalen gefaald, maar doorgaan:', error.message)
         }
         setSession(session)
       } catch (error) {
-        console.warn('⚠️ Layout: Network error bij sessie ophalen, maar doorgaan:', error.message)
         setSession(null)
       }
     }
@@ -36,13 +34,11 @@ function Layout({ children }) {
 
     // Network status listener voor WiFi problemen
     const handleOnline = () => {
-      console.log('🌐 Layout: Internet verbinding hersteld')
       // Herlaad sessie bij herstel van verbinding
       initializeAuth()
     }
 
     const handleOffline = () => {
-      console.log('📡 Layout: Internet verbinding verloren')
     }
 
     window.addEventListener('online', handleOnline)
@@ -59,10 +55,10 @@ function Layout({ children }) {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) {
-        console.error('Logout error:', error)
+        // Logout error - continue anyway
       }
     } catch (error) {
-      console.error('Logout error:', error)
+      // Logout error - continue anyway
     } finally {
       // Clear local state en navigeer altijd
       setSession(null)

@@ -32,8 +32,6 @@ function RegisterEmployer() {
       const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'https://groeirichting-frontend.onrender.com'
       const redirectTo = `${frontendUrl}/na-verificatie`
       
-      console.log('🔧 Attempting direct Supabase signup:', { email, hasPassword: !!password, redirectTo })
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -43,10 +41,8 @@ function RegisterEmployer() {
       })
 
       if (error) {
-        console.error('🚨 Supabase signup error:', error)
         setError(error.message || 'Registratie mislukt.')
       } else {
-        console.log('✅ Supabase signup success:', data)
         
         // Sla extra gegevens op voor provisioning na verificatie
         localStorage.setItem('pendingEmployerData', JSON.stringify({

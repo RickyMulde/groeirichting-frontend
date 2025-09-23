@@ -11,11 +11,7 @@ if (!supabaseAnonKey) {
   throw new Error('VITE_SUPABASE_ANON_KEY is not defined in environment variables')
 }
 
-console.log('🔧 Supabase Client Config:', {
-  url: supabaseUrl,
-  hasKey: !!supabaseAnonKey,
-  keyLength: supabaseAnonKey?.length
-})
+// Supabase client configured
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {

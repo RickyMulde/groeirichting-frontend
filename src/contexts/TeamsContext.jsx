@@ -88,15 +88,12 @@ export const TeamsProvider = ({ children }) => {
   // Teams ophalen
   const fetchTeams = useCallback(async (includeArchived = false) => {
     try {
-      console.log('🔄 Teams ophalen...')
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
       const teams = await teamsApi.getTeams(includeArchived)
-      console.log('✅ Teams opgehaald:', teams)
       dispatch({ type: 'SET_TEAMS', payload: teams })
     } catch (error) {
-      console.error('❌ Fout bij ophalen teams:', error)
       // Alleen error tonen als het niet een sessie probleem is
       if (!error.message.includes('sessie')) {
         dispatch({ type: 'SET_ERROR', payload: error.message })
@@ -129,7 +126,6 @@ export const TeamsProvider = ({ children }) => {
           setUser(null)
         }
       } catch (error) {
-        console.error('Error in getUser:', error)
         setUser(null)
       }
     }
@@ -155,7 +151,6 @@ export const TeamsProvider = ({ children }) => {
           setUser(null)
         }
       } catch (error) {
-        console.error('Error in auth state change:', error)
         setUser(null)
       }
     })
@@ -189,7 +184,6 @@ export const TeamsProvider = ({ children }) => {
       const members = await teamsApi.getTeamMembers(teamId)
       dispatch({ type: 'SET_MEMBERS', payload: members })
     } catch (error) {
-      console.error('Fout bij ophalen team leden:', error)
       dispatch({ type: 'SET_MEMBERS', payload: [] })
     }
   }

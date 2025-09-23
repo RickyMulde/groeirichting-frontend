@@ -31,11 +31,9 @@ function EmployerPortal() {
 
       if (response.ok) {
         setVerborgen(true)
-      } else {
-        console.error('Fout bij verbergen takenlijst:', response.status)
       }
     } catch (error) {
-      console.error('Fout bij verbergen takenlijst:', error)
+      // Fout bij verbergen takenlijst
     }
   }
 
@@ -54,7 +52,6 @@ function EmployerPortal() {
           .single()
 
         if (userError || !userData?.employer_id) {
-          console.error('Fout bij ophalen employer_id:', userError)
           return
         }
 
@@ -73,10 +70,8 @@ function EmployerPortal() {
           setTaken(data.taken || [])
           setVerborgen(data.verborgen || false)
         } else {
-          console.error('Fout bij ophalen taken status:', response.status)
         }
       } catch (error) {
-        console.error('Fout bij ophalen taken status:', error)
       } finally {
         setLoading(false)
       }
