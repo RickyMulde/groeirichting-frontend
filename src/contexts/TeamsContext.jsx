@@ -110,21 +110,26 @@ export const TeamsProvider = ({ children }) => {
   // User ophalen bij mount
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        // Haal user data op uit database (inclusief role)
-        const { data: userDataArray, error: userError } = await supabase
-          .from('users')
-          .select('id, email, role, employer_id')
-          .eq('id', user.id)
-          .limit(1)
-        
-        const userData = userDataArray?.[0] || null
-        if (userError) {
-          console.error('Error fetching user data:', userError)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          // Haal user data op uit database (inclusief role)
+          const { data: userDataArray, error: userError } = await supabase
+            .from('users')
+            .select('id, email, role, employer_id')
+            .eq('id', user.id)
+            .limit(1)
+          
+          const userData = userDataArray?.[0] || null
+          if (userError) {
+            console.error('Error fetching user data:', userError)
+          }
+          setUser(userData)
+        } else {
+          setUser(null)
         }
-        setUser(userData)
-      } else {
+      } catch (error) {
+        console.error('Error in getUser:', error)
         setUser(null)
       }
     }
@@ -132,20 +137,25 @@ export const TeamsProvider = ({ children }) => {
 
     // Luister naar auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        // Haal user data op uit database (inclusief role)
-        const { data: userDataArray, error: userError } = await supabase
-          .from('users')
-          .select('id, email, role, employer_id')
-          .eq('id', session.user.id)
-          .limit(1)
-        
-        const userData = userDataArray?.[0] || null
-        if (userError) {
-          console.error('Error fetching user data:', userError)
+      try {
+        if (session?.user) {
+          // Haal user data op uit database (inclusief role)
+          const { data: userDataArray, error: userError } = await supabase
+            .from('users')
+            .select('id, email, role, employer_id')
+            .eq('id', session.user.id)
+            .limit(1)
+          
+          const userData = userDataArray?.[0] || null
+          if (userError) {
+            console.error('Error fetching user data:', userError)
+          }
+          setUser(userData)
+        } else {
+          setUser(null)
         }
-        setUser(userData)
-      } else {
+      } catch (error) {
+        console.error('Error in auth state change:', error)
         setUser(null)
       }
     })
@@ -157,9 +167,10 @@ export const TeamsProvider = ({ children }) => {
   useEffect(() => {
     if (user && user.role === 'employer') {
       fetchTeams()
-    } else if (!user) {
-      // Reset teams als user uitlogt
+    } else {
+      // Reset teams als user geen employer is of geen user
       dispatch({ type: 'SET_TEAMS', payload: [] })
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }, [user]) // Verwijder fetchTeams uit dependencies om hoisting probleem te voorkomen
 
