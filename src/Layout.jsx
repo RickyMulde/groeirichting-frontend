@@ -60,11 +60,13 @@ function Layout({ children }) {
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Logout error:', error)
-        return
       }
-      navigate('/')
     } catch (error) {
       console.error('Logout error:', error)
+    } finally {
+      // Clear local state en navigeer altijd
+      setSession(null)
+      navigate('/')
     }
   }
 
