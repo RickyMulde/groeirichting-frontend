@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Allow: /hoe-werkt-het
+Allow: /privacy-veiligheid
+Allow: /contact
+Allow: /login
+Allow: /register
+
+# Disallow authenticated pages
+Disallow: /dashboard
+Disallow: /gesprek
+Disallow: /instellingen
+Disallow: /werkgever
+Disallow: /werknemer
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://groeirichting.nl/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import Layout from './Layout'
 import { TeamsProvider } from './contexts/TeamsContext'
 import Login from './Login'
@@ -36,8 +37,9 @@ import EmailBeheer from './EmailBeheer'
 
 function App() {
   return (
-    <TeamsProvider>
-      <Layout>
+    <HelmetProvider>
+      <TeamsProvider>
+        <Layout>
         <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
@@ -73,9 +75,10 @@ function App() {
             <Themadashboard />
           </EmployerProtectedRoute>
         } />
-      </Routes>
-      </Layout>
-    </TeamsProvider>
+        </Routes>
+        </Layout>
+      </TeamsProvider>
+    </HelmetProvider>
   )
 }
 

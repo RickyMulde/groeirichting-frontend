@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { supabase } from './supabaseClient'
-import { containsSensitiveInfo, sanitizeInput } from './utils/filterInput';
+import { containsSensitiveInfo, sanitizeInput, safeDecodeHtmlEntities, validateInput } from './utils/filterInput';
 
 function GesprekPagina() {
   const [params] = useSearchParams()
@@ -650,6 +650,14 @@ function GesprekPagina() {
 
     setIsVerzenden(true);
     try {
+      // Extra input validatie voor veiligheid
+      const inputValidation = validateInput(cleanInput);
+      if (!inputValidation.isValid) {
+        voegChatBerichtToe('waarschuwing', inputValidation.error, null, false);
+        setIsVerzenden(false);
+        return;
+      }
+
       const check = containsSensitiveInfo(cleanInput);
       if (check.flagged) {
         voegChatBerichtToe('waarschuwing', check.reason, null, false);
@@ -946,11 +954,10 @@ function GesprekPagina() {
     }
   }
 
-  // Functie om HTML entities te decoderen
+  // Functie om HTML entities veilig te decoderen
   const decodeHtmlEntities = (text) => {
-    const textarea = document.createElement('textarea');
-    textarea.innerHTML = text;
-    return textarea.value;
+    // Gebruik de veilige utility functie
+    return safeDecodeHtmlEntities(text);
   };
 
   // Chat bericht component

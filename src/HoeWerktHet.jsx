@@ -4,10 +4,18 @@ import {
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
+import SEOHead from './components/SEOHead'
 
 function HoeWerktHet() {
   return (
-    <div className="space-y-24 bg-[var(--kleur-background)]">
+    <>
+      <SEOHead 
+        title="Hoe Werkt GroeiRichting - AI-Gestuurde Gesprekken"
+        description="Ontdek stap voor stap hoe GroeiRichting werkt. Van registratie tot AI-gestuurde gesprekken tussen werkgevers en werknemers. Eenvoudig, veilig en effectief."
+        keywords="hoe werkt groeirichting, AI gesprekken uitleg, werkgever werknemer gesprekken, AI HR proces, gespreksvoering stappen"
+        canonical="https://groeirichting.nl/hoe-werkt-het"
+      />
+      <div className="space-y-24 bg-[var(--kleur-background)]">
 
       {/* Hero */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
@@ -257,7 +265,8 @@ function HoeWerktHet() {
         </div>
       </section>
 
-    </div>
+      </div>
+    </>
   )
 }
 

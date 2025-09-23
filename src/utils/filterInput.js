@@ -71,3 +71,56 @@ export const sanitizeInput = (input) => {
     .replace(/'/g, '&#x27;')
     .replace(/\//g, '&#x2F;');
 };
+
+// Veilige HTML entity decoder (alternatief voor DOM-based decode)
+export const safeDecodeHtmlEntities = (text) => {
+  if (!text || typeof text !== 'string') {
+    return text;
+  }
+  
+  // Gebruik een veilige mapping in plaats van DOM manipulatie
+  const entityMap = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#x27;': "'",
+    '&#x2F;': '/',
+    '&nbsp;': ' ',
+    '&copy;': '©',
+    '&reg;': '®',
+    '&trade;': '™'
+  };
+  
+  return text.replace(/&[a-zA-Z0-9#]+;/g, (entity) => {
+    return entityMap[entity] || entity;
+  });
+};
+
+// Praktische input validatie - alleen echte bedreigingen blokkeren
+export const validateInput = (input) => {
+  if (!input || typeof input !== 'string') {
+    return { isValid: false, error: 'Ongeldige input' };
+  }
+  
+  // Alleen de meest gevaarlijke patronen blokkeren
+  const dangerousPatterns = [
+    /<script[^>]*>.*?<\/script>/gi,  // Alleen complete script tags
+    /javascript\s*:/gi,              // JavaScript URLs
+    /data\s*:\s*text\/html/gi,       // Data URLs met HTML
+    /vbscript\s*:/gi                 // VBScript
+  ];
+  
+  for (const pattern of dangerousPatterns) {
+    if (pattern.test(input)) {
+      return { isValid: false, error: 'Deze input bevat mogelijk schadelijke code' };
+    }
+  }
+  
+  // Redelijke lengte limiet voor gesprekken
+  if (input.length > 5000) {
+    return { isValid: false, error: 'Je antwoord is te lang. Houd het beknopt.' };
+  }
+  
+  return { isValid: true };
+};

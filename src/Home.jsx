@@ -6,10 +6,18 @@ import {
 
 import HeroIllustratie from './assets/hero.svg?react'
 import ContactForm from './components/ContactForm'
+import SEOHead from './components/SEOHead'
 
 function Home() {
   return (
-    <div className="space-y-16 bg-[var(--kleur-background)]">
+    <>
+      <SEOHead 
+        title="AI-Gestuurde Gesprekken voor Werkgevers en Werknemers"
+        description="Ontdek hoe AI-gestuurde gesprekken werkgevers en werknemers helpen groeien. Professionele gespreksvoering met kunstmatige intelligentie voor betere werkrelaties."
+        keywords="AI gesprekken, werkgever werknemer, kunstmatige intelligentie, gespreksvoering, groei, ontwikkeling, HR, personeel, AI HR, slimme gesprekken"
+        canonical="https://groeirichting.nl/"
+      />
+      <div className="space-y-16 bg-[var(--kleur-background)]">
 
       {/* Hero */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
@@ -338,7 +346,8 @@ function Home() {
           <button className="btn btn-secondary">Hoe werkt het?</button>
         </Link>
       </section>
-    </div>
+      </div>
+    </>
   )
 }
 
