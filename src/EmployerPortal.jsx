@@ -1,44 +1,63 @@
-import { useState } from 'react'
-import { BarChart3, Users, Settings, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { BarChart3, Users, Settings, X, CheckCircle, XCircle } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 
 function EmployerPortal() {
   const navigate = useNavigate()
-  const [closedBalloons, setClosedBalloons] = useState(new Set())
+  const [taken, setTaken] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [employerId, setEmployerId] = useState(null)
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
     navigate('/')
   }
 
-  const closeBalloon = (balloonIndex) => {
-    // Sluit alleen het specifieke ballonnetje
-    setClosedBalloons(prev => new Set([...prev, balloonIndex]))
-  }
+  // Haal taken status op
+  useEffect(() => {
+    const fetchTakenStatus = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
 
-  const closeAllBalloons = () => {
-    // Sluit alle ballonnetjes
-    setClosedBalloons(new Set([0, 1, 2]))
-  }
+        // Haal employer_id op uit user data
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('employer_id')
+          .eq('id', user.id)
+          .single()
 
-  const welcomeSteps = [
-    {
-      title: "Vul een omschrijving van de werkzaamheden van je bedrijf/team in",
-      description: "Help je team om beter te begrijpen wat er van hen wordt verwacht",
-      icon: "🏢"
-    },
-    {
-      title: "Stel in, in welke maand de gesprekken moeten plaatsvinden",
-      description: "Plan je gesprekscyclus voor optimale resultaten",
-      icon: "📅"
-    },
-    {
-      title: "Nodig de betreffende werknemers/teamleden uit",
-      description: "Start je eerste gesprekken en begin met groeien",
-      icon: "👥"
+        if (userError || !userData?.employer_id) {
+          console.error('Fout bij ophalen employer_id:', userError)
+          return
+        }
+
+        setEmployerId(userData.employer_id)
+
+        // Haal taken status op
+        const { data: { session } } = await supabase.auth.getSession()
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${userData.employer_id}/taken-status`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          setTaken(data.taken || [])
+        } else {
+          console.error('Fout bij ophalen taken status:', response.status)
+        }
+      } catch (error) {
+        console.error('Fout bij ophalen taken status:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchTakenStatus()
+  }, [])
 
   return (
     <div className="page-container">
@@ -52,38 +71,45 @@ function EmployerPortal() {
 
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Welkom bij het werkgever portaal</h1>
 
-      {/* Welkomst Ballonnetjes */}
-      {closedBalloons.size < welcomeSteps.length && (
+      {/* Takenlijst */}
+      {!loading && taken.length > 0 && (
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {welcomeSteps.map((step, index) => (
-              // Toon alleen ballonnetjes die niet zijn gesloten
-              !closedBalloons.has(index) && (
-                <div key={index} className="relative bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                {/* Kruisje om ballonnetje te sluiten */}
-                <button
-                  onClick={() => closeBalloon(index)}
-                  className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-lg border-2 border-white hover:scale-110"
-                  title="Sluit dit ballonnetje"
-                >
-                  <span className="text-white text-lg font-bold leading-none">×</span>
-                </button>
-                
-                {/* Ballonnetje inhoud */}
-                <div className="text-center">
-                  <div className="text-3xl mb-3">{step.icon}</div>
-                  <h3 className="font-semibold text-gray-800 mb-2 text-sm leading-tight">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    {step.description}
-                  </p>
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Opstart taken</h2>
+            <div className="space-y-4">
+              {taken.map((taak, index) => (
+                <div key={taak.id} className="flex items-start gap-4 p-4 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
+                  {/* Status indicator */}
+                  <div className="flex-shrink-0 mt-1">
+                    {taak.voltooid ? (
+                      <CheckCircle className="w-6 h-6 text-green-500" />
+                    ) : (
+                      <XCircle className="w-6 h-6 text-red-500" />
+                    )}
+                  </div>
+                  
+                  {/* Taak inhoud */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-2xl">{taak.icon}</span>
+                      <h3 className="font-medium text-gray-800 text-sm leading-tight">
+                        {taak.titel}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-gray-600 leading-relaxed mb-3">
+                      {taak.beschrijving}
+                    </p>
+                    <Link 
+                      to={taak.link}
+                      className="inline-flex items-center text-xs text-[var(--kleur-primary)] hover:text-[var(--kleur-primary-dark)] font-medium"
+                    >
+                      {taak.voltooid ? 'Bekijk instellingen' : 'Ga naar instellingen'} →
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            )))}
+              ))}
+            </div>
           </div>
-          
-
         </div>
       )}
 
