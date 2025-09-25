@@ -1,13 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import { Menu, X } from 'lucide-react'
-import { useTeams } from './contexts/TeamsContext'
 
 function Layout({ children }) {
+  const [session, setSession] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
-  const { user } = useTeams()
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.error('Session error:', error)
+        }
+        setSession(session)
+      } catch (error) {
+        console.error('Auth initialization error:', error)
+        setSession(null)
+      }
+    }
+
+    initializeAuth()
+
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -22,11 +48,13 @@ function Layout({ children }) {
       localStorage.clear()
       sessionStorage.clear()
       
-      // Clear local state - user wordt automatisch geüpdatet via TeamsContext
+      // Clear local state
+      setSession(null)
       
     } catch (error) {
       console.error('Logout error:', error)
       // Ga door met logout ook bij fout
+      setSession(null)
     } finally {
       // Navigeer en reload altijd
       navigate('/')
@@ -91,7 +119,7 @@ function Layout({ children }) {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            {user ? (
+            {session ? (
               <button onClick={handleLogout} className="btn btn-primary">Uitloggen</button>
             ) : (
               <>
@@ -162,7 +190,7 @@ function Layout({ children }) {
             
             {/* Mobile Auth Buttons */}
             <div className="px-6 py-4 border-t border-gray-200 space-y-3">
-              {user ? (
+              {session ? (
                 <button 
                   onClick={() => {
                     handleLogout()

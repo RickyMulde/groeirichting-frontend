@@ -104,13 +104,13 @@ export const TeamsProvider = ({ children }) => {
     }
   }, [])
 
-  // User ophalen bij mount
+  // User ophalen bij mount - alleen voor teams data
   useEffect(() => {
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
-          // Haal user data op uit database (inclusief role)
+          // Haal user data op uit database (inclusief role) - alleen voor teams
           const { data: userDataArray, error: userError } = await supabase
             .from('users')
             .select('id, email, role, employer_id')
@@ -130,32 +130,6 @@ export const TeamsProvider = ({ children }) => {
       }
     }
     getUser()
-
-    // Luister naar auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      try {
-        if (session?.user) {
-          // Haal user data op uit database (inclusief role)
-          const { data: userDataArray, error: userError } = await supabase
-            .from('users')
-            .select('id, email, role, employer_id')
-            .eq('id', session.user.id)
-            .limit(1)
-          
-          const userData = userDataArray?.[0] || null
-          if (userError) {
-            console.error('Error fetching user data:', userError)
-          }
-          setUser(userData)
-        } else {
-          setUser(null)
-        }
-      } catch (error) {
-        setUser(null)
-      }
-    })
-
-    return () => subscription.unsubscribe()
   }, [])
 
   // Teams ophalen bij mount en bij user wijziging
