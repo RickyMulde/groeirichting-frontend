@@ -17,8 +17,28 @@ function RegistratieVerplicht() {
   }, [navigate])
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/login')
+    try {
+      // Probeer uit te loggen bij Supabase
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Logout error:', error)
+        // Ga door met logout ook bij fout
+      }
+      
+      // Clear alle lokale storage
+      localStorage.clear()
+      sessionStorage.clear()
+      
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Ga door met logout ook bij fout
+    } finally {
+      // Navigeer altijd naar login
+      navigate('/login')
+      
+      // Forceer page reload om alle state te resetten
+      window.location.reload()
+    }
   }
 
   return (

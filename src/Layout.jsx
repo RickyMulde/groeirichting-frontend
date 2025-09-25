@@ -53,16 +53,31 @@ function Layout({ children }) {
 
   const handleLogout = async () => {
     try {
+      // Toon loading state
+      setIsLoading(true)
+      
+      // Probeer uit te loggen bij Supabase
       const { error } = await supabase.auth.signOut()
       if (error) {
-        // Logout error - continue anyway
+        console.error('Logout error:', error)
+        // Ga door met logout ook bij fout
       }
+      
+      // Clear alle lokale storage
+      localStorage.clear()
+      sessionStorage.clear()
+      
     } catch (error) {
-      // Logout error - continue anyway
+      console.error('Logout error:', error)
+      // Ga door met logout ook bij fout
     } finally {
       // Clear local state en navigeer altijd
       setSession(null)
+      setIsLoading(false)
       navigate('/')
+      
+      // Forceer page reload om alle state te resetten
+      window.location.reload()
     }
   }
 

@@ -11,8 +11,12 @@ function Login() {
   // Functie om alle cached data te wissen
   const clearAllData = async () => {
     try {
-      // Logout van Supabase
-      await supabase.auth.signOut()
+      // Probeer uit te loggen bij Supabase
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Logout error:', error)
+        // Ga door met logout ook bij fout
+      }
       
       // Clear localStorage
       localStorage.clear()
@@ -26,8 +30,13 @@ function Login() {
       setError('')
       
       console.log('Alle data gewist')
+      
+      // Forceer page reload om alle state te resetten
+      window.location.reload()
     } catch (error) {
       console.error('Fout bij wissen data:', error)
+      // Forceer page reload ook bij fout
+      window.location.reload()
     }
   }
 

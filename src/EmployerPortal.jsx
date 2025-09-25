@@ -11,10 +11,6 @@ function EmployerPortal() {
   const [verborgen, setVerborgen] = useState(false)
   const [showImplementatieplan, setShowImplementatieplan] = useState(false)
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/')
-  }
 
   const verbergTakenlijst = async () => {
     if (!employerId) return
@@ -82,13 +78,6 @@ function EmployerPortal() {
 
   return (
     <div className="page-container">
-      {/* De absolute gepositioneerde uitlogknop die verwijderd moet worden */}
-      {/* <div className="absolute top-4 right-4">
-        <button onClick={handleLogout} className="btn btn-primary flex items-center gap-2 text-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-4 h-4" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-          Uitloggen
-        </button>
-      </div> */}
 
       <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">Welkom bij het werkgever portaal</h1>
       
