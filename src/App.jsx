@@ -36,8 +36,7 @@ import EmailBeheer from './EmailBeheer'
 
 function App() {
   return (
-    <TeamsProvider>
-      <Layout>
+    <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
@@ -50,9 +49,17 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/na-verificatie" element={<NaVerificatie />} />
         <Route path="/provision-employer" element={<ProvisionEmployer />} />
-        <Route path="/werkgever-portaal" element={<EmployerPortal />} />
+        <Route path="/werkgever-portaal" element={
+          <TeamsProvider>
+            <EmployerPortal />
+          </TeamsProvider>
+        } />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/beheer-teams-werknemers" element={<BeheerTeamsWerknemers />} />
+        <Route path="/beheer-teams-werknemers" element={
+          <TeamsProvider>
+            <BeheerTeamsWerknemers />
+          </TeamsProvider>
+        } />
         <Route path="/instellingen" element={<Instellingen />} />
         <Route path="/redirect" element={<PostLoginRedirect />} />
         <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
@@ -70,12 +77,13 @@ function App() {
         <Route path="/gesprek-resultaten" element={<GesprekResultaten />} />
         <Route path="/thema-dashboard" element={
           <EmployerProtectedRoute>
-            <Themadashboard />
+            <TeamsProvider>
+              <Themadashboard />
+            </TeamsProvider>
           </EmployerProtectedRoute>
         } />
       </Routes>
-      </Layout>
-    </TeamsProvider>
+    </Layout>
   )
 }
 

@@ -9,12 +9,22 @@ function Layout({ children }) {
   const navigate = useNavigate()
 
   useEffect(() => {
+    // Alleen auth checks doen op pagina's waar het nodig is
+    const currentPath = window.location.pathname
+    const authRequiredPaths = ['/werkgever-portaal', '/beheer-teams-werknemers', '/thema-dashboard', '/instellingen', '/dashboard', '/werknemer-portaal', '/werknemer-instellingen']
+    
+    const needsAuth = authRequiredPaths.some(path => currentPath.startsWith(path))
+    
+    if (!needsAuth) {
+      console.log('📡 Layout: Geen auth nodig voor deze pagina:', currentPath)
+      return
+    }
+
     const initializeAuth = async () => {
       try {
-        console.log('🔄 Layout: initializeAuth aangeroepen')
+        console.log('🔄 Layout: initializeAuth aangeroepen voor:', currentPath)
         const { data: { session }, error } = await supabase.auth.getSession()
         console.log('📡 Layout: Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
-        console.log('📡 Layout: Session details:', session)
         if (error) {
           console.error('❌ Layout: Session error:', error)
         }
