@@ -255,6 +255,7 @@ export const TeamsProvider = ({ children }) => {
     loading: state.loading,
     error: state.error,
     members: state.members,
+    user: user,
     
     // Actions
     fetchTeams,
