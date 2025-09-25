@@ -10,17 +10,19 @@ function Layout({ children }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Direct loading uitschakelen en sessie ophalen
-    setIsLoading(false)
-    
     const initializeAuth = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
         if (error) {
+          console.error('Session error:', error)
         }
         setSession(session)
       } catch (error) {
+        console.error('Auth initialization error:', error)
         setSession(null)
+      } finally {
+        // Alleen loading uitschakelen na sessie initialisatie
+        setIsLoading(false)
       }
     }
 
@@ -67,17 +69,21 @@ function Layout({ children }) {
       localStorage.clear()
       sessionStorage.clear()
       
+      // Clear local state
+      setSession(null)
+      
     } catch (error) {
       console.error('Logout error:', error)
       // Ga door met logout ook bij fout
-    } finally {
-      // Clear local state en navigeer altijd
       setSession(null)
-      setIsLoading(false)
+    } finally {
+      // Navigeer en reload altijd
       navigate('/')
       
       // Forceer page reload om alle state te resetten
-      window.location.reload()
+      setTimeout(() => {
+        window.location.reload()
+      }, 100)
     }
   }
 
