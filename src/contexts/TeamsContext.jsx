@@ -107,20 +107,26 @@ export const TeamsProvider = ({ children }) => {
     }
   }, [])
 
-  // User ophalen bij mount - alleen voor teams data
+  // User ophalen bij mount en luister naar auth state changes
   useEffect(() => {
-    const getUser = async () => {
+    const initializeAuth = async () => {
       try {
-        console.log('🔄 TeamsContext: getUser aangeroepen')
-        const { data: { user } } = await supabase.auth.getUser()
-        console.log('📡 TeamsContext: Supabase user:', user ? 'Aanwezig' : 'Niet aanwezig')
+        console.log('🔄 TeamsContext: initializeAuth aangeroepen')
+        const { data: { session }, error } = await supabase.auth.getSession()
+        console.log('📡 TeamsContext: Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
         
-        if (user) {
+        if (error) {
+          console.error('❌ TeamsContext: Session error:', error)
+        }
+        
+        if (session?.user) {
+          console.log('📡 TeamsContext: User uit session:', session.user)
+          
           // Haal user data op uit database (inclusief role) - alleen voor teams
           const { data: userDataArray, error: userError } = await supabase
             .from('users')
             .select('id, email, role, employer_id')
-            .eq('id', user.id)
+            .eq('id', session.user.id)
             .limit(1)
           
           console.log('📡 TeamsContext: User data query result:', { userDataArray, userError })
@@ -133,15 +139,45 @@ export const TeamsProvider = ({ children }) => {
           }
           setUser(userData)
         } else {
-          console.log('📡 TeamsContext: Geen user gevonden')
+          console.log('📡 TeamsContext: Geen session of user gevonden')
           setUser(null)
         }
       } catch (error) {
-        console.error('❌ TeamsContext: Error in getUser:', error)
+        console.error('❌ TeamsContext: Error in initializeAuth:', error)
         setUser(null)
       }
     }
-    getUser()
+
+    initializeAuth()
+
+    // Luister naar auth state changes
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔄 TeamsContext: Auth state change:', event, session ? 'Session aanwezig' : 'Geen session')
+      
+      if (session?.user) {
+        console.log('📡 TeamsContext: User uit auth state change:', session.user)
+        
+        // Haal user data op uit database
+        const { data: userDataArray, error: userError } = await supabase
+          .from('users')
+          .select('id, email, role, employer_id')
+          .eq('id', session.user.id)
+          .limit(1)
+        
+        const userData = userDataArray?.[0] || null
+        console.log('📡 TeamsContext: User data from auth change:', userData)
+        setUser(userData)
+      } else {
+        console.log('📡 TeamsContext: No session in auth state change, setting user to null')
+        setUser(null)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   // Teams ophalen bij mount en bij user wijziging
