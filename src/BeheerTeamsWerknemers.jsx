@@ -83,14 +83,36 @@ function BeheerTeamsWerknemers() {
                 return null
               }
               
-              // Extra check: controleer of er al een actieve gebruiker bestaat
-              const { data: bestaandeUser } = await supabase
-                .from('users')
-                .select('id, email')
-                .eq('email', uitnodiging.email)
-                .single()
-              
-              return bestaandeUser ? null : uitnodiging
+              // Extra check: controleer of er al een actieve gebruiker bestaat via backend
+              try {
+                const { data: { session } } = await supabase.auth.getSession()
+                if (!session?.access_token) {
+                  console.warn('No session token available for user check')
+                  return uitnodiging
+                }
+
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/check-user-exists`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                  },
+                  body: JSON.stringify({ email: uitnodiging.email })
+                })
+                
+                if (response.ok) {
+                  const { exists } = await response.json()
+                  return exists ? null : uitnodiging
+                } else {
+                  // Als er een error is, negeer dan en toon de uitnodiging
+                  console.warn('Error checking existing user via backend:', response.status)
+                  return uitnodiging
+                }
+              } catch (error) {
+                // Als er een exception is, negeer dan en toon de uitnodiging
+                console.warn('Exception checking existing user via backend:', error)
+                return uitnodiging
+              }
             })
           )
           
