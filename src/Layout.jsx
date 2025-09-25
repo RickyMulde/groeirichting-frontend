@@ -6,20 +6,18 @@ import { Menu, X } from 'lucide-react'
 function Layout({ children }) {
   const [session, setSession] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Direct loading uitschakelen en sessie ophalen
-    setIsLoading(false)
-    
     const initializeAuth = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
         if (error) {
+          console.error('Session error:', error)
         }
         setSession(session)
       } catch (error) {
+        console.error('Auth initialization error:', error)
         setSession(null)
       }
     }
@@ -53,9 +51,6 @@ function Layout({ children }) {
 
   const handleLogout = async () => {
     try {
-      // Toon loading state
-      setIsLoading(true)
-      
       // Probeer uit te loggen bij Supabase
       const { error } = await supabase.auth.signOut()
       if (error) {
@@ -93,17 +88,6 @@ function Layout({ children }) {
     setIsMobileMenuOpen(false)
   }
 
-  // Toon loading state tijdens initialisatie
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--kleur-background)]">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
-          <p className="text-[var(--kleur-muted)]">Laden...</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--kleur-background)] text-[var(--kleur-text)]">

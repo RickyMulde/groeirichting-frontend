@@ -6,6 +6,7 @@ import { Smile, History, Settings, Shield } from 'lucide-react'
 
 function EmployeePortal() {
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
   const [showMessage, setShowMessage] = useState(false)
@@ -14,6 +15,7 @@ function EmployeePortal() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        setLoading(true)
         // Wacht even zodat Layout component eerst kan initialiseren
         await new Promise(resolve => setTimeout(resolve, 100))
         
@@ -28,6 +30,8 @@ function EmployeePortal() {
       } catch (error) {
         console.error('EmployeePortal: Error fetching user:', error)
         navigate('/login')
+      } finally {
+        setLoading(false)
       }
     }
     fetchUser()
@@ -46,6 +50,18 @@ function EmployeePortal() {
       setTimeout(() => setShowMessage(false), 5000)
     }
   }, [location, navigate])
+
+  // Toon loading state tijdens authenticatie
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--kleur-background)] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
+          <p className="text-[var(--kleur-muted)]">Laden...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[var(--kleur-background)] text-[var(--kleur-text)]">
