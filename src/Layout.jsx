@@ -30,22 +30,8 @@ function Layout({ children }) {
       setSession(session)
     })
 
-    // Network status listener voor WiFi problemen
-    const handleOnline = () => {
-      // Herlaad sessie bij herstel van verbinding
-      initializeAuth()
-    }
-
-    const handleOffline = () => {
-    }
-
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-
     return () => {
       subscription.unsubscribe()
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
     }
   }, [])
 
