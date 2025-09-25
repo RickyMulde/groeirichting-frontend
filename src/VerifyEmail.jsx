@@ -259,9 +259,15 @@ function VerifyEmail() {
       }
 
       // Gebruik Supabase Auth resend - verstuurt via SMTP
+      const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'https://groeirichting-frontend.onrender.com'
+      const redirectTo = `${frontendUrl}/na-verificatie`
+      
       const { error } = await supabase.auth.resend({
         type: 'signup',
-        email: emailToUse
+        email: emailToUse,
+        options: {
+          emailRedirectTo: redirectTo
+        }
       })
 
       if (error) {
