@@ -88,12 +88,15 @@ export const TeamsProvider = ({ children }) => {
   // Teams ophalen
   const fetchTeams = useCallback(async (includeArchived = false) => {
     try {
+      console.log('🔄 TeamsContext: fetchTeams aangeroepen, includeArchived:', includeArchived)
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
       const teams = await teamsApi.getTeams(includeArchived)
+      console.log('✅ TeamsContext: Teams opgehaald:', teams)
       dispatch({ type: 'SET_TEAMS', payload: teams })
     } catch (error) {
+      console.error('❌ TeamsContext: Error in fetchTeams:', error)
       // Alleen error tonen als het niet een sessie probleem is
       if (!error.message.includes('sessie')) {
         dispatch({ type: 'SET_ERROR', payload: error.message })
@@ -108,7 +111,10 @@ export const TeamsProvider = ({ children }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
+        console.log('🔄 TeamsContext: getUser aangeroepen')
         const { data: { user } } = await supabase.auth.getUser()
+        console.log('📡 TeamsContext: Supabase user:', user ? 'Aanwezig' : 'Niet aanwezig')
+        
         if (user) {
           // Haal user data op uit database (inclusief role) - alleen voor teams
           const { data: userDataArray, error: userError } = await supabase
@@ -117,15 +123,21 @@ export const TeamsProvider = ({ children }) => {
             .eq('id', user.id)
             .limit(1)
           
+          console.log('📡 TeamsContext: User data query result:', { userDataArray, userError })
+          
           const userData = userDataArray?.[0] || null
+          console.log('📡 TeamsContext: User data:', userData)
+          
           if (userError) {
             console.error('Error fetching user data:', userError)
           }
           setUser(userData)
         } else {
+          console.log('📡 TeamsContext: Geen user gevonden')
           setUser(null)
         }
       } catch (error) {
+        console.error('❌ TeamsContext: Error in getUser:', error)
         setUser(null)
       }
     }
@@ -134,9 +146,12 @@ export const TeamsProvider = ({ children }) => {
 
   // Teams ophalen bij mount en bij user wijziging
   useEffect(() => {
+    console.log('🔄 TeamsContext: useEffect [user] triggered, user:', user)
     if (user && user.role === 'employer') {
+      console.log('✅ TeamsContext: User is employer, calling fetchTeams')
       fetchTeams()
     } else {
+      console.log('❌ TeamsContext: User is not employer or no user, resetting teams')
       // Reset teams als user geen employer is of geen user
       dispatch({ type: 'SET_TEAMS', payload: [] })
       dispatch({ type: 'SET_LOADING', payload: false })

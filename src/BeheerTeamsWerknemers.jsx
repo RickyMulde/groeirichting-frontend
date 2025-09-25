@@ -8,7 +8,7 @@ import TeamSelector from './components/TeamSelector'
 import Alert from './Alert'
 
 function BeheerTeamsWerknemers() {
-  const { teams, selectedTeam, selectTeam } = useTeams()
+  const { teams, selectedTeam, selectTeam, refreshTeams } = useTeams()
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [werknemers, setWerknemers] = useState([])
   const [selectedWerknemer, setSelectedWerknemer] = useState(null)
@@ -188,6 +188,8 @@ function BeheerTeamsWerknemers() {
         setIsInviteExpanded(false)
         setSuccesmelding('Uitnodiging succesvol verzonden!')
         setTimeout(() => setSuccesmelding(''), 5000)
+        // Ververs de teams data om eventuele wijzigingen te tonen
+        refreshTeams()
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
@@ -219,6 +221,8 @@ function BeheerTeamsWerknemers() {
       } else {
         setSuccesmelding('Wijzigingen opgeslagen')
         handleCloseModal()
+        // Ververs de teams data om de bijgewerkte werknemer gegevens te tonen
+        refreshTeams()
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
@@ -247,6 +251,8 @@ function BeheerTeamsWerknemers() {
 
       if (response.ok) {
         setSuccesmelding('Uitnodiging opnieuw verzonden')
+        // Ververs de teams data om eventuele wijzigingen te tonen
+        refreshTeams()
         setRefreshTrigger(prev => prev + 1)
       } else {
         const errorData = await response.json()
@@ -267,6 +273,8 @@ function BeheerTeamsWerknemers() {
       setFoutmelding('Fout bij verwijderen uitnodiging')
     } else {
       setSuccesmelding('Uitnodiging verwijderd')
+      // Ververs de teams data om eventuele wijzigingen te tonen
+      refreshTeams()
       fetchData()
     }
   }
@@ -284,6 +292,8 @@ function BeheerTeamsWerknemers() {
         setFoutmelding('Fout bij verwijderen werknemer')
       } else {
         setSuccesmelding('Werknemer verwijderd')
+        // Ververs de teams data om de bijgewerkte teamleden te tonen
+        refreshTeams()
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
