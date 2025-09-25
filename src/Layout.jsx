@@ -95,8 +95,11 @@ function Layout({ children }) {
     setIsMobileMenuOpen(false)
   }
 
-  // Toon loading state tijdens initialisatie
-  if (isLoading) {
+  // Toon loading state alleen voor beschermde routes
+  const protectedRoutes = ['/werkgever-portaal', '/werknemer-portaal', '/superadmin-portaal', '/gesprek', '/gesprek-resultaat', '/gesprek-resultaten', '/thema-overzicht', '/instellingen', '/werknemer-instellingen', '/beheer-teams-werknemers', '/dashboard']
+  const isProtectedRoute = protectedRoutes.some(route => window.location.pathname.startsWith(route))
+  
+  if (isLoading && isProtectedRoute) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--kleur-background)]">
         <div className="text-center space-y-4">
