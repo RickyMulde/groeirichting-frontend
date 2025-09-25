@@ -88,7 +88,6 @@ function BeheerTeamsWerknemers() {
                 .from('users')
                 .select('id, email')
                 .eq('email', uitnodiging.email)
-                .eq('role', 'employee')
                 .single()
               
               return bestaandeUser ? null : uitnodiging
