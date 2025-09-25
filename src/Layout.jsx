@@ -11,13 +11,16 @@ function Layout({ children }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        console.log('🔄 Layout: initializeAuth aangeroepen')
         const { data: { session }, error } = await supabase.auth.getSession()
+        console.log('📡 Layout: Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
+        console.log('📡 Layout: Session details:', session)
         if (error) {
-          console.error('Session error:', error)
+          console.error('❌ Layout: Session error:', error)
         }
         setSession(session)
       } catch (error) {
-        console.error('Auth initialization error:', error)
+        console.error('❌ Layout: Auth initialization error:', error)
         setSession(null)
       }
     }
@@ -27,6 +30,7 @@ function Layout({ children }) {
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('🔄 Layout: Auth state change:', _event, session ? 'Session aanwezig' : 'Geen session')
       setSession(session)
     })
 
