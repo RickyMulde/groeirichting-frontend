@@ -8247,7 +8247,6 @@ export const achternamenSet = new Set([
   'streefland (streefkerk)',
   'streek',
   'streekstra',
-  'streng',
   'streuding',
   'streun',
   'strick',

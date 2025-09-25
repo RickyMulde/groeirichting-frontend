@@ -116,9 +116,12 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <div className="space-y-2">
-            <h2 className="text-xl font-bold text-blue-900">Top 3 Prioriteiten worden gegenereerd...</h2>
+            <h2 className="text-xl font-bold text-blue-900">Top 3 prioriteiten worden gegenereerd...</h2>
             <p className="text-blue-700 text-sm">
               We analyseren alle je gesprekken om de belangrijkste acties te bepalen
+            </p>
+            <p className="text-blue-600 text-xs font-medium">
+              Let op: het genereren van deze top 3 prioriteiten duurt ongeveer 1 minuut.
             </p>
           </div>
         </div>
@@ -156,7 +159,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
        <div className="flex items-center justify-between mb-4">
          <div>
            <h2 className="text-xl font-bold text-blue-900 mb-1">
-             🎯 Top 3 Prioriteiten voor Jouw Groei
+             🎯 Top 3 prioriteiten voor jouw Groei
            </h2>
            <p className="text-blue-700 text-sm">
              Deze acties hebben de hoogste impact op basis van alle gevoerde gesprekken
@@ -201,7 +204,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
                 
                 {/* Actie tekst */}
                 <div className="flex-1">
-                  <p className="text-gray-900 font-medium leading-relaxed">
+                  <p className="text-gray-900 text-sm leading-relaxed">
                     {actie}
                   </p>
                 </div>
