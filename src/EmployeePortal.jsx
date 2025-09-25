@@ -13,15 +13,25 @@ function EmployeePortal() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser()
-      if (error || !data?.user) {
+      try {
+        // Wacht even zodat Layout component eerst kan initialiseren
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        const { data, error } = await supabase.auth.getUser()
+        if (error || !data?.user) {
+          console.log('EmployeePortal: No user found, redirecting to login')
+          navigate('/login')
+        } else {
+          console.log('EmployeePortal: User found:', data.user.email)
+          setUser(data.user)
+        }
+      } catch (error) {
+        console.error('EmployeePortal: Error fetching user:', error)
         navigate('/login')
-      } else {
-        setUser(data.user)
       }
     }
     fetchUser()
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     // Check voor success message in location state
