@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './Layout'
 import { TeamsProvider } from './contexts/TeamsContext'
+import ProtectedRoute from './ProtectedRoute'
 import Login from './Login'
 import RegisterEmployer from './RegisterEmployer'
 import Home from './Home'
@@ -24,7 +25,6 @@ import GesprekResultaat from './GesprekResultaat'
 import GesprekResultaten from './GesprekResultaten'
 import ThemaOverzicht from './ThemaOverzicht'
 import Themadashboard from './Themadashboard'
-import EmployerProtectedRoute from './EmployerProtectedRoute'
 import WerknemerInstellingen from './WerknemerInstellingen'
 import UitlegPrivacy from './uitleg-privacy'
 import Offerte from './Offerte'
@@ -38,6 +38,7 @@ function App() {
   return (
     <Layout>
       <Routes>
+        {/* Publieke routes - geen authenticatie nodig */}
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/offerte" element={<Offerte />} />
@@ -49,38 +50,114 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/na-verificatie" element={<NaVerificatie />} />
         <Route path="/provision-employer" element={<ProvisionEmployer />} />
+        
+        {/* Werkgever routes - alleen voor employers */}
         <Route path="/werkgever-portaal" element={
-          <TeamsProvider>
-            <EmployerPortal />
-          </TeamsProvider>
+          <ProtectedRoute requiredRole="employer">
+            <TeamsProvider>
+              <EmployerPortal />
+            </TeamsProvider>
+          </ProtectedRoute>
         } />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/beheer-teams-werknemers" element={
-          <TeamsProvider>
-            <BeheerTeamsWerknemers />
-          </TeamsProvider>
+          <ProtectedRoute requiredRole="employer">
+            <TeamsProvider>
+              <BeheerTeamsWerknemers />
+            </TeamsProvider>
+          </ProtectedRoute>
         } />
-        <Route path="/instellingen" element={<Instellingen />} />
-        <Route path="/redirect" element={<PostLoginRedirect />} />
-        <Route path="/registratie-verplicht" element={<RegistratieVerplicht />} />
-        <Route path="/werknemer-portaal" element={<EmployeePortal />} />
-        <Route path="/werknemer-instellingen" element={<WerknemerInstellingen />} />
-        <Route path="/uitleg-privacy" element={<UitlegPrivacy />} />
-        <Route path="/superadmin-portaal" element={<SuperadminPortaal />} />
-        <Route path="/superadmin/thema/:id" element={<ThemaBeheer />} />
-        <Route path="/superadmin/thema-beheer" element={<ThemaBeheerOverzicht />} />
-        <Route path="/superadmin/gebruikers-beheer" element={<GebruikersBeheer />} />
-        <Route path="/superadmin/email-beheer" element={<EmailBeheer />} />
-        <Route path="/thema-overzicht" element={<ThemaOverzicht />} />
-        <Route path="/gesprek" element={<GesprekPagina />} />
-        <Route path="/gesprek-resultaat" element={<GesprekResultaat />} />
-        <Route path="/gesprek-resultaten" element={<GesprekResultaten />} />
         <Route path="/thema-dashboard" element={
-          <EmployerProtectedRoute>
+          <ProtectedRoute requiredRole="employer">
             <TeamsProvider>
               <Themadashboard />
             </TeamsProvider>
-          </EmployerProtectedRoute>
+          </ProtectedRoute>
+        } />
+        
+        {/* Werknemer routes - alleen voor employees */}
+        <Route path="/werknemer-portaal" element={
+          <ProtectedRoute requiredRole="employee">
+            <EmployeePortal />
+          </ProtectedRoute>
+        } />
+        <Route path="/werknemer-instellingen" element={
+          <ProtectedRoute requiredRole="employee">
+            <WerknemerInstellingen />
+          </ProtectedRoute>
+        } />
+        
+        {/* Superadmin routes - alleen voor superadmins */}
+        <Route path="/superadmin-portaal" element={
+          <ProtectedRoute requiredRole="superadmin">
+            <SuperadminPortaal />
+          </ProtectedRoute>
+        } />
+        <Route path="/superadmin/thema/:id" element={
+          <ProtectedRoute requiredRole="superadmin">
+            <ThemaBeheer />
+          </ProtectedRoute>
+        } />
+        <Route path="/superadmin/thema-beheer" element={
+          <ProtectedRoute requiredRole="superadmin">
+            <ThemaBeheerOverzicht />
+          </ProtectedRoute>
+        } />
+        <Route path="/superadmin/gebruikers-beheer" element={
+          <ProtectedRoute requiredRole="superadmin">
+            <GebruikersBeheer />
+          </ProtectedRoute>
+        } />
+        <Route path="/superadmin/email-beheer" element={
+          <ProtectedRoute requiredRole="superadmin">
+            <EmailBeheer />
+          </ProtectedRoute>
+        } />
+        
+        {/* Gemengde routes - alle ingelogde gebruikers */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/instellingen" element={
+          <ProtectedRoute>
+            <Instellingen />
+          </ProtectedRoute>
+        } />
+        <Route path="/redirect" element={
+          <ProtectedRoute>
+            <PostLoginRedirect />
+          </ProtectedRoute>
+        } />
+        <Route path="/registratie-verplicht" element={
+          <ProtectedRoute>
+            <RegistratieVerplicht />
+          </ProtectedRoute>
+        } />
+        <Route path="/uitleg-privacy" element={
+          <ProtectedRoute>
+            <UitlegPrivacy />
+          </ProtectedRoute>
+        } />
+        <Route path="/thema-overzicht" element={
+          <ProtectedRoute>
+            <ThemaOverzicht />
+          </ProtectedRoute>
+        } />
+        <Route path="/gesprek" element={
+          <ProtectedRoute>
+            <GesprekPagina />
+          </ProtectedRoute>
+        } />
+        <Route path="/gesprek-resultaat" element={
+          <ProtectedRoute>
+            <GesprekResultaat />
+          </ProtectedRoute>
+        } />
+        <Route path="/gesprek-resultaten" element={
+          <ProtectedRoute>
+            <GesprekResultaten />
+          </ProtectedRoute>
         } />
       </Routes>
     </Layout>

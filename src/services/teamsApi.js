@@ -5,12 +5,17 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 // Helper functie om authorization header op te halen
 const getAuthHeaders = async () => {
-  console.log('🔄 getAuthHeaders aangeroepen...')
+  console.log('🔄 teamsApi: getAuthHeaders aangeroepen...')
   const { data: { session } } = await supabase.auth.getSession()
-  console.log('📡 Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
+  console.log('📡 teamsApi: Session data', {
+    hasSession: !!session,
+    hasAccessToken: !!session?.access_token,
+    userEmail: session?.user?.email,
+    timestamp: new Date().toISOString()
+  })
   
   if (!session?.access_token) {
-    console.error('❌ Geen access token gevonden')
+    console.error('❌ teamsApi: Geen access token gevonden')
     throw new Error('Geen geldige sessie gevonden')
   }
   
@@ -18,7 +23,7 @@ const getAuthHeaders = async () => {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${session.access_token}`
   }
-  console.log('✅ Headers gegenereerd:', headers)
+  console.log('✅ teamsApi: Headers gegenereerd')
   return headers
 }
 

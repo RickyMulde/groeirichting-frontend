@@ -9,15 +9,11 @@ function PostLoginRedirect() {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
+        // Auth check wordt nu gedaan door ProtectedRoute
+        // We hoeven alleen nog de rol te controleren voor redirect
         const { data: { session } } = await supabase.auth.getSession()
-        if (!session) {
+        if (!session?.user) {
           navigate('/login')
-          return
-        }
-
-        // Controleer eerst of e-mail is geverifieerd
-        if (!session.user?.email_confirmed_at) {
-          navigate('/verify-email')
           return
         }
 
@@ -34,7 +30,7 @@ function PostLoginRedirect() {
         }
 
         // Navigeer naar de juiste portal op basis van de rol
-        if (data.role === 'superuser') {
+        if (data.role === 'superadmin') {
           navigate('/superadmin-portaal')
         } else if (data.role === 'employer') {
           navigate('/werkgever-portaal')

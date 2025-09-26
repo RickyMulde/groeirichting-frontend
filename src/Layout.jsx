@@ -11,7 +11,7 @@ function Layout({ children }) {
   useEffect(() => {
     // Alleen auth checks doen op pagina's waar het nodig is
     const currentPath = window.location.pathname
-    const authRequiredPaths = ['/werkgever-portaal', '/beheer-teams-werknemers', '/thema-dashboard', '/instellingen', '/dashboard', '/werknemer-portaal', '/werknemer-instellingen']
+    const authRequiredPaths = ['/werkgever-portaal', '/beheer-teams-werknemers', '/thema-dashboard', '/instellingen', '/dashboard', '/werknemer-portaal', '/werknemer-instellingen', '/redirect']
     
     const needsAuth = authRequiredPaths.some(path => currentPath.startsWith(path))
     
@@ -39,8 +39,13 @@ function Layout({ children }) {
 
     const {
       data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('🔄 Layout: Auth state change:', _event, session ? 'Session aanwezig' : 'Geen session')
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔄 Layout: Auth state change', {
+        event,
+        hasSession: !!session,
+        userEmail: session?.user?.email,
+        timestamp: new Date().toISOString()
+      })
       setSession(session)
     })
 

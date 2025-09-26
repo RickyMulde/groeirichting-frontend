@@ -6,15 +6,16 @@ import { AlertCircle } from 'lucide-react'
 function RegistratieVerplicht() {
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        navigate('/login')
-      }
-    }
-    checkSession()
-  }, [navigate])
+  // Auth check wordt nu gedaan door ProtectedRoute
+  // useEffect(() => {
+  //   const checkSession = async () => {
+  //     const { data: { session } } = await supabase.auth.getSession()
+  //     if (!session) {
+  //       navigate('/login')
+  //     }
+  //   }
+  //   checkSession()
+  // }, [navigate])
 
   const handleLogout = async () => {
     try {

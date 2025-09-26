@@ -83,116 +83,47 @@ const TeamsContext = createContext()
 // Teams provider component
 export const TeamsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(teamsReducer, initialState)
-  const [user, setUser] = React.useState(null)
 
   // Teams ophalen
   const fetchTeams = useCallback(async (includeArchived = false) => {
     try {
-      console.log('🔄 TeamsContext: fetchTeams aangeroepen, includeArchived:', includeArchived)
+      console.log('🔄 TeamsContext: fetchTeams aangeroepen', {
+        includeArchived,
+        timestamp: new Date().toISOString()
+      })
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
+      console.log('🔄 TeamsContext: Calling teamsApi.getTeams...')
       const teams = await teamsApi.getTeams(includeArchived)
-      console.log('✅ TeamsContext: Teams opgehaald:', teams)
+      console.log('✅ TeamsContext: Teams opgehaald', {
+        count: teams?.length || 0,
+        teams: teams?.map(t => ({ id: t.id, name: t.name })) || []
+      })
       dispatch({ type: 'SET_TEAMS', payload: teams })
     } catch (error) {
-      console.error('❌ TeamsContext: Error in fetchTeams:', error)
+      console.error('❌ TeamsContext: Error in fetchTeams', {
+        error: error.message,
+        stack: error.stack,
+        includeArchived
+      })
       // Alleen error tonen als het niet een sessie probleem is
       if (!error.message.includes('sessie')) {
+        console.log('❌ TeamsContext: Setting error state')
         dispatch({ type: 'SET_ERROR', payload: error.message })
       } else {
+        console.log('⚠️ TeamsContext: Session problem, clearing teams')
         // Bij sessie probleem, teams leegmaken
         dispatch({ type: 'SET_TEAMS', payload: [] })
       }
     }
   }, [])
 
-  // User ophalen bij mount en luister naar auth state changes
+  // Teams ophalen bij mount
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        console.log('🔄 TeamsContext: initializeAuth aangeroepen')
-        const { data: { session }, error } = await supabase.auth.getSession()
-        console.log('📡 TeamsContext: Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
-        
-        if (error) {
-          console.error('❌ TeamsContext: Session error:', error)
-        }
-        
-        if (session?.user) {
-          console.log('📡 TeamsContext: User uit session:', session.user)
-          
-          // Haal user data op uit database (inclusief role) - alleen voor teams
-          const { data: userDataArray, error: userError } = await supabase
-            .from('users')
-            .select('id, email, role, employer_id')
-            .eq('id', session.user.id)
-            .limit(1)
-          
-          console.log('📡 TeamsContext: User data query result:', { userDataArray, userError })
-          
-          const userData = userDataArray?.[0] || null
-          console.log('📡 TeamsContext: User data:', userData)
-          
-          if (userError) {
-            console.error('Error fetching user data:', userError)
-          }
-          setUser(userData)
-        } else {
-          console.log('📡 TeamsContext: Geen session of user gevonden')
-          setUser(null)
-        }
-      } catch (error) {
-        console.error('❌ TeamsContext: Error in initializeAuth:', error)
-        setUser(null)
-      }
-    }
-
-    initializeAuth()
-
-    // Luister naar auth state changes
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 TeamsContext: Auth state change:', event, session ? 'Session aanwezig' : 'Geen session')
-      
-      if (session?.user) {
-        console.log('📡 TeamsContext: User uit auth state change:', session.user)
-        
-        // Haal user data op uit database
-        const { data: userDataArray, error: userError } = await supabase
-          .from('users')
-          .select('id, email, role, employer_id')
-          .eq('id', session.user.id)
-          .limit(1)
-        
-        const userData = userDataArray?.[0] || null
-        console.log('📡 TeamsContext: User data from auth change:', userData)
-        setUser(userData)
-      } else {
-        console.log('📡 TeamsContext: No session in auth state change, setting user to null')
-        setUser(null)
-      }
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
-  // Teams ophalen bij mount en bij user wijziging
-  useEffect(() => {
-    console.log('🔄 TeamsContext: useEffect [user] triggered, user:', user)
-    if (user && user.role === 'employer') {
-      console.log('✅ TeamsContext: User is employer, calling fetchTeams')
-      fetchTeams()
-    } else {
-      console.log('❌ TeamsContext: User is not employer or no user, resetting teams')
-      // Reset teams als user geen employer is of geen user
-      dispatch({ type: 'SET_TEAMS', payload: [] })
-      dispatch({ type: 'SET_LOADING', payload: false })
-    }
-  }, [user]) // Verwijder fetchTeams uit dependencies om hoisting probleem te voorkomen
+    console.log('🔄 TeamsContext: useEffect triggered, calling fetchTeams')
+    fetchTeams()
+  }, []) // Alleen bij mount
 
   // Team leden ophalen wanneer team wordt geselecteerd
   useEffect(() => {
@@ -280,7 +211,6 @@ export const TeamsProvider = ({ children }) => {
     loading: state.loading,
     error: state.error,
     members: state.members,
-    user: user,
     
     // Actions
     fetchTeams,
