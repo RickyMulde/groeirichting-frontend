@@ -17,30 +17,8 @@ function RegistratieVerplicht() {
   //   checkSession()
   // }, [navigate])
 
-  const handleLogout = async () => {
-    try {
-      // Probeer uit te loggen bij Supabase
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.error('Logout error:', error)
-        // Ga door met logout ook bij fout
-      }
-      
-      // Clear alle lokale storage
-      localStorage.clear()
-      sessionStorage.clear()
-      
-    } catch (error) {
-      console.error('Logout error:', error)
-      // Ga door met logout ook bij fout
-    } finally {
-      // Navigeer altijd naar login
-      navigate('/login')
-      
-      // Forceer page reload om alle state te resetten
-      window.location.reload()
-    }
-  }
+  // Logout wordt nu centraal afgehandeld door Layout.jsx
+  // const handleLogout = async () => { ... }
 
   return (
     <div className="page-container">
@@ -77,12 +55,7 @@ function RegistratieVerplicht() {
           >
             Terug naar Login
           </button>
-          <button 
-            onClick={handleLogout}
-            className="btn btn-secondary"
-          >
-            Uitloggen
-          </button>
+          {/* Uitloggen knop wordt nu centraal getoond in Layout.jsx */}
         </div>
       </div>
     </div>

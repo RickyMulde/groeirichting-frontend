@@ -9,20 +9,10 @@ function Layout({ children }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Alleen auth checks doen op pagina's waar het nodig is
-    const currentPath = window.location.pathname
-    const authRequiredPaths = ['/werkgever-portaal', '/beheer-teams-werknemers', '/thema-dashboard', '/instellingen', '/dashboard', '/werknemer-portaal', '/werknemer-instellingen', '/redirect']
-    
-    const needsAuth = authRequiredPaths.some(path => currentPath.startsWith(path))
-    
-    if (!needsAuth) {
-      console.log('📡 Layout: Geen auth nodig voor deze pagina:', currentPath)
-      return
-    }
-
+    // Layout luistert altijd naar auth state changes voor logout knop
     const initializeAuth = async () => {
       try {
-        console.log('🔄 Layout: initializeAuth aangeroepen voor:', currentPath)
+        console.log('🔄 Layout: initializeAuth aangeroepen')
         const { data: { session }, error } = await supabase.auth.getSession()
         console.log('📡 Layout: Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
         if (error) {
@@ -56,25 +46,32 @@ function Layout({ children }) {
 
   const handleLogout = async () => {
     try {
+      console.log('🔄 Layout: Logout gestart')
+      
       // Probeer uit te loggen bij Supabase
       const { error } = await supabase.auth.signOut()
       if (error) {
-        console.error('Logout error:', error)
+        console.error('❌ Layout: Logout error:', error)
         // Ga door met logout ook bij fout
+      } else {
+        console.log('✅ Layout: Supabase logout successful')
       }
       
       // Clear alle lokale storage
+      console.log('🔄 Layout: Clearing local storage')
       localStorage.clear()
       sessionStorage.clear()
       
       // Clear local state
+      console.log('🔄 Layout: Clearing session state')
       setSession(null)
       
     } catch (error) {
-      console.error('Logout error:', error)
+      console.error('❌ Layout: Logout error:', error)
       // Ga door met logout ook bij fout
       setSession(null)
     } finally {
+      console.log('🔄 Layout: Navigating to home and reloading')
       // Navigeer en reload altijd
       navigate('/')
       
