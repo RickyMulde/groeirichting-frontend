@@ -12,15 +12,13 @@ function Layout({ children }) {
     // Layout luistert altijd naar auth state changes voor logout knop
     const initializeAuth = async () => {
       try {
-        console.log('🔄 Layout: initializeAuth aangeroepen')
         const { data: { session }, error } = await supabase.auth.getSession()
-        console.log('📡 Layout: Session data:', session ? 'Aanwezig' : 'Niet aanwezig')
         if (error) {
-          console.error('❌ Layout: Session error:', error)
+          console.error('Layout: Session error:', error)
         }
         setSession(session)
       } catch (error) {
-        console.error('❌ Layout: Auth initialization error:', error)
+        console.error('Layout: Auth initialization error:', error)
         setSession(null)
       }
     }
@@ -30,12 +28,6 @@ function Layout({ children }) {
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔄 Layout: Auth state change', {
-        event,
-        hasSession: !!session,
-        userEmail: session?.user?.email,
-        timestamp: new Date().toISOString()
-      })
       setSession(session)
     })
 
@@ -46,32 +38,25 @@ function Layout({ children }) {
 
   const handleLogout = async () => {
     try {
-      console.log('🔄 Layout: Logout gestart')
-      
       // Probeer uit te loggen bij Supabase
       const { error } = await supabase.auth.signOut()
       if (error) {
-        console.error('❌ Layout: Logout error:', error)
+        console.error('Layout: Logout error:', error)
         // Ga door met logout ook bij fout
-      } else {
-        console.log('✅ Layout: Supabase logout successful')
       }
       
       // Clear alle lokale storage
-      console.log('🔄 Layout: Clearing local storage')
       localStorage.clear()
       sessionStorage.clear()
       
       // Clear local state
-      console.log('🔄 Layout: Clearing session state')
       setSession(null)
       
     } catch (error) {
-      console.error('❌ Layout: Logout error:', error)
+      console.error('Layout: Logout error:', error)
       // Ga door met logout ook bij fout
       setSession(null)
     } finally {
-      console.log('🔄 Layout: Navigating to home and reloading')
       // Navigeer en reload altijd
       navigate('/')
       

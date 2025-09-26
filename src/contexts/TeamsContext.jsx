@@ -87,32 +87,16 @@ export const TeamsProvider = ({ children }) => {
   // Teams ophalen
   const fetchTeams = useCallback(async (includeArchived = false) => {
     try {
-      console.log('🔄 TeamsContext: fetchTeams aangeroepen', {
-        includeArchived,
-        timestamp: new Date().toISOString()
-      })
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
-      console.log('🔄 TeamsContext: Calling teamsApi.getTeams...')
       const teams = await teamsApi.getTeams(includeArchived)
-      console.log('✅ TeamsContext: Teams opgehaald', {
-        count: teams?.length || 0,
-        teams: teams?.map(t => ({ id: t.id, name: t.name })) || []
-      })
       dispatch({ type: 'SET_TEAMS', payload: teams })
     } catch (error) {
-      console.error('❌ TeamsContext: Error in fetchTeams', {
-        error: error.message,
-        stack: error.stack,
-        includeArchived
-      })
       // Alleen error tonen als het niet een sessie probleem is
       if (!error.message.includes('sessie')) {
-        console.log('❌ TeamsContext: Setting error state')
         dispatch({ type: 'SET_ERROR', payload: error.message })
       } else {
-        console.log('⚠️ TeamsContext: Session problem, clearing teams')
         // Bij sessie probleem, teams leegmaken
         dispatch({ type: 'SET_TEAMS', payload: [] })
       }
@@ -121,7 +105,6 @@ export const TeamsProvider = ({ children }) => {
 
   // Teams ophalen bij mount
   useEffect(() => {
-    console.log('🔄 TeamsContext: useEffect triggered, calling fetchTeams')
     fetchTeams()
   }, []) // Alleen bij mount
 
