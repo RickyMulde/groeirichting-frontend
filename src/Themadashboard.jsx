@@ -28,10 +28,21 @@ function Themadashboard() {
     
     try {
       let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-themes/${employerId}`
+      const params = new URLSearchParams()
       
       // Voeg periode parameter toe aan URL als er een is geselecteerd
       if (period) {
-        url += `?maand=${period.maand}&jaar=${period.jaar}`
+        params.append('maand', period.maand)
+        params.append('jaar', period.jaar)
+      }
+      
+      // Voeg team filtering toe als team is geselecteerd
+      if (selectedTeam) {
+        params.append('team_id', selectedTeam)
+      }
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`
       }
       
       const { data: { session } } = await supabase.auth.getSession()
