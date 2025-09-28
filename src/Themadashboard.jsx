@@ -211,9 +211,9 @@ function Themadashboard() {
     initializeData()
   }, [])
 
-  // Update thema's wanneer periode wordt gewijzigd
+  // Update thema's wanneer periode of team wordt gewijzigd
   useEffect(() => {
-    if (employerId && selectedPeriod) {
+    if (employerId) {
       fetchThemes(employerId, selectedPeriod)
     }
   }, [employerId, selectedPeriod, selectedTeam])
