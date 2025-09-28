@@ -200,7 +200,7 @@ function Themadashboard() {
       setExpandedTheme(themeId)
       
       // Controleer voorwaarden voordat samenvatting wordt opgehaald
-      const theme = themes.find(t => t.id === themeId)
+      const theme = themes.find(t => t.theme_id === themeId)
       if (!theme) return
       
       // Controleer of alle voorwaarden zijn vervuld
