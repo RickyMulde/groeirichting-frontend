@@ -486,33 +486,11 @@ function Themadashboard() {
               {/* Uitgeklapte content */}
               {expandedTheme === theme.theme_id && (
                 <div className="border-t border-gray-200 bg-gray-50">
-                  {/* Controleer voorwaarden */}
+                  {/* Toon samenvatting status */}
                   {(() => {
                     const hasMinEmployees = theme.voltooide_medewerkers >= 4
                     const allEmployeesCompleted = theme.voltooide_medewerkers === theme.totaal_medewerkers
                     const conditionsMet = hasMinEmployees && allEmployeesCompleted
-                    
-                    // Voorwaarden niet vervuld
-                    if (!conditionsMet) {
-                      return (
-                        <div className="text-center py-6">
-                          <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                            <AlertCircle className="w-8 h-8 text-gray-400" />
-                          </div>
-                          <p className="text-gray-600 font-medium mb-2">
-                            Samenvatting nog niet beschikbaar
-                          </p>
-                          <p className="text-gray-500 text-sm">
-                            {!hasMinEmployees ? 
-                              `Minimaal 4 medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/4 voltooid)` : 
-                              `Alle medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/${theme.totaal_medewerkers} voltooid)`
-                            }
-                          </p>
-                        </div>
-                      )
-                    }
-                    
-                    // Voorwaarden vervuld - toon samenvatting status
                     const status = summaryStatus[theme.theme_id]
                     
                     if (status === 'loading') {
@@ -558,6 +536,22 @@ function Themadashboard() {
                     if (summaryData[theme.theme_id]) {
                       return (
                         <div className="p-6 space-y-6">
+                          {/* Waarschuwing als voorwaarden niet vervuld */}
+                          {!conditionsMet && (
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <AlertCircle className="w-4 h-4 text-yellow-600" />
+                                <span className="text-sm font-medium text-yellow-900">Let op</span>
+                              </div>
+                              <p className="text-sm text-yellow-800">
+                                {!hasMinEmployees ? 
+                                  `Deze samenvatting is gebaseerd op ${theme.voltooide_medewerkers} van de ${theme.totaal_medewerkers} medewerkers. Voor een betrouwbare samenvatting worden minimaal 4 voltooide gesprekken aanbevolen.` : 
+                                  `Deze samenvatting is gebaseerd op ${theme.voltooide_medewerkers} van de ${theme.totaal_medewerkers} medewerkers. Voor een complete samenvatting moeten alle medewerkers het thema voltooien.`
+                                }
+                              </p>
+                            </div>
+                          )}
+
                           {/* Team context */}
                           {summaryData[theme.theme_id].team_context && (
                             <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
@@ -690,14 +684,21 @@ function Themadashboard() {
                       )
                     }
                     
-                    // Geen data en geen status - dit zou niet moeten gebeuren
+                    // Geen data en geen status - toon voorwaarden melding
                     return (
                       <div className="text-center py-6">
                         <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                           <AlertCircle className="w-8 h-8 text-gray-400" />
                         </div>
-                        <p className="text-gray-600 font-medium mb-2">Geen samenvatting beschikbaar</p>
-                        <p className="text-gray-500 text-sm">Er is een onverwachte fout opgetreden</p>
+                        <p className="text-gray-600 font-medium mb-2">
+                          Samenvatting nog niet beschikbaar
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          {!hasMinEmployees ? 
+                            `Minimaal 4 medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/4 voltooid)` : 
+                            `Alle medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/${theme.totaal_medewerkers} voltooid)`
+                          }
+                        </p>
                       </div>
                     )
                   })()}
