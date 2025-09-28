@@ -260,8 +260,18 @@ function Themadashboard() {
                 Terug naar portaal
               </button>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema Dashboard</h1>
-                <p className="text-gray-600 text-sm sm:text-base">Overzicht van alle thema's en resultaten</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">
+                  Thema Dashboard
+                  {selectedTeam && teams.find(t => t.id === selectedTeam) && 
+                    ` - Team ${teams.find(t => t.id === selectedTeam).naam}`
+                  }
+                </h1>
+                <p className="text-gray-600 text-sm sm:text-base">
+                  {selectedTeam ? 
+                    `Overzicht van alle thema's en resultaten voor dit team` :
+                    `Overzicht van alle thema's en resultaten`
+                  }
+                </p>
               </div>
             </div>
           </div>
@@ -284,9 +294,17 @@ function Themadashboard() {
               Terug naar portaal
             </button>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">Thema Dashboard</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">
+                Thema Dashboard
+                {selectedTeam && teams.find(t => t.id === selectedTeam) && 
+                  ` - Team ${teams.find(t => t.id === selectedTeam).naam}`
+                }
+              </h1>
               <p className="text-gray-600 text-sm sm:text-base">
-                Overzicht van alle thema's en resultaten
+                {selectedTeam ? 
+                  `Overzicht van alle thema's en resultaten voor dit team` :
+                  `Overzicht van alle thema's en resultaten`
+                }
               </p>
             </div>
           </div>
@@ -434,6 +452,22 @@ function Themadashboard() {
                     </div>
                   ) : summaryData[theme.theme_id] ? (
                     <div className="p-6 space-y-6">
+                      {/* Team context */}
+                      {summaryData[theme.theme_id].team_context && (
+                        <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="w-4 h-4 text-blue-600" />
+                            <span className="text-sm font-medium text-blue-900">Team Context</span>
+                          </div>
+                          <p className="text-sm text-blue-800">
+                            Resultaten voor team <span className="font-semibold">{summaryData[theme.theme_id].team_context.team_naam}</span>
+                            {summaryData[theme.theme_id].team_context.team_beschrijving && 
+                              ` - ${summaryData[theme.theme_id].team_context.team_beschrijving}`
+                            }
+                          </p>
+                        </div>
+                      )}
+
                       {/* Samenvatting */}
                       {summaryData[theme.theme_id].samenvatting && (
                         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -441,7 +475,12 @@ function Themadashboard() {
                             <div className="p-2 bg-blue-100 rounded-lg">
                               <BarChart3 className="w-5 h-5 text-blue-600" />
                             </div>
-                            <h4 className="text-lg font-semibold text-gray-900">Samenvatting</h4>
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              Samenvatting
+                              {summaryData[theme.theme_id].team_context && 
+                                ` - Team ${summaryData[theme.theme_id].team_context.team_naam}`
+                              }
+                            </h4>
                           </div>
                           <p className="text-gray-700 leading-relaxed">{summaryData[theme.theme_id].samenvatting}</p>
                         </div>
@@ -454,7 +493,12 @@ function Themadashboard() {
                             <div className="p-2 bg-orange-100 rounded-lg">
                               <TrendingUp className="w-5 h-5 text-orange-600" />
                             </div>
-                            <h4 className="text-lg font-semibold text-gray-900">Verbeteradviezen</h4>
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              Verbeteradviezen
+                              {summaryData[theme.theme_id].team_context && 
+                                ` - Team ${summaryData[theme.theme_id].team_context.team_naam}`
+                              }
+                            </h4>
                           </div>
                           <p className="text-gray-700 leading-relaxed">{summaryData[theme.theme_id].verbeteradvies}</p>
                         </div>
