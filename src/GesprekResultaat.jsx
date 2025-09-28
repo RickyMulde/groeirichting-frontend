@@ -154,7 +154,37 @@ function GesprekResultaat() {
                 const generateResult = await generateResponse.json();
                 console.log('Samenvatting gegenereerd:', generateResult);
                 
-                // Wacht even zodat de backend tijd heeft om de samenvatting te genereren
+                // Genereer ook vervolgacties
+                try {
+                  console.log('🔄 Genereer vervolgacties...');
+                  const { data: { session } } = await supabase.auth.getSession()
+                  const vervolgactiesResponse = await fetch(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/genereer-vervolgacties`,
+                    {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session?.access_token}`
+                      },
+                      body: JSON.stringify({
+                        theme_id: themeId,
+                        werknemer_id: user.id,
+                        gesprek_id: gesprekId
+                      })
+                    }
+                  );
+
+                  if (vervolgactiesResponse.ok) {
+                    const vervolgactiesResult = await vervolgactiesResponse.json();
+                    console.log('✅ Vervolgacties gegenereerd:', vervolgactiesResult);
+                  } else {
+                    console.warn('⚠️ Vervolgacties genereren mislukt:', vervolgactiesResponse.status);
+                  }
+                } catch (vervolgactiesError) {
+                  console.warn('⚠️ Fout bij genereren vervolgacties:', vervolgactiesError);
+                }
+                
+                // Wacht even zodat de backend tijd heeft om alles te verwerken
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 
                 // Probeer nu opnieuw de samenvatting op te halen
@@ -197,37 +227,18 @@ function GesprekResultaat() {
             }
           }
 
-          // Probeer vervolgacties op te halen als fallback
-          try {
-            const { data: { session } } = await supabase.auth.getSession()
-            const vervolgactiesResponse = await fetch(
-              `${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions?theme_id=${themeId}&werknemer_id=${user.id}`,
-              {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${session?.access_token}`
-                }
-              }
-            );
-
-            if (vervolgactiesResponse.ok) {
-              const updatedData = await vervolgactiesResponse.json();
-              setGesprekData({
-                themeTitle: themeData.titel,
-                samenvatting: updatedData.samenvatting,
-                score: updatedData.score,
-                magWerkgeverInzien: updatedData.mag_werkgever_inzien,
-                vervolgacties: updatedData.vervolgacties || [],
-                vervolgacties_toelichting: updatedData.vervolgacties_toelichting || '',
-                themeId,
-                gesprekId
-              });
-              return;
-            }
-          } catch (error) {
-            console.error('Fout bij genereren vervolgacties:', error);
-          }
+          // Toon fallback data als er geen samenvatting kan worden gegenereerd
+          console.log('Geen samenvatting gevonden en genereren mislukt, toon fallback data');
+          setGesprekData({
+            themeTitle: themeData.titel,
+            samenvatting: 'Er kon geen samenvatting worden gegenereerd voor dit gesprek. Neem contact op met je leidinggevende.',
+            score: null,
+            magWerkgeverInzien: true,
+            vervolgacties: [],
+            vervolgacties_toelichting: '',
+            themeId,
+            gesprekId
+          });
         }
 
         const resultData = await response.json();
