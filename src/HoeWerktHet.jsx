@@ -22,10 +22,10 @@ function HoeWerktHet() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Hoe werkt GroeiRichting?
+            Meer inzicht, betere gesprekken, sterkere teams
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Maak van één moment per jaar een continue dialoog. Niet in plaats van persoonlijk contact, maar als versterking ervan.
+            Transformeer je jaarlijkse functioneringsgesprek in een doorlopende dialoog die direct resultaat oplevert.
           </p>
           
           <button className="btn btn-primary">Start met één team gratis</button>
@@ -93,19 +93,22 @@ function HoeWerktHet() {
               </div>
               <div className="space-y-3">
                 <div className="p-3 bg-blue-100 rounded-lg">
-                  <p className="text-sm">Hoe voel je je vandaag?</p>
+                  <p className="text-sm">Hoe ervaar je je werkdruk de laatste tijd?</p>
                 </div>
                 <div className="p-3 bg-gray-100 rounded-lg ml-8">
-                  <p className="text-sm">Ik voel me gemotiveerd!</p>
+                  <p className="text-sm">Soms te hoog, vooral op maandagen.</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-lg">
-                  <p className="text-sm">Wat zou je willen verbeteren?</p>
+                  <p className="text-sm">Waardoor voelt het op maandag zwaarder?</p>
                 </div>
                 <div className="p-3 bg-gray-100 rounded-lg ml-8">
-                  <p className="text-sm">De communicatie met mijn teamleider</p>
+                  <p className="text-sm">Omdat we dan alle binnengekomen aanvragen van het weekend tegelijk moeten verwerken.</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-lg">
-                  <p className="text-sm">Kun je een specifiek voorbeeld geven van wat er beter kan?</p>
+                  <p className="text-sm">Wat zou helpen om dit beter te laten verlopen?</p>
+                </div>
+                <div className="p-3 bg-gray-100 rounded-lg ml-8">
+                  <p className="text-sm">Als we iemand die dag extra inzetten of de taken beter verdelen.</p>
                 </div>
               </div>
             </div>

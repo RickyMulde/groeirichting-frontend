@@ -27,9 +27,9 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          // Geen top acties gevonden - probeer ze te genereren
-          console.log('Geen top 3 acties gevonden, probeer ze te genereren...')
-          await generateTopActies()
+          // Geen top acties gevonden - dit is normaal als niet alle thema's zijn afgerond
+          console.log('Geen top 3 acties gevonden - wacht tot alle thema\'s zijn afgerond')
+          setTopActies(null)
         } else {
           throw error
         }
@@ -44,45 +44,6 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
     }
   }
 
-  const generateTopActies = async () => {
-    try {
-      console.log('🔄 Start generatie top 3 acties...')
-      
-      const { data: { session } } = await supabase.auth.getSession()
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`
-        },
-        body: JSON.stringify({
-          werknemer_id: werknemerId,
-          periode: periode
-        })
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        console.log('✅ Top 3 acties succesvol gegenereerd:', result)
-        
-        // Haal de gegenereerde acties opnieuw op
-        await fetchTopActies()
-      } else {
-        const errorText = await response.text()
-        console.warn('⚠️ Top 3 acties genereren mislukt:', response.status, errorText)
-        
-        try {
-          const errorData = JSON.parse(errorText)
-          setError(`Kon top 3 acties niet genereren: ${errorData.error}${errorData.details ? ` - ${errorData.details}` : ''}`)
-        } catch {
-          setError(`Kon top 3 acties niet genereren (${response.status})`)
-        }
-      }
-    } catch (err) {
-      console.error('❌ Fout bij genereren top 3 acties:', err)
-      setError('Fout bij genereren top 3 acties')
-    }
-  }
 
   const getPrioriteitKleur = (prioriteit) => {
     switch (prioriteit) {
@@ -150,7 +111,22 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
   }
 
   if (!topActies) {
-    return null // Toon niets als er geen top acties zijn
+    return (
+      <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg shadow-md p-6 mb-6">
+        <div className="text-center space-y-4">
+          <div className="text-amber-600 text-4xl">⏳</div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-amber-800">Top 3 prioriteiten worden automatisch gegenereerd</h3>
+            <p className="text-amber-700 text-sm">
+              Zodra je alle thema's van deze periode hebt doorlopen, worden je top 3 prioriteiten automatisch gegenereerd.
+            </p>
+            <p className="text-amber-600 text-xs">
+              Dit gebeurt direct na het afronden van je laatste thema.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -165,20 +141,8 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
              Deze acties hebben de hoogste impact op basis van alle gevoerde gesprekken
            </p>
          </div>
-         <div className="flex items-center gap-4">
-           <div className="text-xs text-blue-600">
-             Gegenereerd op: {new Date(topActies.gegenereerd_op).toLocaleDateString('nl-NL')}
-           </div>
-                       {/* Refresh knop rechtsboven */}
-            <button
-              onClick={fetchTopActies}
-              className="text-gray-600 hover:text-gray-800 transition-colors p-2 bg-transparent"
-              title="Vernieuwen / Opnieuw genereren"
-            >
-             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-             </svg>
-           </button>
+         <div className="text-xs text-blue-600">
+           Gegenereerd op: {new Date(topActies.gegenereerd_op).toLocaleDateString('nl-NL')}
          </div>
        </div>
 
