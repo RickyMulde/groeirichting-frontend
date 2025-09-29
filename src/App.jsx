@@ -88,27 +88,27 @@ function App() {
         
         {/* Superadmin routes - alleen voor superadmins */}
         <Route path="/superadmin-portaal" element={
-          <ProtectedRoute requiredRole="superadmin">
+          <ProtectedRoute requiredRole="superuser">
             <SuperadminPortaal />
           </ProtectedRoute>
         } />
         <Route path="/superadmin/thema/:id" element={
-          <ProtectedRoute requiredRole="superadmin">
+          <ProtectedRoute requiredRole="superuser">
             <ThemaBeheer />
           </ProtectedRoute>
         } />
         <Route path="/superadmin/thema-beheer" element={
-          <ProtectedRoute requiredRole="superadmin">
+          <ProtectedRoute requiredRole="superuser">
             <ThemaBeheerOverzicht />
           </ProtectedRoute>
         } />
         <Route path="/superadmin/gebruikers-beheer" element={
-          <ProtectedRoute requiredRole="superadmin">
+          <ProtectedRoute requiredRole="superuser">
             <GebruikersBeheer />
           </ProtectedRoute>
         } />
         <Route path="/superadmin/email-beheer" element={
-          <ProtectedRoute requiredRole="superadmin">
+          <ProtectedRoute requiredRole="superuser">
             <EmailBeheer />
           </ProtectedRoute>
         } />

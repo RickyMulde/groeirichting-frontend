@@ -51,7 +51,7 @@ function ProtectedRoute({ children, requiredRole = null, redirectTo = null }) {
             // Redirect naar juiste portaal op basis van rol
             const redirectPath = userData.role === 'employer' ? '/werkgever-portaal' :
                                 userData.role === 'employee' ? '/werknemer-portaal' :
-                                userData.role === 'superadmin' ? '/superadmin-portaal' : '/login'
+                                userData.role === 'superuser' ? '/superadmin-portaal' : '/login'
             
             navigate(redirectPath)
             return
@@ -83,7 +83,7 @@ function ProtectedRoute({ children, requiredRole = null, redirectTo = null }) {
         if (location.pathname === '/' || location.pathname === '/login') {
           const redirectPath = userData.role === 'employer' ? '/werkgever-portaal' :
                               userData.role === 'employee' ? '/werknemer-portaal' :
-                              userData.role === 'superadmin' ? '/superadmin-portaal' : null
+                              userData.role === 'superuser' ? '/superadmin-portaal' : null
           
           if (redirectPath) {
             navigate(redirectPath)
