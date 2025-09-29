@@ -37,11 +37,15 @@ function Home() {
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Geen statische formulieren, maar interactieve gesprekken met AI.</p>
+              <p className="text-[var(--kleur-muted)]">Geen traditionele statische formulieren, maar dynamische gesprekken.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Van signalen naar samenvattingen en richting.</p>
+              <p className="text-[var(--kleur-muted)]">AI ondersteunt jouw werknemers om betere en volledigere antwoorden te geven.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]">Verzamel input en ontvang feedback en signalen om samen te groeien.</p>
             </div>
           </div>
 
@@ -57,33 +61,6 @@ function Home() {
           </p>
         </div>
         <HeroIllustratie className="w-full h-auto" />
-      </section>
-
-      {/* Het probleem */}
-      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
-        <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: het kost meer dan je denkt</h2>
-        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
-          Het vervangen van één professional kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Ondertussen blijft echte oorzaak vaak onzichtbaar tot het te laat is.
-        </p>
-        
-        {/* Mini-stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
-            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
-            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
-            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
-          </div>
-        </div>
-        
-        {/* CTA */}
-        <button className="btn btn-primary">Plan een demo</button>
       </section>
 
       {/* Meer gesprekken, zonder extra tijd */}
@@ -128,9 +105,36 @@ function Home() {
           </div>
           
           <div className="text-center mt-8">
-            <button className="btn btn-primary">Plan een demo</button>
+            <Link to="/hoe-werkt-het" className="btn btn-primary">Bekijk hoe het werkt</Link>
           </div>
         </div>
+      </section>
+
+      {/* Het probleem */}
+      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
+        <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: het kost meer dan je denkt</h2>
+        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
+          Het vervangen van één professional kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Ondertussen blijft echte oorzaak vaak onzichtbaar tot het te laat is.
+        </p>
+        
+        {/* Mini-stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
+            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
+            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
+            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
+          </div>
+        </div>
+        
+        {/* CTA */}
+        <button className="btn btn-primary">Plan een demo</button>
       </section>
 
       {/* Wat levert het op */}
