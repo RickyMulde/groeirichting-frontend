@@ -54,6 +54,13 @@ export default function ProvisionEmployer() {
 
         if (!response.ok) {
           const errorData = await response.json();
+          
+          // Als er geen pending data is, stuur door naar registratie
+          if (errorData.error && errorData.error.includes('Geen pending employer data')) {
+            navigate('/registreer-werkgever');
+            return;
+          }
+          
           throw new Error(errorData.error || 'Provisioning mislukt');
         }
 
@@ -69,6 +76,12 @@ export default function ProvisionEmployer() {
         }, 1500);
         
       } catch (e) {
+        // Als er geen pending data is, stuur door naar registratie
+        if (e?.message && e.message.includes('Geen pending employer data')) {
+          navigate('/registreer-werkgever');
+          return;
+        }
+        
         setErrorMsg(e?.message ?? 'Onbekende fout tijdens provisioning.');
         setStatus('error');
       }

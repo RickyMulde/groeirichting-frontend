@@ -41,22 +41,13 @@ function ProtectedRoute({ children, requiredRole = null, redirectTo = null }) {
           .single()
 
         if (userDataError || !userData) {
-          // Check of er pending employer data is voor provisioning
-          const { data: pendingData } = await supabase
-            .from('pending_employers')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('status', 'pending_verification')
-            .single()
+          console.error('User data not found:', userDataError)
+          console.error('User ID:', user.id)
+          console.error('Error details:', userDataError)
           
-          if (pendingData) {
-            // Stuur door naar provisioning
-            navigate('/provision-employer')
-            return
-          }
-          
-          // Geen pending data, stuur naar login
-          navigate('/login')
+          // Als gebruiker geverifieerd is maar geen users record heeft,
+          // stuur door naar provisioning (dit zal falen als er geen pending data is)
+          navigate('/provision-employer')
           return
         }
 

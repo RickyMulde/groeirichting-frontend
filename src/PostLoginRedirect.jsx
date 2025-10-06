@@ -25,23 +25,12 @@ function PostLoginRedirect() {
 
         if (error || !data?.role) {
           console.error('Rol niet gevonden of fout bij ophalen:', error)
+          console.error('User ID:', session.user.id)
+          console.error('Error details:', error)
           
-          // Check of er pending employer data is voor provisioning
-          const { data: pendingData } = await supabase
-            .from('pending_employers')
-            .select('*')
-            .eq('user_id', session.user.id)
-            .eq('status', 'pending_verification')
-            .single()
-          
-          if (pendingData) {
-            // Stuur door naar provisioning
-            navigate('/provision-employer')
-            return
-          }
-          
-          // Geen pending data, stuur naar registratie
-          navigate('/registratie-verplicht')
+          // Als gebruiker geverifieerd is maar geen users record heeft,
+          // stuur door naar provisioning (dit zal falen als er geen pending data is)
+          navigate('/provision-employer')
           return
         }
 
