@@ -84,39 +84,41 @@ function Layout({ children }) {
           {/* Logo */}
           <div className="text-xl font-semibold text-kleur-primary">GroeiRichting</div>
 
-          {/* Desktop Navigatie */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <Link 
-              to="/" 
-              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              Home
-            </Link>
-            <Link 
-              to="/hoe-werkt-het" 
-              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              Hoe werkt het
-            </Link>
-            <Link 
-              to="/offerte" 
-              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              Offerte
-            </Link>
-            <Link 
-              to="/contact" 
-              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              Contact
-            </Link>
-            <Link 
-              to="/privacy-veiligheid" 
-              className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              Privacy & Veiligheid
-            </Link>
-          </nav>
+          {/* Desktop Navigatie - Alleen zichtbaar voor niet-ingelogde gebruikers */}
+          {!session && (
+            <nav className="hidden md:flex items-center space-x-1">
+              <Link 
+                to="/" 
+                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Home
+              </Link>
+              <Link 
+                to="/hoe-werkt-het" 
+                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Hoe werkt het
+              </Link>
+              <Link 
+                to="/offerte" 
+                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Offerte
+              </Link>
+              <Link 
+                to="/contact" 
+                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Contact
+              </Link>
+              <Link 
+                to="/privacy-veiligheid" 
+                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Privacy & Veiligheid
+              </Link>
+            </nav>
+          )}
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
@@ -151,43 +153,46 @@ function Layout({ children }) {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
-            <nav className="px-6 py-4 space-y-2">
-              <Link 
-                to="/" 
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Home
-              </Link>
-              <Link 
-                to="/hoe-werkt-het" 
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Hoe werkt het
-              </Link>
-              <Link 
-                to="/offerte" 
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Offerte
-              </Link>
-              <Link 
-                to="/contact" 
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Contact
-              </Link>
-              <Link 
-                to="/privacy-veiligheid" 
-                onClick={closeMobileMenu}
-                className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Privacy & Veiligheid
-              </Link>
-            </nav>
+            {/* Mobile Navigatie - Alleen zichtbaar voor niet-ingelogde gebruikers */}
+            {!session && (
+              <nav className="px-6 py-4 space-y-2">
+                <Link 
+                  to="/" 
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                >
+                  Home
+                </Link>
+                <Link 
+                  to="/hoe-werkt-het" 
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                >
+                  Hoe werkt het
+                </Link>
+                <Link 
+                  to="/offerte" 
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                >
+                  Offerte
+                </Link>
+                <Link 
+                  to="/contact" 
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                >
+                  Contact
+                </Link>
+                <Link 
+                  to="/privacy-veiligheid" 
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                >
+                  Privacy & Veiligheid
+                </Link>
+              </nav>
+            )}
             
             {/* Mobile Auth Buttons */}
             <div className="px-6 py-4 border-t border-gray-200 space-y-3">
