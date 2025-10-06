@@ -44,6 +44,8 @@ function ProtectedRoute({ children, requiredRole = null, redirectTo = null }) {
           console.error('User data not found:', userDataError)
           console.error('User ID:', user.id)
           console.error('Error details:', userDataError)
+          console.error('Data received:', userData)
+          console.error('User object:', user)
           
           // Als er geen users record is, stuur door naar login
           navigate('/login')

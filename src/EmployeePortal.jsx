@@ -33,6 +33,8 @@ function EmployeePortal() {
           console.error('EmployeePortal: User data not found:', userDataError)
           console.error('User ID:', session.user.id)
           console.error('Error details:', userDataError)
+          console.error('Data received:', userData)
+          console.error('Session user:', session.user)
           
           // Als er geen users record is, stuur door naar login
           navigate('/login')

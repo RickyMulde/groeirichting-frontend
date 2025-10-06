@@ -27,6 +27,8 @@ function PostLoginRedirect() {
           console.error('Rol niet gevonden of fout bij ophalen:', error)
           console.error('User ID:', session.user.id)
           console.error('Error details:', error)
+          console.error('Data received:', data)
+          console.error('Session user:', session.user)
           
           // Als er geen users record is, stuur door naar registratie
           navigate('/registreer-werkgever')
