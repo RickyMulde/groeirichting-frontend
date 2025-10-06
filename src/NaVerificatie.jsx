@@ -30,13 +30,24 @@ export default function NaVerificatie() {
             setStatus('success');
             
             // Wacht langer om zeker te zijn dat verificatie volledig is verwerkt
-            setTimeout(() => {
-              // Check of er pending employer data is voor provisioning
-              const pendingData = localStorage.getItem('pendingEmployerData');
-              
-              if (pendingData) {
-                nav('/provision-employer', { replace: true });
-              } else {
+            setTimeout(async () => {
+              // Check of er pending employer data is in database
+              try {
+                const { data: pendingData } = await supabase
+                  .from('pending_employers')
+                  .select('*')
+                  .eq('user_id', session.user.id)
+                  .eq('status', 'pending_verification')
+                  .single();
+                
+                if (pendingData) {
+                  nav('/provision-employer', { replace: true });
+                } else {
+                  nav('/werkgever-portaal', { replace: true });
+                }
+              } catch (error) {
+                console.error('Error checking pending employer data:', error);
+                // Fallback naar werkgever portaal
                 nav('/werkgever-portaal', { replace: true });
               }
             }, 3000); // Verhoogd van 1500 naar 3000ms
@@ -61,11 +72,23 @@ export default function NaVerificatie() {
       if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
         setStatus('success');
         
-        setTimeout(() => {
-          const pendingData = localStorage.getItem('pendingEmployerData');
-          if (pendingData) {
-            nav('/provision-employer', { replace: true });
-          } else {
+        setTimeout(async () => {
+          try {
+            const { data: pendingData } = await supabase
+              .from('pending_employers')
+              .select('*')
+              .eq('user_id', session.user.id)
+              .eq('status', 'pending_verification')
+              .single();
+            
+            if (pendingData) {
+              nav('/provision-employer', { replace: true });
+            } else {
+              nav('/werkgever-portaal', { replace: true });
+            }
+          } catch (error) {
+            console.error('Error checking pending employer data:', error);
+            // Fallback naar werkgever portaal
             nav('/werkgever-portaal', { replace: true });
           }
         }, 1500);

@@ -107,7 +107,7 @@ function EmployerPortal() {
               <X className="w-4 h-4" />
             </button>
             
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 pr-12">Opstart taken</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 pr-12">Voordat je start:</h2>
             <div className="space-y-4">
               {taken.map((taak, index) => (
                 <div key={taak.id} className="flex items-start gap-4 p-4 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">

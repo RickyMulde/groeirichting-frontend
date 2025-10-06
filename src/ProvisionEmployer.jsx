@@ -12,13 +12,8 @@ export default function ProvisionEmployer() {
       try {
         setStatus('provisioning');
 
-        // Haal pending employer data op
-        const pendingData = localStorage.getItem('pendingEmployerData');
-        if (!pendingData) {
-          throw new Error('Geen pending employer data gevonden');
-        }
-
-        const employerData = JSON.parse(pendingData);
+        // Pending employer data wordt nu uit database gehaald door backend
+        // Geen localStorage check meer nodig
 
         // Haal huidige gebruiker op met retry logica
         let user = null;
@@ -54,10 +49,7 @@ export default function ProvisionEmployer() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
           },
-          body: JSON.stringify({
-            ...employerData,
-            user_id: user.id
-          })
+          body: JSON.stringify({}) // Lege body, data wordt uit database gehaald
         });
 
         if (!response.ok) {
@@ -67,8 +59,7 @@ export default function ProvisionEmployer() {
 
         const result = await response.json();
         
-        // Verwijder pending data
-        localStorage.removeItem('pendingEmployerData');
+        // Pending data wordt automatisch opgeruimd door backend
         
         setStatus('success');
         

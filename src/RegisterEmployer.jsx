@@ -28,36 +28,31 @@ function RegisterEmployer() {
         return
       }
 
-      // Direct Supabase signup - verstuurt automatisch verificatie email via SMTP
-      const frontendUrl = import.meta.env.VITE_FRONTEND_URL || 'https://groeirichting-frontend.onrender.com'
-      const redirectTo = `${frontendUrl}/na-verificatie`
-      
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectTo
-        }
-      })
-
-      if (error) {
-        setError(error.message || 'Registratie mislukt.')
-      } else {
-        
-        // Sla extra gegevens op voor provisioning na verificatie
-        localStorage.setItem('pendingEmployerData', JSON.stringify({
+      // Roep backend endpoint aan voor registratie
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register-employer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           company_name: companyName,
           contact_phone: contactPhone,
           first_name: firstName,
           middle_name: middleName,
-          last_name: lastName
-        }))
-        
-        // Sla email op voor verificatie pagina
-        localStorage.setItem('pendingVerificationEmail', email)
-        
+          last_name: lastName,
+          email,
+          password
+        })
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        setSuccess(result.message || 'Account succesvol aangemaakt!')
         // Stuur door naar verificatie pagina
         window.location.href = '/verify-email?email=' + encodeURIComponent(email)
+      } else {
+        setError(result.error || 'Registratie mislukt.')
       }
     } catch (err) {
       setError('Er is iets misgegaan bij de registratie.')

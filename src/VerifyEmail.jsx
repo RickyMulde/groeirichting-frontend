@@ -11,15 +11,6 @@ function VerifyEmail() {
   // Handle employer provisioning after email verification
   const handleEmployerProvisioning = async (user) => {
     try {
-      // Haal opgeslagen employer data op
-      const pendingData = localStorage.getItem('pendingEmployerData')
-      if (!pendingData) {
-        setMessage('Geen bedrijfsgegevens gevonden. Ga terug naar registratie.')
-        return
-      }
-
-      const employerData = JSON.parse(pendingData)
-      
       // Haal access token op
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.access_token) {
@@ -27,21 +18,19 @@ function VerifyEmail() {
         return
       }
 
-      // Roep provisioning endpoint aan via backend
+      // Roep provisioning endpoint aan via backend (geen data nodig, haalt uit database)
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/provision-employer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`
         },
-        body: JSON.stringify(employerData)
+        body: JSON.stringify({}) // Lege body, data wordt uit database gehaald
       })
 
       const result = await response.json()
 
       if (response.ok) {
-        // Verwijder opgeslagen data
-        localStorage.removeItem('pendingEmployerData')
         setMessage('Account succesvol ingericht! Je wordt doorgestuurd naar je portaal...')
         
         // Stuur door naar werkgever portaal
@@ -233,11 +222,15 @@ function VerifyEmail() {
         }
       }
       
-      // Methode 3: Als nog steeds geen email, probeer localStorage (fallback)
+      // Methode 3: Als nog steeds geen email, probeer database (fallback)
       if (!emailToUse) {
-        const storedEmail = localStorage.getItem('pendingVerificationEmail')
-        if (storedEmail) {
-          emailToUse = storedEmail
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user?.email) {
+            emailToUse = user.email
+          }
+        } catch (e) {
+          // Geen actieve sessie, geen probleem
         }
       }
       
