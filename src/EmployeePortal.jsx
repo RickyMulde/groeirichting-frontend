@@ -34,9 +34,8 @@ function EmployeePortal() {
           console.error('User ID:', session.user.id)
           console.error('Error details:', userDataError)
           
-          // Als gebruiker geverifieerd is maar geen users record heeft,
-          // stuur door naar provisioning (dit zal falen als er geen pending data is)
-          navigate('/provision-employer')
+          // Als er geen users record is, stuur door naar login
+          navigate('/login')
           return
         }
 
