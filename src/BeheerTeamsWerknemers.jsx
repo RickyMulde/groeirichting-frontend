@@ -400,6 +400,16 @@ function BeheerTeamsWerknemers() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
+                          selectTeam(team.id)
+                        }}
+                        className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700 transition-colors"
+                        title="Werknemer toevoegen"
+                      >
+                        + Werknemer
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
                           // TODO: Implementeer team bewerken
                         }}
                         className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
