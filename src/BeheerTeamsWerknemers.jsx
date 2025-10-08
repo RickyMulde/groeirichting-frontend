@@ -402,7 +402,10 @@ function BeheerTeamsWerknemers() {
                           e.stopPropagation()
                           selectTeam(team.id)
                         }}
-                        className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700 transition-colors"
+                        className="px-3 py-1 text-white text-xs rounded-md transition-colors"
+                        style={{ backgroundColor: 'var(--kleur-primary)' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--kleur-accent)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--kleur-primary)'}
                         title="Werknemer toevoegen"
                       >
                         + Werknemer
