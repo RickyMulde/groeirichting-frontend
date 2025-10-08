@@ -133,12 +133,12 @@ export const TeamsProvider = ({ children }) => {
   }
 
   // Team aanmaken
-  const createTeam = async (naam) => {
+  const createTeam = async (naam, teams_beschrijving = null) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
-      const newTeam = await teamsApi.createTeam(naam)
+      const newTeam = await teamsApi.createTeam(naam, teams_beschrijving)
       dispatch({ type: 'ADD_TEAM', payload: newTeam })
       return newTeam
     } catch (error) {
@@ -148,12 +148,12 @@ export const TeamsProvider = ({ children }) => {
   }
 
   // Team hernoemen
-  const updateTeam = async (id, naam) => {
+  const updateTeam = async (id, naam, teams_beschrijving = null) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
       
-      const updatedTeam = await teamsApi.updateTeam(id, naam)
+      const updatedTeam = await teamsApi.updateTeam(id, naam, teams_beschrijving)
       dispatch({ type: 'UPDATE_TEAM', payload: updatedTeam })
       return updatedTeam
     } catch (error) {

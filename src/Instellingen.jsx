@@ -165,7 +165,9 @@ function Instellingen() {
 
       const saveData = {
         werkgever_id: werkgever.id,
-        ...werkgeverConfig
+        ...werkgeverConfig,
+        verplicht: true,  // Altijd true
+        actief: true      // Altijd true
       }
       console.log('📤 Data die wordt opgeslagen:', saveData)
 
@@ -274,10 +276,13 @@ function Instellingen() {
         {/* Gespreksfrequentie Configuratie */}
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-6">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
               <Calendar className="w-6 h-6 text-[var(--kleur-primary)]" />
               <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">Gespreksfrequentie</h2>
             </div>
+            <p className="text-sm text-gray-600 mb-6">
+              Selecteer in welke maanden jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
+            </p>
             
             {configLoading ? (
               <div className="text-center py-4">
@@ -321,41 +326,8 @@ function Instellingen() {
                       Selecteer minimaal één maand
                     </p>
                   )}
-                  <p className="text-xs text-gray-500 mt-1">
-                    Selecteer in welke maanden jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
-                  </p>
                 </div>
 
-                {/* Overige instellingen */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={werkgeverConfig.verplicht}
-                        onChange={(e) => setWerkgeverConfig(prev => ({ ...prev, verplicht: e.target.checked }))}
-                        className="w-4 h-4 text-[var(--kleur-primary)] border-gray-300 rounded focus:ring-[var(--kleur-primary)]"
-                      />
-                      <span className="ml-2 text-sm font-medium text-gray-700">
-                        Gesprekken zijn verplicht
-                      </span>
-                    </label>
-                  </div>
-                  
-                  <div>
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={werkgeverConfig.actief}
-                        onChange={(e) => setWerkgeverConfig(prev => ({ ...prev, actief: e.target.checked }))}
-                        className="w-4 h-4 text-[var(--kleur-primary)] border-gray-300 rounded focus:ring-[var(--kleur-primary)]"
-                      />
-                      <span className="ml-2 text-sm font-medium text-gray-700">
-                        Gespreksfrequentie actief
-                      </span>
-                    </label>
-                  </div>
-                </div>
 
                 {/* Anonimisering */}
                 <div>

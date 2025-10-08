@@ -45,9 +45,9 @@ export const getTeams = async (includeArchived = false) => {
 }
 
 // Team aanmaken
-export const createTeam = async (naam) => {
+export const createTeam = async (naam, teams_beschrijving = null) => {
   try {
-    console.log('🔄 teamsApi.createTeam aangeroepen met naam:', naam)
+    console.log('🔄 teamsApi.createTeam aangeroepen met naam:', naam, 'en teams_beschrijving:', teams_beschrijving)
     const headers = await getAuthHeaders()
     console.log('✅ Auth headers opgehaald:', headers)
     
@@ -57,7 +57,7 @@ export const createTeam = async (naam) => {
     const response = await fetch(url, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ naam })
+      body: JSON.stringify({ naam, teams_beschrijving })
     })
 
     console.log('📡 Response status:', response.status)
@@ -87,13 +87,13 @@ export const createTeam = async (naam) => {
 }
 
 // Team hernoemen
-export const updateTeam = async (id, naam) => {
+export const updateTeam = async (id, naam, teams_beschrijving = null) => {
   try {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE_URL}/api/teams/${id}`, {
       method: 'PUT',
       headers,
-      body: JSON.stringify({ naam })
+      body: JSON.stringify({ naam, teams_beschrijving })
     })
 
     if (!response.ok) {

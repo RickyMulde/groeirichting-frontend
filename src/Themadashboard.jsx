@@ -561,8 +561,8 @@ function Themadashboard() {
                               </div>
                               <p className="text-sm text-blue-800">
                                 Resultaten voor team <span className="font-semibold">{summaryData[theme.theme_id].team_context.team_naam}</span>
-                                {summaryData[theme.theme_id].team_context.team_beschrijving && 
-                                  ` - ${summaryData[theme.theme_id].team_context.team_beschrijving}`
+                                {summaryData[theme.theme_id].team_context.teams_beschrijving && 
+                                  ` - ${summaryData[theme.theme_id].team_context.teams_beschrijving}`
                                 }
                               </p>
                             </div>

@@ -5,12 +5,14 @@ import { useTeams } from '../contexts/TeamsContext'
 const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
   const { createTeam, error, clearError } = useTeams()
   const [teamName, setTeamName] = useState('')
+  const [teamDescription, setTeamDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Reset form bij modal open/close
   useEffect(() => {
     if (isOpen) {
       setTeamName('')
+      setTeamDescription('')
       setIsSubmitting(false)
       clearError()
     }
@@ -23,8 +25,9 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
 
     try {
       setIsSubmitting(true)
-      const newTeam = await createTeam(teamName.trim())
+      const newTeam = await createTeam(teamName.trim(), teamDescription.trim() || null)
       setTeamName('')
+      setTeamDescription('')
       onTeamCreated?.(newTeam)
       onClose()
     } catch (error) {
@@ -50,7 +53,7 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -75,8 +78,8 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
               <label htmlFor="teamName" className="block text-sm font-medium text-gray-700 mb-2">
                 Team naam
               </label>
@@ -92,6 +95,23 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
               />
               <p className="mt-1 text-xs text-gray-500">
                 Team naam moet uniek zijn binnen je organisatie
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="teamDescription" className="block text-sm font-medium text-gray-700 mb-2">
+                Team omschrijving (optioneel)
+              </label>
+              <textarea
+                id="teamDescription"
+                value={teamDescription}
+                onChange={(e) => setTeamDescription(e.target.value)}
+                placeholder="Korte omschrijving van het team..."
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Help je teamleden en AI om het team beter te begrijpen
               </p>
             </div>
 

@@ -15,6 +15,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
   
   const [editingTeam, setEditingTeam] = useState(null)
   const [teamName, setTeamName] = useState('')
+  const [teamDescription, setTeamDescription] = useState('')
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -23,6 +24,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
     if (isOpen) {
       setEditingTeam(null)
       setTeamName('')
+      setTeamDescription('')
       setShowCreateForm(false)
       clearError()
     }
@@ -41,9 +43,10 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
     try {
       setIsSubmitting(true)
       console.log('🔄 createTeam functie aangeroepen...')
-      const result = await createTeam(teamName.trim())
+      const result = await createTeam(teamName.trim(), teamDescription.trim() || null)
       console.log('✅ Team succesvol aangemaakt:', result)
       setTeamName('')
+      setTeamDescription('')
       setShowCreateForm(false)
     } catch (error) {
       console.error('❌ Fout bij aanmaken team:', error)
@@ -60,9 +63,10 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
 
     try {
       setIsSubmitting(true)
-      await updateTeam(editingTeam.id, teamName.trim())
+      await updateTeam(editingTeam.id, teamName.trim(), teamDescription.trim() || null)
       setEditingTeam(null)
       setTeamName('')
+      setTeamDescription('')
     } catch (error) {
       // Error wordt al afgehandeld in context
     } finally {
@@ -87,6 +91,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
   const startEditing = (team) => {
     setEditingTeam(team)
     setTeamName(team.naam)
+    setTeamDescription(team.teams_beschrijving || '')
     setShowCreateForm(false)
   }
 
@@ -94,13 +99,14 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
   const cancelEditing = () => {
     setEditingTeam(null)
     setTeamName('')
+    setTeamDescription('')
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">Beheer Teams</h2>
@@ -132,32 +138,49 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
                   <Users className="w-5 h-5 text-gray-400" />
                   <div>
                     {editingTeam?.id === team.id ? (
-                      <form onSubmit={handleUpdateTeam} className="flex items-center space-x-2">
-                        <input
-                          type="text"
-                          value={teamName}
-                          onChange={(e) => setTeamName(e.target.value)}
-                          className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          autoFocus
-                        />
-                        <button
-                          type="submit"
-                          disabled={isSubmitting || !teamName.trim()}
-                          className="btn btn-primary btn-sm"
-                        >
-                          {isSubmitting ? 'Opslaan...' : 'Opslaan'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={cancelEditing}
-                          className="btn btn-sm"
-                        >
-                          Annuleren
-                        </button>
+                      <form onSubmit={handleUpdateTeam} className="flex-1 space-y-3">
+                        <div>
+                          <input
+                            type="text"
+                            value={teamName}
+                            onChange={(e) => setTeamName(e.target.value)}
+                            placeholder="Team naam"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            autoFocus
+                          />
+                        </div>
+                        <div>
+                          <textarea
+                            value={teamDescription}
+                            onChange={(e) => setTeamDescription(e.target.value)}
+                            placeholder="Team omschrijving (optioneel)"
+                            rows={2}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                          />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            type="submit"
+                            disabled={isSubmitting || !teamName.trim()}
+                            className="btn btn-primary btn-sm"
+                          >
+                            {isSubmitting ? 'Opslaan...' : 'Opslaan'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={cancelEditing}
+                            className="btn btn-sm"
+                          >
+                            Annuleren
+                          </button>
+                        </div>
                       </form>
                     ) : (
-                      <div>
+                      <div className="flex-1">
                         <h3 className="font-medium text-gray-900">{team.naam}</h3>
+                        {team.teams_beschrijving && (
+                          <p className="text-sm text-gray-600 mt-1">{team.teams_beschrijving}</p>
+                        )}
                         <p className="text-sm text-gray-500">
                           {team.members_count || 0} {team.members_count === 1 ? 'lid' : 'leden'}
                         </p>
@@ -202,32 +225,46 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
           {showCreateForm && (
             <div className="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
               <h3 className="font-medium text-gray-900 mb-3">Nieuw Team Aanmaken</h3>
-              <form onSubmit={handleCreateTeam} className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  placeholder="Team naam"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  autoFocus
-                />
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !teamName.trim()}
-                  className="btn btn-primary"
-                >
-                  {isSubmitting ? 'Aanmaken...' : 'Aanmaken'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreateForm(false)
-                    setTeamName('')
-                  }}
-                  className="btn"
-                >
-                  Annuleren
-                </button>
+              <form onSubmit={handleCreateTeam} className="space-y-3">
+                <div>
+                  <input
+                    type="text"
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
+                    placeholder="Team naam"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <textarea
+                    value={teamDescription}
+                    onChange={(e) => setTeamDescription(e.target.value)}
+                    placeholder="Team omschrijving (optioneel)"
+                    rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !teamName.trim()}
+                    className="btn btn-primary"
+                  >
+                    {isSubmitting ? 'Aanmaken...' : 'Aanmaken'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateForm(false)
+                      setTeamName('')
+                      setTeamDescription('')
+                    }}
+                    className="btn"
+                  >
+                    Annuleren
+                  </button>
+                </div>
               </form>
             </div>
           )}
