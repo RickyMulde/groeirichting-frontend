@@ -25,7 +25,7 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
 
     try {
       setIsSubmitting(true)
-      const newTeam = await createTeam(teamName.trim(), teamDescription.trim() || null)
+      const newTeam = await createTeam(teamName.trim(), teamDescription.trim())
       setTeamName('')
       setTeamDescription('')
       onTeamCreated?.(newTeam)
@@ -100,7 +100,7 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
 
             <div>
               <label htmlFor="teamDescription" className="block text-sm font-medium text-gray-700 mb-2">
-                Team omschrijving (optioneel)
+                Team omschrijving
               </label>
               <textarea
                 id="teamDescription"
@@ -109,9 +109,10 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
                 placeholder="Korte omschrijving van het team..."
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                required
               />
               <p className="mt-1 text-xs text-gray-500">
-                Help je teamleden en AI om het team beter te begrijpen
+                Team omschrijving wordt gebruikt om betere en gerichtere vragen te stellen. (Als er één team voor het hele bedrijf wordt aangemaakt, geef dan een omschrijving van het bedrijf.)
               </p>
             </div>
 
@@ -127,7 +128,7 @@ const QuickTeamModal = ({ isOpen, onClose, onTeamCreated }) => {
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting || !teamName.trim()}
+                disabled={isSubmitting || !teamName.trim() || !teamDescription.trim()}
                 className="btn btn-primary flex items-center space-x-2"
               >
                 {isSubmitting ? (

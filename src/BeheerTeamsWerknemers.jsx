@@ -4,7 +4,6 @@ import { Trash2, RefreshCw, ArrowLeft, Users, Settings, MailPlus, Pencil } from 
 import { useNavigate } from 'react-router-dom'
 import { useTeams } from './contexts/TeamsContext'
 import TeamManagementModal from './components/TeamManagementModal'
-import TeamSelector from './components/TeamSelector'
 import Alert from './Alert'
 
 function BeheerTeamsWerknemers() {
@@ -308,8 +307,8 @@ function BeheerTeamsWerknemers() {
   }
 
   const getFilteredWerknemers = () => {
-    if (!selectedTeam) return werknemers
-    return werknemers.filter(werknemer => werknemer.team_id === selectedTeam)
+    // De filtering wordt al gedaan in fetchData, dus gewoon werknemers returnen
+    return werknemers
   }
 
   return (
@@ -336,7 +335,7 @@ function BeheerTeamsWerknemers() {
                 className="btn btn-accent flex items-center space-x-2"
               >
                 <Settings className="w-4 h-4" />
-                <span>Beheer Teams</span>
+                <span>Maak team aan</span>
               </button>
             </div>
           </div>
@@ -348,16 +347,65 @@ function BeheerTeamsWerknemers() {
         {foutmelding && <Alert type="error" message={foutmelding} onClose={() => setFoutmelding('')} />}
         {succesmelding && <Alert type="success" message={succesmelding} onClose={() => setSuccesmelding('')} />}
 
-        {/* Team Selector */}
+        {/* Teams Overzicht */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Filter op Team
-          </label>
-          <TeamSelector
-            onTeamSelect={selectTeam}
-            selectedTeamId={selectedTeam}
-            className="max-w-md"
-          />
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Teams Overzicht</h2>
+          <div className="bg-white shadow-md rounded-xl overflow-hidden">
+            <div className="p-4 space-y-2 max-h-64 overflow-y-auto">
+              {/* Alle Teams optie */}
+              <div
+                onClick={() => selectTeam(null)}
+                className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                  selectedTeam === null || selectedTeam === undefined
+                    ? 'bg-blue-50 border-2 border-blue-200 text-blue-900'
+                    : 'hover:bg-gray-50 border-2 border-transparent'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <Users className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <h3 className="font-medium">Alle Teams</h3>
+                    <p className="text-sm text-gray-500">Bekijk alle werknemers van alle teams</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Teams lijst */}
+              {teams.map((team) => (
+                <div
+                  key={team.id}
+                  onClick={() => selectTeam(team.id)}
+                  className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                    selectedTeam === team.id
+                      ? 'bg-blue-50 border-2 border-blue-200 text-blue-900'
+                      : 'hover:bg-gray-50 border-2 border-transparent'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Users className="w-5 h-5 text-gray-400" />
+                    <div className="flex-1">
+                      <h3 className="font-medium">{team.naam}</h3>
+                      {team.teams_beschrijving && (
+                        <p className="text-sm text-gray-600 mt-1">{team.teams_beschrijving}</p>
+                      )}
+                      <p className="text-sm text-gray-500">
+                        {team.leden?.length || 0} {team.leden?.length === 1 ? 'lid' : 'leden'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Lege state */}
+              {teams.length === 0 && (
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">Nog geen teams aangemaakt</p>
+                  <p className="text-sm text-gray-400">Maak je eerste team aan om te beginnen</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Uitnodiging Harmonica - Alleen zichtbaar als specifiek team geselecteerd */}
@@ -468,39 +516,11 @@ function BeheerTeamsWerknemers() {
                 className="btn btn-primary flex items-center space-x-2"
               >
                 <Settings className="w-4 h-4" />
-                <span>Beheer teams</span>
+                <span>Maak team aan</span>
               </button>
             </div>
           </div>
         )}
-
-        {/* Teams Overzicht */}
-        <div className="mb-8">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Teams Overzicht</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {teams.map((team) => (
-              <div
-                key={team.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                  selectedTeam === team.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-                onClick={() => selectTeam(team.id)}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium text-gray-900">{team.naam}</h3>
-                    <p className="text-sm text-gray-500">
-                      {team.members_count || 0} {team.members_count === 1 ? 'lid' : 'leden'}
-                    </p>
-                  </div>
-                  <Users className="w-5 h-5 text-gray-400" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Werknemers Lijst */}
         <div className="bg-white shadow rounded-lg">

@@ -45,7 +45,7 @@ export const getTeams = async (includeArchived = false) => {
 }
 
 // Team aanmaken
-export const createTeam = async (naam, teams_beschrijving = null) => {
+export const createTeam = async (naam, teams_beschrijving) => {
   try {
     console.log('🔄 teamsApi.createTeam aangeroepen met naam:', naam, 'en teams_beschrijving:', teams_beschrijving)
     const headers = await getAuthHeaders()
@@ -87,7 +87,7 @@ export const createTeam = async (naam, teams_beschrijving = null) => {
 }
 
 // Team hernoemen
-export const updateTeam = async (id, naam, teams_beschrijving = null) => {
+export const updateTeam = async (id, naam, teams_beschrijving) => {
   try {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE_URL}/api/teams/${id}`, {

@@ -43,7 +43,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
     try {
       setIsSubmitting(true)
       console.log('🔄 createTeam functie aangeroepen...')
-      const result = await createTeam(teamName.trim(), teamDescription.trim() || null)
+      const result = await createTeam(teamName.trim(), teamDescription.trim())
       console.log('✅ Team succesvol aangemaakt:', result)
       setTeamName('')
       setTeamDescription('')
@@ -63,7 +63,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
 
     try {
       setIsSubmitting(true)
-      await updateTeam(editingTeam.id, teamName.trim(), teamDescription.trim() || null)
+      await updateTeam(editingTeam.id, teamName.trim(), teamDescription.trim())
       setEditingTeam(null)
       setTeamName('')
       setTeamDescription('')
@@ -119,7 +119,7 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
           {/* Error message */}
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
@@ -128,11 +128,11 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
           )}
 
           {/* Teams lijst */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             {teams.map((team) => (
               <div
                 key={team.id}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   <Users className="w-5 h-5 text-gray-400" />
@@ -153,15 +153,19 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
                           <textarea
                             value={teamDescription}
                             onChange={(e) => setTeamDescription(e.target.value)}
-                            placeholder="Team omschrijving (optioneel)"
+                            placeholder="Team omschrijving"
                             rows={2}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            required
                           />
+                          <p className="mt-1 text-xs text-gray-500">
+                            Team omschrijving wordt gebruikt om betere en gerichtere vragen te stellen. (Als er één team voor het hele bedrijf wordt aangemaakt, geef dan een omschrijving van het bedrijf.)
+                          </p>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
                             type="submit"
-                            disabled={isSubmitting || !teamName.trim()}
+                            disabled={isSubmitting || !teamName.trim() || !teamDescription.trim()}
                             className="btn btn-primary btn-sm"
                           >
                             {isSubmitting ? 'Opslaan...' : 'Opslaan'}
@@ -240,15 +244,19 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
                   <textarea
                     value={teamDescription}
                     onChange={(e) => setTeamDescription(e.target.value)}
-                    placeholder="Team omschrijving (optioneel)"
+                    placeholder="Team omschrijving"
                     rows={2}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    required
                   />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Team omschrijving wordt gebruikt om betere en gerichtere vragen te stellen. (Als er één team voor het hele bedrijf wordt aangemaakt, geef dan een omschrijving van het bedrijf.)
+                  </p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <button
                     type="submit"
-                    disabled={isSubmitting || !teamName.trim()}
+                    disabled={isSubmitting || !teamName.trim() || !teamDescription.trim()}
                     className="btn btn-primary"
                   >
                     {isSubmitting ? 'Aanmaken...' : 'Aanmaken'}
@@ -274,6 +282,11 @@ const TeamManagementModal = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between p-6 border-t bg-gray-50">
           <div className="text-sm text-gray-500">
             {teams.length} {teams.length === 1 ? 'team' : 'teams'}
+            {teams.length > 10 && (
+              <span className="ml-2 text-xs text-blue-600">
+                (scroll om alle teams te zien)
+              </span>
+            )}
           </div>
           <div className="flex space-x-3">
             {!showCreateForm && (

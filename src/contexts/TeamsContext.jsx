@@ -133,7 +133,7 @@ export const TeamsProvider = ({ children }) => {
   }
 
   // Team aanmaken
-  const createTeam = async (naam, teams_beschrijving = null) => {
+  const createTeam = async (naam, teams_beschrijving) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
@@ -148,7 +148,7 @@ export const TeamsProvider = ({ children }) => {
   }
 
   // Team hernoemen
-  const updateTeam = async (id, naam, teams_beschrijving = null) => {
+  const updateTeam = async (id, naam, teams_beschrijving) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
       dispatch({ type: 'CLEAR_ERROR' })
