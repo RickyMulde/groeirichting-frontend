@@ -381,16 +381,42 @@ function BeheerTeamsWerknemers() {
                       : 'hover:bg-gray-50 border-2 border-transparent'
                   }`}
                 >
-                  <div className="flex items-center space-x-3">
-                    <Users className="w-5 h-5 text-gray-400" />
-                    <div className="flex-1">
-                      <h3 className="font-medium">{team.naam}</h3>
-                      {team.teams_beschrijving && (
-                        <p className="text-sm text-gray-600 mt-1">{team.teams_beschrijving}</p>
-                      )}
-                      <p className="text-sm text-gray-500">
-                        {team.leden?.length || 0} {team.leden?.length === 1 ? 'lid' : 'leden'}
-                      </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3 flex-1 min-w-0">
+                      <Users className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <span className="font-medium">{team.naam}</span>
+                        <span className="text-sm text-gray-500 ml-2">
+                          ({team.leden?.length || 0} {team.leden?.length === 1 ? 'lid' : 'leden'})
+                        </span>
+                        {team.teams_beschrijving && (
+                          <span className="text-sm text-gray-600 ml-2 truncate">
+                            {team.teams_beschrijving}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 ml-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // TODO: Implementeer team bewerken
+                        }}
+                        className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                        title="Team bewerken"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // TODO: Implementeer team verwijderen
+                        }}
+                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                        title="Team verwijderen"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -491,7 +517,7 @@ function BeheerTeamsWerknemers() {
           <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-medium mb-2 text-gray-900">
-                Maak (eerst) een team aan
+                Maak een team aan
               </h2>
               <p className="text-gray-600 mb-4">
                 Je kunt één team aanmaken voor het hele bedrijf of meerdere teams om per team resultaten in te zien.
