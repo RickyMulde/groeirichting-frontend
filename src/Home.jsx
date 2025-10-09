@@ -23,29 +23,25 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Verbind met je mensen. Groei samen verder.
+            Verbind met je mensen. Groei samen verder. ✅
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Verzuim en verloop zijn duur. GroeiRichting signaleert vroegtijdig risico's, geeft inzicht in hoe werknemers in de wedstrijd staan en helpt jouw organisatie de juiste richting op te groeien.
+            Signaleer wat er écht speelt bij je medewerkers — zonder extra tijd kwijt te zijn.
           </p>
           
           {/* Bullets */}
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Geen HR-afdeling? Geen probleem. Wij helpen je.</p>
+              <p className="text-[var(--kleur-muted)]">Heb je te maken met onverwacht verloop of langdurig verzuim?</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Geen traditionele statische formulieren, maar dynamische gesprekken.</p>
+              <p className="text-[var(--kleur-muted)]">Mis je de échte binding met je medewerkers?</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">AI ondersteunt jouw werknemers om betere en volledigere antwoorden te geven.</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Verzamel input en ontvang feedback en signalen om samen te groeien.</p>
+              <p className="text-[var(--kleur-muted)]">Ontbreekt het je aan tijd om continu in gesprek te blijven?</p>
             </div>
           </div>
 

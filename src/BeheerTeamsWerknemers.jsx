@@ -403,9 +403,9 @@ function BeheerTeamsWerknemers() {
                           selectTeam(team.id)
                         }}
                         className="px-3 py-1 text-white text-xs rounded-md transition-colors"
-                        style={{ backgroundColor: 'var(--kleur-primary)' }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--kleur-accent)'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--kleur-primary)'}
+                        style={{ backgroundColor: 'var(--kleur-accent)' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--kleur-secondary)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--kleur-accent)'}
                         title="Werknemer toevoegen"
                       >
                         + Werknemer
