@@ -23,7 +23,7 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Verbind met je mensen. Groei samen verder. ✅
+            Verbind met je mensen. Groei samen verder.
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
             Signaleer wat er écht speelt bij je medewerkers — zonder extra tijd kwijt te zijn.
@@ -204,7 +204,7 @@ function Home() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Echt gehoord worden</p>
+                  <p className="font-medium text-[var(--kleur-text)]">Bepaal zelf wat jouw werkgever onder ogen moet krijgen</p>
                   <p className="text-sm text-[var(--kleur-muted)]">Jouw stem telt, niet alleen tijdens één gesprek maar continu.</p>
                 </div>
               </div>
@@ -232,8 +232,8 @@ function Home() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Meer duidelijkheid en structuur</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Je weet altijd waar gesprekken over gaan en wat ermee gebeurt.</p>
+                  <p className="font-medium text-[var(--kleur-text)]">Geen saaie statische formulieren, maar echte gesprekken</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Daarbij ondersteunt AI jouw om betere gesprekken te voeren.</p>
                 </div>
               </div>
             </div>
@@ -251,7 +251,7 @@ function Home() {
           </div>
           <div className="flex items-start gap-4">
             <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>AI kan beter doorvragen en werkt drempelverlagend om informatie te delen</p>
+            <p>AI kan concreet doorvragen en werkt drempelverlagend om informatie te delen</p>
           </div>
           <div className="flex items-start gap-4">
             <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
@@ -275,8 +275,8 @@ function Home() {
       {/* Twijfels sectie */}
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">Twijfels? Logisch.</h2>
-          <p className="text-xl text-[var(--kleur-muted)] mb-12">Maar met GroeiRichting zijn ze sneller weg dan je denkt.</p>
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">Twijfels? Dat is niet nodig!</h2>
+          <p className="text-xl text-[var(--kleur-muted)] mb-12">Laat GroeiRichting je overtuigen...</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Grid item 1 */}
@@ -340,8 +340,7 @@ function Home() {
 
       {/* Eindkreet */}
       <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">
-        <h3 className="text-xl font-bold mb-4 text-white">Wil jij werken aan en met een team van gemotiveerde medewerkers die samen het bedrijf willen laten groeien in de richting die jij wilt?</h3>
-        <p className="mb-6">Dan start je met GroeiRichting.</p>
+        <h3 className="text-xl font-bold mb-4 text-white">De beste resultaten bereik je met verbonden, geboeide medewerkers die plezier ervaren bij wat ze doen, GroeiRichting ondersteunt jou hierbij!</h3>
         <Link to="/hoe-werkt-het">
           <button className="btn btn-secondary">Hoe werkt het?</button>
         </Link>
