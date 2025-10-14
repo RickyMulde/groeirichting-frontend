@@ -60,7 +60,7 @@ function HoeWerktHet() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <p className="text-lg text-[var(--kleur-muted)]">
-                Het GroeiPortaal is geen vervanging van het persoonlijke gesprek, maar een hulpmiddel dat medewerkers helpt betere input te geven.
+                Het GroeiPortaal is geen vervanging van het persoonlijke gesprek, maar een hulpmiddel dat medewerkers vaker helpt betere input te geven.
               </p>
               
               <div className="space-y-4">
@@ -74,7 +74,7 @@ function HoeWerktHet() {
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                  <p className="text-[var(--kleur-muted)]">Jij ontvangt heldere samenvattingen en adviezen die je direct kunt gebruiken in je gesprekken.</p>
+                  <p className="text-[var(--kleur-muted)]">Je ontvangt heldere samenvattingen en adviezen die je direct kunt gebruiken in je gesprekken.</p>
                 </div>
               </div>
               

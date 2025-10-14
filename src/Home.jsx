@@ -12,9 +12,9 @@ function Home() {
   return (
     <>
       <SEOHead 
-        title="AI-Gestuurde Gesprekken voor Werkgevers en Werknemers"
-        description="Ontdek hoe AI-gestuurde gesprekken werkgevers en werknemers helpen groeien. Professionele gespreksvoering met kunstmatige intelligentie voor betere werkrelaties."
-        keywords="AI gesprekken, werkgever werknemer, kunstmatige intelligentie, gespreksvoering, groei, ontwikkeling, HR, personeel, AI HR, slimme gesprekken"
+        title="Medewerkerstevredenheid verbeteren met AI-gesprekken – GroeiRichting"
+        description="Versterk de verbinding met je medewerkers en signaleer vroegtijdig wat er speelt. GroeiRichting is hét MTO-alternatief voor meer betrokkenheid, minder verzuim en groei."
+        keywords="medewerkerstevredenheid verbeteren, betrokkenheid medewerkers, verzuim terugdringen, MTO alternatief, AI HR, gespreksplatform, werkgeluk"
         canonical="https://groeirichting.nl/"
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
@@ -25,6 +25,7 @@ function Home() {
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
             Verbind met je mensen. Groei samen verder.
           </h1>
+          <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
             Signaleer wat er écht speelt bij je medewerkers — zonder extra tijd kwijt te zijn.
           </p>
@@ -62,7 +63,7 @@ function Home() {
       {/* Meer gesprekken, zonder extra tijd */}
       <section className="py-8 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken, zonder extra tijd</h2>
+          <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken over werkdruk, motivatie en ontwikkeling — zonder extra tijd</h2>
           
           <div className="space-y-6 text-lg text-[var(--kleur-muted)]">
             <p>
@@ -108,7 +109,7 @@ function Home() {
 
       {/* Het probleem */}
       <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
-        <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: het kost meer dan je denkt</h2>
+        <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: verzuim en verloop kosten meer dan je denkt</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
           Het vervangen van één professional kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Ondertussen blijft echte oorzaak vaak onzichtbaar tot het te laat is.
         </p>
@@ -135,7 +136,7 @@ function Home() {
 
       {/* Wat levert het op */}
       <section>
-        <h2 className="text-3xl font-bold text-center mb-4">De waarde van GroeiRichting</h2>
+        <h2 className="text-3xl font-bold text-center mb-4">Wat GroeiRichting oplevert: meer tevredenheid, minder verloop en verzuim</h2>
         <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
           Ontdek hoe GroeiRichting zowel werkgevers als werknemers helpt om te groeien en te verbeteren
         </p>
@@ -243,7 +244,7 @@ function Home() {
 
       {/* Voordelen van GroeiRichting */}
       <section>
-        <h2 className="text-2xl font-semibold text-center mb-8">Voordelen van GroeiRichting</h2>
+        <h2 className="text-2xl font-semibold text-center mb-8">Voordelen van GroeiRichting: AI-ondersteunde gesprekken voor betere medewerkerstevredenheid</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <div className="flex items-start gap-4">
             <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
@@ -323,7 +324,7 @@ function Home() {
 
       {/* GroeiRichting als oplossing */}
       <section className="py-12 px-6 text-center">
-        <h2 className="text-2xl font-semibold mb-6">GroeiRichting biedt de oplossing</h2>
+        <h2 className="text-2xl font-semibold mb-6">GroeiRichting biedt de oplossing: MTO-alternatief met AI-ondersteuning</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-6">
           Met thematische gesprekken, AI-ondersteuning en flexibele instellingen geef je richting aan ontwikkeling. Je krijgt als werkgever direct bruikbare input, terwijl medewerkers ervaren dat hun stem telt. Zo ontstaat een gesprekscultuur waarin groei centraal staat.
         </p>

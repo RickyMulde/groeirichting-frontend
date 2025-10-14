@@ -786,14 +786,14 @@ function GesprekPagina() {
             [huidigeVasteVraagId]: nieuweTeller 
           }));
           
-          // Check of we 4 vervolgvragen hebben bereikt
-          if (nieuweTeller >= 4) {
-            console.log('4 vervolgvragen bereikt, ga naar volgende vaste vraag');
+          // Check of we 3 vervolgvragen hebben bereikt
+          if (nieuweTeller >= 3) {
+            console.log('3 vervolgvragen bereikt, ga naar volgende vaste vraag');
             await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
             return;
           }
           
-          // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 4 hebben)
+          // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 3 hebben)
           const samenvatting = await haalLaatsteSamenvattingOp();
           const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
           const werknemerContext = await haalWerknemerContextOp();
