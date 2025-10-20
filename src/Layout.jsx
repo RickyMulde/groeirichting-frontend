@@ -82,7 +82,14 @@ function Layout({ children }) {
       <header className="bg-white shadow-md relative">
         <div className="px-6 py-4 flex items-center justify-between">
           {/* Logo */}
-          <div className="text-xl font-semibold text-kleur-primary">GroeiRichting</div>
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/Logo.svg" 
+              alt="GroeiRichting Logo" 
+              className="h-6 sm:h-8 w-auto"
+            />
+            <span className="ml-2 text-lg sm:text-xl font-semibold text-[var(--kleur-primary)]">GroeiRichting</span>
+          </Link>
 
           {/* Desktop Navigatie - Alleen zichtbaar voor niet-ingelogde gebruikers */}
           {!session && (

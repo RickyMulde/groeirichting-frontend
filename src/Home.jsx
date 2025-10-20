@@ -27,7 +27,7 @@ function Home() {
           </h1>
           <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Signaleer wat er écht speelt bij je medewerkers — zonder extra tijd kwijt te zijn.
+            Versterk de verbinding met je medewerkers, verhoog de betrokkenheid en stimuleer groei — zonder extra tijd kwijt te zijn.
           </p>
           
           {/* Bullets */}
@@ -48,8 +48,8 @@ function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <button className="btn btn-primary">Plan een demo</button>
-            <button className="btn btn-accent">Bekijk een 3‑min demo</button>
+            <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
+            <Link to="/hoe-werkt-het" className="btn btn-accent">Bekijk hoe het werkt</Link>
           </div>
 
           {/* Micro-trust */}
@@ -89,7 +89,7 @@ function Home() {
             </p>
             
             <p>
-              Het platform laat jouw werknemers/ teamleden gesprekken voeren met AI, in verschillende thema's. Vervolgens verzamelt GroeiRichting input en zet dit om in heldere samenvattingen, signalen en concrete verbeteradviezen.
+              Het GroeiPortaal laat jouw medewerkers AI-ondersteunde gesprekken voeren over thema's als werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer en perspectief & ontwikkeling. Zo ontstaat continu waardevolle input waarmee je als werkgever actief kunt werken aan betrokkenheid vergroten, medewerkerstevredenheid verbeteren en een cultuur van groei en vertrouwen versterken, zonder extra tijd kwijt te zijn.
             </p>
             
             <p>
@@ -111,7 +111,7 @@ function Home() {
       <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
         <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: verzuim en verloop kosten meer dan je denkt</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
-          Het vervangen van één professional kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Ondertussen blijft echte oorzaak vaak onzichtbaar tot het te laat is.
+          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar — en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
         </p>
         
         {/* Mini-stats */}
@@ -131,14 +131,14 @@ function Home() {
         </div>
         
         {/* CTA */}
-        <button className="btn btn-primary">Plan een demo</button>
+        <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
       </section>
 
       {/* Wat levert het op */}
       <section>
         <h2 className="text-3xl font-bold text-center mb-4">Wat GroeiRichting oplevert: meer tevredenheid, minder verloop en verzuim</h2>
         <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
-          Ontdek hoe GroeiRichting zowel werkgevers als werknemers helpt om te groeien en te verbeteren
+          Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl werknemers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -242,6 +242,19 @@ function Home() {
         </div>
       </section>
 
+      {/* Extra CTA blok */}
+      <section className="py-12 px-6 text-center bg-gray-50 rounded-xl">
+        <h2 className="text-2xl font-semibold mb-6">Klaar om te beginnen?</h2>
+        <p className="text-lg text-[var(--kleur-muted)] mb-8 max-w-2xl mx-auto">
+          Ontdek hoe GroeiRichting jouw organisatie kan helpen om medewerkerstevredenheid te verbeteren en een cultuur van groei te creëren.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
+          <Link to="/contact" className="btn btn-primary">Plan vrijblijvend gesprek</Link>
+          <Link to="/hoe-werkt-het" className="btn btn-accent">Bekijk hoe het werkt</Link>
+          <Link to="#" className="btn btn-secondary">Download voorbeeldrapport</Link>
+        </div>
+      </section>
+
       {/* Voordelen van GroeiRichting */}
       <section>
         <h2 className="text-2xl font-semibold text-center mb-8">Voordelen van GroeiRichting: AI-ondersteunde gesprekken voor betere medewerkerstevredenheid</h2>
@@ -326,7 +339,7 @@ function Home() {
       <section className="py-12 px-6 text-center">
         <h2 className="text-2xl font-semibold mb-6">GroeiRichting biedt de oplossing: MTO-alternatief met AI-ondersteuning</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-6">
-          Met thematische gesprekken, AI-ondersteuning en flexibele instellingen geef je richting aan ontwikkeling. Je krijgt als werkgever direct bruikbare input, terwijl medewerkers ervaren dat hun stem telt. Zo ontstaat een gesprekscultuur waarin groei centraal staat.
+          Met AI-ondersteunde gesprekken over vaste thema's zoals werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer en perspectief & ontwikkeling, creëer je een gesprekscultuur die helpt om medewerkerstevredenheid structureel te verbeteren en verzuim tijdig te signaleren. Je krijgt als werkgever direct bruikbare input, terwijl medewerkers ervaren dat hun stem telt.
         </p>
       </section>
 
@@ -342,9 +355,7 @@ function Home() {
       {/* Eindkreet */}
       <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">
         <h3 className="text-xl font-bold mb-4 text-white">De beste resultaten bereik je met verbonden, geboeide medewerkers die plezier ervaren bij wat ze doen, GroeiRichting ondersteunt jou hierbij!</h3>
-        <Link to="/hoe-werkt-het">
-          <button className="btn btn-secondary">Hoe werkt het?</button>
-        </Link>
+        <Link to="/contact" className="btn btn-secondary">Plan vrijblijvend gesprek</Link>
       </section>
       </div>
     </>
