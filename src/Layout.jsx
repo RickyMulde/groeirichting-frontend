@@ -86,9 +86,8 @@ function Layout({ children }) {
             <img 
               src="/Logo.svg" 
               alt="GroeiRichting Logo" 
-              className="h-6 sm:h-8 w-auto"
+              className="h-10 sm:h-12 w-auto"
             />
-            <span className="ml-2 text-lg sm:text-xl font-semibold text-[var(--kleur-primary)]">GroeiRichting</span>
           </Link>
 
           {/* Desktop Navigatie - Alleen zichtbaar voor niet-ingelogde gebruikers */}
