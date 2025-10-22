@@ -8,7 +8,7 @@ import Home from './Home'
 import HoeWerktHet from './HoeWerktHet'
 import PrivacyVeiligheid from './PrivacyVeiligheid'
 import Privacy from './Privacy'
-import PrivacyGroeiportaal from './PrivacyGroeiportaal'
+import PrivacyPortaal from './PrivacyPortaal'
 import EmployerPortal from './EmployerPortal'
 import Dashboard from './dashboard'
 import BeheerTeamsWerknemers from './BeheerTeamsWerknemers'
@@ -47,7 +47,7 @@ function App() {
         <Route path="/hoe-werkt-het" element={<HoeWerktHet />} />
         <Route path="/privacy-veiligheid" element={<PrivacyVeiligheid />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/privacy-groeiportaal" element={<PrivacyGroeiportaal />} />
+        <Route path="/privacy-portaal" element={<PrivacyPortaal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registreer-werkgever" element={<RegisterEmployer />} />
         <Route path="/registreer-werknemer" element={<RegisterEmployee />} />
