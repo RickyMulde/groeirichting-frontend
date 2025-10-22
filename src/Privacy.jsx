@@ -11,30 +11,26 @@ function Privacy() {
       />
       
       <div className="max-w-4xl mx-auto py-8 px-6">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
+        {/* Document Header */}
+        <div className="border-b-2 border-[var(--kleur-primary)] pb-6 mb-8">
+          <h1 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">
             Privacyverklaring GroeiPortaal
           </h1>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 text-[var(--kleur-muted)]">
-            <span className="bg-[var(--kleur-accent)] bg-opacity-10 px-3 py-1 rounded-full text-sm font-medium">
-              Versie: 1.1
-            </span>
-            <span className="bg-[var(--kleur-secondary)] bg-opacity-10 px-3 py-1 rounded-full text-sm font-medium">
-              Laatst bijgewerkt: oktober 2025
-            </span>
+          <div className="flex flex-col sm:flex-row gap-4 text-sm text-[var(--kleur-muted)]">
+            <span><strong>Versie:</strong> 1.1</span>
+            <span><strong>Laatst bijgewerkt:</strong> oktober 2025</span>
           </div>
         </div>
 
         {/* Contact info */}
-        <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-6 rounded-xl mb-8">
-          <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4">Contact voor privacyzaken</h2>
-          <div className="space-y-2">
+        <div className="bg-gray-50 p-4 rounded border-l-4 border-[var(--kleur-primary)] mb-8">
+          <h2 className="text-lg font-semibold text-[var(--kleur-primary)] mb-3">Contact voor privacyzaken</h2>
+          <div className="space-y-1">
             <p><strong>GroeiRichting B.V.</strong></p>
             <p>Schutstraat 145, 7907 CD Hoogeveen, Nederland</p>
             <p>KvK: 98185543</p>
-            <p>📧 <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a></p>
-            <p className="text-sm text-[var(--kleur-muted)] mt-3">
+            <p>E-mail: <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a></p>
+            <p className="text-sm text-[var(--kleur-muted)] mt-2">
               Aanspreekpunt: Rick Mulderij
             </p>
           </div>
@@ -45,7 +41,9 @@ function Privacy() {
           
           {/* Sectie 1 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">1. Wie wij zijn</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">
+              1. Wie wij zijn
+            </h2>
             <p className="text-[var(--kleur-text)] mb-4">
               Het GroeiPortaal is een online platform van GroeiRichting B.V., gevestigd aan Schutstraat 145, 7907 CD Hoogeveen, Nederland.
               Ingeschreven bij de Kamer van Koophandel onder nummer 98185543.
@@ -54,7 +52,7 @@ function Privacy() {
               Voor vragen over privacy of gegevensbescherming kun je contact opnemen via:
             </p>
             <p className="text-[var(--kleur-text)] mb-4">
-              📧 <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a>
+              E-mail: <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a>
             </p>
             <p className="text-[var(--kleur-text)]">
               Binnen GroeiRichting is Rick Mulderij het aanspreekpunt voor privacyzaken.
@@ -64,7 +62,7 @@ function Privacy() {
 
           {/* Sectie 2 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">2. Toepassingsgebied</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">2. Toepassingsgebied</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               Deze privacyverklaring is van toepassing op het gebruik van het GroeiPortaal door:
             </p>
@@ -79,7 +77,7 @@ function Privacy() {
 
           {/* Sectie 3 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">3. Rol van partijen</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">3. Rol van partijen</h2>
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg border-l-4 border-[var(--kleur-primary)]">
                 <h3 className="font-semibold text-[var(--kleur-primary)] mb-2">Werkgever</h3>
@@ -97,7 +95,7 @@ function Privacy() {
 
           {/* Sectie 4 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">4. Welke persoonsgegevens worden verwerkt</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">4. Welke persoonsgegevens worden verwerkt</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -133,7 +131,7 @@ function Privacy() {
 
           {/* Sectie 5 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">5. Doeleinden van de verwerking</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">5. Doeleinden van de verwerking</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               De persoonsgegevens worden uitsluitend verwerkt om:
             </p>
@@ -154,7 +152,7 @@ function Privacy() {
 
           {/* Sectie 6 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">6. Rechtsgrond</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">6. Rechtsgrond</h2>
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg border-l-4 border-[var(--kleur-primary)]">
                 <p className="text-[var(--kleur-text)]">
@@ -177,7 +175,7 @@ function Privacy() {
 
           {/* Sectie 7 - Tabel */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">7. Bewaartermijnen</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">7. Bewaartermijnen</h2>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
                 <thead>
@@ -217,7 +215,7 @@ function Privacy() {
 
           {/* Sectie 8 - Tabel subverwerkers */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">8. Ontvangers en subverwerkers</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">8. Ontvangers en subverwerkers</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               Om onze dienstverlening mogelijk te maken, maakt GroeiRichting gebruik van zorgvuldig geselecteerde subverwerkers:
             </p>
@@ -280,7 +278,7 @@ function Privacy() {
 
           {/* Sectie 9 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">9. Doorgifte buiten de Europese Economische Ruimte</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">9. Doorgifte buiten de Europese Economische Ruimte</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               In principe vindt alle verwerking binnen de EU plaats.
             </p>
@@ -295,7 +293,7 @@ function Privacy() {
 
           {/* Sectie 10 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">10. Beveiliging van gegevens</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">10. Beveiliging van gegevens</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               GroeiRichting neemt passende technische en organisatorische maatregelen om persoonsgegevens te beschermen tegen verlies, misbruik of onbevoegde toegang.
             </p>
@@ -319,7 +317,7 @@ function Privacy() {
 
           {/* Sectie 11 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">11. Geautomatiseerde besluitvorming</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">11. Geautomatiseerde besluitvorming</h2>
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
               <p className="text-[var(--kleur-text)] mb-4">
                 Binnen het GroeiPortaal vindt geen geautomatiseerde besluitvorming plaats die rechtsgevolgen heeft of werknemers significant treft.
@@ -336,7 +334,7 @@ function Privacy() {
 
           {/* Sectie 12 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">12. Rechten van betrokkenen</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">12. Rechten van betrokkenen</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               Werknemers kunnen hun privacyrechten (inzage, correctie, verwijdering, beperking, bezwaar en dataportabiliteit) uitoefenen via hun werkgever, die verwerkingsverantwoordelijke is.
             </p>
@@ -344,7 +342,7 @@ function Privacy() {
               Werkgevers of andere betrokkenen kunnen verzoeken rechtstreeks richten aan:
             </p>
             <p className="text-[var(--kleur-text)] mb-4">
-              📧 <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a>
+              E-mail: <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a>
             </p>
             <p className="text-[var(--kleur-text)]">
               Wij reageren binnen 30 dagen.
@@ -354,7 +352,7 @@ function Privacy() {
 
           {/* Sectie 13 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">13. Klachten</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">13. Klachten</h2>
             <p className="text-[var(--kleur-text)] mb-4">
               Ben je ontevreden over de verwerking van je persoonsgegevens?
               Neem dan eerst contact met ons op via 
@@ -371,19 +369,21 @@ function Privacy() {
 
           {/* Sectie 14 */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">14. Wijzigingen</h2>
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4 border-l-4 border-[var(--kleur-primary)] pl-4">14. Wijzigingen</h2>
             <p className="text-[var(--kleur-text)]">
               GroeiRichting kan deze privacyverklaring van tijd tot tijd wijzigen, bijvoorbeeld bij wetswijzigingen of aanpassingen in de dienstverlening.
               De meest actuele versie is altijd beschikbaar in het GroeiPortaal.
             </p>
           </section>
 
-          {/* Footer contact */}
-          <div className="bg-[var(--kleur-primary)] text-white p-8 rounded-xl text-center">
-            <h3 className="text-xl font-semibold mb-4">GroeiRichting B.V.</h3>
-            <p className="mb-2">Schutstraat 145</p>
-            <p className="mb-4">7907 CD Hoogeveen</p>
-            <p>📧 <a href="mailto:info@groeirichting.nl" className="text-white hover:underline">info@groeirichting.nl</a></p>
+          {/* Document Footer */}
+          <div className="border-t-2 border-[var(--kleur-primary)] pt-6 mt-8">
+            <div className="bg-gray-50 p-6 rounded">
+              <h3 className="text-lg font-semibold text-[var(--kleur-primary)] mb-4">GroeiRichting B.V.</h3>
+              <p className="text-[var(--kleur-text)] mb-2">Schutstraat 145</p>
+              <p className="text-[var(--kleur-text)] mb-4">7907 CD Hoogeveen</p>
+              <p>E-mail: <a href="mailto:info@groeirichting.nl" className="text-[var(--kleur-accent)] hover:underline">info@groeirichting.nl</a></p>
+            </div>
           </div>
         </div>
       </div>
