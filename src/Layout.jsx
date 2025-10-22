@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import { Menu, X } from 'lucide-react'
+import CookieBanner from './components/CookieBanner'
 
 function Layout({ children }) {
   const [session, setSession] = useState(null)
@@ -236,6 +237,9 @@ function Layout({ children }) {
       <footer className="bg-white text-center text-sm py-4 text-gray-400">
         © {new Date().getFullYear()} GroeiRichting. Alle rechten voorbehouden.
       </footer>
+
+      {/* Cookie Banner - Alleen voor niet-ingelogde gebruikers */}
+      {!session && <CookieBanner />}
     </div>
   )
 }
