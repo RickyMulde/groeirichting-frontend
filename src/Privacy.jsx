@@ -339,4 +339,4 @@ function Privacy() {
   )
 }
 
-export default PrivacyGroeiportaal
+export default Privacy

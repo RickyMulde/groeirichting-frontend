@@ -1,6 +1,6 @@
 import SEOHead from './components/SEOHead'
 
-function Privacy() {
+function PrivacyPortaal() {
   return (
     <>
       <SEOHead 
@@ -392,4 +392,4 @@ function Privacy() {
   )
 }
 
-export default Privacy
+export default PrivacyPortaal
