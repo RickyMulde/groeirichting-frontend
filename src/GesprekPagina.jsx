@@ -277,15 +277,41 @@ function GesprekPagina() {
         .eq('id', themeId)
         .single();
       if (!error && data) {
+        console.log('✅ [useEffect] Thema opgehaald:', { titel: data.titel, hasIntroPrompt: !!data.intro_prompt });
         setTheme(data);
+        console.log('📡 [useEffect] Haal vragen op...', { themeId });
         const { data: vragenData, error: vragenError } = await supabase
           .from('theme_questions')
           .select('id, tekst, verplicht, type, doel_vraag, volgorde_index')
           .eq('theme_id', themeId)
           .order('volgorde_index');
+        console.log('📡 [useEffect] Vragen response:', { 
+          count: vragenData?.length || 0, 
+          error: vragenError,
+          errorCode: vragenError?.code,
+          errorMessage: vragenError?.message,
+          errorDetails: vragenError?.details,
+          errorHint: vragenError?.hint,
+          heeftData: !!vragenData,
+          vragen: vragenData?.map(v => ({ id: v.id, tekst: v.tekst?.substring(0, 30) })) || []
+        });
         if (!vragenError) {
+          console.log('✅ [useEffect] Vragen opgehaald:', vragenData?.length || 0, 'vragen');
+          if (vragenData?.length === 0) {
+            console.warn('⚠️ [useEffect] WAARSCHUWING: Geen vragen gevonden voor theme_id:', themeId);
+            console.warn('⚠️ [useEffect] Controleer of:');
+            console.warn('  1. Er vragen zijn in de theme_questions tabel voor dit thema');
+            console.warn('  2. anon heeft SELECT permissie op theme_questions');
+            console.warn('  3. RLS policy "Anyone can view theme questions" actief is');
+          }
           setVragen(vragenData || []);
         } else {
+          console.error('❌ [useEffect] Fout bij ophalen vragen:', {
+            code: vragenError.code,
+            message: vragenError.message,
+            details: vragenError.details,
+            hint: vragenError.hint
+          });
           setVragen([]);
         }
       } else {
