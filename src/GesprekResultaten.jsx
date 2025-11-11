@@ -251,8 +251,8 @@ function GesprekResultaten() {
     const acties = {
       'Werkdruk en werk-privébalans': [
         'Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.',
-        'Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.',
-        'Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.'
+        'Zoek naar workshops of trainingen over energiemanagement en werk-privébalans die passen bij jouw situatie.',
+        'Onderzoek welke ondersteuning beschikbaar is binnen je organisatie voor persoonlijk advies of begeleiding.'
       ],
       'Teamwerk en samenwerking': [
         'Organiseer regelmatige teamvergaderingen om de samenwerking te versterken.',
@@ -261,20 +261,20 @@ function GesprekResultaten() {
       ],
       'Ontwikkeling en groei': [
         'Stel samen met je leidinggevende een persoonlijk ontwikkelplan op.',
-        'Bekijk het aanbod van interne en externe trainingen.',
+        'Zoek naar trainingen of cursussen die aansluiten bij jouw ontwikkelwensen.',
         'Plan regelmatige evaluatiegesprekken over je ontwikkeling.'
       ],
       'Organisatiecultuur en waarden': [
         'Blijf actief betrokken bij initiatieven die de organisatiecultuur versterken.',
-        'Deel je ervaringen en suggesties voor verbetering met HR.',
+        'Deel je ervaringen en suggesties voor verbetering met je leidinggevende of relevante collega\'s.',
         'Neem deel aan activiteiten die de organisatiecultuur bevorderen.'
       ]
     }
     
     return acties[resultaat.themes.titel] || [
       'Plan een vervolggesprek met je leidinggevende.',
-      'Bekijk het interne aanbod van workshops en trainingen.',
-      'Neem contact op met de HR-afdeling voor persoonlijk advies.'
+      'Zoek naar workshops of trainingen die aansluiten bij jouw situatie.',
+      'Onderzoek welke ondersteuning beschikbaar is binnen je organisatie.'
     ]
   }
 

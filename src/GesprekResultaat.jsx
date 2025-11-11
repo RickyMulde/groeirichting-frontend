@@ -463,8 +463,8 @@ function GesprekResultaat() {
               ) : (
                 <ol className="list-decimal list-inside text-gray-700 space-y-1">
                   <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
-                  <li>Bekijk het interne aanbod van workshops over energiemanagement en werk-privébalans.</li>
-                  <li>Neem contact op met de HR-afdeling voor persoonlijk advies of ondersteuning.</li>
+                  <li>Zoek naar workshops of trainingen over energiemanagement en werk-privébalans die passen bij jouw situatie.</li>
+                  <li>Onderzoek welke ondersteuning beschikbaar is binnen je organisatie voor persoonlijk advies of begeleiding.</li>
                 </ol>
               )
             ) : (
