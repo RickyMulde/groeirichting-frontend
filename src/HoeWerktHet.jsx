@@ -12,8 +12,8 @@ function HoeWerktHet() {
     <>
       <SEOHead 
         title="Hoe Werkt GroeiRichting - AI-Gestuurde Gesprekken"
-        description="Ontdek stap voor stap hoe GroeiRichting werkt. Van registratie tot AI-gestuurde gesprekken tussen werkgevers en werknemers. Eenvoudig, veilig en effectief."
-        keywords="hoe werkt groeirichting, AI gesprekken uitleg, werkgever werknemer gesprekken, AI HR proces, gespreksvoering stappen"
+        description="Ontdek stap voor stap hoe GroeiRichting werkt. Van registratie tot AI-gestuurde gesprekken tussen werkgevers en medewerkers. Eenvoudig, veilig en effectief."
+        keywords="hoe werkt groeirichting, AI gesprekken uitleg, werkgever medewerker gesprekken, AI HR proces, gespreksvoering stappen"
         canonical="https://groeirichting.nl/hoe-werkt-het"
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
@@ -39,7 +39,7 @@ function HoeWerktHet() {
           <h2 className="text-2xl font-semibold mb-6">Herken je dit?</h2>
           
           <div className="space-y-4 text-lg text-[var(--kleur-muted)] mb-8">
-            <p>Je wilt meer binding met je werknemers.</p>
+            <p>Je wilt meer binding met je medewerkers.</p>
             <p>Je wilt eerder weten wat er speelt, zodat je problemen voorkomt in plaats van achteraf oplost.</p>
             <p>Nu voer je één of twee functioneringsgesprekken per jaar, maar eigenlijk voel je: dit is niet genoeg.</p>
           </div>
@@ -66,7 +66,7 @@ function HoeWerktHet() {
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                  <p className="text-[var(--kleur-muted)]">Werknemers beantwoorden korte, dynamische vragen per thema.</p>
+                  <p className="text-[var(--kleur-muted)]">Medewerkers beantwoorden korte, dynamische vragen per thema.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
@@ -116,13 +116,13 @@ function HoeWerktHet() {
         </div>
       </section>
 
-      {/* Hoe motiveer je je werknemers? */}
+      {/* Hoe motiveer je je medewerkers? */}
       <section className="bg-gray-50 py-12 px-6 rounded-xl">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold mb-8 text-center">Hoe motiveer je je werknemers om mee te doen?</h2>
+          <h2 className="text-2xl font-semibold mb-8 text-center">Hoe motiveer je je medewerkers om mee te doen?</h2>
           
           <p className="text-lg text-[var(--kleur-muted)] text-center mb-8">
-            De ervaring leert: werknemers doen graag mee, mits drie dingen duidelijk zijn:
+            De ervaring leert: medewerkers doen graag mee, mits drie dingen duidelijk zijn:
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -232,10 +232,10 @@ function HoeWerktHet() {
         </div>
       </section>
 
-      {/* Waarom werknemers wel meedoen */}
+      {/* Waarom medewerkers wel meedoen */}
       <section className="bg-gray-50 py-12 px-6 rounded-xl">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold mb-8 text-center">Waarom werknemers wel meedoen</h2>
+          <h2 className="text-2xl font-semibold mb-8 text-center">Waarom medewerkers wel meedoen</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="flex items-start gap-3">

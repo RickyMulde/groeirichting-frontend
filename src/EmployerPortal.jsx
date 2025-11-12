@@ -79,7 +79,7 @@ function EmployerPortal() {
   return (
     <div className="page-container">
 
-      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">Welkom bij het werkgever portaal</h1>
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">Welkom in het werkgeversportaal</h1>
       
       {/* Toelichting */}
       <div className="mb-6">
@@ -161,11 +161,11 @@ function EmployerPortal() {
           <div className="flex items-center gap-4">
             <Users className="text-[var(--kleur-accent)] w-8 h-8" />
             <div>
-              <h2 className="text-xl font-semibold">Teams en Werknemers beheren</h2>
+              <h2 className="text-xl font-semibold">Teams en Medewerkers beheren</h2>
               <p className="text-sm text-gray-500">Beheer teams, nodig medewerkers uit en beheer accounts.</p>
             </div>
           </div>
-          <Link to="/beheer-teams-werknemers" className="btn btn-accent">Beheer teams en werknemers</Link>
+          <Link to="/beheer-teams-werknemers" className="btn btn-accent">Beheer teams en medewerkers</Link>
         </section>
 
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -215,7 +215,7 @@ function EmployerPortal() {
                 <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
                   <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
                   <div>
-                    <h3 className="font-semibold text-gray-800 mb-2">Start elke gespreksronde met een kickoff om elke werknemer enthousiast te krijgen</h3>
+                    <h3 className="font-semibold text-gray-800 mb-2">Start elke gespreksronde met een kickoff om elke medewerker enthousiast te krijgen</h3>
                     <p className="text-sm text-gray-600">(Hoe hoger de deelname, des te concreter de Verbeteradviezen zijn)</p>
                   </div>
                 </div>
@@ -223,8 +223,8 @@ function EmployerPortal() {
                 <div className="flex items-start gap-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
                   <div className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
                   <div>
-                    <h3 className="font-semibold text-gray-800 mb-2">Zorg dat alle werknemers de gesprekken in de actieve periodes doorlopen</h3>
-                    <p className="text-sm text-gray-600">(Stimuleer en herinner je werknemers of blok een moment in hun agenda af.)</p>
+                    <h3 className="font-semibold text-gray-800 mb-2">Zorg dat alle medewerkers de gesprekken in de actieve periodes doorlopen</h3>
+                    <p className="text-sm text-gray-600">(Stimuleer en herinner je medewerkers of blok een moment in hun agenda af.)</p>
                   </div>
                 </div>
 
@@ -245,15 +245,15 @@ function EmployerPortal() {
                     <ul className="space-y-2 text-sm text-yellow-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                        <span>Bekijk in Teams en Werknemers welke teams en werknemers een account hebben en/of zijn uitgenodigd.</span>
+                        <span>Bekijk in Teams en Medewerkers welke teams en medewerkers een account hebben en/of zijn uitgenodigd.</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                        <span>Betrek je werknemers bij het plan voor een zo hoog mogelijke deelname.</span>
+                        <span>Betrek je medewerkers bij het plan voor een zo hoog mogelijke deelname.</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
-                        <span>Volg Verbeteradviezen op en bespreek dit met je werknemers om samen te groeien.</span>
+                        <span>Volg Verbeteradviezen op en bespreek dit met je medewerkers om samen te groeien.</span>
                       </li>
                     </ul>
                   </div>

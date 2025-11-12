@@ -212,14 +212,8 @@ function GesprekPagina() {
 
   // Functie om samenvatting te genereren
   const genereerSamenvatting = async () => {
-    console.log('🔍 Start genereren samenvatting...');
-    console.log('Theme geeft_samenvatting:', theme?.geeft_samenvatting);
-    console.log('Theme ID:', themeId);
-    console.log('Gesprek ID:', gesprekId);
-    
     // Alleen samenvatting genereren als het thema dit ondersteunt
     if (!theme?.geeft_samenvatting) {
-      console.log('❌ Geen samenvatting gegenereerd: geeft_samenvatting is false voor dit thema');
       return;
     }
 
@@ -227,12 +221,10 @@ function GesprekPagina() {
     try {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData || !userData.user) {
-        console.error('❌ Gebruiker niet gevonden');
+        console.error('Gebruiker niet gevonden bij genereren samenvatting');
         setFoutmelding('Er is een probleem opgetreden. Probeer het later opnieuw.');
         return;
       }
-
-      console.log('👤 Gebruiker gevonden:', userData.user.id);
 
       const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/genereer-samenvatting`, {
@@ -248,18 +240,13 @@ function GesprekPagina() {
         })
       });
 
-      console.log('📡 Response status:', response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Fout bij genereren samenvatting:', response.status, errorText);
+        console.error('Fout bij genereren samenvatting:', response.status, errorText);
         setFoutmelding('Er is een probleem opgetreden bij het genereren van de samenvatting. Probeer het later opnieuw.');
-      } else {
-        const result = await response.json();
-        console.log('✅ Samenvatting succesvol gegenereerd:', result);
       }
     } catch (error) {
-      console.error('❌ Fout bij genereren samenvatting:', error);
+      console.error('Fout bij genereren samenvatting:', error);
       setFoutmelding('Er is een probleem opgetreden bij het genereren van de samenvatting. Controleer je internetverbinding.');
     } finally {
       setIsGenereren(false);
@@ -277,36 +264,23 @@ function GesprekPagina() {
         .eq('id', themeId)
         .single();
       if (!error && data) {
-        console.log('✅ [useEffect] Thema opgehaald:', { titel: data.titel, hasIntroPrompt: !!data.intro_prompt });
         setTheme(data);
-        console.log('📡 [useEffect] Haal vragen op...', { themeId });
         const { data: vragenData, error: vragenError } = await supabase
           .from('theme_questions')
           .select('id, tekst, verplicht, type, doel_vraag, volgorde_index')
           .eq('theme_id', themeId)
           .order('volgorde_index');
-        console.log('📡 [useEffect] Vragen response:', { 
-          count: vragenData?.length || 0, 
-          error: vragenError,
-          errorCode: vragenError?.code,
-          errorMessage: vragenError?.message,
-          errorDetails: vragenError?.details,
-          errorHint: vragenError?.hint,
-          heeftData: !!vragenData,
-          vragen: vragenData?.map(v => ({ id: v.id, tekst: v.tekst?.substring(0, 30) })) || []
-        });
         if (!vragenError) {
-          console.log('✅ [useEffect] Vragen opgehaald:', vragenData?.length || 0, 'vragen');
           if (vragenData?.length === 0) {
-            console.warn('⚠️ [useEffect] WAARSCHUWING: Geen vragen gevonden voor theme_id:', themeId);
-            console.warn('⚠️ [useEffect] Controleer of:');
+            console.warn('WAARSCHUWING: Geen vragen gevonden voor theme_id:', themeId);
+            console.warn('Controleer of:');
             console.warn('  1. Er vragen zijn in de theme_questions tabel voor dit thema');
             console.warn('  2. anon heeft SELECT permissie op theme_questions');
             console.warn('  3. RLS policy "Anyone can view theme questions" actief is');
           }
           setVragen(vragenData || []);
         } else {
-          console.error('❌ [useEffect] Fout bij ophalen vragen:', {
+          console.error('Fout bij ophalen vragen:', {
             code: vragenError.code,
             message: vragenError.message,
             details: vragenError.details,
@@ -700,9 +674,6 @@ function GesprekPagina() {
       };
       const nieuweAntwoorden = [...antwoorden, nieuwAntwoord];
       
-      console.log(`Antwoord toegevoegd: ${nieuwAntwoord.type} - "${nieuwAntwoord.vraag}"`);
-      console.log(`Totaal antwoorden: ${nieuweAntwoorden.length}`);
-      
       // Voeg antwoord toe aan chat berichten
       voegChatBerichtToe('antwoord', cleanInput, huidigeVraag.id, false);
       
@@ -726,8 +697,6 @@ function GesprekPagina() {
 
       if (isVasteVraag) {
         // We hebben een vaste vraag beantwoord
-        console.log('Vaste vraag beantwoord:', huidigeVraag.tekst);
-        
         // Vraag GPT of er een vervolgvraag moet komen
         const samenvatting = await haalLaatsteSamenvattingOp();
         const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
@@ -792,8 +761,6 @@ function GesprekPagina() {
         
       } else {
         // We hebben een vervolgvraag beantwoord
-        console.log('Vervolgvraag beantwoord:', huidigeVraag.tekst);
-        
         // Vind bij welke vaste vraag deze vervolgvraag hoort
         const vasteVragen = vragen.filter(v => !v.id.toString().startsWith('gpt-'));
         const huidigeVasteVraagIndex = vasteVragen.findIndex(v => 
@@ -805,8 +772,6 @@ function GesprekPagina() {
           const huidigeVervolgvragen = vervolgvragenPerVasteVraag[huidigeVasteVraagId] || 0;
           const nieuweTeller = huidigeVervolgvragen + 1;
           
-          console.log(`Vervolgvraag ${nieuweTeller} voor vaste vraag ${huidigeVasteVraagIndex + 1}`);
-          
           setVervolgvragenPerVasteVraag(prev => ({ 
             ...prev, 
             [huidigeVasteVraagId]: nieuweTeller 
@@ -814,7 +779,6 @@ function GesprekPagina() {
           
           // Check of we 3 vervolgvragen hebben bereikt
           if (nieuweTeller >= 3) {
-            console.log('3 vervolgvragen bereikt, ga naar volgende vaste vraag');
             await gaNaarVolgendeVasteVraag(nieuweAntwoorden);
             return;
           }
@@ -891,17 +855,12 @@ function GesprekPagina() {
     // Gebruik consistente logica: tel beantwoorde vaste vragen op basis van type
     const beantwoordeVasteVragen = antwoordenTeGebruiken.filter(a => a.type === 'vaste_vraag').length;
     
-    console.log(`gaNaarVolgendeVasteVraag: ${antwoordenTeGebruiken.length} antwoorden, ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
-    
     if (beantwoordeVasteVragen >= vasteVragen.length) {
       // Alle vaste vragen zijn beantwoord, rond het gesprek af
-      console.log('🎯 Alle vaste vragen beantwoord, rond gesprek af');
-      console.log(`📊 ${beantwoordeVasteVragen}/${vasteVragen.length} vaste vragen beantwoord`);
       setDone(true);
       
-      console.log('💾 Gesprek afronden...');
-              const { data: { session } } = await supabase.auth.getSession()
-              await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
+      const { data: { session } } = await supabase.auth.getSession()
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -917,17 +876,14 @@ function GesprekPagina() {
       });
       
       // Wacht even zodat alle data correct is opgeslagen
-      console.log('⏳ Wacht 2 seconden voordat samenvatting wordt gegenereerd...');
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      console.log('📝 Start genereren samenvatting...');
       await genereerSamenvatting();
     } else {
       // Zoek de volgende onbeantwoorde vaste vraag
       const volgendeVasteVraag = vasteVragen[beantwoordeVasteVragen];
       
       if (volgendeVasteVraag) {
-        console.log(`Volgende vaste vraag: ${volgendeVasteVraag.tekst} (index: ${vragen.indexOf(volgendeVasteVraag)})`);
         const nieuweIndex = vragen.indexOf(volgendeVasteVraag);
         setCurrentIndex(nieuweIndex);
         setVervolgvragenPerVasteVraag({});
@@ -937,7 +893,6 @@ function GesprekPagina() {
         // Voeg nieuwe vraag toe aan chat
         voegChatBerichtToe('vraag', volgendeVasteVraag.tekst, volgendeVasteVraag.id, true);
       } else {
-        console.log('Geen volgende vaste vraag gevonden, rond gesprek af');
         setDone(true);
         const { data: { session } } = await supabase.auth.getSession()
         await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/save-conversation`, {
@@ -956,7 +911,6 @@ function GesprekPagina() {
         });
         
         // Wacht even zodat alle data correct is opgeslagen
-        console.log('⏳ Wacht 2 seconden voordat samenvatting wordt gegenereerd...');
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         await genereerSamenvatting();

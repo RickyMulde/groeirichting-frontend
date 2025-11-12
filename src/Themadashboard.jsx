@@ -24,27 +24,29 @@ function Themadashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState(null)
 
   // Haal thema's op
-  const fetchThemes = async (employerId, period = null) => {
+  const fetchThemes = async (employerId, period = null, teamId = null) => {
     if (!employerId) return
+    
+    // Geen gegevens ophalen zonder periode selectie
+    if (!period) {
+      setThemes([])
+      return
+    }
     
     try {
       let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-themes/${employerId}`
       const params = new URLSearchParams()
       
-      // Voeg periode parameter toe aan URL als er een is geselecteerd
-      if (period) {
-        params.append('maand', period.maand)
-        params.append('jaar', period.jaar)
-      }
+      // Periode is verplicht
+      params.append('maand', period.maand)
+      params.append('jaar', period.jaar)
       
       // Voeg team filtering toe als team is geselecteerd
-      if (selectedTeam) {
-        params.append('team_id', selectedTeam)
+      if (teamId) {
+        params.append('team_id', teamId)
       }
       
-      if (params.toString()) {
-        url += `?${params.toString()}`
-      }
+      url += `?${params.toString()}`
       
       const { data: { session } } = await supabase.auth.getSession()
       const response = await fetch(url, {
@@ -60,13 +62,8 @@ function Themadashboard() {
       const data = await response.json()
       let filteredThemes = data.thema_s || []
       
-      // Filter op basis van geselecteerde periode (nu gedaan door backend)
-      if (period) {
-        // Backend heeft al gefilterd, maar we kunnen nog extra validatie doen
-        filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
-      } else {
-        filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
-      }
+      // Filter op thema's met voltooide medewerkers
+      filteredThemes = filteredThemes.filter(theme => theme.voltooide_medewerkers > 0)
       
       setThemes(filteredThemes)
     } catch (err) {
@@ -103,7 +100,13 @@ function Themadashboard() {
       })
       if (response.ok) {
         const data = await response.json()
-        setAvailablePeriods(data.beschikbare_periodes || [])
+        const periodes = data.beschikbare_periodes || []
+        setAvailablePeriods(periodes)
+        
+        // Selecteer automatisch de meest recente periode (eerste in de lijst, want gesorteerd van nieuwste naar oudste)
+        if (periodes.length > 0 && !selectedPeriod) {
+          setSelectedPeriod(periodes[0])
+        }
       }
     } catch (err) {
       console.error('Fout bij ophalen beschikbare periodes:', err)
@@ -240,8 +243,8 @@ function Themadashboard() {
 
         setEmployerId(employer.id)
         await fetchEmployerSettings(employer.id)
-        await fetchThemes(employer.id)
         await fetchAvailablePeriods(employer.id)
+        // fetchThemes wordt automatisch aangeroepen via useEffect wanneer selectedPeriod is ingesteld
       } catch (err) {
         setError(err.message)
       } finally {
@@ -255,7 +258,7 @@ function Themadashboard() {
   // Update thema's wanneer periode of team wordt gewijzigd
   useEffect(() => {
     if (employerId) {
-      fetchThemes(employerId, selectedPeriod)
+      fetchThemes(employerId, selectedPeriod, selectedTeam)
     }
   }, [employerId, selectedPeriod, selectedTeam])
 
@@ -398,6 +401,18 @@ function Themadashboard() {
           </div>
         </div>
 
+        {/* Waarschuwing als er geen periode is geselecteerd */}
+        {!selectedPeriod && availablePeriods.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 shadow-sm mb-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+              <p className="text-yellow-800 text-sm">
+                Selecteer een periode om de resultaten te bekijken. Er worden geen gegevens getoond zonder periode selectie.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Informatie over beschikbaarheid resultaten */}
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
           <div className="flex items-start gap-3">
@@ -418,6 +433,7 @@ function Themadashboard() {
                     Op de eerste dag na de actieve maand
                   </li>
                 </ul>
+                <p className="text-sm mt-3 font-medium">Er zijn samenvattingen beschikbaar per team of voor alle teams samen (totaal).</p>
               </div>
             </div>
           </div>

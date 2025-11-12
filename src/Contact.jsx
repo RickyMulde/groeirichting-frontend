@@ -64,7 +64,7 @@ function Contact() {
                     <h3 className="font-semibold text-[var(--kleur-text)] mb-1">Kantoor</h3>
                     <p className="text-[var(--kleur-muted)]">
                       GroeiRichting B.V.<br />
-                      Amsterdam, Nederland
+                      Schutstraat 145, Hoogeveen
                     </p>
                     <p className="text-sm text-[var(--kleur-muted)] mt-1">
                       Afspraken op locatie mogelijk

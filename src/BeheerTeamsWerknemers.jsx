@@ -293,7 +293,7 @@ function BeheerTeamsWerknemers() {
   }
 
   const handleDeleteWerknemer = async (werknemerId) => {
-    if (!confirm('Weet je zeker dat je deze werknemer wilt verwijderen?')) return
+    if (!confirm('Weet je zeker dat je deze medewerker wilt verwijderen?')) return
 
     try {
       const { error } = await supabase
@@ -302,15 +302,15 @@ function BeheerTeamsWerknemers() {
         .eq('id', werknemerId)
 
       if (error) {
-        setFoutmelding('Fout bij verwijderen werknemer')
+        setFoutmelding('Fout bij verwijderen medewerker')
       } else {
-        setSuccesmelding('Werknemer verwijderd')
+        setSuccesmelding('Medewerker verwijderd')
         // Ververs de teams data om de bijgewerkte teamleden te tonen
         refreshTeams()
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
-      setFoutmelding('Fout bij verwijderen werknemer')
+      setFoutmelding('Fout bij verwijderen medewerker')
     }
   }
 
@@ -339,8 +339,8 @@ function BeheerTeamsWerknemers() {
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Beheer Teams en Werknemers</h1>
-                <p className="text-sm text-gray-500">Beheer je teams en werknemers</p>
+                <h1 className="text-xl font-semibold text-gray-900">Beheer Teams en Medewerkers</h1>
+                <p className="text-sm text-gray-500">Beheer je teams en medewerkers</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -379,7 +379,7 @@ function BeheerTeamsWerknemers() {
                   <Users className="w-5 h-5 text-gray-400" />
                   <div>
                     <h3 className="font-medium">Alle Teams</h3>
-                    <p className="text-sm text-gray-500">Bekijk alle werknemers van alle teams</p>
+                    <p className="text-sm text-gray-500">Bekijk alle medewerkers van alle teams</p>
                   </div>
                 </div>
               </div>
@@ -420,9 +420,9 @@ function BeheerTeamsWerknemers() {
                         style={{ backgroundColor: 'var(--kleur-accent)' }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--kleur-secondary)'}
                         onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--kleur-accent)'}
-                        title="Werknemer toevoegen"
+                        title="Medewerker toevoegen"
                       >
-                        + Werknemer
+                        + Medewerker
                       </button>
                       <button
                         onClick={(e) => {
@@ -467,7 +467,7 @@ function BeheerTeamsWerknemers() {
             <div className="p-6">
               <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
                 <MailPlus className="text-kleur-primary" /> 
-                Werknemer uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
+                Medewerker uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
               </h2>
               
               <form onSubmit={handleInvite} className="space-y-4">
@@ -497,7 +497,7 @@ function BeheerTeamsWerknemers() {
                 }`}>
                   <div className="space-y-3 pt-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Voeg een korte omschrijving van de functie van deze werknemer toe
+                      Voeg een korte omschrijving van de functie van deze medewerker toe
                     </label>
                     <input 
                       type="text" 
@@ -508,7 +508,7 @@ function BeheerTeamsWerknemers() {
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
                     />
                     <div className="text-sm text-gray-600">
-                      <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende werknemer/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
+                      <p className="mb-2">Met deze omschrijving kunnen de vragen beter op de betreffende medewerker/teamlid worden afgestemd. Hieronder 3 voorbeelden:</p>
                       <ul className="list-disc list-inside space-y-1">
                         <li>Planner thuiszorgroutes en ondersteuning zorgverleners</li>
                         <li>Schadebehandelaar met telefonisch klantcontact</li>
@@ -527,8 +527,8 @@ function BeheerTeamsWerknemers() {
                       <div className="text-sm text-blue-800">
                         <p className="font-medium mb-1">Hoe werkt het uitnodigen?</p>
                         <p className="text-blue-700">
-                          Jouw werknemer/teamlid ontvangt een mail, waarmee jouw werknemer/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
-                          Jouw werknemer/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
+                          Jouw medewerker/teamlid ontvangt een mail, waarmee jouw medewerker/teamlid het account kan aanmaken. Je hoeft verder niks te doen. 
+                          Jouw medewerker/teamlid kan gesprekken in de thema's starten in de 'actieve' maanden die jij hebt ingesteld.
                         </p>
                       </div>
                     </div>
@@ -559,7 +559,7 @@ function BeheerTeamsWerknemers() {
                   <div className="text-sm text-amber-800">
                     <p className="font-medium mb-1">Let op:</p>
                     <p className="text-amber-700">
-                      Resultaten worden pas gegenereerd als minimaal 4 werknemers/teamleden de gesprekken hebben afgerond. (Als een team 4 werknemers/teamleden heeft en één werknemer/teamlid rond het gesprek niet af, dan zijn er dus geen resultaten beschikbaar.)
+                      Resultaten worden pas gegenereerd als minimaal 4 medewerkers/teamleden de gesprekken hebben afgerond. (Als een team 4 medewerkers/teamleden heeft en één medewerker/teamlid rond het gesprek niet af, dan zijn er dus geen resultaten beschikbaar.)
                     </p>
                   </div>
                 </div>
@@ -575,11 +575,11 @@ function BeheerTeamsWerknemers() {
           </div>
         )}
 
-        {/* Werknemers Lijst */}
+        {/* Medewerkers Lijst */}
         <div className="bg-white shadow rounded-lg">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-medium text-gray-900">
-              Werknemers {selectedTeam ? `- ${getTeamName(selectedTeam)}` : '- Alle Teams'}
+              Medewerkers {selectedTeam ? `- ${getTeamName(selectedTeam)}` : '- Alle Teams'}
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -718,11 +718,11 @@ function BeheerTeamsWerknemers() {
         onClose={() => setShowTeamModal(false)}
       />
 
-      {/* Werknemer Bewerken Modal */}
+      {/* Medewerker Bewerken Modal */}
       {selectedWerknemer && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
-            <h2 className="text-xl font-semibold">Werknemer bewerken</h2>
+            <h2 className="text-xl font-semibold">Medewerker bewerken</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">E-mailadres</label>
