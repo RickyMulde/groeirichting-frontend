@@ -5,9 +5,10 @@ echo ========================================
 echo.
 
 echo [0/5] Controleren of je op dev branch zit...
-git branch --show-current | findstr /C:"dev" >nul
-if %errorlevel% neq 0 (
-    echo ERROR: Je zit niet op dev branch. Switch eerst naar dev branch.
+for /f "delims=" %%i in ('git branch --show-current') do set CURRENT_BRANCH=%%i
+if not "%CURRENT_BRANCH%"=="dev" (
+    echo ERROR: Je moet op de dev branch zitten om dit script uit te voeren!
+    echo Huidige branch: %CURRENT_BRANCH%
     pause
     exit /b 1
 )
@@ -60,12 +61,13 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [5/5] Controleren of je weer op dev branch zit...
-git branch --show-current | findstr /C:"dev" >nul
-if %errorlevel% neq 0 (
-    echo WAARSCHUWING: Je zit niet op dev branch na het script
+echo [5/5] Controleren dat je weer op dev zit...
+for /f "delims=" %%i in ('git branch --show-current') do set CURRENT_BRANCH=%%i
+if not "%CURRENT_BRANCH%"=="dev" (
+    echo WAARSCHUWING: Je bent niet terug op dev branch!
+    echo Huidige branch: %CURRENT_BRANCH%
 ) else (
-    echo OK: Je zit weer op dev branch
+    echo OK: Je bent weer op dev branch
 )
 
 echo.
