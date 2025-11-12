@@ -48,7 +48,7 @@ function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-[var(--kleur-text)] mb-1">Telefoon</h3>
-                    <p className="text-[var(--kleur-muted)]">+31 6 12345678</p>
+                    <p className="text-[var(--kleur-muted)]">085-060 7424</p>
                     <p className="text-sm text-[var(--kleur-muted)] mt-1">
                       Maandag t/m vrijdag, 9:00 - 17:00
                     </p>
@@ -196,7 +196,7 @@ function Contact() {
           <a href="/offerte" className="btn btn-secondary">
             Vraag demo aan
           </a>
-          <a href="tel:+31612345678" className="btn btn-outline-white">
+          <a href="tel:+31850607424" className="btn btn-outline-white">
             Bel direct
           </a>
         </div>
