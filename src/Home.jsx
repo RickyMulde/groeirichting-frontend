@@ -138,7 +138,7 @@ function Home() {
       <section>
         <h2 className="text-3xl font-bold text-center mb-4">Waarin GroeiRichting ondersteunt: meer tevredenheid, minder verloop en verzuim</h2>
         <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
-          Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl werknemers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
+          Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl medewerkers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -191,11 +191,11 @@ function Home() {
             </div>
           </div>
           
-          {/* Voor werknemers */}
+          {/* Voor medewerkers */}
           <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <span className="text-3xl">👩‍💼</span>
-              <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor werknemers</h3>
+              <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor medewerkers</h3>
             </div>
             <p className="text-[var(--kleur-muted)] mb-6 italic">
               Wat GroeiRichting voor jouw medewerkers kan betekenen
@@ -295,7 +295,7 @@ function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Grid item 1 */}
             <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
-              <h3 className="font-semibold text-white mb-3 text-left">"Mijn werknemers willen niet met AI praten."</h3>
+              <h3 className="font-semibold text-white mb-3 text-left">"Mijn medewerkers willen niet met AI praten."</h3>
               <p className="text-white text-sm text-left">
                 Sterker nog, dat doen ze nu al (ChatGPT, Copilot, etc.). Het verschil: met GroeiRichting komt die input bij jou terug als bruikbare inzichten, in plaats van nergens.
               </p>

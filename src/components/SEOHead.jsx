@@ -8,9 +8,9 @@ const SEOHead = ({
   ogImage = "https://groeirichting.nl/og-image.jpg",
   ogType = "website"
 }) => {
-  const fullTitle = title ? `${title} | GroeiRichting` : 'GroeiRichting - AI-Gestuurde Gesprekken voor Werkgevers en Werknemers';
-  const fullDescription = description || 'Ontdek hoe AI-gestuurde gesprekken werkgevers en werknemers helpen groeien. Professionele gespreksvoering met kunstmatige intelligentie voor betere werkrelaties.';
-  const fullKeywords = keywords || 'AI gesprekken, werkgever werknemer, kunstmatige intelligentie, gespreksvoering, groei, ontwikkeling, HR, personeel';
+  const fullTitle = title ? `${title} | GroeiRichting` : 'GroeiRichting - AI-Gestuurde Gesprekken voor Werkgevers en Medewerkers';
+  const fullDescription = description || 'Ontdek hoe AI-gestuurde gesprekken werkgevers en medewerkers helpen groeien. Professionele gespreksvoering met kunstmatige intelligentie voor betere werkrelaties.';
+  const fullKeywords = keywords || 'AI gesprekken, werkgever medewerker, kunstmatige intelligentie, gespreksvoering, groei, ontwikkeling, HR, personeel';
   const fullCanonical = canonical || 'https://groeirichting.nl/';
 
   useEffect(() => {

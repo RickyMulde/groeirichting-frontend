@@ -90,7 +90,7 @@ const InviteModal = ({ isOpen, onClose, onInviteSent }) => {
           <div className="flex items-center justify-between p-4 border-b">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <Mail className="w-5 h-5 mr-2 text-blue-600" />
-              Werknemer Uitnodigen
+              Medewerker Uitnodigen
             </h3>
             <button
               onClick={onClose}
@@ -121,7 +121,7 @@ const InviteModal = ({ isOpen, onClose, onInviteSent }) => {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="werknemer@bedrijf.nl"
+                  placeholder="medewerker@bedrijf.nl"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
@@ -164,7 +164,7 @@ const InviteModal = ({ isOpen, onClose, onInviteSent }) => {
               {teamId && email && (
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
                   <p className="text-sm text-blue-700">
-                    <strong>Bevestiging:</strong> Werknemer <strong>{email}</strong> wordt uitgenodigd en toegevoegd aan team <strong>"{selectedTeamName}"</strong>.
+                    <strong>Bevestiging:</strong> Medewerker <strong>{email}</strong> wordt uitgenodigd en toegevoegd aan team <strong>"{selectedTeamName}"</strong>.
                   </p>
                 </div>
               )}

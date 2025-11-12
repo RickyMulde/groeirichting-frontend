@@ -81,7 +81,7 @@ const TeamSelector = ({ onTeamSelect, selectedTeamId, className = '' }) => {
               <Filter className="w-4 h-4 mr-3 text-gray-400" />
               <span>Totaal</span>
               <span className="ml-auto text-xs text-gray-500">
-                Alle werknemers
+                Alle medewerkers
               </span>
             </button>
 
