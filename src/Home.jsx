@@ -251,7 +251,7 @@ function Home() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
           <Link to="/contact" className="btn btn-primary">Plan vrijblijvend gesprek</Link>
           <Link to="/hoe-werkt-het" className="btn btn-accent">Bekijk hoe het werkt</Link>
-          <Link to="#" className="btn btn-secondary">Download voorbeeldrapport</Link>
+          <a href="/brochures/groeirichting-brochure.pdf" download className="btn btn-secondary">Download brochure</a>
         </div>
       </section>
 
