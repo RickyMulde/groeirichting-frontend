@@ -34,15 +34,15 @@ function Home() {
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Heb je te maken met onverwacht verloop of langdurig verzuim?</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
               <p className="text-[var(--kleur-muted)]">Mis je de échte binding met je medewerkers?</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
               <p className="text-[var(--kleur-muted)]">Ontbreekt het je aan tijd om continu in gesprek te blijven?</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]">Heb je te maken met onverwacht verloop of langdurig verzuim?</p>
             </div>
           </div>
 
@@ -67,11 +67,11 @@ function Home() {
           
           <div className="space-y-6 text-lg text-[var(--kleur-muted)]">
             <p>
-              Waarschijnlijk voer je nu één functioneringsgesprek per jaar. Misschien zelfs twee.
+              Waarschijnlijk voer je nu één functioneringsgesprek per jaar, misschien zelfs twee.
             </p>
             
             <p>
-              Maar in zes maanden kan er veel gebeuren — óók bij je medewerkers. Stress, motivatie, werkdruk, samenwerking: het verandert sneller dan een jaarlijks gesprek kan bijhouden.
+              Weet dat er in zes maanden kan er veel gebeuren — óók bij je medewerkers. Stress, motivatie, werkdruk, samenwerking: het verandert sneller dan een jaarlijks gesprek kan bijhouden.
             </p>
             
             <div className="bg-red-50 border-l-4 border-red-400 p-4 my-6">
@@ -85,7 +85,7 @@ function Home() {
             </p>
             
             <p>
-              Breid het aantal gesprekken eenvoudig uit, zonder dat het jou of je managers meer tijd kost.
+              Breid het aantal gesprekken met je medewerkers eenvoudig uit, zodat je op meer momenten signalen kunt oppikken.
             </p>
             
             <p>
@@ -97,7 +97,7 @@ function Home() {
             </p>
                
             <p>
-              Bijkomend voordeel: Ook jouw werknemers/ teamleden krijgen concrete vervolgacties om de motivatie te stimuleren en te groeien.
+              Bijkomend voordeel: Ook jouw medewerkers/ teamleden krijgen concrete vervolgacties om persoonlijke groei te stimuleren.
             </p>
           </div>
           
@@ -111,7 +111,7 @@ function Home() {
       <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
         <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: verzuim en verloop kosten meer dan je denkt</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
-          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar — en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
+          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
         </p>
         
         {/* Mini-stats */}
@@ -136,7 +136,7 @@ function Home() {
 
       {/* Wat levert het op */}
       <section>
-        <h2 className="text-3xl font-bold text-center mb-4">Wat GroeiRichting oplevert: meer tevredenheid, minder verloop en verzuim</h2>
+        <h2 className="text-3xl font-bold text-center mb-4">Waarin GroeiRichting ondersteunt: meer tevredenheid, minder verloop en verzuim</h2>
         <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
           Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl werknemers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
         </p>
@@ -156,14 +156,14 @@ function Home() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Lagere verzuim- en verloopkosten</p>
+                  <p className="font-medium text-[var(--kleur-text)]">Ontvang voorspellende signalen</p>
                   <p className="text-sm text-[var(--kleur-muted)]">Herken signalen van stress en ontevredenheid vóórdat mensen uitvallen of vertrekken.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Betere retentie en betrokkenheid</p>
+                  <p className="font-medium text-[var(--kleur-text)]">Binden en boeien</p>
                   <p className="text-sm text-[var(--kleur-muted)]">Medewerkers voelen zich gezien en blijven langer loyaal en productief.</p>
                 </div>
               </div>
@@ -198,43 +198,43 @@ function Home() {
               <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor werknemers</h3>
             </div>
             <p className="text-[var(--kleur-muted)] mb-6 italic">
-              Wat GroeiRichting voor jou betekent
+              Wat GroeiRichting voor jouw medewerkers kan betekenen
             </p>
             
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Bepaal zelf wat jouw werkgever onder ogen moet krijgen</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Jouw stem telt, niet alleen tijdens één gesprek maar continu.</p>
+                  <p className="font-medium text-[var(--kleur-text)]">Medewerkers bepalen zelf wat jij onder ogen moet krijgen</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Hun stem telt, niet alleen tijdens één gesprek maar continu.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-[var(--kleur-text)]">Veilig en laagdrempelig</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Je kunt je vrij uitspreken, ook over lastige onderwerpen.</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers kunnen zich vrij uitspreken, ook over lastige onderwerpen.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-[var(--kleur-text)]">Invloed op werk en toekomst</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Je draagt zelf bij aan verbeteringen en je loopbaanpad.</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers dragen zelf bij aan verbeteringen en hun interne loopbaanpad.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-[var(--kleur-text)]">Tips om te groeien</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Je krijgt persoonlijke suggesties om werkplezier, balans of ontwikkeling te verbeteren.</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers krijgen persoonlijke suggesties om werkplezier, balans of ontwikkeling te verbeteren.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-[var(--kleur-text)]">Geen saaie statische formulieren, maar echte gesprekken</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Daarbij ondersteunt AI jouw om betere gesprekken te voeren.</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">AI ondersteunt medewerkers om betere gesprekken te voeren.</p>
                 </div>
               </div>
             </div>
@@ -313,7 +313,7 @@ function Home() {
             <div className="bg-[var(--kleur-accent)] bg-opacity-20 p-6 rounded-xl">
               <h3 className="font-semibold text-white mb-3 text-left">"We voeren al 2 functioneringsgesprekken per jaar."</h3>
               <p className="text-white text-sm text-left">
-                Prima, maar er kan veel gebeuren in 6 maanden. Bovendien vertellen medewerkers soms méér tegen AI dan rechtstreeks tegen hun leidinggevende.
+                Heel goed, maar er kan veel gebeuren in 6 maanden. Bovendien vertellen medewerkers soms méér tegen AI dan rechtstreeks tegen hun leidinggevende.
               </p>
             </div>
             
