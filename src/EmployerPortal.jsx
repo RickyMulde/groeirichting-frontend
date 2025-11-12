@@ -79,7 +79,7 @@ function EmployerPortal() {
   return (
     <div className="page-container">
 
-      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">Welkom bij het werkgever portaal</h1>
+      <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">Welkom in het werkgeversportaal</h1>
       
       {/* Toelichting */}
       <div className="mb-6">

@@ -433,6 +433,7 @@ function Themadashboard() {
                     Op de eerste dag na de actieve maand
                   </li>
                 </ul>
+                <p className="text-sm mt-3 font-medium">Er zijn samenvattingen beschikbaar per team of voor alle teams samen (totaal).</p>
               </div>
             </div>
           </div>
