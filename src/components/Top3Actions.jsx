@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabaseClient'
 
 const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
@@ -6,12 +6,158 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [expandedActie, setExpandedActie] = useState(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const pollingIntervalRef = useRef(null)
 
   useEffect(() => {
     if (werknemerId && periode) {
       fetchTopActies()
     }
+    
+    // Cleanup polling interval bij unmount
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+        pollingIntervalRef.current = null
+      }
+    }
   }, [werknemerId, periode])
+
+  const checkAlleThemasAfgerond = async () => {
+    try {
+      // Haal werknemer op om employer_id te krijgen
+      const { data: werknemer, error: werknemerError } = await supabase
+        .from('users')
+        .select('employer_id')
+        .eq('id', werknemerId)
+        .single()
+
+      if (werknemerError || !werknemer) {
+        console.error('Kon werknemer niet ophalen:', werknemerError)
+        return false
+      }
+
+      // Haal alle actieve thema's op voor deze werkgever (zoals in get-gespreksresultaten-bulk)
+      const { data: alleThemas, error: themaError } = await supabase
+        .from('themes')
+        .select('id')
+        .eq('werkgever_id', werknemer.employer_id)
+        .eq('klaar_voor_gebruik', true)
+        .eq('standaard_zichtbaar', true)
+
+      if (themaError || !alleThemas || alleThemas.length === 0) {
+        console.error('Kon thema\'s niet ophalen:', themaError)
+        return false
+      }
+
+      // Haal alle afgeronde gesprekken op voor deze werknemer in deze periode
+      const periodeStart = `${periode}-01`
+      const [jaar, maand] = periode.split('-').map(Number)
+      const volgendeMaand = maand === 12 ? 1 : maand + 1
+      const volgendJaar = maand === 12 ? jaar + 1 : jaar
+      const periodeEind = `${volgendJaar}-${String(volgendeMaand).padStart(2, '0')}-01`
+
+      const { data: gesprekken, error: gesprekError } = await supabase
+        .from('gesprek')
+        .select('theme_id')
+        .eq('werknemer_id', werknemerId)
+        .eq('status', 'Afgerond')
+        .gte('gestart_op', periodeStart)
+        .lt('gestart_op', periodeEind)
+
+      if (gesprekError) {
+        console.error('Kon gesprekken niet ophalen:', gesprekError)
+        return false
+      }
+
+      // Check of alle thema's zijn afgerond
+      const uniekeThemasInGesprekken = [...new Set(gesprekken?.map(g => g.theme_id) || [])]
+      const alleThemasAfgerond = uniekeThemasInGesprekken.length === alleThemas.length
+
+      console.log(`Check thema's: ${uniekeThemasInGesprekken.length}/${alleThemas.length} afgerond`)
+      return alleThemasAfgerond
+    } catch (err) {
+      console.error('Fout bij checken of alle thema\'s zijn afgerond:', err)
+      return false
+    }
+  }
+
+  const triggerGeneratie = async () => {
+    try {
+      setIsGenerating(true)
+      console.log('🔄 Start generatie top 3 acties...')
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('Geen sessie gevonden')
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-top-actions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          werknemer_id: werknemerId,
+          periode: periode
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.details || errorData.error || 'Generatie gefaald')
+      }
+
+      // Start polling om te checken wanneer generatie klaar is
+      startPolling()
+    } catch (err) {
+      console.error('Fout bij triggeren generatie:', err)
+      setError(`Kon generatie niet starten: ${err.message}`)
+      setIsGenerating(false)
+    }
+  }
+
+  const startPolling = () => {
+    // Poll elke 3 seconden tot data beschikbaar is
+    pollingIntervalRef.current = setInterval(async () => {
+      try {
+        const { data, error } = await supabase
+          .from('top_vervolgacties')
+          .select('*')
+          .eq('werknemer_id', werknemerId)
+          .eq('periode', periode)
+          .single()
+
+        if (!error && data) {
+          // Data gevonden, stop polling
+          if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current)
+            pollingIntervalRef.current = null
+          }
+          setTopActies(data)
+          setIsGenerating(false)
+          setLoading(false)
+        } else if (error && error.code !== 'PGRST116') {
+          // Echte error, stop polling
+          if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current)
+            pollingIntervalRef.current = null
+          }
+          throw error
+        }
+        // Anders: nog geen data, blijf pollen
+      } catch (err) {
+        console.error('Fout bij polling:', err)
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current)
+          pollingIntervalRef.current = null
+        }
+        setIsGenerating(false)
+        setError('Fout bij ophalen gegenereerde acties')
+      }
+    }, 3000) // Poll elke 3 seconden
+  }
 
   const fetchTopActies = async () => {
     try {
@@ -27,19 +173,30 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          // Geen top acties gevonden - dit is normaal als niet alle thema's zijn afgerond
-          console.log('Geen top 3 acties gevonden - wacht tot alle thema\'s zijn afgerond')
-          setTopActies(null)
+          // Geen top acties gevonden - check of alle thema's zijn afgerond
+          console.log('Geen top 3 acties gevonden - check of alle thema\'s zijn afgerond...')
+          const alleThemasAfgerond = await checkAlleThemasAfgerond()
+          
+          if (alleThemasAfgerond) {
+            // Alle thema's zijn afgerond, trigger generatie
+            console.log('✅ Alle thema\'s zijn afgerond - trigger generatie')
+            await triggerGeneratie()
+            return // Polling wordt gestart in triggerGeneratie
+          } else {
+            // Nog niet alle thema's afgerond
+            setTopActies(null)
+            setLoading(false)
+          }
         } else {
           throw error
         }
       } else {
         setTopActies(data)
+        setLoading(false)
       }
     } catch (err) {
       console.error('Fout bij ophalen top 3 acties:', err)
       setError('Kon top 3 acties niet ophalen')
-    } finally {
       setLoading(false)
     }
   }
@@ -71,7 +228,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
     }
   }
 
-  if (loading) {
+  if (loading || isGenerating) {
     return (
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-md p-6 mb-6">
         <div className="text-center space-y-4">
@@ -84,6 +241,11 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
             <p className="text-blue-600 text-xs font-medium">
               Let op: het genereren van deze top 3 prioriteiten duurt ongeveer 1 minuut.
             </p>
+            {isGenerating && (
+              <p className="text-blue-500 text-xs italic mt-2">
+                ⏳ Generatie gestart, wachten op resultaat...
+              </p>
+            )}
           </div>
         </div>
       </div>
