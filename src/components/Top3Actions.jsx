@@ -37,11 +37,10 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
         return false
       }
 
-      // Haal alle actieve thema's op voor deze werkgever (zoals in get-gespreksresultaten-bulk)
+      // Thema's zijn globaal, niet per werkgever - filter alleen op actieve thema's
       const { data: alleThemas, error: themaError } = await supabase
         .from('themes')
         .select('id')
-        .eq('werkgever_id', werknemer.employer_id)
         .eq('klaar_voor_gebruik', true)
         .eq('standaard_zichtbaar', true)
 
