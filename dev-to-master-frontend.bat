@@ -86,4 +86,3 @@ echo SUCCES! Code is gepromoveerd naar master
 echo Je bent nu weer op dev branch
 echo ========================================
 pause
-
