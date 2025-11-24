@@ -34,9 +34,13 @@ import Contact from './Contact'
 import NaVerificatie from './NaVerificatie'
 import ProvisionEmployer from './ProvisionEmployer'
 import EmailBeheer from './EmailBeheer'
+import { usePageTracking } from './hooks/usePageTracking'
 
 
 function App() {
+  // Automatische pageview tracking voor Google Analytics
+  usePageTracking()
+
   return (
     <Layout>
       <Routes>
