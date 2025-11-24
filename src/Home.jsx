@@ -75,8 +75,8 @@ function Home() {
               Medewerkers voeren periodiek begeleide gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling.
             </p>
             
-            <div className="bg-[var(--kleur-primary)] bg-opacity-10 border-l-4 border-[var(--kleur-primary)] p-6 my-6 rounded-r-lg">
-              <p className="text-xl font-semibold text-[var(--kleur-primary)] text-center">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 my-6">
+              <p className="text-xl font-semibold text-blue-900 text-center">
                 Je ontvangt diepere inzichten dan bij een MTO, maar het kost minder tijd dan fysieke gesprekken.
               </p>
             </div>
