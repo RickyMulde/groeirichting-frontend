@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 echo ========================================
 echo Promoten van dev naar master (Frontend)
 echo ========================================
@@ -17,7 +18,8 @@ echo OK: Je zit op dev branch
 echo.
 echo [1/5] Switchen naar master branch...
 git checkout master >nul 2>&1
-if %errorlevel% neq 0 (
+set CHECKOUT_RESULT=%errorlevel%
+if %CHECKOUT_RESULT% neq 0 (
     echo ERROR: Kon niet switchen naar master branch
     pause
     exit /b 1
@@ -27,7 +29,8 @@ echo OK: Geswitched naar master branch
 echo.
 echo [2/5] Mergen van dev in master...
 git merge dev >nul 2>&1
-if %errorlevel% neq 0 (
+set MERGE_RESULT=%errorlevel%
+if %MERGE_RESULT% neq 0 (
     echo ERROR: Merge gefaald. Los merge conflicten op en probeer opnieuw.
     echo.
     echo Merge afbreken en terugswitchen naar dev branch...
@@ -42,7 +45,7 @@ if %errorlevel% neq 0 (
         echo Huidige status:
         git status --short
     ) else (
-        if %ABORT_ERROR% neq 0 (
+        if !ABORT_ERROR! gtr 0 (
             echo WAARSCHUWING: Merge abort had problemen, maar je bent terug op dev branch.
         ) else (
             echo OK: Merge afgebroken en terug op dev branch
@@ -55,7 +58,8 @@ if %errorlevel% neq 0 (
 echo.
 echo [3/5] Pushen naar origin/master...
 git push origin master >nul 2>&1
-if %errorlevel% neq 0 (
+set PUSH_RESULT=%errorlevel%
+if %PUSH_RESULT% neq 0 (
     echo ERROR: Push gefaald
     pause
     exit /b 1
@@ -64,7 +68,8 @@ if %errorlevel% neq 0 (
 echo.
 echo [4/5] Terugswitchen naar dev branch...
 git checkout dev >nul 2>&1
-if %errorlevel% neq 0 (
+set CHECKOUT_DEV_RESULT=%errorlevel%
+if %CHECKOUT_DEV_RESULT% neq 0 (
     echo ERROR: Kon niet terugswitchen naar dev branch
     pause
     exit /b 1
