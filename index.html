@@ -67,18 +67,28 @@
       const gaId = import.meta.env.VITE_GA_ID;
       
       if (gaId && gaId.trim() !== '') {
+        // Initialiseer dataLayer en gtag functie eerst
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        
+        // Check cookie consent voordat we GA4 configureren
+        const cookieConsent = localStorage.getItem('cookieConsent');
+        const analyticsStorage = cookieConsent === 'accepted' ? 'granted' : 'denied';
+        
+        // Configureer GA4 met consent mode
+        gtag('consent', 'default', {
+          'analytics_storage': analyticsStorage
+        });
+        
+        gtag('config', gaId);
+        
         // Laad GA4 script
         const script = document.createElement('script');
         script.async = true;
         script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
         document.head.appendChild(script);
-        
-        // Initialiseer gtag
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', gaId);
       }
     </script>
   </head>
