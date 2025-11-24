@@ -60,6 +60,27 @@
       ]
     }
     </script>
+    
+    <!-- Google tag (gtag.js) - Alleen laden als VITE_GA_ID is ingesteld -->
+    <script type="module">
+      // Check of GA_ID environment variable is ingesteld
+      const gaId = import.meta.env.VITE_GA_ID;
+      
+      if (gaId && gaId.trim() !== '') {
+        // Laad GA4 script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+        document.head.appendChild(script);
+        
+        // Initialiseer gtag
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', gaId);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
