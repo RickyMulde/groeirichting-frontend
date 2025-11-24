@@ -14,15 +14,23 @@ function CookieBanner() {
   const acceptCookies = () => {
     localStorage.setItem('cookieConsent', 'accepted')
     setShowBanner(false)
-    // Hier kun je Google Analytics initialiseren
-    // gtag('consent', 'update', { 'analytics_storage': 'granted' })
+    // Update Google Analytics consent
+    if (window.gtag) {
+      window.gtag('consent', 'update', { 
+        'analytics_storage': 'granted' 
+      })
+    }
   }
 
   const rejectCookies = () => {
     localStorage.setItem('cookieConsent', 'rejected')
     setShowBanner(false)
-    // Hier kun je Google Analytics uitschakelen
-    // gtag('consent', 'update', { 'analytics_storage': 'denied' })
+    // Update Google Analytics consent - weigeren
+    if (window.gtag) {
+      window.gtag('consent', 'update', { 
+        'analytics_storage': 'denied' 
+      })
+    }
   }
 
   if (!showBanner) return null
