@@ -9,6 +9,46 @@ function PrivacyVeiligheid() {
         description="Bij GroeiRichting staat vertrouwen voorop. We maken het eenvoudig om open te delen, zónder dat antwoorden herleidbaar zijn tot een persoon. AVG-proof en veilig."
         keywords="privacy groeirichting, AVG, GDPR, veiligheid, databescherming, anonimiteit, privacybeleid"
         canonical="https://groeirichting.nl/privacy-veiligheid"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Privacy & Veiligheid - GroeiRichting",
+          "description": "Privacy- en veiligheidsbeleid van GroeiRichting. AVG-proof, anoniem en veilig.",
+          "about": {
+            "@type": "Thing",
+            "name": "Privacy en gegevensbescherming",
+            "description": "GroeiRichting maakt het eenvoudig om open te delen, zónder dat antwoorden herleidbaar zijn tot een persoon. Managers krijgen inzicht per team, niet per individu."
+          },
+          "mainEntity": {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Ziet mijn manager mijn individuele antwoorden?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Nee. Rapportages verschijnen alleen op team/rol-niveau en pas boven een minimale groepsgrootte."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Wat gebeurt er met gevoelige informatie die ik noem?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Die wordt automatisch gefilterd of geanonimiseerd voordat rapportages worden gemaakt."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Kunnen kleine teams herleidbaar zijn?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Nee. Onder de drempel (standaard 4) worden groepen samengevoegd of niet getoond."
+                }
+              }
+            ]
+          }
+        }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)] py-12">
       {/* Hero */}

@@ -15,6 +15,44 @@ function HoeWerktHet() {
         description="Ontdek stap voor stap hoe GroeiRichting werkt. Van registratie tot AI-gestuurde gesprekken tussen werkgevers en medewerkers. Eenvoudig, veilig en effectief."
         keywords="hoe werkt groeirichting, AI gesprekken uitleg, werkgever medewerker gesprekken, AI HR proces, gespreksvoering stappen"
         canonical="https://groeirichting.nl/hoe-werkt-het"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          "name": "Hoe werkt GroeiRichting",
+          "description": "Stap-voor-stap uitleg hoe je GroeiRichting gebruikt voor AI-gestuurde gesprekken tussen werkgevers en medewerkers",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Kick-off",
+              "text": "Jij legt uit waarom je dit belangrijk vindt. GroeiRichting geeft (optioneel) een korte demo of uitleg."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Eerste ronde",
+              "text": "Medewerkers vullen de vragen in via het portaal (anoniem en in hun eigen tijd, het kost maar enkele minuten). AI helpt hen betere antwoorden te geven."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Samenvatting & advies",
+              "text": "Jij krijgt een overzicht met thema's, inzichten en concrete adviezen. Geen losse opmerkingen, maar direct bruikbare handvatten."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Bespreken & opvolgen",
+              "text": "Je koppelt terug: 'Dit is wat we geleerd hebben, en dit gaan we doen.' Medewerkers zien direct dat hun stem invloed heeft."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Vervolg",
+              "text": "Herhaal dit twee keer per jaar, bijvoorbeeld in maart en oktober. Combineer het met je functionerings- of voortgangsgesprekken. Zo ontstaat een continue cyclus van luisteren → verbeteren → groeien."
+            }
+          ]
+        }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
 

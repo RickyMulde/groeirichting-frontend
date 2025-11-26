@@ -10,6 +10,77 @@ function Contact() {
         description="Heb je vragen over GroeiRichting? Neem contact met ons op via e-mail, telefoon of het contactformulier. We helpen je graag verder."
         keywords="contact groeirichting, vragen groeirichting, support, hulp, contactformulier"
         canonical="https://groeirichting.nl/contact"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "FAQPage",
+              "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Hoe snel kan ik starten met GroeiRichting?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Na een kennismakingsgesprek kunnen we binnen 1-2 weken starten. We helpen je met de setup en training van je team."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wat zijn de kosten van GroeiRichting?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De prijzen zijn afhankelijk van het aantal medewerkers en gewenste functionaliteiten. Vraag een offerte aan voor een persoonlijk voorstel."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is er ondersteuning tijdens de implementatie?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, we bieden volledige ondersteuning tijdens de implementatie en daarna. Je krijgt een dedicated contactpersoon en toegang tot onze helpdesk."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hoe zit het met de privacy van mijn medewerkers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Privacy en veiligheid staan voorop. Alle data wordt veilig opgeslagen en we voldoen aan de AVG/GDPR richtlijnen. Lees meer op onze privacy pagina."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Kan ik een demo of proefperiode aanvragen?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Natuurlijk! We bieden graag een persoonlijke demo aan. Vraag hier een demo aan."
+              }
+            }
+          ]
+            },
+            {
+              "@type": "LocalBusiness",
+              "name": "GroeiRichting B.V.",
+              "image": "https://groeirichting.nl/Logo.svg",
+              "telephone": "+31-85-060-7424",
+              "email": "rick@groeirichting.nl",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Schutstraat 145",
+                "addressLocality": "Hoogeveen",
+                "addressCountry": "NL"
+              },
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  "opens": "09:00",
+                  "closes": "17:00"
+                }
+              ]
+            }
+          ]
+        }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)] py-8">
       

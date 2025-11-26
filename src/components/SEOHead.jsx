@@ -6,7 +6,8 @@ const SEOHead = ({
   keywords, 
   canonical,
   ogImage = "https://groeirichting.nl/og-image.jpg",
-  ogType = "website"
+  ogType = "website",
+  structuredData = null // JSON-LD structured data object
 }) => {
   const fullTitle = title ? `${title} | GroeiRichting` : 'GroeiRichting - AI-Gestuurde Gesprekken voor Werkgevers en Medewerkers';
   const fullDescription = description || 'Ontdek hoe AI-gestuurde gesprekken werkgevers en medewerkers helpen groeien. Professionele gespreksvoering met kunstmatige intelligentie voor betere werkrelaties.';
@@ -70,7 +71,29 @@ const SEOHead = ({
     updateTwitterTag('twitter:description', fullDescription);
     updateTwitterTag('twitter:image', ogImage);
     
-  }, [fullTitle, fullDescription, fullKeywords, fullCanonical, ogImage, ogType]);
+    // Update or add structured data (JSON-LD)
+    if (structuredData) {
+      // Remove existing page-specific structured data scripts
+      const existingPageScript = document.querySelector('script#page-structured-data');
+      if (existingPageScript) {
+        existingPageScript.remove();
+      }
+      
+      // Add new structured data
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      script.id = 'page-structured-data';
+      document.head.appendChild(script);
+    } else {
+      // Remove page-specific structured data if no new data is provided
+      const existingPageScript = document.querySelector('script#page-structured-data');
+      if (existingPageScript) {
+        existingPageScript.remove();
+      }
+    }
+    
+  }, [fullTitle, fullDescription, fullKeywords, fullCanonical, ogImage, ogType, structuredData]);
 
   return null; // This component doesn't render anything
 };
