@@ -19,8 +19,15 @@ export const usePageTracking = () => {
     // 2. gtag beschikbaar is
     // 3. Gebruiker heeft cookies geaccepteerd
     if (gaId && gaId.trim() !== '' && window.gtag && cookieConsent === 'accepted') {
-      window.gtag('config', gaId, {
-        page_path: location.pathname + location.search
+      // Gebruik requestAnimationFrame om te wachten tot React de titel heeft geüpdatet
+      // Dit zorgt ervoor dat we de juiste paginatitel hebben voor Analytics
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.gtag('config', gaId, {
+            page_path: location.pathname + location.search,
+            page_title: document.title || 'GroeiRichting'
+          })
+        })
       })
     }
   }, [location, gaId])

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CheckCircle, Mail, Phone, Users, MessageSquare } from 'lucide-react'
+import SEOHead from './components/SEOHead'
 
 function Offerte() {
   const [formData, setFormData] = useState({
@@ -34,7 +35,13 @@ function Offerte() {
 
   if (isSubmitted) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
+      <>
+        <SEOHead 
+          title="Offerte ontvangen - GroeiRichting"
+          description="Je offerte aanvraag is ontvangen. Je ontvangt binnen 24 uur een persoonlijk voorstel."
+          canonical="https://groeirichting.nl/offerte"
+        />
+        <div className="max-w-2xl mx-auto text-center py-16">
         <div className="bg-green-50 border border-green-200 rounded-xl p-8">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-green-800 mb-4">Offerte aanvraag ontvangen!</h2>
@@ -49,11 +56,19 @@ function Offerte() {
           </button>
         </div>
       </div>
+      </>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12">
+    <>
+      <SEOHead 
+        title="Offerte aanvragen - Vraag een offerte aan voor GroeiRichting"
+        description="Ontvang binnen 24 uur een persoonlijk voorstel dat aansluit bij jouw organisatie. Vraag nu een offerte aan voor GroeiRichting."
+        keywords="offerte groeirichting, prijs, tarieven, kosten, aanvraag offerte"
+        canonical="https://groeirichting.nl/offerte"
+      />
+      <div className="max-w-4xl mx-auto space-y-12">
       {/* Header */}
       <div className="text-center py-8">
         <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
@@ -203,6 +218,7 @@ function Offerte() {
         </p>
       </div>
     </div>
+    </>
   )
 }
 
