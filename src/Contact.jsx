@@ -1,9 +1,17 @@
 import { Mail, Phone, MapPin, Clock, MessageSquare, CheckCircle } from 'lucide-react'
 import ContactForm from './components/ContactForm'
+import SEOHead from './components/SEOHead'
 
 function Contact() {
   return (
-    <div className="space-y-16 bg-[var(--kleur-background)] py-8">
+    <>
+      <SEOHead 
+        title="Contact - Neem contact met GroeiRichting op"
+        description="Heb je vragen over GroeiRichting? Neem contact met ons op via e-mail, telefoon of het contactformulier. We helpen je graag verder."
+        keywords="contact groeirichting, vragen groeirichting, support, hulp, contactformulier"
+        canonical="https://groeirichting.nl/contact"
+      />
+      <div className="space-y-16 bg-[var(--kleur-background)] py-8">
       
       {/* Header */}
       <section className="text-center py-8">
@@ -202,6 +210,7 @@ function Contact() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 

@@ -1,8 +1,16 @@
 import { Shield, Lock, Eye, EyeOff, CheckCircle, XCircle, Users, FileText, Clock, Key } from 'lucide-react'
+import SEOHead from './components/SEOHead'
 
 function PrivacyVeiligheid() {
   return (
-    <div className="space-y-16 bg-[var(--kleur-background)] py-12">
+    <>
+      <SEOHead 
+        title="Privacy & Veiligheid - GroeiRichting"
+        description="Bij GroeiRichting staat vertrouwen voorop. We maken het eenvoudig om open te delen, zónder dat antwoorden herleidbaar zijn tot een persoon. AVG-proof en veilig."
+        keywords="privacy groeirichting, AVG, GDPR, veiligheid, databescherming, anonimiteit, privacybeleid"
+        canonical="https://groeirichting.nl/privacy-veiligheid"
+      />
+      <div className="space-y-16 bg-[var(--kleur-background)] py-12">
       {/* Hero */}
       <section className="text-center max-w-4xl mx-auto px-6">
         <div className="flex justify-center mb-6">
@@ -277,6 +285,7 @@ function PrivacyVeiligheid() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 

@@ -56,39 +56,6 @@ function GesprekPagina() {
     setChatBerichten(prev => [...prev, nieuwBericht])
   }
 
-  // Helper functie om laatste samenvatting op te halen
-  const haalLaatsteSamenvattingOp = async () => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData?.user) return null;
-
-      const { data: eerdereGesprekken } = await supabase
-        .from('gesprek')
-        .select('id')
-        .eq('theme_id', themeId)
-        .eq('werknemer_id', userData.user.id)
-        .eq('status', 'Afgerond')
-        .order('gestart_op', { ascending: true });
-
-      if (eerdereGesprekken && eerdereGesprekken.length > 0) {
-        const { data: samenvattingData } = await supabase
-          .from('gesprekresultaten')
-          .select('samenvatting, gespreksronde')
-          .eq('theme_id', themeId)
-          .eq('werknemer_id', userData.user.id)
-          .order('gespreksronde', { ascending: false })
-          .limit(1)
-          .single();
-          
-        return samenvattingData;
-      }
-      return null;
-    } catch (error) {
-      console.error('Fout bij ophalen laatste samenvatting:', error);
-      return null;
-    }
-  }
-
   // Helper functie om organisatie-omschrijving op te halen
   const haalOrganisatieOmschrijvingOp = async () => {
     try {
@@ -381,12 +348,6 @@ function GesprekPagina() {
             // Voeg intro bericht toe op basis van gespreksronde
             if (isEersteGesprek && theme?.intro_prompt) {
               voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
-            } else if (!isEersteGesprek) {
-              const samenvatting = await haalLaatsteSamenvattingOp();
-              if (samenvatting) {
-                const introTekst = `Dit is je ${samenvatting.gespreksronde === 1 ? 'tweede' : `${samenvatting.gespreksronde + 1}e`} gesprek over het thema ${theme?.titel}.\n\nHieronder zie je een korte samenvatting van wat je 6 maanden geleden hebt besproken.\nWe gebruiken deze terugblik om te kijken wat er is veranderd, wat er hetzelfde is gebleven en welke punten misschien nog aandacht vragen.\n\n**Samenvatting**\n${samenvatting.samenvatting}\n\nAls je hier klaar voor bent, kijken we stap voor stap hoe het nu gaat ten opzichte van de vorige keer.\nKlik op Volgende om te beginnen met de eerste vraag.`;
-                voegChatBerichtToe('toelichting', introTekst, null, false);
-              }
             }
             
             // Voeg alle bestaande antwoorden toe aan chat berichten
@@ -432,12 +393,6 @@ function GesprekPagina() {
             // Voeg intro bericht toe op basis van gespreksronde
             if (isEersteGesprek && theme?.intro_prompt) {
               voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
-            } else if (!isEersteGesprek) {
-              const samenvatting = await haalLaatsteSamenvattingOp();
-              if (samenvatting) {
-                const introTekst = `Dit is je ${samenvatting.gespreksronde === 1 ? 'tweede' : `${samenvatting.gespreksronde + 1}e`} gesprek over het thema ${theme?.titel}.\n\nHieronder zie je een korte samenvatting van wat je 6 maanden geleden hebt besproken.\nWe gebruiken deze terugblik om te kijken wat er is veranderd, wat er hetzelfde is gebleven en welke punten misschien nog aandacht vragen.\n\n**Samenvatting**\n${samenvatting.samenvatting}\n\nAls je hier klaar voor bent, kijken we stap voor stap hoe het nu gaat ten opzichte van de vorige keer.\nKlik op Volgende om te beginnen met de eerste vraag.`;
-                voegChatBerichtToe('toelichting', introTekst, null, false);
-              }
             }
             // Voeg eerste vraag toe
             if (vragen.length > 0) {
@@ -475,12 +430,6 @@ function GesprekPagina() {
         // Voeg intro bericht toe op basis van gespreksronde
         if (isEersteGesprek && theme?.intro_prompt) {
           voegChatBerichtToe('toelichting', theme.intro_prompt, null, false);
-        } else if (!isEersteGesprek) {
-          const samenvatting = await haalLaatsteSamenvattingOp();
-          if (samenvatting) {
-            const introTekst = `Dit is je ${samenvatting.gespreksronde === 1 ? 'tweede' : `${samenvatting.gespreksronde + 1}e`} gesprek over het thema ${theme?.titel}.\n\nHieronder zie je een korte samenvatting van wat je 6 maanden geleden hebt besproken.\nWe gebruiken deze terugblik om te kijken wat er is veranderd, wat er hetzelfde is gebleven en welke punten misschien nog aandacht vragen.\n\n**Samenvatting**\n${samenvatting.samenvatting}\n\nAls je hier klaar voor bent, kijken we stap voor stap hoe het nu gaat ten opzichte van de vorige keer.\nKlik op Volgende om te beginnen met de eerste vraag.`;
-            voegChatBerichtToe('toelichting', introTekst, null, false);
-          }
         }
         // Voeg eerste vraag toe
         if (vragen.length > 0) {
@@ -698,7 +647,6 @@ function GesprekPagina() {
       if (isVasteVraag) {
         // We hebben een vaste vraag beantwoord
         // Vraag GPT of er een vervolgvraag moet komen
-        const samenvatting = await haalLaatsteSamenvattingOp();
         const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
         const werknemerContext = await haalWerknemerContextOp();
         const { data: { session } } = await supabase.auth.getSession()
@@ -717,12 +665,8 @@ function GesprekPagina() {
             ai_behavior: theme?.ai_behavior || '',
             gpt_beperkingen: theme?.gpt_beperkingen || '',
             organisatie_omschrijving: organisatieOmschrijving,
-                            functie_omschrijving: werknemerContext.functieOmschrijving,
-                gender: werknemerContext.gender,
-            laatste_samenvatting: samenvatting ? {
-              samenvatting: samenvatting.samenvatting,
-              gespreksronde: samenvatting.gespreksronde
-            } : null
+            functie_omschrijving: werknemerContext.functieOmschrijving,
+            gender: werknemerContext.gender
           })
         });
 
@@ -784,7 +728,6 @@ function GesprekPagina() {
           }
           
           // Vraag GPT of er nog een vervolgvraag moet komen (alleen als we nog niet 3 hebben)
-          const samenvatting = await haalLaatsteSamenvattingOp();
           const organisatieOmschrijving = await haalOrganisatieOmschrijvingOp();
           const werknemerContext = await haalWerknemerContextOp();
           const { data: { session } } = await supabase.auth.getSession()
@@ -804,11 +747,7 @@ function GesprekPagina() {
               gpt_beperkingen: theme?.gpt_beperkingen || '',
               organisatie_omschrijving: organisatieOmschrijving,
               functie_omschrijving: werknemerContext.functieOmschrijving,
-              gender: werknemerContext.gender,
-              laatste_samenvatting: samenvatting ? {
-                samenvatting: samenvatting.samenvatting,
-                gespreksronde: samenvatting.gespreksronde
-              } : null
+              gender: werknemerContext.gender
             })
           });
 

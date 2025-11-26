@@ -6,43 +6,7 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [clearLoading, setClearLoading] = useState(false)
   const navigate = useNavigate()
-
-  // Functie om alle cached data te wissen
-  const clearAllData = async () => {
-    try {
-      setClearLoading(true)
-      // Probeer uit te loggen bij Supabase
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.error('Logout error:', error)
-        // Ga door met logout ook bij fout
-      }
-      
-      // Clear localStorage
-      localStorage.clear()
-      
-      // Clear sessionStorage
-      sessionStorage.clear()
-      
-      // Reset form state
-      setEmail('')
-      setPassword('')
-      setError('')
-      
-      console.log('Alle data gewist')
-      
-      // Forceer page reload om alle state te resetten
-      window.location.reload()
-    } catch (error) {
-      console.error('Fout bij wissen data:', error)
-      // Forceer page reload ook bij fout
-      window.location.reload()
-    } finally {
-      setClearLoading(false)
-    }
-  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -120,27 +84,6 @@ function Login() {
           </Link>
         </div>
       )}
-      
-      {/* Debug knop voor het wissen van alle data */}
-      <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-        <p className="text-gray-700 text-sm mb-3">
-          <strong>Problemen met inloggen?</strong> Probeer alle opgeslagen gegevens te wissen:
-        </p>
-        <button 
-          onClick={clearAllData}
-          disabled={clearLoading}
-          className="btn btn-accent text-sm"
-        >
-          {clearLoading ? (
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Wissen...
-            </div>
-          ) : (
-            'Alle data wissen & opnieuw beginnen'
-          )}
-        </button>
-      </div>
     </div>
   )
 }
