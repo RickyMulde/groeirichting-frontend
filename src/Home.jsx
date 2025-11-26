@@ -16,6 +16,40 @@ function Home() {
         description="Versterk de verbinding met je medewerkers en signaleer vroegtijdig wat er speelt. GroeiRichting is hét MTO-alternatief voor meer betrokkenheid, minder verzuim en groei."
         keywords="medewerkerstevredenheid verbeteren, betrokkenheid medewerkers, verzuim terugdringen, MTO alternatief, AI HR, gespreksplatform, werkgeluk"
         canonical="https://groeirichting.nl/"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "GroeiRichting",
+          "url": "https://groeirichting.nl",
+          "logo": "https://groeirichting.nl/Logo.svg",
+          "description": "AI-gestuurde gesprekken voor werkgevers en werknemers om samen te groeien. MTO-alternatief voor meer betrokkenheid, minder verzuim en groei.",
+          "foundingDate": "2024",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "email": "rick@groeirichting.nl",
+            "telephone": "+31-85-060-7424",
+            "availableLanguage": "Dutch",
+            "areaServed": "NL"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Schutstraat 145",
+            "addressLocality": "Hoogeveen",
+            "addressCountry": "NL"
+          },
+          "sameAs": [
+            "https://linkedin.com/company/groeirichting"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "AI-gestuurde gespreksplatform",
+              "description": "Digitaal gesprek- en ontwikkelportaal voor medewerkerstevredenheid en betrokkenheid"
+            }
+          }
+        }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
 

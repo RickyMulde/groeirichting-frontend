@@ -67,6 +67,29 @@ function Offerte() {
         description="Ontvang binnen 24 uur een persoonlijk voorstel dat aansluit bij jouw organisatie. Vraag nu een offerte aan voor GroeiRichting."
         keywords="offerte groeirichting, prijs, tarieven, kosten, aanvraag offerte"
         canonical="https://groeirichting.nl/offerte"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "serviceType": "AI-gestuurde gespreksplatform voor medewerkerstevredenheid",
+          "provider": {
+            "@type": "Organization",
+            "name": "GroeiRichting B.V.",
+            "url": "https://groeirichting.nl",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+31-85-060-7424",
+              "contactType": "customer service",
+              "email": "rick@groeirichting.nl",
+              "availableLanguage": "Dutch"
+            }
+          },
+          "areaServed": "NL",
+          "description": "GroeiRichting biedt een digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek. Medewerkers voeren periodiek begeleide gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling.",
+          "offers": {
+            "@type": "Offer",
+            "description": "Persoonlijke offerte op maat, afhankelijk van aantal medewerkers en gewenste functionaliteiten"
+          }
+        }}
       />
       <div className="max-w-4xl mx-auto space-y-12">
       {/* Header */}
