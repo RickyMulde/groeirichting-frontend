@@ -17,10 +17,12 @@ function HoeWerktHet() {
         canonical="https://groeirichting.nl/hoe-werkt-het"
         structuredData={{
           "@context": "https://schema.org",
-          "@type": "HowTo",
-          "name": "Hoe werkt GroeiRichting",
-          "description": "Stap-voor-stap uitleg hoe je GroeiRichting gebruikt voor AI-gestuurde gesprekken tussen werkgevers en medewerkers",
-          "step": [
+          "@graph": [
+            {
+              "@type": "HowTo",
+              "name": "Hoe werkt GroeiRichting",
+              "description": "Stap-voor-stap uitleg hoe je GroeiRichting gebruikt voor AI-gestuurde gesprekken tussen werkgevers en medewerkers",
+              "step": [
             {
               "@type": "HowToStep",
               "position": 1,
@@ -50,6 +52,25 @@ function HoeWerktHet() {
               "position": 5,
               "name": "Vervolg",
               "text": "Herhaal dit twee keer per jaar, bijvoorbeeld in maart en oktober. Combineer het met je functionerings- of voortgangsgesprekken. Zo ontstaat een continue cyclus van luisteren → verbeteren → groeien."
+            }
+          ]
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://groeirichting.nl/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Hoe werkt het",
+                  "item": "https://groeirichting.nl/hoe-werkt-het"
+                }
+              ]
             }
           ]
         }}

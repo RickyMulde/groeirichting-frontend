@@ -69,26 +69,47 @@ function Offerte() {
         canonical="https://groeirichting.nl/offerte"
         structuredData={{
           "@context": "https://schema.org",
-          "@type": "Service",
-          "serviceType": "AI-gestuurde gespreksplatform voor medewerkerstevredenheid",
-          "provider": {
-            "@type": "Organization",
-            "name": "GroeiRichting B.V.",
-            "url": "https://groeirichting.nl",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+31-85-060-7424",
-              "contactType": "customer service",
-              "email": "rick@groeirichting.nl",
-              "availableLanguage": "Dutch"
+          "@graph": [
+            {
+              "@type": "Service",
+              "serviceType": "AI-gestuurde gespreksplatform voor medewerkerstevredenheid",
+              "provider": {
+                "@type": "Organization",
+                "name": "GroeiRichting B.V.",
+                "url": "https://groeirichting.nl",
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "telephone": "+31-85-060-7424",
+                  "contactType": "customer service",
+                  "email": "rick@groeirichting.nl",
+                  "availableLanguage": "Dutch"
+                }
+              },
+              "areaServed": "NL",
+              "description": "GroeiRichting biedt een digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek. Medewerkers voeren periodiek begeleide gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling.",
+              "offers": {
+                "@type": "Offer",
+                "description": "Persoonlijke offerte op maat, afhankelijk van aantal medewerkers en gewenste functionaliteiten"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://groeirichting.nl/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Offerte",
+                  "item": "https://groeirichting.nl/offerte"
+                }
+              ]
             }
-          },
-          "areaServed": "NL",
-          "description": "GroeiRichting biedt een digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek. Medewerkers voeren periodiek begeleide gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling.",
-          "offers": {
-            "@type": "Offer",
-            "description": "Persoonlijke offerte op maat, afhankelijk van aantal medewerkers en gewenste functionaliteiten"
-          }
+          ]
         }}
       />
       <div className="max-w-4xl mx-auto space-y-12">
