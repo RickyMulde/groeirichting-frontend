@@ -78,6 +78,23 @@ function Contact() {
                   "closes": "17:00"
                 }
               ]
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://groeirichting.nl/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Contact",
+                  "item": "https://groeirichting.nl/contact"
+                }
+              ]
             }
           ]
         }}

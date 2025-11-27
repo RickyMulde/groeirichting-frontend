@@ -12,43 +12,86 @@ function Home() {
   return (
     <>
       <SEOHead 
-        title="Medewerkerstevredenheid verbeteren met AI-gesprekken – GroeiRichting"
+        title="Medewerkerstevredenheid verbeteren met AI-gesprekken"
         description="Versterk de verbinding met je medewerkers en signaleer vroegtijdig wat er speelt. GroeiRichting is hét MTO-alternatief voor meer betrokkenheid, minder verzuim en groei."
         keywords="medewerkerstevredenheid verbeteren, betrokkenheid medewerkers, verzuim terugdringen, MTO alternatief, AI HR, gespreksplatform, werkgeluk"
         canonical="https://groeirichting.nl/"
         structuredData={{
           "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": "GroeiRichting",
-          "url": "https://groeirichting.nl",
-          "logo": "https://groeirichting.nl/Logo.svg",
-          "description": "AI-gestuurde gesprekken voor werkgevers en werknemers om samen te groeien. MTO-alternatief voor meer betrokkenheid, minder verzuim en groei.",
-          "foundingDate": "2024",
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "customer service",
-            "email": "rick@groeirichting.nl",
-            "telephone": "+31-85-060-7424",
-            "availableLanguage": "Dutch",
-            "areaServed": "NL"
-          },
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Schutstraat 145",
-            "addressLocality": "Hoogeveen",
-            "addressCountry": "NL"
-          },
-          "sameAs": [
-            "https://linkedin.com/company/groeirichting"
-          ],
-          "offers": {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "AI-gestuurde gespreksplatform",
-              "description": "Digitaal gesprek- en ontwikkelportaal voor medewerkerstevredenheid en betrokkenheid"
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "GroeiRichting",
+              "url": "https://groeirichting.nl",
+              "logo": "https://groeirichting.nl/Logo.svg",
+              "description": "AI-gestuurde gesprekken voor werkgevers en werknemers om samen te groeien. MTO-alternatief voor meer betrokkenheid, minder verzuim en groei.",
+              "foundingDate": "2024",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "email": "rick@groeirichting.nl",
+                "telephone": "+31-85-060-7424",
+                "availableLanguage": "Dutch",
+                "areaServed": "NL"
+              },
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Schutstraat 145",
+                "addressLocality": "Hoogeveen",
+                "addressCountry": "NL"
+              },
+              "sameAs": [
+                "https://linkedin.com/company/groeirichting"
+              ]
+            },
+            {
+              "@type": "SoftwareApplication",
+              "name": "GroeiRichting",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "Web",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "EUR",
+                "description": "Persoonlijke offerte op maat"
+              },
+              "description": "AI-gestuurde gespreksplatform voor medewerkerstevredenheid. Digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek.",
+              "featureList": [
+                "AI-gestuurde gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling",
+                "Persoonlijke samenvattingen en groeisuggesties voor medewerkers",
+                "Geanonimiseerde trends en signalen per team voor werkgevers",
+                "Vroege signalering van risico's in werkdruk, motivatie en samenwerking",
+                "MTO-alternatief met meer diepgang en minder tijd",
+                "Privacy-first: AVG-proof met anonieme rapportages",
+                "Begeleide gesprekken per thema",
+                "Dashboard met inzichten per team en rol"
+              ],
+              "keywords": "medewerkerstevredenheid, MTO alternatief, AI HR, gespreksplatform, werkgeluk, betrokkenheid medewerkers, verzuim terugdringen, medewerkerstevredenheid verbeteren, AI gesprekken, HR software, personeelsgesprekken",
+              "screenshot": "https://groeirichting.nl/Logo.svg",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "ratingCount": "1",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "provider": {
+                "@type": "Organization",
+                "name": "GroeiRichting B.V."
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://groeirichting.nl/"
+                }
+              ]
             }
-          }
+          ]
         }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
@@ -61,7 +104,7 @@ function Home() {
           </h1>
           <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Versterk de verbinding met je medewerkers, verhoog de betrokkenheid en stimuleer groei — zonder extra tijd kwijt te zijn.
+            Het digitale gesprek- en ontwikkelportaal waarin medewerkers periodiek begeleide gesprekken voeren over werkdruk, motivatie, samenwerking en ontwikkeling.
           </p>
           
           {/* Bullets */}
@@ -155,83 +198,9 @@ function Home() {
         </div>
       </section>
 
-      {/* Meer gesprekken, zonder extra tijd */}
-      <section className="py-8 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken over werkdruk, motivatie en ontwikkeling — zonder extra tijd</h2>
-          
-          <div className="space-y-6 text-lg text-[var(--kleur-muted)]">
-            <p>
-              Waarschijnlijk voer je nu één functioneringsgesprek per jaar, misschien zelfs twee.
-            </p>
-            
-            <p>
-              Weet dat er in zes maanden kan er veel gebeuren — óók bij je medewerkers. Stress, motivatie, werkdruk, samenwerking: het verandert sneller dan een jaarlijks gesprek kan bijhouden.
-            </p>
-            
-            <div className="bg-red-50 border-l-4 border-red-400 p-4 my-6">
-              <p className="font-medium text-red-800">
-                Het risico? Problemen blijven onzichtbaar tot ze groot zijn. Dan kost het je geld, energie en misschien zelfs een waardevolle medewerker.
-              </p>
-            </div>
-            
-            <p className="text-center font-semibold text-[var(--kleur-primary)]">
-              GroeiRichting voorkomt dat.
-            </p>
-            
-            <p>
-              Breid het aantal gesprekken met je medewerkers eenvoudig uit, zodat je op meer momenten signalen kunt oppikken.
-            </p>
-            
-            <p>
-              Het GroeiPortaal laat jouw medewerkers AI-ondersteunde gesprekken voeren over thema's als werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer en perspectief & ontwikkeling. Zo ontstaat continu waardevolle input waarmee je als werkgever actief kunt werken aan betrokkenheid vergroten, medewerkerstevredenheid verbeteren en een cultuur van groei en vertrouwen versterken, zonder extra tijd kwijt te zijn.
-            </p>
-            
-            <p>
-              Zo krijg je méér feedback en waardevolle signalen, terwijl jij juist minder tijd kwijt bent.
-            </p>
-               
-            <p>
-              Bijkomend voordeel: Ook jouw medewerkers/ teamleden krijgen concrete vervolgacties om persoonlijke groei te stimuleren.
-            </p>
-          </div>
-          
-          <div className="text-center mt-8">
-            <Link to="/hoe-werkt-het" className="btn btn-primary">Bekijk hoe het werkt</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Het probleem */}
-      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
-        <h2 className="text-2xl font-semibold mb-6">De werkelijkheid: verzuim en verloop kosten meer dan je denkt</h2>
-        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
-          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
-        </p>
-        
-        {/* Mini-stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
-            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
-            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
-            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
-          </div>
-        </div>
-        
-        {/* CTA */}
-        <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
-      </section>
-
       {/* Wat levert het op */}
       <section>
-        <h2 className="text-3xl font-bold text-center mb-4">Waarin GroeiRichting ondersteunt: meer tevredenheid, minder verloop en verzuim</h2>
+        <h2 className="text-3xl font-bold text-center mb-4">Wat levert GroeiRichting op voor jouw organisatie?</h2>
         <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
           Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl medewerkers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
         </p>
@@ -333,6 +302,80 @@ function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Waarom dit belangrijk is */}
+      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
+        <h2 className="text-2xl font-semibold mb-6">Waarom dit belangrijk is</h2>
+        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
+          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
+        </p>
+        
+        {/* Mini-stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
+            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
+            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
+            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
+          </div>
+        </div>
+        
+        {/* CTA */}
+        <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
+      </section>
+
+      {/* Meer gesprekken, zonder extra tijd */}
+      <section className="py-8 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-8 text-center">Meer gesprekken over werkdruk, motivatie en ontwikkeling — zonder extra tijd</h2>
+          
+          <div className="space-y-6 text-lg text-[var(--kleur-muted)]">
+            <p>
+              Waarschijnlijk voer je nu één functioneringsgesprek per jaar, misschien zelfs twee.
+            </p>
+            
+            <p>
+              Weet dat er in zes maanden kan er veel gebeuren — óók bij je medewerkers. Stress, motivatie, werkdruk, samenwerking: het verandert sneller dan een jaarlijks gesprek kan bijhouden.
+            </p>
+            
+            <div className="bg-red-50 border-l-4 border-red-400 p-4 my-6">
+              <p className="font-medium text-red-800">
+                Het risico? Problemen blijven onzichtbaar tot ze groot zijn. Dan kost het je geld, energie en misschien zelfs een waardevolle medewerker.
+              </p>
+            </div>
+            
+            <p className="text-center font-semibold text-[var(--kleur-primary)]">
+              GroeiRichting voorkomt dat.
+            </p>
+            
+            <p>
+              Breid het aantal gesprekken met je medewerkers eenvoudig uit, zodat je op meer momenten signalen kunt oppikken.
+            </p>
+            
+            <p>
+              Het GroeiPortaal laat jouw medewerkers AI-ondersteunde gesprekken voeren over thema's als werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer en perspectief & ontwikkeling. Zo ontstaat continu waardevolle input waarmee je als werkgever actief kunt werken aan betrokkenheid vergroten, medewerkerstevredenheid verbeteren en een cultuur van groei en vertrouwen versterken, zonder extra tijd kwijt te zijn.
+            </p>
+            
+            <p>
+              Zo krijg je méér feedback en waardevolle signalen, terwijl jij juist minder tijd kwijt bent.
+            </p>
+               
+            <p>
+              Bijkomend voordeel: Ook jouw medewerkers/ teamleden krijgen concrete vervolgacties om persoonlijke groei te stimuleren.
+            </p>
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link to="/hoe-werkt-het" className="btn btn-primary">Bekijk hoe het werkt</Link>
           </div>
         </div>
       </section>
