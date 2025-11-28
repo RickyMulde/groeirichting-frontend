@@ -144,7 +144,7 @@ function Login() {
             className="px-3 py-1.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-[var(--kleur-accent)]"
           />
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <button type="submit" className="btn btn-secondary">Login</button>
         </div>
       </form>
