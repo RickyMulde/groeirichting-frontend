@@ -15,6 +15,7 @@ import BeheerTeamsWerknemers from './BeheerTeamsWerknemers'
 import Instellingen from './Instellingen'
 import RegisterEmployee from './RegisterEmployee'
 import VerifyEmail from './VerifyEmail'
+import ResetPassword from './ResetPassword'
 import PostLoginRedirect from './PostLoginRedirect'
 import RegistratieVerplicht from './RegistratieVerplicht'
 import EmployeePortal from './EmployeePortal'
@@ -56,6 +57,7 @@ function App() {
         <Route path="/registreer-werkgever" element={<RegisterEmployer />} />
         <Route path="/registreer-werknemer" element={<RegisterEmployee />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/na-verificatie" element={<NaVerificatie />} />
         <Route path="/provision-employer" element={<ProvisionEmployer />} />
         
