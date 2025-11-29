@@ -20,6 +20,8 @@ function CookieBanner() {
         'analytics_storage': 'granted' 
       })
     }
+    // Trigger custom event voor Zoho SalesIQ
+    window.dispatchEvent(new Event('cookieConsentAccepted'))
   }
 
   const rejectCookies = () => {
