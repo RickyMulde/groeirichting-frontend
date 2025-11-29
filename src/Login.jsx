@@ -116,7 +116,16 @@ function Login() {
       <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6">Inloggen</h2>
       <form onSubmit={handleLogin} className="space-y-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700">E-mailadres</label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-medium text-gray-700">E-mailadres</label>
+            <button
+              type="button"
+              onClick={() => setShowForgotPasswordModal(true)}
+              className="text-sm text-white bg-[var(--kleur-primary)] px-3 py-1 rounded-lg hover:bg-[var(--kleur-accent)] transition-colors"
+            >
+              Wachtwoord vergeten?
+            </button>
+          </div>
           <input
             type="email"
             value={email}
@@ -135,15 +144,8 @@ function Login() {
             className="px-3 py-1.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-[var(--kleur-accent)]"
           />
         </div>
-        <div className="flex items-center justify-between">
-          <button type="submit" className="btn btn-primary">Login</button>
-          <button
-            type="button"
-            onClick={() => setShowForgotPasswordModal(true)}
-            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            Wachtwoord vergeten?
-          </button>
+        <div className="flex justify-center">
+          <button type="submit" className="btn btn-secondary">Login</button>
         </div>
       </form>
       

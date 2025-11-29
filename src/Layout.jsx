@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import { Menu, X } from 'lucide-react'
 import CookieBanner from './components/CookieBanner'
+import ZohoSalesIQ from './components/ZohoSalesIQ'
 
 function Layout({ children }) {
   const [session, setSession] = useState(null)
@@ -240,6 +241,9 @@ function Layout({ children }) {
 
       {/* Cookie Banner - Alleen voor niet-ingelogde gebruikers */}
       {!session && <CookieBanner />}
+
+      {/* Zoho SalesIQ Chat Widget - AVG-compliant, laadt alleen na cookie consent */}
+      <ZohoSalesIQ />
     </div>
   )
 }
