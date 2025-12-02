@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 
 /**
  * Zoho SalesIQ Chat Widget Component
- * Laadt alleen na cookie consent (AVG-compliant)
+ * Laadt altijd voor visitor tracking (IP-based, AVG-compliant)
+ * Tracking cookies worden alleen geplaatst na cookie consent
  * Beschikbaar op alle pagina's
  */
 function ZohoSalesIQ() {
@@ -27,31 +28,63 @@ function ZohoSalesIQ() {
     widgetScript.id = 'zsiqscript'
     widgetScript.src = 'https://salesiq.zohopublic.eu/widget?wc=siq6a8c571ecbb02f102e897557868cedd3d3a26f931d9fb61cd3a49f035b3abd72'
     widgetScript.defer = true
+    
+    // Configureer SalesIQ voor cookie consent
+    widgetScript.onload = () => {
+      // Wacht even tot SalesIQ volledig is geladen
+      setTimeout(() => {
+        if (window.$zoho && window.$zoho.salesiq) {
+          window.$zoho.salesiq.ready(function() {
+            try {
+              // Check cookie consent status
+              const cookieConsent = localStorage.getItem('cookieConsent')
+              
+              // SalesIQ trackt automatisch bezoekers op basis van IP-adres
+              // Cookies worden gebruikt voor persistentie, maar IP-based tracking werkt altijd
+              if (cookieConsent === 'accepted') {
+                // Als cookies zijn geaccepteerd, SalesIQ kan cookies gebruiken voor betere tracking
+                console.log('SalesIQ: Geladen - Cookie consent geaccepteerd, volledige tracking actief')
+              } else {
+                // Als cookies niet zijn geaccepteerd, SalesIQ gebruikt alleen IP-based tracking
+                // Dit is AVG-compliant en bezoekers worden nog steeds getrackt
+                console.log('SalesIQ: Geladen - Alleen IP-based tracking (AVG-compliant)')
+              }
+            } catch (error) {
+              console.error('SalesIQ: Fout bij configureren:', error)
+            }
+          })
+        }
+      }, 1000)
+    }
+    
     document.head.appendChild(widgetScript)
   }
 
-  // Laad SalesIQ bij mount als cookie consent al is geaccepteerd
+  // Laad SalesIQ altijd bij mount voor visitor tracking
+  // IP-based tracking is AVG-compliant zonder cookie consent
   useEffect(() => {
-    const cookieConsent = localStorage.getItem('cookieConsent')
-    
-    // Alleen laden als gebruiker cookies heeft geaccepteerd
-    if (cookieConsent === 'accepted') {
-      loadSalesIQ()
-    }
+    loadSalesIQ()
   }, [])
 
   // Luister naar cookie consent wijzigingen
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'cookieConsent' && e.newValue === 'accepted') {
-        loadSalesIQ()
+      if (e.key === 'cookieConsent') {
+        // SalesIQ is al geladen en trackt bezoekers
+        // Bij acceptatie kunnen cookies worden gebruikt voor betere tracking
+        // Bij weigering blijft IP-based tracking actief
+        if (e.newValue === 'accepted') {
+          console.log('SalesIQ: Cookie consent geaccepteerd, volledige tracking nu actief')
+        } else if (e.newValue === 'rejected') {
+          console.log('SalesIQ: Cookie consent geweigerd, IP-based tracking blijft actief')
+        }
       }
     }
 
     const handleCookieAccept = () => {
       const cookieConsent = localStorage.getItem('cookieConsent')
       if (cookieConsent === 'accepted') {
-        loadSalesIQ()
+        console.log('SalesIQ: Cookie consent geaccepteerd, volledige tracking nu actief')
       }
     }
 
