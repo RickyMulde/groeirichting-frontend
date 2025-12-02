@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { ArrowLeft, Users } from 'lucide-react'
+import { ArrowLeft, Users, LogIn, Copy, Check } from 'lucide-react'
 
 function GebruikersBeheer() {
   const [loading, setLoading] = useState(true)
@@ -9,6 +9,8 @@ function GebruikersBeheer() {
   const [werkgevers, setWerkgevers] = useState([])
   const [werknemers, setWerknemers] = useState([])
   const [zoekterm, setZoekterm] = useState('')
+  const [generatingLink, setGeneratingLink] = useState(null) // userId of email die link genereert
+  const [copiedLink, setCopiedLink] = useState(null) // userId of email waarvan link is gekopieerd
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -26,32 +28,80 @@ function GebruikersBeheer() {
     }
 
     const fetchGebruikers = async () => {
-      // Haal werkgevers op uit employers
-      const { data: werkgeversData, error: werkgeversError } = await supabase
-        .from('employers')
-        .select('*')
-        .order('created_at', { ascending: false })
+      try {
+        setError(null)
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (!session) {
+          setError('Geen actieve sessie')
+          return
+        }
 
-      if (!werkgeversError && werkgeversData) {
-        setWerkgevers(werkgeversData)
-      }
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
-      // Haal werknemers op uit users
-      const { data: werknemersData, error: werknemersError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('role', 'employee')
-        .order('created_at', { ascending: false })
+        // Haal werkgevers op via backend endpoint
+        const werkgeversResponse = await fetch(`${apiBaseUrl}/api/admin/get-all-employers`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        })
 
-      if (!werknemersError && werknemersData) {
-        setWerknemers(werknemersData)
+        if (!werkgeversResponse.ok) {
+          if (werkgeversResponse.status === 403) {
+            setError('Geen toegang. Alleen superusers kunnen deze pagina bekijken.')
+            return
+          }
+          if (werkgeversResponse.status === 401) {
+            navigate('/login')
+            return
+          }
+          const errorData = await werkgeversResponse.json().catch(() => ({}))
+          throw new Error(errorData.error || 'Fout bij ophalen werkgevers')
+        }
+
+        const werkgeversData = await werkgeversResponse.json()
+        if (werkgeversData.success && werkgeversData.employers) {
+          setWerkgevers(werkgeversData.employers)
+        }
+
+        // Haal werknemers op via backend endpoint
+        const werknemersResponse = await fetch(`${apiBaseUrl}/api/admin/get-all-users?role=employee`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!werknemersResponse.ok) {
+          if (werknemersResponse.status === 403) {
+            setError('Geen toegang. Alleen superusers kunnen deze pagina bekijken.')
+            return
+          }
+          if (werknemersResponse.status === 401) {
+            navigate('/login')
+            return
+          }
+          const errorData = await werknemersResponse.json().catch(() => ({}))
+          throw new Error(errorData.error || 'Fout bij ophalen werknemers')
+        }
+
+        const werknemersData = await werknemersResponse.json()
+        if (werknemersData.success && werknemersData.users) {
+          setWerknemers(werknemersData.users)
+        }
+
+      } catch (err) {
+        console.error('Fout bij ophalen gebruikers:', err)
+        setError(err.message || 'Er is een fout opgetreden bij het ophalen van de gegevens.')
+      } finally {
+        setLoading(false)
       }
     }
 
     checkAuth()
     fetchGebruikers()
-    setLoading(false)
-  }, [])
+  }, [navigate])
 
   // Filteren op zoekterm (case-insensitive)
   const filterWerkgevers = (lijst) => {
@@ -77,6 +127,110 @@ function GebruikersBeheer() {
 
   const gefilterdeWerkgevers = filterWerkgevers(werkgevers)
   const gefilterdeWerknemers = filterWerknemers(werknemers)
+
+  // Functie om magic link te genereren en te openen
+  const handleLoginAsUser = async (email, userId = null) => {
+    try {
+      setGeneratingLink(userId || email)
+      setError(null)
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setError('Geen actieve sessie')
+        return
+      }
+
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+
+      const response = await fetch(`${apiBaseUrl}/api/admin/generate-magic-link`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          userId: userId
+        })
+      })
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          setError('Geen toegang. Alleen superusers kunnen deze functie gebruiken.')
+          return
+        }
+        if (response.status === 401) {
+          navigate('/login')
+          return
+        }
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Fout bij genereren magic link')
+      }
+
+      const data = await response.json()
+      if (data.success && data.magicLink) {
+        // Open link in nieuw tabblad
+        window.open(data.magicLink, '_blank')
+      } else {
+        throw new Error('Geen magic link ontvangen')
+      }
+
+    } catch (err) {
+      console.error('Fout bij genereren magic link:', err)
+      setError(err.message || 'Er is een fout opgetreden bij het genereren van de login link.')
+    } finally {
+      setGeneratingLink(null)
+    }
+  }
+
+  // Functie om magic link te kopiëren naar clipboard
+  const handleCopyMagicLink = async (email, userId = null) => {
+    try {
+      setGeneratingLink(userId || email)
+      setError(null)
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setError('Geen actieve sessie')
+        return
+      }
+
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+
+      const response = await fetch(`${apiBaseUrl}/api/admin/generate-magic-link`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          userId: userId
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Fout bij genereren magic link')
+      }
+
+      const data = await response.json()
+      if (data.success && data.magicLink) {
+        // Kopieer naar clipboard
+        await navigator.clipboard.writeText(data.magicLink)
+        setCopiedLink(userId || email)
+        setTimeout(() => setCopiedLink(null), 2000) // Reset na 2 seconden
+      } else {
+        throw new Error('Geen magic link ontvangen')
+      }
+
+    } catch (err) {
+      console.error('Fout bij kopiëren magic link:', err)
+      setError(err.message || 'Er is een fout opgetreden bij het kopiëren van de login link.')
+    } finally {
+      setGeneratingLink(null)
+    }
+  }
 
   if (loading) return <div className="page-container">Laden...</div>
   if (error) return <div className="page-container text-red-600">{error}</div>
@@ -132,9 +286,43 @@ function GebruikersBeheer() {
                     <p className="text-sm text-gray-600 mb-3">
                       Aangemaakt: {new Date(werkgever.created_at).toLocaleDateString('nl-NL')}
                     </p>
-                    <div className="flex gap-2">
-                      <button className="btn btn-accent text-xs">Bewerk</button>
-                      <button className="btn btn-secondary text-xs">Details</button>
+                    <div className="flex gap-2 flex-wrap">
+                      <button 
+                        onClick={() => handleLoginAsUser(werkgever.contact_email)}
+                        disabled={generatingLink === werkgever.contact_email}
+                        className="btn btn-primary text-xs flex items-center gap-1"
+                        title="Login als deze werkgever"
+                      >
+                        {generatingLink === werkgever.contact_email ? (
+                          <>
+                            <span className="loading loading-spinner loading-xs"></span>
+                            Laden...
+                          </>
+                        ) : (
+                          <>
+                            <LogIn className="w-3 h-3" />
+                            Login als
+                          </>
+                        )}
+                      </button>
+                      <button 
+                        onClick={() => handleCopyMagicLink(werkgever.contact_email)}
+                        disabled={generatingLink === werkgever.contact_email}
+                        className="btn btn-secondary text-xs flex items-center gap-1"
+                        title="Kopieer login link"
+                      >
+                        {copiedLink === werkgever.contact_email ? (
+                          <>
+                            <Check className="w-3 h-3" />
+                            Gekopieerd!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            Kopieer link
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 ))
@@ -160,9 +348,43 @@ function GebruikersBeheer() {
                     <p className="text-sm text-gray-600 mb-3">
                       Aangemaakt: {new Date(werknemer.created_at).toLocaleDateString('nl-NL')}
                     </p>
-                    <div className="flex gap-2">
-                      <button className="btn btn-accent text-xs">Bewerk</button>
-                      <button className="btn btn-secondary text-xs">Details</button>
+                    <div className="flex gap-2 flex-wrap">
+                      <button 
+                        onClick={() => handleLoginAsUser(werknemer.email, werknemer.id)}
+                        disabled={generatingLink === werknemer.id}
+                        className="btn btn-primary text-xs flex items-center gap-1"
+                        title="Login als deze werknemer"
+                      >
+                        {generatingLink === werknemer.id ? (
+                          <>
+                            <span className="loading loading-spinner loading-xs"></span>
+                            Laden...
+                          </>
+                        ) : (
+                          <>
+                            <LogIn className="w-3 h-3" />
+                            Login als
+                          </>
+                        )}
+                      </button>
+                      <button 
+                        onClick={() => handleCopyMagicLink(werknemer.email, werknemer.id)}
+                        disabled={generatingLink === werknemer.id}
+                        className="btn btn-secondary text-xs flex items-center gap-1"
+                        title="Kopieer login link"
+                      >
+                        {copiedLink === werknemer.id ? (
+                          <>
+                            <Check className="w-3 h-3" />
+                            Gekopieerd!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            Kopieer link
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 ))
