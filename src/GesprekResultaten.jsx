@@ -463,11 +463,20 @@ function GesprekResultaten() {
                     </div>
                     
                     {uitgeklapteThemas.has(resultaat.id) ? (
-                      <ol className="list-decimal list-inside text-gray-700 space-y-2 mt-3">
-                        {getVervolgacties(resultaat).map((actie, index) => (
-                          <li key={index} className="leading-relaxed">{actie}</li>
-                        ))}
-                      </ol>
+                      <>
+                        <ol className="list-decimal list-inside text-gray-700 space-y-2 mt-3">
+                          {getVervolgacties(resultaat).map((actie, index) => (
+                            <li key={index} className="leading-relaxed">{actie}</li>
+                          ))}
+                        </ol>
+                        {getVervolgacties(resultaat).length > 0 && (
+                          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-sm text-yellow-800">
+                              <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
+                            </p>
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <div className="text-gray-600 text-sm mt-3">
                         <p>Klik op "Uitklappen" om de vervolgacties te bekijken</p>

@@ -459,13 +459,25 @@ function GesprekResultaat() {
                       <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
                     </div>
                   )}
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
+                    </p>
+                  </div>
                 </>
               ) : (
-                <ol className="list-decimal list-inside text-gray-700 space-y-1">
-                  <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
-                  <li>Zoek naar workshops of trainingen over energiemanagement en werk-privébalans die passen bij jouw situatie.</li>
-                  <li>Onderzoek welke ondersteuning beschikbaar is binnen je organisatie voor persoonlijk advies of begeleiding.</li>
-                </ol>
+                <>
+                  <ol className="list-decimal list-inside text-gray-700 space-y-1">
+                    <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
+                    <li>Zoek naar workshops of trainingen over energiemanagement en werk-privébalans die passen bij jouw situatie.</li>
+                    <li>Onderzoek welke ondersteuning beschikbaar is binnen je organisatie voor persoonlijk advies of begeleiding.</li>
+                  </ol>
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
+                    </p>
+                  </div>
+                </>
               )
             ) : (
               <div className="text-gray-600 text-sm">
