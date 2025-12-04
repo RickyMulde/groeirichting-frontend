@@ -56,6 +56,75 @@ function HoeWerktHet() {
           ]
             },
             {
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Hoe werkt de AI in GroeiRichting precies?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "De AI in GroeiRichting helpt medewerkers tijdens het gesprek door door te vragen op hun antwoorden. Als een medewerker bijvoorbeeld zegt 'de werkdruk is soms te hoog', vraagt de AI automatisch: 'Waardoor voelt het zwaarder?' of 'Wat zou helpen om dit beter te laten verlopen?'. Zo ontstaan diepere, concretere antwoorden zonder dat de medewerker zelf alles moet bedenken."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe lang duurt een gesprek in het GroeiPortaal?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Een gesprek per thema duurt gemiddeld 5-10 minuten. Medewerkers kunnen het gesprek op elk moment pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe worden de antwoorden van medewerkers verwerkt?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "De AI analyseert alle antwoorden per thema en genereert een persoonlijke samenvatting voor de medewerker met groeisuggesties. Voor werkgevers worden de antwoorden geanonimiseerd en samengevoegd tot trends en signalen per team. Persoonlijke antwoorden zijn nooit zichtbaar voor de werkgever."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Welke thema's kunnen besproken worden?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Standaard thema's zijn: werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer, en perspectief & ontwikkeling. Je kunt als werkgever zelf bepalen welke thema's relevant zijn voor jouw organisatie en wanneer gesprekken plaatsvinden."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe werkt de anonimiteit precies?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Persoonlijke antwoorden van medewerkers zijn volledig privé en nooit zichtbaar voor werkgevers. Alleen geanonimiseerde samenvattingen en trends per team worden gedeeld. Als een team bijvoorbeeld uit 5 personen bestaat, zie je alleen dat '3 van de 5 medewerkers' iets melden, nooit wie specifiek."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Moeten medewerkers een app installeren?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nee, GroeiRichting werkt volledig via de browser op desktop, tablet of smartphone. Geen app nodig, geen installatie. Medewerkers loggen in via een link en kunnen direct starten."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe vaak moeten gesprekken plaatsvinden?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We adviseren minimaal twee keer per jaar (bijvoorbeeld in maart en oktober), maar je bepaalt zelf het ritme. Sommige organisaties kiezen voor kwartaalgesprekken, anderen combineren het met functioneringsgesprekken. Het platform is flexibel in te richten naar jouw behoeften."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Wat gebeurt er met de data na een gesprek?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Medewerkers ontvangen direct na het gesprek een persoonlijke samenvatting met groeisuggesties. Werkgevers krijgen binnen enkele dagen een overzicht met thema's, trends en concrete adviezen. Alle data wordt veilig opgeslagen volgens AVG/GDPR richtlijnen en blijft eigendom van de organisatie."
+                  }
+                }
+              ]
+            },
+            {
               "@type": "BreadcrumbList",
               "itemListElement": [
                 {
@@ -81,7 +150,7 @@ function HoeWerktHet() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Meer inzicht, betere gesprekken, sterkere teams
+            Hoe werkt GroeiRichting? Meer inzicht, betere gesprekken, sterkere teams
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
             Transformeer je jaarlijkse functioneringsgesprek in een doorlopende dialoog die direct resultaat oplevert.
@@ -89,7 +158,7 @@ function HoeWerktHet() {
           
           <button className="btn btn-primary">Start met één team gratis</button>
         </div>
-        <HeroIllustratie className="w-full h-auto" />
+        <HeroIllustratie className="w-full h-auto" aria-label="Illustratie van hoe GroeiRichting werkt: AI-gestuurde gesprekken tussen werkgevers en medewerkers" />
       </section>
 
       {/* Herken je dit? */}
@@ -362,6 +431,104 @@ function HoeWerktHet() {
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <p className="text-[var(--kleur-muted)]">Minder verloop, minder verzuim, meer betrokkenheid.</p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Technische FAQ sectie */}
+      <section className="py-12 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-[var(--kleur-primary)] mb-12">
+            Veelgestelde vragen over hoe GroeiRichting werkt
+          </h2>
+          
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe werkt de AI in GroeiRichting precies?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                De AI in GroeiRichting helpt medewerkers tijdens het gesprek door door te vragen op hun antwoorden. 
+                Als een medewerker bijvoorbeeld zegt "de werkdruk is soms te hoog", vraagt de AI automatisch: 
+                "Waardoor voelt het zwaarder?" of "Wat zou helpen om dit beter te laten verlopen?". 
+                Zo ontstaan diepere, concretere antwoorden zonder dat de medewerker zelf alles moet bedenken.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe lang duurt een gesprek in het GroeiPortaal?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Een gesprek per thema duurt gemiddeld 5-10 minuten. Medewerkers kunnen het gesprek op elk moment 
+                pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe worden de antwoorden van medewerkers verwerkt?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                De AI analyseert alle antwoorden per thema en genereert een persoonlijke samenvatting voor de medewerker 
+                met groeisuggesties. Voor werkgevers worden de antwoorden geanonimiseerd en samengevoegd tot trends en 
+                signalen per team. Persoonlijke antwoorden zijn nooit zichtbaar voor de werkgever.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Welke thema's kunnen besproken worden?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Standaard thema's zijn: werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer, 
+                en perspectief & ontwikkeling. Je kunt als werkgever zelf bepalen welke thema's relevant zijn 
+                voor jouw organisatie en wanneer gesprekken plaatsvinden.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe werkt de anonimiteit precies?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Persoonlijke antwoorden van medewerkers zijn volledig privé en nooit zichtbaar voor werkgevers. 
+                Alleen geanonimiseerde samenvattingen en trends per team worden gedeeld. Als een team bijvoorbeeld 
+                uit 5 personen bestaat, zie je alleen dat "3 van de 5 medewerkers" iets melden, nooit wie specifiek.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Moeten medewerkers een app installeren?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Nee, GroeiRichting werkt volledig via de browser op desktop, tablet of smartphone. 
+                Geen app nodig, geen installatie. Medewerkers loggen in via een link en kunnen direct starten.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe vaak moeten gesprekken plaatsvinden?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                We adviseren minimaal twee keer per jaar (bijvoorbeeld in maart en oktober), maar je bepaalt zelf 
+                het ritme. Sommige organisaties kiezen voor kwartaalgesprekken, anderen combineren het met 
+                functioneringsgesprekken. Het platform is flexibel in te richten naar jouw behoeften.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Wat gebeurt er met de data na een gesprek?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Medewerkers ontvangen direct na het gesprek een persoonlijke samenvatting met groeisuggesties. 
+                Werkgevers krijgen binnen enkele dagen een overzicht met thema's, trends en concrete adviezen. 
+                Alle data wordt veilig opgeslagen volgens AVG/GDPR richtlijnen en blijft eigendom van de organisatie.
+              </p>
             </div>
           </div>
         </div>
