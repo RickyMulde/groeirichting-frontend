@@ -71,7 +71,7 @@ function HoeWerktHet() {
                   "name": "Hoe lang duurt een gesprek in het GroeiPortaal?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Een gesprek per thema duurt gemiddeld 5-10 minuten. Medewerkers kunnen het gesprek op elk moment pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo."
+                    "text": "Een gesprek per thema duurt gemiddeld 5-7,5 minuten. Medewerkers kunnen het gesprek op elk moment pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo."
                   }
                 },
                 {
@@ -92,6 +92,14 @@ function HoeWerktHet() {
                 },
                 {
                   "@type": "Question",
+                  "name": "Kan ik zelf thema's toevoegen?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, je kunt zelf thema's toevoegen. Vraag hiervoor het sjabloon op om in te vullen bij GroeiRichting. Je wordt hier professioneel ondersteund bij het opstellen van thema's die aansluiten bij jouw organisatie."
+                  }
+                },
+                {
+                  "@type": "Question",
                   "name": "Hoe werkt de anonimiteit precies?",
                   "acceptedAnswer": {
                     "@type": "Answer",
@@ -104,14 +112,6 @@ function HoeWerktHet() {
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Nee, GroeiRichting werkt volledig via de browser op desktop, tablet of smartphone. Geen app nodig, geen installatie. Medewerkers loggen in via een link en kunnen direct starten."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Hoe vaak moeten gesprekken plaatsvinden?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "We adviseren minimaal twee keer per jaar (bijvoorbeeld in maart en oktober), maar je bepaalt zelf het ritme. Sommige organisaties kiezen voor kwartaalgesprekken, anderen combineren het met functioneringsgesprekken. Het platform is flexibel in te richten naar jouw behoeften."
                   }
                 },
                 {
@@ -150,31 +150,79 @@ function HoeWerktHet() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Hoe werkt GroeiRichting? Meer inzicht, betere gesprekken, sterkere teams
+            Meet direct hoe jouw organisatie er voor staat
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Transformeer je jaarlijkse functioneringsgesprek in een doorlopende dialoog die direct resultaat oplevert.
+            Per team. Per thema. Concrete inzichten die je direct kunt gebruiken.
           </p>
+          
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-lg">
+            <p className="text-[var(--kleur-text)] font-medium">
+              Geen traditioneel MTO met vage uitkomsten die niet worden opgevolgd, maar concrete inzichten waar je direct iets mee kunt.
+            </p>
+          </div>
           
           <button className="btn btn-primary">Start met één team gratis</button>
         </div>
         <HeroIllustratie className="w-full h-auto" aria-label="Illustratie van hoe GroeiRichting werkt: AI-gestuurde gesprekken tussen werkgevers en medewerkers" />
       </section>
 
-      {/* Herken je dit? */}
-      <section className="bg-gray-50 py-12 px-6 rounded-xl">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-semibold mb-6">Herken je dit?</h2>
+      {/* Thema's sectie */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-[var(--kleur-primary)] mb-4">
+            Thema's die je organisatie inzicht geven
+          </h2>
+          <p className="text-lg text-center text-[var(--kleur-muted)] mb-12">
+            Elk thema levert concrete inzichten op waar je direct mee aan de slag kunt.
+          </p>
           
-          <div className="space-y-4 text-lg text-[var(--kleur-muted)] mb-8">
-            <p>Je wilt meer binding met je medewerkers.</p>
-            <p>Je wilt eerder weten wat er speelt, zodat je problemen voorkomt in plaats van achteraf oplost.</p>
-            <p>Nu voer je één of twee functioneringsgesprekken per jaar, maar eigenlijk voel je: dit is niet genoeg.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Werkdruk & taaklast */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Werkdruk & taaklast
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Signaleer vroegtijdig stress en overbelasting. Voorkom verzuim door tijdig in te grijpen.
+              </p>
+            </div>
+
+            {/* Motivatie & werkplezier */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Motivatie & werkplezier
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Ontdek wat medewerkers motiveert en waar energie vandaan komt. Verhoog betrokkenheid en productiviteit.
+              </p>
+            </div>
+
+            {/* Samenwerking & werksfeer */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Samenwerking & werksfeer
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Krijg inzicht in teamdynamiek en samenwerking. Verbeter de werksfeer en voorkom conflicten.
+              </p>
+            </div>
+
+            {/* Perspectief & ontwikkeling */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Perspectief & ontwikkeling
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Ontdek ontwikkelwensen en loopbaanambities. Behoud talent door gerichte groeimogelijkheden te bieden.
+              </p>
+            </div>
           </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-2xl mx-auto">
-            <p className="text-lg font-medium text-[var(--kleur-primary)]">
-              Met het GroeiPortaal van GroeiRichting maak je die gesprekken rijker, persoonlijker en waardevoller — zonder dat het jou of je team extra tijd kost.
+
+          {/* Maatwerk thema's box */}
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg max-w-4xl mx-auto">
+            <p className="text-[var(--kleur-text)] font-medium">
+              Naast deze standaard thema's kun je ook maatwerk thema's toevoegen. Vraag het sjabloon op bij GroeiRichting en we helpen je professioneel bij het opstellen van thema's die perfect aansluiten bij jouw organisatie.
             </p>
           </div>
         </div>
@@ -461,7 +509,7 @@ function HoeWerktHet() {
                 Hoe lang duurt een gesprek in het GroeiPortaal?
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                Een gesprek per thema duurt gemiddeld 5-10 minuten. Medewerkers kunnen het gesprek op elk moment 
+                Een gesprek per thema duurt gemiddeld 5-7,5 minuten. Medewerkers kunnen het gesprek op elk moment 
                 pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo.
               </p>
             </div>
@@ -490,6 +538,16 @@ function HoeWerktHet() {
 
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Kan ik zelf thema's toevoegen?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Ja, je kunt zelf thema's toevoegen. Vraag hiervoor het sjabloon op om in te vullen bij GroeiRichting. 
+                Je wordt hier professioneel ondersteund bij het opstellen van thema's die aansluiten bij jouw organisatie.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
                 Hoe werkt de anonimiteit precies?
               </h3>
               <p className="text-[var(--kleur-muted)]">
@@ -506,17 +564,6 @@ function HoeWerktHet() {
               <p className="text-[var(--kleur-muted)]">
                 Nee, GroeiRichting werkt volledig via de browser op desktop, tablet of smartphone. 
                 Geen app nodig, geen installatie. Medewerkers loggen in via een link en kunnen direct starten.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
-                Hoe vaak moeten gesprekken plaatsvinden?
-              </h3>
-              <p className="text-[var(--kleur-muted)]">
-                We adviseren minimaal twee keer per jaar (bijvoorbeeld in maart en oktober), maar je bepaalt zelf 
-                het ritme. Sommige organisaties kiezen voor kwartaalgesprekken, anderen combineren het met 
-                functioneringsgesprekken. Het platform is flexibel in te richten naar jouw behoeften.
               </p>
             </div>
 
