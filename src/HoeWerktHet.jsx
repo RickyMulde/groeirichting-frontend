@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, Users, MessageCircle, BarChart,
@@ -6,8 +7,11 @@ import {
 
 import HeroIllustratie from './assets/hero.svg?react'
 import SEOHead from './components/SEOHead'
+import BrochureDownloadModal from './components/BrochureDownloadModal'
 
 function HoeWerktHet() {
+  const [showBrochureModal, setShowBrochureModal] = useState(false)
+
   return (
     <>
       <SEOHead 
@@ -162,7 +166,12 @@ function HoeWerktHet() {
             </p>
           </div>
           
-          <button className="btn btn-primary">Start met één team gratis</button>
+          <button 
+            onClick={() => setShowBrochureModal(true)}
+            className="btn btn-primary"
+          >
+            Download informatiebrochure
+          </button>
         </div>
         <HeroIllustratie className="w-full h-auto" aria-label="Illustratie van hoe GroeiRichting werkt: AI-gestuurde gesprekken tussen werkgevers en medewerkers" />
       </section>
@@ -597,17 +606,28 @@ function HoeWerktHet() {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn bg-white text-[var(--kleur-primary)] hover:bg-gray-100">
-              Start met één team gratis
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn bg-white text-[var(--kleur-primary)] hover:bg-gray-100"
+            >
+              Download informatiebrochure
             </button>
-            <button className="btn border-2 border-white text-white hover:bg-white hover:text-[var(--kleur-primary)]">
-              Plan een demo
-            </button>
+            <Link to="/contact">
+              <button className="btn border-2 border-white text-white hover:bg-white hover:text-[var(--kleur-primary)]">
+                Plan een demo
+              </button>
+            </Link>
           </div>
         </div>
       </section>
 
       </div>
+
+      {/* Brochure Download Modal */}
+      <BrochureDownloadModal 
+        isOpen={showBrochureModal}
+        onClose={() => setShowBrochureModal(false)}
+      />
     </>
   )
 }
