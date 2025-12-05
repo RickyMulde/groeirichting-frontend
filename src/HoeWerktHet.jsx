@@ -229,10 +229,19 @@ function HoeWerktHet() {
           </div>
 
           {/* Maatwerk thema's box */}
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg max-w-4xl mx-auto">
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg max-w-4xl mx-auto mb-8">
             <p className="text-[var(--kleur-text)] font-medium">
               Naast deze standaard thema's kun je ook maatwerk thema's toevoegen. Vraag het sjabloon op bij GroeiRichting en we helpen je professioneel bij het opstellen van thema's die perfect aansluiten bij jouw organisatie.
             </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <Link to="/contact">
+              <button className="btn btn-primary">
+                Neem contact op
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -298,6 +307,15 @@ function HoeWerktHet() {
               </div>
             </div>
           </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-8">
+            <Link to="/contact">
+              <button className="btn btn-primary">
+                Plan demo
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -331,10 +349,20 @@ function HoeWerktHet() {
             </div>
           </div>
           
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-center">
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-center mb-8">
             <p className="font-medium text-yellow-800">
               Vertrouwen ontstaat niet door beloftes, maar door waarmaken. Daarom hoort terugkoppeling altijd bij het proces.
             </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-primary"
+            >
+              Download informatiebrochure
+            </button>
           </div>
         </div>
       </section>
@@ -413,6 +441,15 @@ function HoeWerktHet() {
                 </ul>
               </div>
             </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-8">
+            <Link to="/offerte">
+              <button className="btn btn-primary">
+                Vraag offerte op
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -601,7 +638,7 @@ function HoeWerktHet() {
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8">
             <p className="text-lg font-medium">
-              👉 Start met één team gratis en ervaar hoe het werkt.
+              👉 Wacht niet langer en breng je organisatie direct in beeld.
             </p>
           </div>
           
