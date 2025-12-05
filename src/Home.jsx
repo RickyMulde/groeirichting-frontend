@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
@@ -7,8 +8,11 @@ import {
 import HeroIllustratie from './assets/hero.svg?react'
 import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
+import BrochureDownloadModal from './components/BrochureDownloadModal'
 
 function Home() {
+  const [showBrochureModal, setShowBrochureModal] = useState(false)
+
   return (
     <>
       <SEOHead 
@@ -126,7 +130,12 @@ function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
-            <Link to="/hoe-werkt-het" className="btn btn-accent">Bekijk hoe het werkt</Link>
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-accent"
+            >
+              Download informatiebrochure
+            </button>
           </div>
 
           {/* Micro-trust */}
@@ -330,7 +339,7 @@ function Home() {
         </div>
         
         {/* CTA */}
-        <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
+        <Link to="/contact" className="btn btn-primary">Neem contact op</Link>
       </section>
 
       {/* Meer gesprekken, zonder extra tijd */}
@@ -496,6 +505,12 @@ function Home() {
         <Link to="/contact" className="btn btn-secondary">Plan vrijblijvend gesprek</Link>
       </section>
       </div>
+
+      {/* Brochure Download Modal */}
+      <BrochureDownloadModal 
+        isOpen={showBrochureModal}
+        onClose={() => setShowBrochureModal(false)}
+      />
     </>
   )
 }

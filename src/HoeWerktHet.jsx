@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, Users, MessageCircle, BarChart,
@@ -6,8 +7,11 @@ import {
 
 import HeroIllustratie from './assets/hero.svg?react'
 import SEOHead from './components/SEOHead'
+import BrochureDownloadModal from './components/BrochureDownloadModal'
 
 function HoeWerktHet() {
+  const [showBrochureModal, setShowBrochureModal] = useState(false)
+
   return (
     <>
       <SEOHead 
@@ -56,6 +60,75 @@ function HoeWerktHet() {
           ]
             },
             {
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Hoe werkt de AI in GroeiRichting precies?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "De AI in GroeiRichting helpt medewerkers tijdens het gesprek door door te vragen op hun antwoorden. Als een medewerker bijvoorbeeld zegt 'de werkdruk is soms te hoog', vraagt de AI automatisch: 'Waardoor voelt het zwaarder?' of 'Wat zou helpen om dit beter te laten verlopen?'. Zo ontstaan diepere, concretere antwoorden zonder dat de medewerker zelf alles moet bedenken."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe lang duurt een gesprek in het GroeiPortaal?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Een gesprek per thema duurt gemiddeld 5-7,5 minuten. Medewerkers kunnen het gesprek op elk moment pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe worden de antwoorden van medewerkers verwerkt?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "De AI analyseert alle antwoorden per thema en genereert een persoonlijke samenvatting voor de medewerker met groeisuggesties. Voor werkgevers worden de antwoorden geanonimiseerd en samengevoegd tot trends en signalen per team. Persoonlijke antwoorden zijn nooit zichtbaar voor de werkgever."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Welke thema's kunnen besproken worden?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Standaard thema's zijn: werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer, en perspectief & ontwikkeling. Je kunt als werkgever zelf bepalen welke thema's relevant zijn voor jouw organisatie en wanneer gesprekken plaatsvinden."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Kan ik zelf thema's toevoegen?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, je kunt zelf thema's toevoegen. Vraag hiervoor het sjabloon op om in te vullen bij GroeiRichting. Je wordt hier professioneel ondersteund bij het opstellen van thema's die aansluiten bij jouw organisatie."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Hoe werkt de anonimiteit precies?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Persoonlijke antwoorden van medewerkers zijn volledig privé en nooit zichtbaar voor werkgevers. Alleen geanonimiseerde samenvattingen en trends per team worden gedeeld. Als een team bijvoorbeeld uit 5 personen bestaat, zie je alleen dat '3 van de 5 medewerkers' iets melden, nooit wie specifiek."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Moeten medewerkers een app installeren?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nee, GroeiRichting werkt volledig via de browser op desktop, tablet of smartphone. Geen app nodig, geen installatie. Medewerkers loggen in via een link en kunnen direct starten."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Wat gebeurt er met de data na een gesprek?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Medewerkers ontvangen direct na het gesprek een persoonlijke samenvatting met groeisuggesties. Werkgevers krijgen binnen enkele dagen een overzicht met thema's, trends en concrete adviezen. Alle data wordt veilig opgeslagen volgens AVG/GDPR richtlijnen en blijft eigendom van de organisatie."
+                  }
+                }
+              ]
+            },
+            {
               "@type": "BreadcrumbList",
               "itemListElement": [
                 {
@@ -81,32 +154,94 @@ function HoeWerktHet() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Meer inzicht, betere gesprekken, sterkere teams
+            Meet direct hoe jouw organisatie er voor staat
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Transformeer je jaarlijkse functioneringsgesprek in een doorlopende dialoog die direct resultaat oplevert.
+            Per team. Per thema. Concrete inzichten die je direct kunt gebruiken.
           </p>
           
-          <button className="btn btn-primary">Start met één team gratis</button>
-        </div>
-        <HeroIllustratie className="w-full h-auto" />
-      </section>
-
-      {/* Herken je dit? */}
-      <section className="bg-gray-50 py-12 px-6 rounded-xl">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-semibold mb-6">Herken je dit?</h2>
-          
-          <div className="space-y-4 text-lg text-[var(--kleur-muted)] mb-8">
-            <p>Je wilt meer binding met je medewerkers.</p>
-            <p>Je wilt eerder weten wat er speelt, zodat je problemen voorkomt in plaats van achteraf oplost.</p>
-            <p>Nu voer je één of twee functioneringsgesprekken per jaar, maar eigenlijk voel je: dit is niet genoeg.</p>
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-lg">
+            <p className="text-[var(--kleur-text)] font-medium">
+              Geen traditioneel MTO met vage uitkomsten die niet worden opgevolgd, maar concrete inzichten waar je direct iets mee kunt.
+            </p>
           </div>
           
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-2xl mx-auto">
-            <p className="text-lg font-medium text-[var(--kleur-primary)]">
-              Met het GroeiPortaal van GroeiRichting maak je die gesprekken rijker, persoonlijker en waardevoller — zonder dat het jou of je team extra tijd kost.
+          <button 
+            onClick={() => setShowBrochureModal(true)}
+            className="btn btn-primary"
+          >
+            Download informatiebrochure
+          </button>
+        </div>
+        <HeroIllustratie className="w-full h-auto" aria-label="Illustratie van hoe GroeiRichting werkt: AI-gestuurde gesprekken tussen werkgevers en medewerkers" />
+      </section>
+
+      {/* Thema's sectie */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-[var(--kleur-primary)] mb-4">
+            Thema's die je organisatie inzicht geven
+          </h2>
+          <p className="text-lg text-center text-[var(--kleur-muted)] mb-12">
+            Elk thema levert concrete inzichten op waar je direct mee aan de slag kunt.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Werkdruk & taaklast */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Werkdruk & taaklast
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Signaleer vroegtijdig stress en overbelasting. Voorkom verzuim door tijdig in te grijpen.
+              </p>
+            </div>
+
+            {/* Motivatie & werkplezier */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Motivatie & werkplezier
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Ontdek wat medewerkers motiveert en waar energie vandaan komt. Verhoog betrokkenheid en productiviteit.
+              </p>
+            </div>
+
+            {/* Samenwerking & werksfeer */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Samenwerking & werksfeer
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Krijg inzicht in teamdynamiek en samenwerking. Verbeter de werksfeer en voorkom conflicten.
+              </p>
+            </div>
+
+            {/* Perspectief & ontwikkeling */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                Perspectief & ontwikkeling
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                <strong className="text-[var(--kleur-text)]">Wat het oplevert:</strong> Ontdek ontwikkelwensen en loopbaanambities. Behoud talent door gerichte groeimogelijkheden te bieden.
+              </p>
+            </div>
+          </div>
+
+          {/* Maatwerk thema's box */}
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg max-w-4xl mx-auto mb-8">
+            <p className="text-[var(--kleur-text)] font-medium">
+              Naast deze standaard thema's kun je ook maatwerk thema's toevoegen. Vraag het sjabloon op bij GroeiRichting en we helpen je professioneel bij het opstellen van thema's die perfect aansluiten bij jouw organisatie.
             </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <Link to="/contact">
+              <button className="btn btn-primary">
+                Neem contact op
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -172,6 +307,15 @@ function HoeWerktHet() {
               </div>
             </div>
           </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-8">
+            <Link to="/contact">
+              <button className="btn btn-primary">
+                Plan demo
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -205,10 +349,20 @@ function HoeWerktHet() {
             </div>
           </div>
           
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-center">
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-center mb-8">
             <p className="font-medium text-yellow-800">
               Vertrouwen ontstaat niet door beloftes, maar door waarmaken. Daarom hoort terugkoppeling altijd bij het proces.
             </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-primary"
+            >
+              Download informatiebrochure
+            </button>
           </div>
         </div>
       </section>
@@ -287,6 +441,15 @@ function HoeWerktHet() {
                 </ul>
               </div>
             </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-8">
+            <Link to="/offerte">
+              <button className="btn btn-primary">
+                Vraag offerte op
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -367,6 +530,103 @@ function HoeWerktHet() {
         </div>
       </section>
 
+      {/* Technische FAQ sectie */}
+      <section className="py-12 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-[var(--kleur-primary)] mb-12">
+            Veelgestelde vragen over hoe GroeiRichting werkt
+          </h2>
+          
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe werkt de AI in GroeiRichting precies?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                De AI in GroeiRichting helpt medewerkers tijdens het gesprek door door te vragen op hun antwoorden. 
+                Als een medewerker bijvoorbeeld zegt "de werkdruk is soms te hoog", vraagt de AI automatisch: 
+                "Waardoor voelt het zwaarder?" of "Wat zou helpen om dit beter te laten verlopen?". 
+                Zo ontstaan diepere, concretere antwoorden zonder dat de medewerker zelf alles moet bedenken.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe lang duurt een gesprek in het GroeiPortaal?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Een gesprek per thema duurt gemiddeld 5-7,5 minuten. Medewerkers kunnen het gesprek op elk moment 
+                pauzeren en later verder gaan. Er is geen tijdsdruk en alles gebeurt in hun eigen tempo.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe worden de antwoorden van medewerkers verwerkt?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                De AI analyseert alle antwoorden per thema en genereert een persoonlijke samenvatting voor de medewerker 
+                met groeisuggesties. Voor werkgevers worden de antwoorden geanonimiseerd en samengevoegd tot trends en 
+                signalen per team. Persoonlijke antwoorden zijn nooit zichtbaar voor de werkgever.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Welke thema's kunnen besproken worden?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Standaard thema's zijn: werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer, 
+                en perspectief & ontwikkeling. Je kunt als werkgever zelf bepalen welke thema's relevant zijn 
+                voor jouw organisatie en wanneer gesprekken plaatsvinden.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Kan ik zelf thema's toevoegen?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Ja, je kunt zelf thema's toevoegen. Vraag hiervoor het sjabloon op om in te vullen bij GroeiRichting. 
+                Je wordt hier professioneel ondersteund bij het opstellen van thema's die aansluiten bij jouw organisatie.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Hoe werkt de anonimiteit precies?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Persoonlijke antwoorden van medewerkers zijn volledig privé en nooit zichtbaar voor werkgevers. 
+                Alleen geanonimiseerde samenvattingen en trends per team worden gedeeld. Als een team bijvoorbeeld 
+                uit 5 personen bestaat, zie je alleen dat "3 van de 5 medewerkers" iets melden, nooit wie specifiek.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Moeten medewerkers een app installeren?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Nee, GroeiRichting werkt volledig via de browser op desktop, tablet of smartphone. 
+                Geen app nodig, geen installatie. Medewerkers loggen in via een link en kunnen direct starten.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="font-semibold text-[var(--kleur-text)] mb-2 text-lg">
+                Wat gebeurt er met de data na een gesprek?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Medewerkers ontvangen direct na het gesprek een persoonlijke samenvatting met groeisuggesties. 
+                Werkgevers krijgen binnen enkele dagen een overzicht met thema's, trends en concrete adviezen. 
+                Alle data wordt veilig opgeslagen volgens AVG/GDPR richtlijnen en blijft eigendom van de organisatie.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Groei begint met luisteren */}
       <section className="bg-[var(--kleur-primary)] py-16 px-6 rounded-xl text-white text-center">
         <div className="max-w-4xl mx-auto">
@@ -378,22 +638,33 @@ function HoeWerktHet() {
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8">
             <p className="text-lg font-medium">
-              👉 Start met één team gratis en ervaar hoe het werkt.
+              👉 Wacht niet langer en breng je organisatie direct in beeld.
             </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn bg-white text-[var(--kleur-primary)] hover:bg-gray-100">
-              Start met één team gratis
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn bg-white text-[var(--kleur-primary)] hover:bg-gray-100"
+            >
+              Download informatiebrochure
             </button>
-            <button className="btn border-2 border-white text-white hover:bg-white hover:text-[var(--kleur-primary)]">
-              Plan een demo
-            </button>
+            <Link to="/contact">
+              <button className="btn border-2 border-white text-white hover:bg-white hover:text-[var(--kleur-primary)]">
+                Plan een demo
+              </button>
+            </Link>
           </div>
         </div>
       </section>
 
       </div>
+
+      {/* Brochure Download Modal */}
+      <BrochureDownloadModal 
+        isOpen={showBrochureModal}
+        onClose={() => setShowBrochureModal(false)}
+      />
     </>
   )
 }
