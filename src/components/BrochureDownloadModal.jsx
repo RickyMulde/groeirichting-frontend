@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { X, Mail, User, CheckCircle } from 'lucide-react'
 
-const BrochureDownloadModal = ({ isOpen, onClose }) => {
+const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
   const [naam, setNaam] = useState('')
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  
+  const modalTitle = title || 'Download informatiebrochure'
+  const modalDescription = description || 'Vul je gegevens in en we sturen de brochure direct naar je email.'
+  const buttonText = title?.includes('voorbeeld') || title?.includes('Voorbeeld') 
+    ? 'Download voorbeeld-rapport' 
+    : 'Download brochure'
 
   // Reset form bij modal open/close
   useEffect(() => {
@@ -140,10 +146,10 @@ const BrochureDownloadModal = ({ isOpen, onClose }) => {
           // Form state
           <>
             <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">
-              Download informatiebrochure
+              {modalTitle}
             </h2>
             <p className="text-gray-600 mb-6">
-              Vul je gegevens in en we sturen de brochure direct naar je email.
+              {modalDescription}
             </p>
 
             {/* Error message */}
@@ -206,7 +212,7 @@ const BrochureDownloadModal = ({ isOpen, onClose }) => {
                   disabled={isSubmitting}
                   className="flex-1 btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Bezig met verzenden...' : 'Download brochure'}
+                  {isSubmitting ? 'Bezig met verzenden...' : buttonText}
                 </button>
               </div>
             </form>
