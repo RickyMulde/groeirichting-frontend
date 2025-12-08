@@ -33,7 +33,7 @@ function VoorHRProfessionals() {
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-wrap gap-4 mb-6">
             <Link 
               to="/contact"
               className="btn btn-primary"
@@ -98,8 +98,8 @@ function VoorHRProfessionals() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -112,8 +112,8 @@ function VoorHRProfessionals() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -126,8 +126,8 @@ function VoorHRProfessionals() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -164,8 +164,8 @@ function VoorHRProfessionals() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1: Verzuimpreventie */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
-                <TrendingDown className="w-8 h-8 text-white" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-600 to-blue-700 shadow-md">
+                <TrendingDown className="w-8 h-8 text-white drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Verzuimpreventie
@@ -177,8 +177,8 @@ function VoorHRProfessionals() {
 
             {/* Feature 2: Boardroom-ready */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
-                <BarChart3 className="w-8 h-8 text-white" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-600 to-blue-700 shadow-md">
+                <BarChart3 className="w-8 h-8 text-white drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Boardroom-ready
@@ -190,8 +190,8 @@ function VoorHRProfessionals() {
 
             {/* Feature 3: AI-analyse */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
-                <Brain className="w-8 h-8 text-white" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-600 to-blue-700 shadow-md">
+                <Brain className="w-8 h-8 text-white drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 AI-analyse
