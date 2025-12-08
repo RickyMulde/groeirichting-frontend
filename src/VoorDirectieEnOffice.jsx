@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   UserX, Briefcase, TrendingUp, CheckCircle,
   Quote, Zap, MessageSquare, BarChart,
-  LogOut, FileStack, Users, Bot, ChatBubbleLeftRight, Bell
+  LogOut, FileStack, Users, Bot, MessageCircle, Bell
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -127,7 +127,7 @@ function VoorDirectieEnOffice() {
 
               <div className="flex items-start gap-4">
                 <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <ChatBubbleLeftRight className="w-6 h-6 text-[var(--kleur-accent)]" />
+                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)]" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
