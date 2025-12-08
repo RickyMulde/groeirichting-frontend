@@ -37,13 +37,13 @@ function VoorDirectieEnOffice() {
           <div className="flex flex-col gap-4 mb-6">
             <Link 
               to="/contact"
-              className="btn btn-primary text-center"
+              className="btn btn-primary"
             >
               Neem contact op
             </Link>
             <button 
               onClick={() => setShowVoorbeeldRapportModal(true)}
-              className="btn btn-accent text-center"
+              className="btn btn-accent"
             >
               Download voorbeeldrapport
             </button>
@@ -187,7 +187,7 @@ function VoorDirectieEnOffice() {
             </h2>
             <Link 
               to="/contact"
-              className="btn btn-primary text-lg px-8 py-4"
+              className="btn btn-primary"
             >
               Neem contact op
             </Link>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Calendar, TrendingDown, Brain, Shield, CheckCircle,
-  BarChart3, FileText, Database
+  BarChart3, FileText, Database, MessageSquare, Bot, Bell
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -36,13 +36,13 @@ function VoorHRProfessionals() {
           <div className="flex flex-col gap-4 mb-6">
             <Link 
               to="/contact"
-              className="btn btn-primary text-center"
+              className="btn btn-primary"
             >
               Neem contact op
             </Link>
             <button 
               onClick={() => setShowBrochureModal(true)}
-              className="btn btn-accent text-center"
+              className="btn btn-accent"
             >
               Download voorbeeldrapport
             </button>
@@ -83,6 +83,72 @@ function VoorHRProfessionals() {
               <p className="text-lg text-white">
                 Continue hartslagmeting met GroeiRichting. Signaleer problemen terwijl ze ontstaan en stuur direct bij.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* De Oplossing - Feature Highlight */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
+            Jullie tool om concrete inzichten te genereren van de organisatie
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Geautomatiseerd
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    De tool voert de interviews, jij krijgt de inzichten.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
+                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Laagdrempelig
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Medewerkers antwoorden via een simpele chat, voelt niet als administratie.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Actiegericht
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Je krijgt geen dik rapport, maar direct een seintje: "Let op team Marketing ervaart de werkdruk als te hoog."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollbaar afbeelding vlak */}
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
+                <img 
+                  src="/thema-overzicht-dashboard.png" 
+                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -153,13 +219,13 @@ function VoorHRProfessionals() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => setShowBrochureModal(true)}
-              className="btn btn-accent text-lg px-8 py-4"
+              className="btn btn-accent"
             >
               Download voorbeeldrapport
             </button>
             <Link 
               to="/contact"
-              className="btn btn-primary text-lg px-8 py-4"
+              className="btn btn-primary"
             >
               Neem contact op
             </Link>
