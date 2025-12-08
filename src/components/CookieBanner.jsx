@@ -14,12 +14,12 @@ function CookieBanner() {
   const acceptCookies = () => {
     localStorage.setItem('cookieConsent', 'accepted')
     setShowBanner(false)
-    // Update Google Analytics consent
-    if (window.gtag) {
-      window.gtag('consent', 'update', { 
-        'analytics_storage': 'granted' 
-      })
-    }
+    // Update Google Tag Manager consent via dataLayer
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({
+      event: 'consent_update',
+      analytics_storage: 'granted'
+    })
     // Trigger custom event voor Zoho SalesIQ
     window.dispatchEvent(new Event('cookieConsentAccepted'))
   }
@@ -27,12 +27,12 @@ function CookieBanner() {
   const rejectCookies = () => {
     localStorage.setItem('cookieConsent', 'rejected')
     setShowBanner(false)
-    // Update Google Analytics consent - weigeren
-    if (window.gtag) {
-      window.gtag('consent', 'update', { 
-        'analytics_storage': 'denied' 
-      })
-    }
+    // Update Google Tag Manager consent via dataLayer - weigeren
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({
+      event: 'consent_update',
+      analytics_storage: 'denied'
+    })
   }
 
   if (!showBanner) return null

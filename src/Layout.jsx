@@ -122,13 +122,6 @@ function Layout({ children }) {
               >
                 Home
               </Link>
-              <Link 
-                to="/hoe-werkt-het" 
-                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-              >
-                Hoe werkt het
-              </Link>
-              
               {/* Voor wie Dropdown */}
               <div 
                 ref={dropdownRef}
@@ -136,15 +129,15 @@ function Layout({ children }) {
                 onMouseEnter={() => setIsVoorWieOpen(true)}
                 onMouseLeave={() => setIsVoorWieOpen(false)}
               >
-                <button
+                <div
                   onClick={() => setIsVoorWieOpen(!isVoorWieOpen)}
-                  className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium flex items-center gap-1"
+                  className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium flex items-center gap-1 cursor-pointer"
                 >
                   Voor wie
                   <ChevronDown 
                     className={`w-4 h-4 transition-transform duration-200 ${isVoorWieOpen ? 'rotate-180' : ''}`} 
                   />
-                </button>
+                </div>
                 
                 {/* Dropdown Menu */}
                 {isVoorWieOpen && (
@@ -169,6 +162,12 @@ function Layout({ children }) {
                 )}
               </div>
 
+              <Link 
+                to="/hoe-werkt-het" 
+                className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                Hoe werkt het
+              </Link>
               <Link 
                 to="/offerte" 
                 className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
@@ -233,25 +232,17 @@ function Layout({ children }) {
                 >
                   Home
                 </Link>
-                <Link 
-                  to="/hoe-werkt-het" 
-                  onClick={closeMobileMenu}
-                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
-                >
-                  Hoe werkt het
-                </Link>
-                
                 {/* Mobile Voor wie Dropdown */}
                 <div>
-                  <button
+                  <div
                     onClick={() => setIsMobileVoorWieOpen(!isMobileVoorWieOpen)}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium cursor-pointer"
                   >
                     Voor wie
                     <ChevronDown 
                       className={`w-4 h-4 transition-transform duration-200 ${isMobileVoorWieOpen ? 'rotate-180' : ''}`} 
                     />
-                  </button>
+                  </div>
                   
                   {/* Mobile Dropdown Items */}
                   {isMobileVoorWieOpen && (
@@ -276,6 +267,13 @@ function Layout({ children }) {
                   )}
                 </div>
 
+                <Link 
+                  to="/hoe-werkt-het" 
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
+                >
+                  Hoe werkt het
+                </Link>
                 <Link 
                   to="/offerte" 
                   onClick={closeMobileMenu}

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   UserX, Briefcase, TrendingUp, CheckCircle,
-  Quote, Zap, MessageSquare, BarChart
+  Quote, Zap, MessageSquare, BarChart,
+  LogOut, FileStack, Users, Bot, ChatBubbleLeftRight, Bell
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -34,19 +35,17 @@ function VoorDirectieEnOffice() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col gap-4 mb-6">
-            <a 
-              href="https://calendly.com/groeirichting/15min" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <Link 
+              to="/contact"
               className="btn btn-primary text-center"
             >
-              Plan adviesgesprek (15 min)
-            </a>
+              Neem contact op
+            </Link>
             <button 
               onClick={() => setShowVoorbeeldRapportModal(true)}
-              className="text-[var(--kleur-primary)] hover:text-[var(--kleur-accent)] underline text-center"
+              className="btn btn-accent text-center"
             >
-              Of bekijk eerst een voorbeeld-rapport (PDF)
+              Download voorbeeldrapport
             </button>
           </div>
         </div>
@@ -64,7 +63,7 @@ function VoorDirectieEnOffice() {
             {/* Kolom 1: Het stille vertrek */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <UserX className="w-8 h-8 text-[var(--kleur-primary)]" />
+                <LogOut className="w-8 h-8 text-[var(--kleur-primary)]" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Het stille vertrek
@@ -77,7 +76,7 @@ function VoorDirectieEnOffice() {
             {/* Kolom 2: De overbelaste Office Manager */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <Briefcase className="w-8 h-8 text-[var(--kleur-primary)]" />
+                <FileStack className="w-8 h-8 text-[var(--kleur-primary)]" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 De overbelaste Office Manager
@@ -90,7 +89,7 @@ function VoorDirectieEnOffice() {
             {/* Kolom 3: Groeipijn */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <TrendingUp className="w-8 h-8 text-[var(--kleur-primary)]" />
+                <Users className="w-8 h-8 text-[var(--kleur-primary)]" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Groeipijn
@@ -114,7 +113,7 @@ function VoorDirectieEnOffice() {
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Zap className="w-6 h-6 text-[var(--kleur-accent)]" />
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)]" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -128,7 +127,7 @@ function VoorDirectieEnOffice() {
 
               <div className="flex items-start gap-4">
                 <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)]" />
+                  <ChatBubbleLeftRight className="w-6 h-6 text-[var(--kleur-accent)]" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -142,7 +141,7 @@ function VoorDirectieEnOffice() {
 
               <div className="flex items-start gap-4">
                 <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <BarChart className="w-6 h-6 text-[var(--kleur-accent)]" />
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)]" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -181,14 +180,12 @@ function VoorDirectieEnOffice() {
             <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
               Klaar om je cultuur te borgen?
             </h2>
-            <a 
-              href="https://calendly.com/groeirichting/15min" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <Link 
+              to="/contact"
               className="btn btn-primary text-lg px-8 py-4"
             >
-              Plan je demo in (15 min)
-            </a>
+              Neem contact op
+            </Link>
           </div>
         </div>
       </section>

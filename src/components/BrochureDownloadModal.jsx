@@ -82,16 +82,16 @@ const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
       // Success
       setSuccess(true)
       
-      // Track event (GA4)
-      if (window.gtag) {
-        const cookieConsent = localStorage.getItem('cookieConsent')
-        if (cookieConsent === 'accepted') {
-          window.gtag('event', 'brochure_requested', {
-            event_category: 'Lead Generation',
-            event_label: 'Brochure Download',
-            value: 1
-          })
-        }
+      // Track event via Google Tag Manager
+      const cookieConsent = localStorage.getItem('cookieConsent')
+      if (cookieConsent === 'accepted') {
+        window.dataLayer = window.dataLayer || []
+        window.dataLayer.push({
+          event: 'brochure_requested',
+          event_category: 'Lead Generation',
+          event_label: 'Brochure Download',
+          value: 1
+        })
       }
 
       // Auto close na 3 seconden

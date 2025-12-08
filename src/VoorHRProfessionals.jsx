@@ -5,13 +5,12 @@ import {
   BarChart3, FileText, Database
 } from 'lucide-react'
 
+import HeroIllustratie from './assets/hero.svg?react'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
-import ContactForm from './components/ContactForm'
 
 function VoorHRProfessionals() {
   const [showBrochureModal, setShowBrochureModal] = useState(false)
-  const [showContactForm, setShowContactForm] = useState(false)
 
   return (
     <>
@@ -35,53 +34,21 @@ function VoorHRProfessionals() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col gap-4 mb-6">
-            <button 
-              onClick={() => setShowContactForm(true)}
+            <Link 
+              to="/contact"
               className="btn btn-primary text-center"
             >
-              Vraag demo aan
-            </button>
+              Neem contact op
+            </Link>
             <button 
               onClick={() => setShowBrochureModal(true)}
-              className="text-[var(--kleur-primary)] hover:text-[var(--kleur-accent)] underline text-center"
+              className="btn btn-accent text-center"
             >
-              Download informatie-brochure: Het einde van het MTO
+              Download voorbeeldrapport
             </button>
           </div>
         </div>
-        <div className="bg-gray-100 p-8 rounded-xl border border-gray-300">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-5 h-5 text-[var(--kleur-primary)]" />
-              <h3 className="font-semibold text-[var(--kleur-text)]">Dashboard Overzicht</h3>
-            </div>
-            <div className="space-y-3">
-              <div className="h-3 bg-gray-200 rounded-full">
-                <div className="h-3 bg-[var(--kleur-primary)] rounded-full w-3/4"></div>
-              </div>
-              <div className="h-3 bg-gray-200 rounded-full">
-                <div className="h-3 bg-[var(--kleur-accent)] rounded-full w-1/2"></div>
-              </div>
-              <div className="h-3 bg-gray-200 rounded-full">
-                <div className="h-3 bg-[var(--kleur-secondary)] rounded-full w-2/3"></div>
-              </div>
-            </div>
-            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-2xl font-bold text-[var(--kleur-primary)]">87%</div>
-                <div className="text-xs text-[var(--kleur-muted)]">Betrokkenheid</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-[var(--kleur-accent)]">12%</div>
-                <div className="text-xs text-[var(--kleur-muted)]">Verzuimrisico</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-[var(--kleur-secondary)]">94%</div>
-                <div className="text-xs text-[var(--kleur-muted)]">Retentie</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeroIllustratie className="w-full h-auto" />
       </section>
 
       {/* Het Probleem - Vergelijkingstabel */}
@@ -106,14 +73,14 @@ function VoorHRProfessionals() {
             </div>
 
             {/* Blok Nieuw */}
-            <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-8 rounded-xl border-2 border-[var(--kleur-accent)]">
+            <div className="bg-[var(--kleur-accent)] p-8 rounded-xl border-2 border-[var(--kleur-accent)]">
               <div className="flex items-center gap-3 mb-4">
-                <TrendingDown className="w-8 h-8 text-[var(--kleur-accent)]" />
-                <h3 className="text-2xl font-semibold text-[var(--kleur-accent)]">
+                <TrendingDown className="w-8 h-8 text-white" />
+                <h3 className="text-2xl font-semibold text-white">
                   Nieuw
                 </h3>
               </div>
-              <p className="text-lg text-[var(--kleur-text)]">
+              <p className="text-lg text-white">
                 Continue hartslagmeting met GroeiRichting. Signaleer problemen terwijl ze ontstaan en stuur direct bij.
               </p>
             </div>
@@ -131,8 +98,8 @@ function VoorHRProfessionals() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1: Verzuimpreventie */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <TrendingDown className="w-8 h-8 text-[var(--kleur-primary)]" />
+              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
+                <TrendingDown className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Verzuimpreventie
@@ -144,8 +111,8 @@ function VoorHRProfessionals() {
 
             {/* Feature 2: Boardroom-ready */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <BarChart3 className="w-8 h-8 text-[var(--kleur-primary)]" />
+              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
+                <BarChart3 className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Boardroom-ready
@@ -157,85 +124,48 @@ function VoorHRProfessionals() {
 
             {/* Feature 3: AI-analyse */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <Brain className="w-8 h-8 text-[var(--kleur-primary)]" />
+              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
+                <Brain className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 AI-analyse
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                De tool helpt je de juiste diepte-vragen te stellen en analyseert open antwoorden automatisch.
+                Interviews ondersteund door AI voor meer en concretere informatie.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust & Integratie */}
+      {/* GroeiRichting biedt de oplossing */}
       <section className="py-12 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
-            Veilig, AVG-proof en integreert met jouw systemen.
+            GroeiRichting biedt de oplossing: MTO-alternatief met AI-ondersteuning
           </h2>
           
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
-            <p className="text-lg text-[var(--kleur-muted)] text-center max-w-3xl mx-auto">
-              Wij snappen dat dataveiligheid op 1 staat. Volledig AVG-compliant en makkelijk te koppelen.
-            </p>
-          </div>
+          <p className="text-lg text-[var(--kleur-muted)] text-center max-w-3xl mx-auto mb-12">
+            Met AI-ondersteunde gesprekken over vaste thema's zoals werkdruk & taaklast, motivatie & werkplezier, samenwerking & werksfeer en perspectief & ontwikkeling, creëer je een gesprekscultuur die helpt om medewerkerstevredenheid structureel te verbeteren en verzuim tijdig te signaleren. Je krijgt als werkgever direct bruikbare input, terwijl medewerkers ervaren dat hun stem telt.
+          </p>
 
-          {/* Integraties (placeholder logos) */}
-          <div className="flex flex-wrap justify-center items-center gap-8 mb-12">
-            <div className="bg-gray-100 px-6 py-4 rounded-lg border border-gray-300">
-              <p className="text-sm text-[var(--kleur-muted)] font-medium">HRIS Integraties</p>
-            </div>
-            <div className="bg-gray-100 px-6 py-4 rounded-lg border border-gray-300">
-              <p className="text-sm text-[var(--kleur-muted)] font-medium">AVG Compliant</p>
-            </div>
-            <div className="bg-gray-100 px-6 py-4 rounded-lg border border-gray-300">
-              <p className="text-sm text-[var(--kleur-muted)] font-medium">API Koppelingen</p>
-            </div>
-          </div>
-
-          {/* Grote CTA */}
-          <div className="text-center">
+          {/* CTA's */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => setShowContactForm(true)}
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-accent text-lg px-8 py-4"
+            >
+              Download voorbeeldrapport
+            </button>
+            <Link 
+              to="/contact"
               className="btn btn-primary text-lg px-8 py-4"
             >
-              Vraag demo aan voor jouw team
-            </button>
+              Neem contact op
+            </Link>
           </div>
         </div>
       </section>
-
-      {/* Contact Form Modal */}
-      {showContactForm && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setShowContactForm(false)
-            }
-          }}
-        >
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowContactForm(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label="Sluiten"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">
-              Vraag demo aan
-            </h2>
-            <ContactForm />
-          </div>
-        </div>
-      )}
 
       </div>
 
@@ -243,6 +173,8 @@ function VoorHRProfessionals() {
       <BrochureDownloadModal 
         isOpen={showBrochureModal}
         onClose={() => setShowBrochureModal(false)}
+        title="Voorbeeld-rapport"
+        description="Vul je gegevens in en download het voorbeeld-rapport direct."
       />
     </>
   )
