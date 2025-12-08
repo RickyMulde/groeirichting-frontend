@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import CookieBanner from './components/CookieBanner'
 import ZohoSalesIQ from './components/ZohoSalesIQ'
 
 function Layout({ children }) {
   const [session, setSession] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isVoorWieOpen, setIsVoorWieOpen] = useState(false)
+  const [isMobileVoorWieOpen, setIsMobileVoorWieOpen] = useState(false)
+  const dropdownRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -75,7 +78,25 @@ function Layout({ children }) {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
+    setIsMobileVoorWieOpen(false)
   }
+
+  // Sluit dropdown bij klik buiten
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsVoorWieOpen(false)
+      }
+    }
+
+    if (isVoorWieOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isVoorWieOpen])
 
 
   return (
@@ -101,6 +122,50 @@ function Layout({ children }) {
               >
                 Home
               </Link>
+              {/* Voor wie Dropdown */}
+              <div 
+                ref={dropdownRef}
+                className="relative"
+                onMouseEnter={() => setIsVoorWieOpen(true)}
+                onMouseLeave={() => setIsVoorWieOpen(false)}
+              >
+                <div
+                  onClick={() => setIsVoorWieOpen(!isVoorWieOpen)}
+                  className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium flex items-center gap-1 cursor-pointer"
+                >
+                  Voor wie
+                  <ChevronDown 
+                    className={`w-4 h-4 transition-transform duration-200 ${isVoorWieOpen ? 'rotate-180' : ''}`} 
+                  />
+                </div>
+                
+                {/* Dropdown Menu */}
+                {isVoorWieOpen && (
+                  <div 
+                    className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                    onMouseEnter={() => setIsVoorWieOpen(true)}
+                    onMouseLeave={() => setIsVoorWieOpen(false)}
+                  >
+                    <Link
+                      to="/voor-directie-en-office"
+                      onClick={() => setIsVoorWieOpen(false)}
+                      className="block px-4 py-3 text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200"
+                    >
+                      <div className="font-medium">Directie & Office</div>
+                      <div className="text-sm text-[var(--kleur-muted)]">Voor MKB-bedrijven</div>
+                    </Link>
+                    <Link
+                      to="/voor-hr-professionals"
+                      onClick={() => setIsVoorWieOpen(false)}
+                      className="block px-4 py-3 text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 border-t border-gray-100"
+                    >
+                      <div className="font-medium">HR Professionals</div>
+                      <div className="text-sm text-[var(--kleur-muted)]">Voor corporate organisaties</div>
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               <Link 
                 to="/hoe-werkt-het" 
                 className="px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium"
@@ -171,6 +236,41 @@ function Layout({ children }) {
                 >
                   Home
                 </Link>
+                {/* Mobile Voor wie Dropdown */}
+                <div>
+                  <div
+                    onClick={() => setIsMobileVoorWieOpen(!isMobileVoorWieOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 font-medium cursor-pointer"
+                  >
+                    Voor wie
+                    <ChevronDown 
+                      className={`w-4 h-4 transition-transform duration-200 ${isMobileVoorWieOpen ? 'rotate-180' : ''}`} 
+                    />
+                  </div>
+                  
+                  {/* Mobile Dropdown Items */}
+                  {isMobileVoorWieOpen && (
+                    <div className="mt-2 ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
+                      <Link
+                        to="/voor-directie-en-office"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200"
+                      >
+                        <div className="font-medium">Directie & Office</div>
+                        <div className="text-sm text-[var(--kleur-muted)]">Voor MKB-bedrijven</div>
+                      </Link>
+                      <Link
+                        to="/voor-hr-professionals"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200"
+                      >
+                        <div className="font-medium">HR Professionals</div>
+                        <div className="text-sm text-[var(--kleur-muted)]">Voor corporate organisaties</div>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
                 <Link 
                   to="/hoe-werkt-het" 
                   onClick={closeMobileMenu}

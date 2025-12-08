@@ -11,6 +11,8 @@ const getAnalyticsPageTitle = (pathname) => {
     '/contact': 'Contact',
     '/offerte': 'Offerte',
     '/hoe-werkt-het': 'Hoe werkt het',
+    '/voor-directie-en-office': 'Voor Directie & Office',
+    '/voor-hr-professionals': 'Voor HR Professionals',
     '/privacy-veiligheid': 'Privacy & Veiligheid',
     '/privacy': 'Privacy',
     '/privacy-portaal': 'Privacy Portaal',
@@ -37,27 +39,31 @@ const getAnalyticsPageTitle = (pathname) => {
     '/registratie-verplicht': 'Registratie Verplicht'
   }
   
-  return titleMap[pathname] || document.title || 'GroeiRichting'
+  return titleMap[pathname] || (typeof document !== 'undefined' ? document.title : 'GroeiRichting') || 'GroeiRichting'
 }
 
 /**
- * Hook voor automatische Google Analytics pageview tracking
+ * Hook voor automatische Google Tag Manager pageview tracking
  * Trackt automatisch pageviews bij elke routewijziging in de SPA
- * Alleen actief als VITE_GA_ID environment variable is ingesteld EN gebruiker heeft toestemming gegeven
+ * Alleen actief als gebruiker toestemming heeft gegeven voor cookies
  */
 export const usePageTracking = () => {
   const location = useLocation()
-  const gaId = import.meta.env.VITE_GA_ID
 
   useEffect(() => {
+    // Check of we in browser environment zijn
+    if (typeof window === 'undefined') return
+    
     // Check of gebruiker toestemming heeft gegeven voor cookies
     const cookieConsent = localStorage.getItem('cookieConsent')
     
-    // Alleen tracken als:
-    // 1. GA_ID is ingesteld
-    // 2. gtag beschikbaar is
-    // 3. Gebruiker heeft cookies geaccepteerd
-    if (gaId && gaId.trim() !== '' && window.gtag && cookieConsent === 'accepted') {
+    // Alleen tracken als gebruiker cookies heeft geaccepteerd
+    if (cookieConsent === 'accepted') {
+      // Initialiseer dataLayer als deze nog niet bestaat
+      if (typeof window.dataLayer === 'undefined') {
+        window.dataLayer = []
+      }
+      
       // Gebruik requestAnimationFrame om te wachten tot React de titel heeft geüpdatet
       // Dit zorgt ervoor dat we de juiste paginatitel hebben voor Analytics
       requestAnimationFrame(() => {
@@ -65,13 +71,17 @@ export const usePageTracking = () => {
           // Gebruik korte Analytics-titel in plaats van de volledige SEO-titel
           const analyticsTitle = getAnalyticsPageTitle(location.pathname)
           
-          window.gtag('config', gaId, {
-            page_path: location.pathname + location.search,
-            page_title: analyticsTitle
-          })
+          // Stuur pageview event naar GTM dataLayer
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              event: 'page_view',
+              page_path: location.pathname + location.search,
+              page_title: analyticsTitle
+            })
+          }
         })
       })
     }
-  }, [location, gaId])
+  }, [location])
 }
 

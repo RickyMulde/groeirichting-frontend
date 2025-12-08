@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Mail, Phone, MessageSquare, CheckCircle } from 'lucide-react'
+import { supabase } from '../supabaseClient'
 
 function ContactForm() {
   const [formData, setFormData] = useState({
