@@ -156,14 +156,7 @@ function VoorDirectieEnOffice() {
 
             {/* Scrollbaar afbeelding vlak */}
             <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <div 
-                className="overflow-y-auto rounded-lg"
-                style={{ 
-                  maxHeight: 'calc(3 * (1.5rem + 1.5rem + 1.25rem + 0.5rem + 1rem))', // Ongeveer de hoogte van 3 feature items
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: 'rgba(107, 114, 128, 0.5) transparent'
-                }}
-              >
+              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
                 <img 
                   src="/thema-overzicht-dashboard.png" 
                   alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"

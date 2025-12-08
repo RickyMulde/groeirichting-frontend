@@ -11,6 +11,8 @@ const getAnalyticsPageTitle = (pathname) => {
     '/contact': 'Contact',
     '/offerte': 'Offerte',
     '/hoe-werkt-het': 'Hoe werkt het',
+    '/voor-directie-en-office': 'Voor Directie & Office',
+    '/voor-hr-professionals': 'Voor HR Professionals',
     '/privacy-veiligheid': 'Privacy & Veiligheid',
     '/privacy': 'Privacy',
     '/privacy-portaal': 'Privacy Portaal',
@@ -37,7 +39,7 @@ const getAnalyticsPageTitle = (pathname) => {
     '/registratie-verplicht': 'Registratie Verplicht'
   }
   
-  return titleMap[pathname] || document.title || 'GroeiRichting'
+  return titleMap[pathname] || (typeof document !== 'undefined' ? document.title : 'GroeiRichting') || 'GroeiRichting'
 }
 
 /**
@@ -49,13 +51,18 @@ export const usePageTracking = () => {
   const location = useLocation()
 
   useEffect(() => {
+    // Check of we in browser environment zijn
+    if (typeof window === 'undefined') return
+    
     // Check of gebruiker toestemming heeft gegeven voor cookies
     const cookieConsent = localStorage.getItem('cookieConsent')
     
     // Alleen tracken als gebruiker cookies heeft geaccepteerd
     if (cookieConsent === 'accepted') {
       // Initialiseer dataLayer als deze nog niet bestaat
-      window.dataLayer = window.dataLayer || []
+      if (typeof window.dataLayer === 'undefined') {
+        window.dataLayer = []
+      }
       
       // Gebruik requestAnimationFrame om te wachten tot React de titel heeft geüpdatet
       // Dit zorgt ervoor dat we de juiste paginatitel hebben voor Analytics
@@ -65,11 +72,13 @@ export const usePageTracking = () => {
           const analyticsTitle = getAnalyticsPageTitle(location.pathname)
           
           // Stuur pageview event naar GTM dataLayer
-          window.dataLayer.push({
-            event: 'page_view',
-            page_path: location.pathname + location.search,
-            page_title: analyticsTitle
-          })
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              event: 'page_view',
+              page_path: location.pathname + location.search,
+              page_title: analyticsTitle
+            })
+          }
         })
       })
     }
