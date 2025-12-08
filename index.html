@@ -5,17 +5,26 @@
     
     <!-- Google Tag Manager -->
     <script>
-      // Initialiseer dataLayer voor GTM (moet vóór GTM script)
-      window.dataLayer = window.dataLayer || [];
-      
-      // Check cookie consent en stel consent mode in
-      const cookieConsent = localStorage.getItem('cookieConsent');
-      const analyticsStorage = cookieConsent === 'accepted' ? 'granted' : 'denied';
-      
-      // Stel consent mode in voor GTM
-      window.dataLayer.push({
-        'analytics_storage': analyticsStorage
-      });
+      (function() {
+        // Initialiseer dataLayer voor GTM (moet vóór GTM script)
+        window.dataLayer = window.dataLayer || [];
+        
+        // Check cookie consent en stel consent mode in
+        try {
+          var cookieConsent = localStorage.getItem('cookieConsent');
+          var analyticsStorage = cookieConsent === 'accepted' ? 'granted' : 'denied';
+          
+          // Stel consent mode in voor GTM
+          window.dataLayer.push({
+            'analytics_storage': analyticsStorage
+          });
+        } catch(e) {
+          // Fallback als localStorage niet beschikbaar is
+          window.dataLayer.push({
+            'analytics_storage': 'denied'
+          });
+        }
+      })();
     </script>
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
