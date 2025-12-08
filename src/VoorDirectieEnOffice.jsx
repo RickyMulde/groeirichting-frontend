@@ -109,7 +109,7 @@ function VoorDirectieEnOffice() {
             Jullie tool om concrete inzichten te genereren van de organisatie
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
@@ -154,10 +154,22 @@ function VoorDirectieEnOffice() {
               </div>
             </div>
 
-            <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
-              <p className="text-lg text-[var(--kleur-muted)] italic text-center">
-                "Met GroeiRichting hoef ik niet meer te gissen. Ik zie direct waar ik moet ingrijpen."
-              </p>
+            {/* Scrollbaar afbeelding vlak */}
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div 
+                className="overflow-y-auto rounded-lg"
+                style={{ 
+                  maxHeight: 'calc(3 * (1.5rem + 1.5rem + 1.25rem + 0.5rem + 1rem))', // Ongeveer de hoogte van 3 feature items
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(107, 114, 128, 0.5) transparent'
+                }}
+              >
+                <img 
+                  src="/thema-overzicht-dashboard.png" 
+                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
             </div>
           </div>
         </div>
