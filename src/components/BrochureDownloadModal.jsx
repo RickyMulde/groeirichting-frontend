@@ -27,6 +27,8 @@ const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
 
   // ESC key sluit modal
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const handleEsc = (e) => {
       if (e.key === 'Escape' && isOpen) {
         onClose()
@@ -83,15 +85,16 @@ const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
       setSuccess(true)
       
       // Track event via Google Tag Manager
-      const cookieConsent = localStorage.getItem('cookieConsent')
-      if (cookieConsent === 'accepted') {
-        window.dataLayer = window.dataLayer || []
-        window.dataLayer.push({
-          event: 'brochure_requested',
-          event_category: 'Lead Generation',
-          event_label: 'Brochure Download',
-          value: 1
-        })
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        const cookieConsent = localStorage.getItem('cookieConsent')
+        if (cookieConsent === 'accepted' && window.dataLayer) {
+          window.dataLayer.push({
+            event: 'brochure_requested',
+            event_category: 'Lead Generation',
+            event_label: 'Brochure Download',
+            value: 1
+          })
+        }
       }
 
       // Auto close na 3 seconden

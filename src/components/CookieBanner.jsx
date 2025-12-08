@@ -12,27 +12,33 @@ function CookieBanner() {
   }, [])
 
   const acceptCookies = () => {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
+    
     localStorage.setItem('cookieConsent', 'accepted')
     setShowBanner(false)
     // Update Google Tag Manager consent via dataLayer
-    window.dataLayer = window.dataLayer || []
-    window.dataLayer.push({
-      event: 'consent_update',
-      analytics_storage: 'granted'
-    })
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'consent_update',
+        analytics_storage: 'granted'
+      })
+    }
     // Trigger custom event voor Zoho SalesIQ
     window.dispatchEvent(new Event('cookieConsentAccepted'))
   }
 
   const rejectCookies = () => {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
+    
     localStorage.setItem('cookieConsent', 'rejected')
     setShowBanner(false)
     // Update Google Tag Manager consent via dataLayer - weigeren
-    window.dataLayer = window.dataLayer || []
-    window.dataLayer.push({
-      event: 'consent_update',
-      analytics_storage: 'denied'
-    })
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'consent_update',
+        analytics_storage: 'denied'
+      })
+    }
   }
 
   if (!showBanner) return null
