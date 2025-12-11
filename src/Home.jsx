@@ -207,7 +207,7 @@ function Home() {
             {/* Afbeelding rechts */}
             <div className="flex items-center justify-center">
               <img 
-                src="/groeirichting-proces-visual.png" 
+                src="/groeirichting-process-visual.png" 
                 alt="GroeiRichting proces visual" 
                 className="w-full h-auto rounded-lg"
               />
