@@ -358,66 +358,7 @@ function Themadashboard() {
               </p>
             </div>
           </div>
-
-          {/* Team Selector */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Filter op Team
-            </label>
-            <TeamSelector
-              onTeamSelect={selectTeam}
-              selectedTeamId={selectedTeam}
-              className="max-w-md"
-            />
-          </div>
-
-          {/* Periodeselecter */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Selecteer periode</h3>
-                <p className="text-gray-600 text-sm">Kies een periode om de resultaten te bekijken</p>
-              </div>
-            </div>
-            
-            {availablePeriods.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {availablePeriods.map((period) => (
-                  <button
-                    key={period.periode}
-                    onClick={() => setSelectedPeriod(selectedPeriod?.periode === period.periode ? null : period)}
-                    className={`p-3 border rounded-lg transition-colors ${
-                      selectedPeriod?.periode === period.periode
-                        ? 'bg-[var(--kleur-primary)] text-white border-[var(--kleur-primary)]'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <span className="text-sm font-medium">{period.label}</span>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-4">
-                <p className="text-gray-500 text-sm">Geen beschikbare periodes gevonden</p>
-              </div>
-            )}
-          </div>
         </div>
-
-        {/* Waarschuwing als er geen periode is geselecteerd */}
-        {!selectedPeriod && availablePeriods.length > 0 && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 shadow-sm mb-6">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
-              <p className="text-yellow-800 text-sm">
-                Selecteer een periode om de resultaten te bekijken. Er worden geen gegevens getoond zonder periode selectie.
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* Informatie over beschikbaarheid resultaten */}
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
@@ -443,6 +384,65 @@ function Themadashboard() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Periodeselecter */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Calendar className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Selecteer periode</h3>
+              <p className="text-gray-600 text-sm">Kies een periode om de resultaten te bekijken</p>
+            </div>
+          </div>
+          
+          {availablePeriods.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {availablePeriods.map((period) => (
+                <button
+                  key={period.periode}
+                  onClick={() => setSelectedPeriod(selectedPeriod?.periode === period.periode ? null : period)}
+                  className={`p-3 border rounded-lg transition-colors ${
+                    selectedPeriod?.periode === period.periode
+                      ? 'bg-[var(--kleur-primary)] text-white border-[var(--kleur-primary)]'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="text-sm font-medium">{period.label}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-gray-500 text-sm">Geen beschikbare periodes gevonden</p>
+            </div>
+          )}
+        </div>
+
+        {/* Waarschuwing als er geen periode is geselecteerd */}
+        {!selectedPeriod && availablePeriods.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 shadow-sm mb-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+              <p className="text-yellow-800 text-sm">
+                Selecteer een periode om de resultaten te bekijken. Er worden geen gegevens getoond zonder periode selectie.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Team Selector */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Filter op Team
+          </label>
+          <TeamSelector
+            onTeamSelect={selectTeam}
+            selectedTeamId={selectedTeam}
+            className="max-w-md"
+          />
         </div>
 
         {/* Thema's */}
