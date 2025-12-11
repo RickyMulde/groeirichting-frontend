@@ -258,6 +258,12 @@ function Themadashboard() {
   // Update thema's wanneer periode of team wordt gewijzigd
   useEffect(() => {
     if (employerId) {
+      // Reset samenvatting data wanneer team of periode verandert
+      // Dit zorgt ervoor dat samenvattingen opnieuw worden opgehaald met de juiste team filter
+      setSummaryData({})
+      setSummaryStatus({})
+      setExpandedTheme(null) // Sluit uitgeklapte thema's zodat ze opnieuw kunnen worden uitgeklapt met nieuwe data
+      
       fetchThemes(employerId, selectedPeriod, selectedTeam)
     }
   }, [employerId, selectedPeriod, selectedTeam])
