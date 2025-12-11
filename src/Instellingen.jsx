@@ -296,12 +296,12 @@ function Instellingen() {
                 {/* Actieve maand */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Selecteer maand om GroeiScan uit te voeren.
+                    Selecteer maand om de GroeiScan uit te voeren.
                   </label>
                   
                   {/* Info box */}
-                  <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: 'rgba(26, 77, 140, 0.1)' }}>
-                    <p className="text-sm text-gray-700">
+                  <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <p className="text-sm text-blue-800">
                       In deze maand moeten alle medewerkers de thema's afronden. Gesprekken buiten deze maand worden niet meegenomen in de resultaten.
                     </p>
                   </div>

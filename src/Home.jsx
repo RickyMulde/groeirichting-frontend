@@ -104,26 +104,26 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Verbind met je mensen. Groei samen verder.
+            Vervang het statische MTO door een continu proces van inzicht en groei.
           </h1>
           <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Het digitale gesprek- en ontwikkelportaal waarin medewerkers periodiek begeleide gesprekken voeren over werkdruk, motivatie, samenwerking en ontwikkeling.
+            Van één keer per jaar meten, naar een slimme jaarcyclus. Start met de GroeiScan voor de basis en zet flexibele thema's in voor actuele vraagstukken of de voorbereiding op functioneringsgesprekken.
           </p>
           
           {/* Bullets */}
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Mis je de échte binding met je medewerkers?</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Start met de GroeiScan:</strong> Meet concreet hoe jouw medewerkers in de wedstrijd zitten. Krijg direct inzicht in de diepere oorzaken per team en per thema.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Ontbreekt het je aan tijd om continu in gesprek te blijven?</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Flexibel & Doelgericht:</strong> Ondersteun je HR-cyclus met maatwerk. Zet de tool in voor specifieke thema's of laat medewerkers zich via AI voorbereiden op hun functioneringsgesprek.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]">Heb je te maken met onverwacht verloop of langdurig verzuim?</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Overzichtelijke Resultaten:</strong> Geen complexe dashboards, maar direct een heldere score, samenvatting en concreet verbeteradvies per team.</p>
             </div>
           </div>
 
@@ -158,7 +158,7 @@ function Home() {
           
           <div className="space-y-6 text-lg text-[var(--kleur-muted)] mb-8">
             <p>
-              Medewerkers voeren periodiek begeleide gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling.
+              Met de GroeiScan worden interviews afgenomen per team in thema's over werkdruk, motivatie, samenwerking en ontwikkeling.
             </p>
             
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 my-6">
@@ -168,7 +168,7 @@ function Home() {
             </div>
             
             <p>
-              In het GroeiPortaal worden gesprekken slim ondersteund door AI. Medewerkers ontvangen persoonlijke samenvattingen en groeisuggesties. Werkgevers krijgen geanonimiseerde trends en signalen per team, waardoor je eerder ziet waar spanning ontstaat, zonder extra HR-tijd.
+              In de GroeiScan worden gesprekken slim ondersteund door AI. Medewerkers ontvangen persoonlijke samenvattingen en groeisuggesties. Werkgevers krijgen geanonimiseerde trends en signalen per team, waardoor je eerder ziet waar spanning ontstaat, zonder extra HR-tijd.
             </p>
           </div>
           
