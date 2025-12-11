@@ -14,6 +14,7 @@ function ProcessVisualisation() {
             <TriangleAlert className="text-[#F4A261] flex-shrink-0" size={24} />
             <div>
               <p className="text-sm font-medium text-[#1A4D8C]">Werkdruk & Taaklast</p>
+              <p className="text-xs text-[#1A4D8C]">Huidige score: 4,2</p>
               <p className="text-xs text-[#F4A261]">Actie vereist</p>
             </div>
           </div>
@@ -23,6 +24,7 @@ function ProcessVisualisation() {
             <CheckCircle2 className="text-[#2A9D8F] flex-shrink-0" size={24} />
             <div>
               <p className="text-sm font-medium text-[#1A4D8C]">Samenwerking & Werksfeer</p>
+              <p className="text-xs text-[#1A4D8C]">Huidige score: 7,1</p>
               <p className="text-xs text-[#2A9D8F]">Goed</p>
             </div>
           </div>
@@ -32,6 +34,7 @@ function ProcessVisualisation() {
             <TriangleAlert className="text-[#F4A261] flex-shrink-0" size={24} />
             <div>
               <p className="text-sm font-medium text-[#1A4D8C]">Motivatie & Werkplezier</p>
+              <p className="text-xs text-[#1A4D8C]">Huidige score: 5,3</p>
               <p className="text-xs text-[#F4A261]">Actie vereist</p>
             </div>
           </div>
@@ -41,6 +44,7 @@ function ProcessVisualisation() {
             <CheckCircle2 className="text-[#2A9D8F] flex-shrink-0" size={24} />
             <div>
               <p className="text-sm font-medium text-[#1A4D8C]">Perspectief & Ontwikkeling</p>
+              <p className="text-xs text-[#1A4D8C]">Huidige score: 8,0</p>
               <p className="text-xs text-[#2A9D8F]">Goed</p>
             </div>
           </div>
