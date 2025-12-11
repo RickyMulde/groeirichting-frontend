@@ -104,26 +104,26 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Vervang het statische MTO door een continu proces van inzicht en groei.
+            Krijg grip op wat er écht speelt in je teams.
           </h1>
           <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Van één keer per jaar meten, naar een slimme jaarcyclus. Start met de GroeiScan voor de basis en zet flexibele thema's in voor actuele vraagstukken of de voorbereiding op functioneringsgesprekken.
+          Traditionele statische MTO's geven cijfers, GroeiRichting geeft de oorzaken. Of je nu al meet of net begint: De GroeiScan verandert onderbuikgevoel direct in een concreet verbeterplan per thema.
           </p>
           
           {/* Bullets */}
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Start met de GroeiScan:</strong> Meet concreet hoe jouw medewerkers in de wedstrijd zitten. Krijg direct inzicht in de diepere oorzaken per team en per thema.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Start met de GroeiScan:</strong> Meet concreet hoe jouw medewerkers in de wedstrijd staan. Krijg direct inzicht in de diepere oorzaken per team en per thema.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Flexibel & Doelgericht:</strong> Ondersteun je HR-cyclus met maatwerk. Zet de tool in voor specifieke thema's of laat medewerkers zich via AI voorbereiden op hun functioneringsgesprek.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Overzichtelijke Resultaten:</strong> Geen complexe dashboards, maar direct een heldere score, samenvatting en concreet verbeteradvies per thema, per team.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Overzichtelijke Resultaten:</strong> Geen complexe dashboards, maar direct een heldere score, samenvatting en concreet verbeteradvies per team.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Focus op Groei:</strong> We hermeten de knelpunten om te zien of acties effect hebben. Zo maak je groei per team niet alleen voelbaar, maar ook aantoonbaar.</p>
             </div>
           </div>
 
