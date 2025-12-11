@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Settings, Save } from 'lucide-react'
+import { ArrowLeft, Settings, Calendar, Save } from 'lucide-react'
 import { supabase } from './supabaseClient'
 
 function Instellingen() {
@@ -268,6 +268,74 @@ function Instellingen() {
           </div>
         </div>
 
+        {/* Gespreksfrequentie Configuratie */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Calendar className="w-6 h-6 text-[var(--kleur-primary)]" />
+              <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">Gespreksfrequentie</h2>
+            </div>
+            
+            {configLoading ? (
+              <div className="text-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
+                <p className="text-gray-600 mt-2">Configuratie laden...</p>
+              </div>
+            ) : foutmelding ? (
+              <div className="text-center py-4">
+                <p className="text-red-600">Configuratie kon niet worden geladen. Probeer de pagina te vernieuwen.</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="btn btn-primary mt-2"
+                >
+                  Pagina vernieuwen
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Actieve maand */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Actieve maand voor alle thema's:
+                  </label>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Selecteer in welke maand jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
+                  </p>
+                  <select
+                    value={werkgeverConfig.actieve_maanden.length > 0 ? werkgeverConfig.actieve_maanden[0] : ''}
+                    onChange={(e) => selecteerMaand(e.target.value)}
+                    className="w-full md:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                  >
+                    <option value="">-- Selecteer een maand --</option>
+                    {[1,2,3,4,5,6,7,8,9,10,11,12].map(maand => (
+                      <option key={maand} value={maand}>
+                        {getMaandNaam(maand)}
+                      </option>
+                    ))}
+                  </select>
+                  {werkgeverConfig.actieve_maanden.length === 0 && (
+                    <p className="text-red-600 text-sm mt-2">
+                      Selecteer een maand
+                    </p>
+                  )}
+                </div>
+
+                {/* Opslaan knop */}
+                <div className="pt-4 border-t">
+                  <button
+                    onClick={saveConfiguratie}
+                    disabled={configSaving || werkgeverConfig.actieve_maanden.length === 0}
+                    className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Save className="w-4 h-4" />
+                    {configSaving ? 'Opslaan...' : 'Configuratie opslaan'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Thema's sectie */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4">Thema's</h2>
@@ -321,33 +389,6 @@ function Instellingen() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Gespreksfrequentie */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Actieve maand voor alle thema's:
-                  </label>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Selecteer in welke maand jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
-                  </p>
-                  <select
-                    value={werkgeverConfig.actieve_maanden.length > 0 ? werkgeverConfig.actieve_maanden[0] : ''}
-                    onChange={(e) => selecteerMaand(e.target.value)}
-                    className="w-full md:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
-                  >
-                    <option value="">-- Selecteer een maand --</option>
-                    {[1,2,3,4,5,6,7,8,9,10,11,12].map(maand => (
-                      <option key={maand} value={maand}>
-                        {getMaandNaam(maand)}
-                      </option>
-                    ))}
-                  </select>
-                  {werkgeverConfig.actieve_maanden.length === 0 && (
-                    <p className="text-red-600 text-sm mt-2">
-                      Selecteer een maand
-                    </p>
-                  )}
-                </div>
-
                 {/* Anonimisering */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
