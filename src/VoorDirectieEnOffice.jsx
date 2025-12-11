@@ -34,7 +34,7 @@ function VoorDirectieEnOffice() {
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-wrap gap-4 mb-6">
             <Link 
               to="/contact"
               className="btn btn-primary"
@@ -62,8 +62,8 @@ function VoorDirectieEnOffice() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Kolom 1: Het stille vertrek */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <LogOut className="w-8 h-8 text-[var(--kleur-primary)]" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <LogOut className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Het stille vertrek
@@ -75,8 +75,8 @@ function VoorDirectieEnOffice() {
 
             {/* Kolom 2: De overbelaste Office Manager */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <FileStack className="w-8 h-8 text-[var(--kleur-primary)]" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <FileStack className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 De overbelaste Office Manager
@@ -88,8 +88,8 @@ function VoorDirectieEnOffice() {
 
             {/* Kolom 3: Groeipijn */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] bg-opacity-10 p-4 rounded-lg w-fit mb-4">
-                <Users className="w-8 h-8 text-[var(--kleur-primary)]" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <Users className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Groeipijn
@@ -112,8 +112,8 @@ function VoorDirectieEnOffice() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -126,8 +126,8 @@ function VoorDirectieEnOffice() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -140,8 +140,8 @@ function VoorDirectieEnOffice() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">

@@ -152,7 +152,7 @@ function Layout({ children }) {
                       className="block px-4 py-3 text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200"
                     >
                       <div className="font-medium">Directie & Office</div>
-                      <div className="text-sm text-[var(--kleur-muted)]">Voor MKB-bedrijven</div>
+                      <div className="text-sm text-[var(--kleur-muted)]">voor ondernemers of managers</div>
                     </Link>
                     <Link
                       to="/voor-hr-professionals"
@@ -160,7 +160,7 @@ function Layout({ children }) {
                       className="block px-4 py-3 text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200 border-t border-gray-100"
                     >
                       <div className="font-medium">HR Professionals</div>
-                      <div className="text-sm text-[var(--kleur-muted)]">Voor corporate organisaties</div>
+                      <div className="text-sm text-[var(--kleur-muted)]">Voor HR / Business partners</div>
                     </Link>
                   </div>
                 )}
@@ -257,7 +257,7 @@ function Layout({ children }) {
                         className="block px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200"
                       >
                         <div className="font-medium">Directie & Office</div>
-                        <div className="text-sm text-[var(--kleur-muted)]">Voor MKB-bedrijven</div>
+                        <div className="text-sm text-[var(--kleur-muted)]">voor ondernemers of managers</div>
                       </Link>
                       <Link
                         to="/voor-hr-professionals"
@@ -265,7 +265,7 @@ function Layout({ children }) {
                         className="block px-4 py-2 rounded-lg text-[var(--kleur-text)] hover:text-[var(--kleur-primary)] hover:bg-gray-50 transition-all duration-200"
                       >
                         <div className="font-medium">HR Professionals</div>
-                        <div className="text-sm text-[var(--kleur-muted)]">Voor corporate organisaties</div>
+                        <div className="text-sm text-[var(--kleur-muted)]">Voor HR / Business partners</div>
                       </Link>
                     </div>
                   )}

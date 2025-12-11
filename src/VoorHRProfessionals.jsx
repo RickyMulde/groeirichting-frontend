@@ -33,7 +33,7 @@ function VoorHRProfessionals() {
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-wrap gap-4 mb-6">
             <Link 
               to="/contact"
               className="btn btn-primary"
@@ -49,6 +49,60 @@ function VoorHRProfessionals() {
           </div>
         </div>
         <HeroIllustratie className="w-full h-auto" />
+      </section>
+
+      {/* De verborgen kosten van niet luisteren */}
+      <section className="py-12 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            De verborgen kosten van niet luisteren.
+          </h2>
+          <p className="text-lg text-[var(--kleur-muted)] mb-8 text-center max-w-3xl mx-auto">
+            Zonder continue signalering ben je als HR altijd te laat. De kosten van reactief beleid lopen snel op.
+          </p>
+          
+          {/* Mini-stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Blok 1: Verzuim */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">
+                € 250 - € 400
+              </div>
+              <p className="text-[var(--kleur-muted)] font-medium mb-2">
+                verzuimkosten per dag
+              </p>
+              <p className="text-sm text-[var(--kleur-muted)]">
+                Een burn-out duurt gemiddeld 290 dagen. Zonder vroege signalering lopen de kosten in de tienduizenden euro's.
+              </p>
+            </div>
+
+            {/* Blok 2: Verloop */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">
+                6-9 maanden
+              </div>
+              <p className="text-[var(--kleur-muted)] font-medium mb-2">
+                om een specialist te vervangen
+              </p>
+              <p className="text-sm text-[var(--kleur-muted)]">
+                Werving, onboarding en productiviteitsverlies kosten bij elkaar vaak 120% van een jaarsalaris.
+              </p>
+            </div>
+
+            {/* Blok 3: Engagement */}
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">
+                46%
+              </div>
+              <p className="text-[var(--kleur-muted)] font-medium mb-2">
+                voelt zich niet gehoord
+              </p>
+              <p className="text-sm text-[var(--kleur-muted)]">
+                Medewerkers die zich niet gehoord voelen, zijn 3x vaker geneigd om binnen een jaar te vertrekken.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Het Probleem - Vergelijkingstabel */}
@@ -98,8 +152,8 @@ function VoorHRProfessionals() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -112,8 +166,8 @@ function VoorHRProfessionals() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -126,8 +180,8 @@ function VoorHRProfessionals() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="bg-[var(--kleur-accent)] bg-opacity-10 p-3 rounded-lg flex-shrink-0">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)]" />
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
@@ -164,8 +218,8 @@ function VoorHRProfessionals() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1: Verzuimpreventie */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
-                <TrendingDown className="w-8 h-8 text-white" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <TrendingDown className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Verzuimpreventie
@@ -177,8 +231,8 @@ function VoorHRProfessionals() {
 
             {/* Feature 2: Boardroom-ready */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
-                <BarChart3 className="w-8 h-8 text-white" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <BarChart3 className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 Boardroom-ready
@@ -190,8 +244,8 @@ function VoorHRProfessionals() {
 
             {/* Feature 3: AI-analyse */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="bg-[var(--kleur-primary)] p-4 rounded-lg w-fit mb-4">
-                <Brain className="w-8 h-8 text-white" />
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <Brain className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
                 AI-analyse
