@@ -268,12 +268,12 @@ function Instellingen() {
           </div>
         </div>
 
-        {/* Gespreksfrequentie Configuratie */}
+        {/* GroeiScan Configuratie */}
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <div className="flex items-center gap-3 mb-4">
               <Calendar className="w-6 h-6 text-[var(--kleur-primary)]" />
-              <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">Gespreksfrequentie</h2>
+              <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">GroeiScan</h2>
             </div>
             
             {configLoading ? (
@@ -296,11 +296,16 @@ function Instellingen() {
                 {/* Actieve maand */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Actieve maand voor alle thema's:
+                    Selecteer maand om GroeiScan uit te voeren.
                   </label>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Selecteer in welke maand jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
-                  </p>
+                  
+                  {/* Info box */}
+                  <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: 'rgba(26, 77, 140, 0.1)' }}>
+                    <p className="text-sm text-gray-700">
+                      In deze maand moeten alle medewerkers de thema's afronden. Gesprekken buiten deze maand worden niet meegenomen in de resultaten.
+                    </p>
+                  </div>
+                  
                   <select
                     value={werkgeverConfig.actieve_maanden.length > 0 ? werkgeverConfig.actieve_maanden[0] : ''}
                     onChange={(e) => selecteerMaand(e.target.value)}
