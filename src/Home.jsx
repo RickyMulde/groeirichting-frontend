@@ -5,6 +5,7 @@ import {
   Users, Quote, CheckCircle
 } from 'lucide-react'
 
+import HeroIllustratie from './assets/hero.svg?react'
 import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
@@ -137,11 +138,7 @@ function Home() {
             Gebouwd op inzichten uit HR, psychologie en praktijkervaring in het MKB.
           </p>
         </div>
-        <img 
-          src="/groeirichting-groeiscan.png" 
-          alt="GroeiRichting GroeiScan" 
-          className="w-full h-auto"
-        />
+        <HeroIllustratie className="w-full h-auto" />
       </section>
 
       {/* Wat is GroeiRichting? */}
