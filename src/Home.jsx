@@ -9,6 +9,7 @@ import HeroIllustratie from './assets/hero.svg?react'
 import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
+import ProcessVisualisation from './components/ProcessVisualisation'
 
 function Home() {
   const [showBrochureModal, setShowBrochureModal] = useState(false)
@@ -143,61 +144,71 @@ function Home() {
 
       {/* Wat is GroeiRichting? */}
       <section className="py-12 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
-            Wat is GroeiRichting?
-          </h2>
-          <p className="text-xl text-[var(--kleur-muted)] mb-8 text-center max-w-3xl mx-auto">
-            GroeiRichting biedt een digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek.
-          </p>
-          
-          <div className="space-y-6 text-lg text-[var(--kleur-muted)] mb-8">
-            <p>
-              Met de GroeiScan worden interviews afgenomen per team in thema's over werkdruk, motivatie, samenwerking en ontwikkeling.
-            </p>
-            
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 my-6">
-              <p className="text-xl font-semibold text-blue-900 text-center">
-                Je ontvangt diepere inzichten dan bij een MTO, maar het kost minder tijd dan fysieke gesprekken.
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            {/* Tekst links */}
+            <div>
+              <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">
+                Wat is GroeiRichting?
+              </h2>
+              <p className="text-xl text-[var(--kleur-muted)] mb-8">
+                GroeiRichting biedt een digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek.
               </p>
+              
+              <div className="space-y-6 text-lg text-[var(--kleur-muted)] mb-8">
+                <p>
+                  Met de GroeiScan worden interviews afgenomen per team in thema's over werkdruk, motivatie, samenwerking en ontwikkeling.
+                </p>
+                
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 my-6">
+                  <p className="text-xl font-semibold text-blue-900 text-center">
+                    Je ontvangt diepere inzichten dan bij een MTO, maar het kost minder tijd dan fysieke gesprekken.
+                  </p>
+                </div>
+                
+                <p>
+                  In de GroeiScan worden gesprekken slim ondersteund door AI. Medewerkers ontvangen persoonlijke samenvattingen en groeisuggesties. Werkgevers krijgen geanonimiseerde trends en signalen per team, waardoor je eerder ziet waar spanning ontstaat, zonder extra HR-tijd.
+                </p>
+              </div>
+              
+              <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                <h3 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6 text-center">
+                  In het kort
+                </h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                    <p className="text-[var(--kleur-text)]">Begeleide gesprekken per thema</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                    <p className="text-[var(--kleur-text)]">Persoonlijke samenvattingen & groeisuggesties</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                    <p className="text-[var(--kleur-text)]">Geanonimiseerde trends en signalen per team</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                    <p className="text-[var(--kleur-text)]">Eerder zicht op risico's in werkdruk, motivatie en samenwerking</p>
+                  </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-gray-300">
+                  <p className="text-center font-semibold text-[var(--kleur-primary)] text-lg">
+                    Betere gesprekken, minder verrassingen, minder verloop
+                  </p>
+                </div>
+              </div>
+              
+              <div className="text-center mt-8">
+                <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
+              </div>
             </div>
             
-            <p>
-              In de GroeiScan worden gesprekken slim ondersteund door AI. Medewerkers ontvangen persoonlijke samenvattingen en groeisuggesties. Werkgevers krijgen geanonimiseerde trends en signalen per team, waardoor je eerder ziet waar spanning ontstaat, zonder extra HR-tijd.
-            </p>
-          </div>
-          
-          <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
-            <h3 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-6 text-center">
-              In het kort
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-text)]">Begeleide gesprekken per thema</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-text)]">Persoonlijke samenvattingen & groeisuggesties</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-text)]">Geanonimiseerde trends en signalen per team</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <p className="text-[var(--kleur-text)]">Eerder zicht op risico's in werkdruk, motivatie en samenwerking</p>
-              </div>
+            {/* Visualisatie rechts */}
+            <div className="flex items-center justify-center">
+              <ProcessVisualisation />
             </div>
-            <div className="mt-6 pt-6 border-t border-gray-300">
-              <p className="text-center font-semibold text-[var(--kleur-primary)] text-lg">
-                Betere gesprekken, minder verrassingen, minder verloop
-              </p>
-            </div>
-          </div>
-          
-          <div className="text-center mt-8">
-            <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
           </div>
         </div>
       </section>
