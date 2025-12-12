@@ -87,10 +87,10 @@ function VoorDirectieEnOffice() {
                 <LogOut className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                Het stille vertrek
+                Toptalent vertrekt 'opeens'
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                Toptalent klaagt vaak niet, ze vertrekken 'opeens'. Voorkom die verrassing door signalen vroegtijdig op te vangen.
+                Vaak zijn het je beste mensen die niet klagen, maar opzeggen. Ze missen perspectief of waardering. Met GroeiRichting vang je deze signalen op vòòrdat de ontslagbrief op je bureau ligt.
               </p>
             </div>
 
@@ -100,10 +100,10 @@ function VoorDirectieEnOffice() {
                 <FileStack className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                De overbelaste Office Manager
+                HR 'erbij doen' lukt niet meer
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                HR 'erbij doen' is niet langer houdbaar. Je hebt een tool nodig die het operationele werk uit handen neemt.
+                Je wilt goed voor je mensen zorgen, maar je wordt gestuurd door de waan van de dag. Periodieke functioneringsgesprekken schieten erbij in en signalen sneeuwen onder. Je hebt geen extra handen nodig, maar een slim systeem.
               </p>
             </div>
 
@@ -113,10 +113,10 @@ function VoorDirectieEnOffice() {
                 <Users className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                Groeipijn
+                Het familiegevoel staat onder druk
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                Nieuwe mensen voelen zich soms nog geen onderdeel van de club. Met GroeiRichting bewaak je de cultuur, ook als je groeit.
+                Vroeger sprak je iedereen bij de koffieautomaat. Nu zijn er eilandjes en weet je niet meer wat er leeft op de verschillende afdelingen. Hoe bewaak je de cultuur als je groeit?
               </p>
             </div>
           </div>
@@ -126,9 +126,12 @@ function VoorDirectieEnOffice() {
       {/* De Oplossing - Feature Highlight */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
             Geen dikke rapporten, maar direct inzicht.
           </h2>
+          <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
+            Zie direct hoe de vlag erbij hangt. Scoort 'Samenwerking' groen? Top. Is 'Werkdruk' oranje? Dan weet je precies welk thema de komende periode aandacht krijgt en dat per team.
+          </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
@@ -138,10 +141,10 @@ function VoorDirectieEnOffice() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Geautomatiseerd
+                    Wij doen de uitvoering
                   </h3>
                   <p className="text-[var(--kleur-muted)]">
-                    De tool voert de interviews, jij krijgt de inzichten.
+                    Jij hoeft geen vragen te verzinnen of interviews te plannen. Onze software regelt de uitnodigingen, de interviews en de analyse. Jij krijgt puur een seintje als de resultaten klaar staan.
                   </p>
                 </div>
               </div>
@@ -152,10 +155,10 @@ function VoorDirectieEnOffice() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Laagdrempelig
+                    Geen HR-jargon
                   </h3>
                   <p className="text-[var(--kleur-muted)]">
-                    Medewerkers antwoorden via een simpele chat, voelt niet als administratie.
+                    Kijk naar het dashboard hiernaast. Je ziet geen complexe statistieken, maar heldere scores en kleuren. Iedere manager ziet in 3 seconden waar de aandacht heen moet.
                   </p>
                 </div>
               </div>
@@ -166,10 +169,10 @@ function VoorDirectieEnOffice() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Actiegericht
+                    Van inzicht naar actie
                   </h3>
                   <p className="text-[var(--kleur-muted)]">
-                    Je krijgt geen dik rapport, maar direct een seintje: "Let op team Marketing ervaart de werkdruk als te hoog."
+                    Klik op een oranje thema (zoals Werkdruk) en zie direct waarom het team ontevreden is. Je krijgt concrete handvatten om het gesprek aan te gaan en het probleem op te lossen.
                   </p>
                 </div>
               </div>
@@ -212,24 +215,24 @@ function VoorDirectieEnOffice() {
 
       {/* Waarom dit belangrijk is */}
       <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
-        <h2 className="text-2xl font-semibold mb-6">Voorkomen is beter dan genezen.</h2>
+        <h2 className="text-2xl font-semibold mb-6">Waarom preventie goedkoper is dan genezen.</h2>
         <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
-          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
+          Het vervangen van één medewerker kost al snel 20% tot 50% van een jaarsalaris aan werving, inwerken en productiviteitsverlies. Tel daar de kosten van verzuim bij op en de rekensom is snel gemaakt. Investeren in luisteren is vele malen goedkoper dan de kosten van vertrek.
         </p>
         
         {/* Mini-stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
-            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300+</div>
+            <p className="text-[var(--kleur-muted)]">per dag aan verzuimkosten</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
-            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
+            <p className="text-[var(--kleur-muted)]">maanden gemiddelde hersteltijd bij burn-out</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
-            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
+            <p className="text-[var(--kleur-muted)]">van medewerkers vertrekt wegens gebrek aan waardering</p>
           </div>
         </div>
         
@@ -239,105 +242,77 @@ function VoorDirectieEnOffice() {
 
       {/* Wat levert het op */}
       <section>
-        <h2 className="text-3xl font-bold text-center mb-4">Wat levert GroeiRichting op voor jouw organisatie?</h2>
+        <h2 className="text-3xl font-bold text-center mb-4">Win-win: Grip voor jou, groei voor je team.</h2>
         <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
-          Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl medewerkers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
+          Ontdek hoe je met minimale tijdsinvestering verzuim voorkomt, talent behoudt en een professionele cultuur bouwt – zonder dat je daarvoor een HR-afdeling hoeft op te tuigen.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {/* Voor werkgevers */}
+          {/* Voor jou als Ondernemer */}
           <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <span className="text-3xl">🌍</span>
-              <h3 className="text-2xl font-bold text-[var(--kleur-primary)]">Voor werkgevers</h3>
+              <h3 className="text-2xl font-bold text-[var(--kleur-primary)]">Voor jou als Ondernemer</h3>
             </div>
-            <p className="text-[var(--kleur-muted)] mb-6 italic">
-              Waarom GroeiRichting waardevol is voor jouw organisatie
+            <p className="text-[var(--kleur-muted)] mb-6 italic font-medium">
+              De Hoofdzaak
             </p>
             
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Ontvang voorspellende signalen</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Herken signalen van stress en ontevredenheid vóórdat mensen uitvallen of vertrekken.</p>
+                  <p className="font-medium text-[var(--kleur-text)] mb-1">AI vraagt door waar jij stopt</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Een manager neemt vaak genoegen met "het gaat wel goed". Onze AI vraagt vriendelijk maar scherp door naar de achterliggende oorzaken. Zo krijg je de échte verhalen op tafel die je anders mist, zonder sociaal ongemak.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Binden en boeien</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers voelen zich gezien en blijven langer loyaal en productief.</p>
+                  <p className="font-medium text-[var(--kleur-text)] mb-1">Voorkom verzuim (én verloop)</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Langdurig verzuim door stress zie je vaak niet aankomen, maar bouwt langzaam op. GroeiRichting signaleert de eerste scheurtjes in werkdruk en sfeer, zodat je kunt ingrijpen voordat iemand zich ziekmeldt.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Objectieve inzichten</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Overzichtelijke scores en adviezen per thema. Geen onderbuikgevoel, maar data.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Tijdbesparing</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Gesprekken en samenvattingen zijn voorbereid en gestructureerd. Jij kunt sneller schakelen.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Inzicht per team</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Geen gemiddeld cijfer voor het hele bedrijf, maar concrete signalen per team en rol. Zo krijgt elke teamleider grip op zijn eigen mensen.</p>
+                  <p className="font-medium text-[var(--kleur-text)] mb-1">Professioneel werkgeverschap zonder HR-afdeling</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Je laat zien dat je je mensen serieus neemt en biedt structuur, zonder dat je daarvoor een fulltime HR-manager in dienst hoeft te nemen.</p>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Voor medewerkers */}
+          {/* Voor je Medewerkers */}
           <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
             <div className="flex items-center gap-3 mb-6">
               <span className="text-3xl">👩‍💼</span>
-              <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor medewerkers</h3>
+              <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor je Medewerkers</h3>
             </div>
-            <p className="text-[var(--kleur-muted)] mb-6 italic">
-              Wat GroeiRichting voor jouw medewerkers kan betekenen
+            <p className="text-[var(--kleur-muted)] mb-6 italic font-medium">
+              De Geruststelling
             </p>
             
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Medewerkers bepalen zelf wat jij onder ogen moet krijgen</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Hun stem telt, niet alleen tijdens één gesprek maar continu.</p>
+                  <p className="font-medium text-[var(--kleur-text)] mb-1">100% Veilig & Anoniem</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Ze kunnen eerlijk zijn zonder angst voor consequenties.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Veilig en laagdrempelig</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers kunnen zich vrij uitspreken, ook over lastige onderwerpen.</p>
+                  <p className="font-medium text-[var(--kleur-text)] mb-1">Geen enquête-moeheid</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Het is een kort gesprek, geen lange saaie lijst.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Invloed op werk en toekomst</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers dragen zelf bij aan verbeteringen en hun interne loopbaanpad.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Tips om te groeien</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers krijgen persoonlijke suggesties om werkplezier, balans of ontwikkeling te verbeteren.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-[var(--kleur-text)]">Geen saaie statische formulieren, maar echte gesprekken</p>
-                  <p className="text-sm text-[var(--kleur-muted)]">AI ondersteunt medewerkers om betere gesprekken te voeren.</p>
+                  <p className="font-medium text-[var(--kleur-text)] mb-1">Direct tips voor zichzelf</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Ze krijgen na het gesprek meteen persoonlijke tips om hun eigen werkplezier te verhogen.</p>
                 </div>
               </div>
             </div>

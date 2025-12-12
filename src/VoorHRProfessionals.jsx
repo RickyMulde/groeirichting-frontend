@@ -142,6 +142,114 @@ function VoorHRProfessionals() {
         </div>
       </section>
 
+      {/* Wat levert het op */}
+      <section>
+        <h2 className="text-3xl font-bold text-center mb-4">Wat levert GroeiRichting op voor jouw organisatie?</h2>
+        <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
+          Ontdek hoe GroeiRichting werkgevers helpt om medewerkerstevredenheid te verbeteren, betrokkenheid te vergroten en verzuim terug te dringen — terwijl medewerkers meer invloed en ondersteuning krijgen om te groeien en te ontwikkelen.
+        </p>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {/* Voor werkgevers */}
+          <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-3xl">🌍</span>
+              <h3 className="text-2xl font-bold text-[var(--kleur-primary)]">Voor werkgevers</h3>
+            </div>
+            <p className="text-[var(--kleur-muted)] mb-6 italic">
+              Waarom GroeiRichting waardevol is voor jouw organisatie
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Ontvang voorspellende signalen</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Herken signalen van stress en ontevredenheid vóórdat mensen uitvallen of vertrekken.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Binden en boeien</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers voelen zich gezien en blijven langer loyaal en productief.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Objectieve inzichten</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Overzichtelijke scores en adviezen per thema. Geen onderbuikgevoel, maar data.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Tijdbesparing</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Gesprekken en samenvattingen zijn voorbereid en gestructureerd. Jij kunt sneller schakelen.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Inzicht per team</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Geen gemiddeld cijfer voor het hele bedrijf, maar concrete signalen per team en rol. Zo krijgt elke teamleider grip op zijn eigen mensen.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Voor medewerkers */}
+          <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-3xl">👩‍💼</span>
+              <h3 className="text-2xl font-bold text-[var(--kleur-accent)]">Voor medewerkers</h3>
+            </div>
+            <p className="text-[var(--kleur-muted)] mb-6 italic">
+              Wat GroeiRichting voor jouw medewerkers kan betekenen
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Medewerkers bepalen zelf wat jij onder ogen moet krijgen</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Hun stem telt, niet alleen tijdens één gesprek maar continu.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Veilig en laagdrempelig</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers kunnen zich vrij uitspreken, ook over lastige onderwerpen.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Invloed op werk en toekomst</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers dragen zelf bij aan verbeteringen en hun interne loopbaanpad.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Tips om te groeien</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">Medewerkers krijgen persoonlijke suggesties om werkplezier, balans of ontwikkeling te verbeteren.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-[var(--kleur-text)]">Geen saaie statische formulieren, maar echte gesprekken</p>
+                  <p className="text-sm text-[var(--kleur-muted)]">AI ondersteunt medewerkers om betere gesprekken te voeren.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* De Oplossing - Feature Highlight */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
