@@ -123,6 +123,99 @@ function VoorDirectieEnOffice() {
         </div>
       </section>
 
+      {/* De Oplossing - Feature Highlight */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
+            Geen dikke rapporten, maar direct inzicht.
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Geautomatiseerd
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    De tool voert de interviews, jij krijgt de inzichten.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Laagdrempelig
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Medewerkers antwoorden via een simpele chat, voelt niet als administratie.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Actiegericht
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Je krijgt geen dik rapport, maar direct een seintje: "Let op team Marketing ervaart de werkdruk als te hoog."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollbaar afbeelding vlak */}
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
+                <img 
+                  src="/thema-overzicht-dashboard.png" 
+                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Waarom dit belangrijk is */}
+      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
+        <h2 className="text-2xl font-semibold mb-6">Voorkomen is beter dan genezen.</h2>
+        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
+          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
+        </p>
+        
+        {/* Mini-stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
+            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
+            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
+            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
+          </div>
+        </div>
+        
+        {/* CTA */}
+        <Link to="/contact" className="btn btn-primary">Neem contact op</Link>
+      </section>
+
       {/* Wat levert het op */}
       <section>
         <h2 className="text-3xl font-bold text-center mb-4">Wat levert GroeiRichting op voor jouw organisatie?</h2>
@@ -225,99 +318,6 @@ function VoorDirectieEnOffice() {
                   <p className="font-medium text-[var(--kleur-text)]">Geen saaie statische formulieren, maar echte gesprekken</p>
                   <p className="text-sm text-[var(--kleur-muted)]">AI ondersteunt medewerkers om betere gesprekken te voeren.</p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Waarom dit belangrijk is */}
-      <section className="bg-gray-50 py-12 px-6 rounded-xl text-center">
-        <h2 className="text-2xl font-semibold mb-6">Waarom dit belangrijk is</h2>
-        <p className="max-w-3xl mx-auto text-[var(--kleur-muted)] text-lg mb-8">
-          Het vervangen van één medewerker kost maanden en tienduizenden euro's aan inwerken, gemiste output en druk op collega's. Burn‑outtrajecten duren gemiddeld maanden, met hoge kosten per dag verzuim. Zonder structurele gesprekken over werkdruk, motivatie en samenwerking blijven de echte oorzaken vaak onzichtbaar en wordt verzuim terugdringen een dure inhaalrace in plaats van een preventieve aanpak.
-        </p>
-        
-        {/* Mini-stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">€ 300</div>
-            <p className="text-[var(--kleur-muted)]">per dag verzuimkosten</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">6</div>
-            <p className="text-[var(--kleur-muted)]">maanden tot gemiddelde terugkeer bij stress/uitval</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="text-3xl font-bold text-[var(--kleur-primary)] mb-2">46%</div>
-            <p className="text-[var(--kleur-muted)]">van medewerkers voelt zich niet structureel gehoord</p>
-          </div>
-        </div>
-        
-        {/* CTA */}
-        <Link to="/contact" className="btn btn-primary">Neem contact op</Link>
-      </section>
-
-      {/* De Oplossing - Feature Highlight */}
-      <section className="py-12 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
-            Jullie tool om concrete inzichten te genereren van de organisatie
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Geautomatiseerd
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    De tool voert de interviews, jij krijgt de inzichten.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Laagdrempelig
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Medewerkers antwoorden via een simpele chat, voelt niet als administratie.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Actiegericht
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Je krijgt geen dik rapport, maar direct een seintje: "Let op team Marketing ervaart de werkdruk als te hoog."
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Scrollbaar afbeelding vlak */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
-                <img 
-                  src="/thema-overzicht-dashboard.png" 
-                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
-                  className="w-full h-auto rounded-lg"
-                />
               </div>
             </div>
           </div>
