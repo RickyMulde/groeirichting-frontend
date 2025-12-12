@@ -196,9 +196,12 @@ function Home() {
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
-                <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
+              <div className="mt-8">
+                <p className="text-lg text-[var(--kleur-muted)] mb-4">Bekijk hoe wij jou kunnen helpen:</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
+                  <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
+                </div>
               </div>
             </div>
             
