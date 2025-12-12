@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   UserX, Briefcase, TrendingUp, CheckCircle,
   Quote, Zap, MessageSquare, BarChart,
-  LogOut, FileStack, Users, Bot, MessageCircle, Bell
+  LogOut, FileStack, Users, Bot, MessageCircle, Bell, Info
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -183,6 +183,27 @@ function VoorDirectieEnOffice() {
                   alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
                   className="w-full h-auto rounded-lg"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hulp nodig bij de opvolging */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                <Info className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">Hulp nodig bij de opvolging?</h3>
+                <div className="text-blue-800">
+                  <p className="text-sm">
+                    GroeiRichting is meer dan software. Concrete adviezen en support op afstand zitten standaard bij de prijs inbegrepen. Heb je door drukte behoefte aan extra fysieke slagkracht op kantoor? Dan koppelen we je eenvoudig aan een tijdelijke HR-expert uit ons netwerk.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
