@@ -116,15 +116,15 @@ function Home() {
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Start met de GroeiScan:</strong> Meet concreet hoe jouw medewerkers in de wedstrijd staan. Krijg direct inzicht in de diepere oorzaken per team en per thema.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Van cijfers naar oorzaken:</strong> Geen statische vinkjes, maar een dynamisch gesprek dat tot de kern komt.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Overzichtelijke Resultaten:</strong> Geen complexe dashboards, maar direct een heldere score, samenvatting en concreet verbeteradvies per thema, per team.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Geen dikke rapporten:</strong> Krijg direct een kant-en-klare agenda voor het goede gesprek.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Focus op Groei:</strong> We hermeten de knelpunten om te zien of acties effect hebben. Zo maak je groei per team niet alleen voelbaar, maar ook aantoonbaar.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Continu grip:</strong> Niet één meetmoment, maar een vast ritme van inzicht en verbetering.</p>
             </div>
           </div>
 
@@ -196,8 +196,9 @@ function Home() {
                 </div>
               </div>
               
-              <div className="text-center mt-8">
-                <Link to="/contact" className="btn btn-primary">Plan een vrijblijvend gesprek</Link>
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
+                <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
               </div>
             </div>
             
@@ -205,50 +206,6 @@ function Home() {
             <div className="flex items-center justify-center">
               <ProcessVisualisation />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Extra CTA blok */}
-      <section className="py-12 px-6 text-center bg-gray-50 rounded-xl">
-        <h2 className="text-2xl font-semibold mb-6">Klaar om te beginnen?</h2>
-        <p className="text-lg text-[var(--kleur-muted)] mb-8 max-w-2xl mx-auto">
-          Ontdek hoe GroeiRichting jouw organisatie kan helpen om medewerkerstevredenheid te verbeteren en een cultuur van groei te creëren.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
-          <Link to="/contact" className="btn btn-primary">Plan vrijblijvend gesprek</Link>
-          <Link to="/hoe-werkt-het" className="btn btn-accent">Bekijk hoe het werkt</Link>
-          <a href="/brochures/groeirichting-brochure.pdf" download className="btn btn-secondary">Download brochure</a>
-        </div>
-      </section>
-
-      {/* Voordelen van GroeiRichting */}
-      <section>
-        <h2 className="text-2xl font-semibold text-center mb-8">Voordelen van GroeiRichting: AI-ondersteunde gesprekken voor betere medewerkerstevredenheid</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>Flexibele themastructuur afgestemd op wat er nú speelt</p>
-          </div>
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>AI kan concreet doorvragen en werkt drempelverlagend om informatie te delen</p>
-          </div>
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>Signalering op individueel én teamniveau</p>
-          </div>
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>Volledige controle en instelbaarheid per werkgever of team</p>
-          </div>
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>Professionalisering zonder extra HR-capaciteit nodig te hebben</p>
-          </div>
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-[var(--kleur-primary)] mt-1" />
-            <p>Een dashboard om beleidskeuzes op te baseren</p>
           </div>
         </div>
       </section>
