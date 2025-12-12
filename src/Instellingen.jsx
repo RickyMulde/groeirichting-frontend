@@ -120,17 +120,12 @@ function Instellingen() {
     }
   }
 
-  const toggleMaand = (maand) => {
-    setWerkgeverConfig(prev => {
-      const nieuweMaanden = prev.actieve_maanden.includes(maand)
-        ? prev.actieve_maanden.filter(m => m !== maand)
-        : [...prev.actieve_maanden, maand].sort((a, b) => a - b)
-      
-      return {
-        ...prev,
-        actieve_maanden: nieuweMaanden
-      }
-    })
+  const selecteerMaand = (maand) => {
+    // Zet de geselecteerde maand als enige actieve maand (altijd maar 1 maand)
+    setWerkgeverConfig(prev => ({
+      ...prev,
+      actieve_maanden: maand ? [parseInt(maand)] : []
+    }))
   }
 
   const saveConfiguratie = async () => {
@@ -273,16 +268,13 @@ function Instellingen() {
           </div>
         </div>
 
-        {/* Gespreksfrequentie Configuratie */}
+        {/* GroeiScan Configuratie */}
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <div className="flex items-center gap-3 mb-4">
               <Calendar className="w-6 h-6 text-[var(--kleur-primary)]" />
-              <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">Gespreksfrequentie</h2>
+              <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">GroeiScan</h2>
             </div>
-            <p className="text-sm text-gray-600 mb-6">
-              Selecteer in welke maanden jouw werknemers de gesprekken gaan voeren. Op de eerste van de actieve maand ontvangen ze automatisch een uitnodiging. Op de 1e dag van maand daarop zou iedereen de gesprekken moeten hebben gevoerd en is het dashboard met resultaten (samenvattingen, scores en tips om bedrijfsvoering te verbeteren) inzichtelijk.
-            </p>
             
             {configLoading ? (
               <div className="text-center py-4">
@@ -301,52 +293,36 @@ function Instellingen() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Actieve maanden */}
+                {/* Actieve maand */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Actieve maanden voor alle thema's:
+                    Selecteer maand om de GroeiScan uit te voeren.
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {[1,2,3,4,5,6,7,8,9,10,11,12].map(maand => (
-                      <label key={maand} className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={werkgeverConfig.actieve_maanden.includes(maand)}
-                          onChange={() => toggleMaand(maand)}
-                          className="w-4 h-4 text-[var(--kleur-primary)] border-gray-300 rounded focus:ring-[var(--kleur-primary)]"
-                        />
-                        <span className="ml-2 text-sm font-medium text-gray-700">
-                          {getMaandNaam(maand)}
-                        </span>
-                      </label>
-                    ))}
+                  
+                  {/* Info box */}
+                  <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <p className="text-sm text-blue-800">
+                      In deze maand moeten alle medewerkers de thema's afronden. Gesprekken buiten deze maand worden niet meegenomen in de resultaten.
+                    </p>
                   </div>
+                  
+                  <select
+                    value={werkgeverConfig.actieve_maanden.length > 0 ? werkgeverConfig.actieve_maanden[0] : ''}
+                    onChange={(e) => selecteerMaand(e.target.value)}
+                    className="w-full md:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                  >
+                    <option value="">-- Selecteer een maand --</option>
+                    {[1,2,3,4,5,6,7,8,9,10,11,12].map(maand => (
+                      <option key={maand} value={maand}>
+                        {getMaandNaam(maand)}
+                      </option>
+                    ))}
+                  </select>
                   {werkgeverConfig.actieve_maanden.length === 0 && (
                     <p className="text-red-600 text-sm mt-2">
-                      Selecteer minimaal één maand
+                      Selecteer een maand
                     </p>
                   )}
-                </div>
-
-
-                {/* Anonimisering */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Anonimiseer gesprekken na:
-                  </label>
-                  <select
-                    value={werkgeverConfig.anonimiseer_na_dagen}
-                    onChange={(e) => setWerkgeverConfig(prev => ({ ...prev, anonimiseer_na_dagen: parseInt(e.target.value) }))}
-                    className="w-full md:w-48 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
-                  >
-                    <option value={30}>30 dagen</option>
-                    <option value={60}>60 dagen</option>
-                    <option value={90}>90 dagen</option>
-                    <option value={180}>180 dagen</option>
-                  </select>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Na deze periode worden persoonlijke antwoorden automatisch geanonimiseerd
-                  </p>
                 </div>
 
                 {/* Opslaan knop */}
@@ -391,6 +367,67 @@ function Instellingen() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Overige instellingen */}
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Settings className="w-6 h-6 text-[var(--kleur-primary)]" />
+              <h2 className="text-xl font-semibold text-[var(--kleur-primary)]">Overige instellingen</h2>
+            </div>
+            
+            {configLoading ? (
+              <div className="text-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
+                <p className="text-gray-600 mt-2">Configuratie laden...</p>
+              </div>
+            ) : foutmelding ? (
+              <div className="text-center py-4">
+                <p className="text-red-600">Configuratie kon niet worden geladen. Probeer de pagina te vernieuwen.</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="btn btn-primary mt-2"
+                >
+                  Pagina vernieuwen
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Anonimisering */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Anonimiseer gesprekken na:
+                  </label>
+                  <select
+                    value={werkgeverConfig.anonimiseer_na_dagen}
+                    onChange={(e) => setWerkgeverConfig(prev => ({ ...prev, anonimiseer_na_dagen: parseInt(e.target.value) }))}
+                    className="w-full md:w-48 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                  >
+                    <option value={30}>30 dagen</option>
+                    <option value={60}>60 dagen</option>
+                    <option value={90}>90 dagen</option>
+                    <option value={180}>180 dagen</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Na deze periode worden persoonlijke antwoorden automatisch geanonimiseerd
+                  </p>
+                </div>
+
+                {/* Opslaan knop */}
+                <div className="pt-4 border-t">
+                  <button
+                    onClick={saveConfiguratie}
+                    disabled={configSaving || werkgeverConfig.actieve_maanden.length === 0}
+                    className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Save className="w-4 h-4" />
+                    {configSaving ? 'Opslaan...' : 'Configuratie opslaan'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
