@@ -136,7 +136,7 @@ function Home() {
 
           {/* Micro-trust */}
           <p className="text-sm text-[var(--kleur-muted)] italic">
-            Gebouwd op inzichten uit HR, psychologie en praktijkervaring in het MKB.
+            Ook maatwerkthema's mogelijk voor specifieke events/informatiebehoefte.
           </p>
         </div>
         <HeroIllustratie className="w-full h-auto" />

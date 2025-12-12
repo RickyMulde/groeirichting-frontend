@@ -33,6 +33,22 @@ function VoorDirectieEnOffice() {
             Je bedrijf wordt groter, maar het familiegevoel staat onder druk. GroeiRichting is de digitale rechterhand die luistert naar al je medewerkers, zonder dat het jou of je (Office) Manager extra tijd kost.
           </p>
           
+          {/* Bullets */}
+          <div className="space-y-3 mb-6">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]"><strong>Voorkom ongewenst vertrek:</strong> Krijg vroegtijdig inzicht in onvrede of hoge werkdruk, nog voordat iemand zijn ontslagbrief schrijft.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]"><strong>Geen HR-achtergrond nodig:</strong> Je krijgt geen theoretische modellen, maar concrete, hapklare actiepunten die je morgen in het teamoverleg kunt bespreken.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]"><strong>Minimale administratie:</strong> Wij regelen de uitnodigingen en de interviews. Jij krijgt puur de resultaten. 100% inzicht, 0% gedoe.</p>
+            </div>
+          </div>
+
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 mb-6">
             <Link 
@@ -48,8 +64,63 @@ function VoorDirectieEnOffice() {
               Download voorbeeldrapport
             </button>
           </div>
+
+          {/* Micro-trust */}
+          <p className="text-sm text-[var(--kleur-muted)] italic">
+            Optioneel: Fysieke HR-ondersteuning op locatie mogelijk.
+          </p>
         </div>
         <HeroIllustratie className="w-full h-auto" />
+      </section>
+
+      {/* Het Probleem - 3 Kolommen */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
+            Weet jij écht wat er speelt, of gok je maar?
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Kolom 1: Het stille vertrek */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <LogOut className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
+                Het stille vertrek
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Toptalent klaagt vaak niet, ze vertrekken 'opeens'. Voorkom die verrassing door signalen vroegtijdig op te vangen.
+              </p>
+            </div>
+
+            {/* Kolom 2: De overbelaste Office Manager */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <FileStack className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
+                De overbelaste Office Manager
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                HR 'erbij doen' is niet langer houdbaar. Je hebt een tool nodig die het operationele werk uit handen neemt.
+              </p>
+            </div>
+
+            {/* Kolom 3: Groeipijn */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
+                <Users className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
+                Groeipijn
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Nieuwe mensen voelen zich soms nog geen onderdeel van de club. Met GroeiRichting bewaak je de cultuur, ook als je groeit.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Wat levert het op */}
@@ -185,56 +256,6 @@ function VoorDirectieEnOffice() {
         
         {/* CTA */}
         <Link to="/contact" className="btn btn-primary">Neem contact op</Link>
-      </section>
-
-      {/* Het Probleem - 3 Kolommen */}
-      <section className="py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
-            Weet jij écht wat er speelt, of gok je maar?
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Kolom 1: Het stille vertrek */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
-                <LogOut className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                Het stille vertrek
-              </h3>
-              <p className="text-[var(--kleur-muted)]">
-                Toptalent klaagt vaak niet, ze vertrekken 'opeens'. Voorkom die verrassing door signalen vroegtijdig op te vangen.
-              </p>
-            </div>
-
-            {/* Kolom 2: De overbelaste Office Manager */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
-                <FileStack className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                De overbelaste Office Manager
-              </h3>
-              <p className="text-[var(--kleur-muted)]">
-                HR 'erbij doen' is niet langer houdbaar. Je hebt een tool nodig die het operationele werk uit handen neemt.
-              </p>
-            </div>
-
-            {/* Kolom 3: Groeipijn */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
-                <Users className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                Groeipijn
-              </h3>
-              <p className="text-[var(--kleur-muted)]">
-                Nieuwe mensen voelen zich soms nog geen onderdeel van de club. Met GroeiRichting bewaak je de cultuur, ook als je groeit.
-              </p>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* De Oplossing - Feature Highlight */}
