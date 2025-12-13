@@ -103,6 +103,146 @@ function VoorHRProfessionals() {
         </div>
       </section>
 
+      {/* Van inzicht naar resultaat: Zo werkt doorlopend Groeien */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            {/* Tekst links */}
+            <div>
+              <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
+                Van inzicht naar resultaat: Zo werkt doorlopend Groeien.
+              </h2>
+              
+              <div className="space-y-8 text-lg text-[var(--kleur-muted)] mb-8">
+                {/* Stap 1 */}
+                <div>
+                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                    1. Start met de GroeiScan
+                  </h4>
+                  <p className="mb-3">
+                    We vervangen statische vinkjes door diepgaande AI-interviews. Je ziet direct per team hoe de vlag erbij hangt op de vier kernpijlers.
+                  </p>
+                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
+                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Je weet exact waar de pijn zit en waar je niet op hoeft te focussen.</p>
+                  </div>
+                </div>
+
+                {/* Stap 2 */}
+                <div>
+                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                    2. Focus & Maatwerk
+                  </h4>
+                  <p className="mb-3">
+                    Geen dikke rapporten voor in de lade. Je pakt alleen de knelpunten aan. Daarnaast zet je flexibele 'Specials' in, bijvoorbeeld ter voorbereiding op het functioneringsgesprek.
+                  </p>
+                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
+                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Managers krijgen een concrete agenda, zonder voorbereidingstijd.</p>
+                  </div>
+                </div>
+
+                {/* Stap 3 */}
+                <div>
+                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                    3. De Check (Resultaat)
+                  </h4>
+                  <p className="mb-3">
+                    Halverwege de cyclus hermeten we alleen de verbeterpunten. Hebben de acties effect gehad? Is de werkdruk gedaald?
+                  </p>
+                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
+                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Je maakt groei aantoonbaar voor directie én medewerkers.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <p className="text-lg text-[var(--kleur-muted)] mb-4">Bekijk hoe wij jou kunnen helpen:</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
+                  <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
+                </div>
+              </div>
+            </div>
+            
+            {/* Visualisatie rechts */}
+            <div className="flex items-center justify-center">
+              <ProcessVisualisation />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Geen dikke rapporten, maar direct inzicht */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Geen dikke rapporten, maar direct inzicht.
+          </h2>
+          <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
+            Zie direct hoe de vlag erbij hangt. Scoort 'Samenwerking' groen? Top. Is 'Werkdruk' oranje? Dan weet je precies welk thema de komende periode aandacht krijgt en dat per team.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Wij doen de uitvoering
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Jij hoeft geen vragen te verzinnen of interviews te plannen. Onze software regelt de uitnodigingen, de interviews en de analyse. Jij krijgt puur een seintje als de resultaten klaar staan.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Geen HR-jargon
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Kijk naar het dashboard hiernaast. Je ziet geen complexe statistieken, maar heldere scores en kleuren. Iedere manager ziet in 3 seconden waar de aandacht heen moet.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Van inzicht naar actie
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Klik op een oranje thema (zoals Werkdruk) en zie direct waarom het team ontevreden is. Je krijgt concrete handvatten om het gesprek aan te gaan en het probleem op te lossen.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollbaar afbeelding vlak */}
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
+                <img 
+                  src="/thema-overzicht-dashboard.png" 
+                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* De verborgen kosten van niet luisteren */}
       <section className="py-12 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
@@ -297,146 +437,6 @@ function VoorHRProfessionals() {
                   <p className="text-sm text-[var(--kleur-muted)]">AI ondersteunt medewerkers om betere gesprekken te voeren.</p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Geen dikke rapporten, maar direct inzicht */}
-      <section className="py-12 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
-            Geen dikke rapporten, maar direct inzicht.
-          </h2>
-          <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
-            Zie direct hoe de vlag erbij hangt. Scoort 'Samenwerking' groen? Top. Is 'Werkdruk' oranje? Dan weet je precies welk thema de komende periode aandacht krijgt en dat per team.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Wij doen de uitvoering
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Jij hoeft geen vragen te verzinnen of interviews te plannen. Onze software regelt de uitnodigingen, de interviews en de analyse. Jij krijgt puur een seintje als de resultaten klaar staan.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Geen HR-jargon
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Kijk naar het dashboard hiernaast. Je ziet geen complexe statistieken, maar heldere scores en kleuren. Iedere manager ziet in 3 seconden waar de aandacht heen moet.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Van inzicht naar actie
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Klik op een oranje thema (zoals Werkdruk) en zie direct waarom het team ontevreden is. Je krijgt concrete handvatten om het gesprek aan te gaan en het probleem op te lossen.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Scrollbaar afbeelding vlak */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
-                <img 
-                  src="/thema-overzicht-dashboard.png" 
-                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
-                  className="w-full h-auto rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Van inzicht naar resultaat: Zo werkt doorlopend Groeien */}
-      <section className="py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            {/* Tekst links */}
-            <div>
-              <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
-                Van inzicht naar resultaat: Zo werkt doorlopend Groeien.
-              </h2>
-              
-              <div className="space-y-8 text-lg text-[var(--kleur-muted)] mb-8">
-                {/* Stap 1 */}
-                <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    1. Start met de GroeiScan
-                  </h4>
-                  <p className="mb-3">
-                    We vervangen statische vinkjes door diepgaande AI-interviews. Je ziet direct per team hoe de vlag erbij hangt op de vier kernpijlers.
-                  </p>
-                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je weet exact waar de pijn zit en waar je niet op hoeft te focussen.</p>
-                  </div>
-                </div>
-
-                {/* Stap 2 */}
-                <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    2. Focus & Maatwerk
-                  </h4>
-                  <p className="mb-3">
-                    Geen dikke rapporten voor in de lade. Je pakt alleen de knelpunten aan. Daarnaast zet je flexibele 'Specials' in, bijvoorbeeld ter voorbereiding op het functioneringsgesprek.
-                  </p>
-                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Managers krijgen een concrete agenda, zonder voorbereidingstijd.</p>
-                  </div>
-                </div>
-
-                {/* Stap 3 */}
-                <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    3. De Check (Resultaat)
-                  </h4>
-                  <p className="mb-3">
-                    Halverwege de cyclus hermeten we alleen de verbeterpunten. Hebben de acties effect gehad? Is de werkdruk gedaald?
-                  </p>
-                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je maakt groei aantoonbaar voor directie én medewerkers.</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-8">
-                <p className="text-lg text-[var(--kleur-muted)] mb-4">Bekijk hoe wij jou kunnen helpen:</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
-                  <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
-                </div>
-              </div>
-            </div>
-            
-            {/* Visualisatie rechts */}
-            <div className="flex items-center justify-center">
-              <ProcessVisualisation />
             </div>
           </div>
         </div>
