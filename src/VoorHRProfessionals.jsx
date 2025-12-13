@@ -28,12 +28,28 @@ function VoorHRProfessionals() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Van administratief HR naar strategisch Business Partner.
+            Onderbouw je intuïtie met harde data.
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Stop met het jaarlijkse MTO dat niemand leest. Krijg realtime data over betrokkenheid, verzuimrisico's en retentie. Onderbouw jouw advies aan de directie met harde feiten.
+            Je voelt vaak haarfijn aan wat er speelt, maar zonder cijfers is het lastig sturen. GroeiRichting geeft je de feiten bij je gevoel. Transformeer van faciliterend HR naar een strategische partner die verzuim, verloop en cultuur inzichtelijk maakt voor de directie.
           </p>
           
+          {/* Bullets */}
+          <div className="space-y-3 mb-6">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]"><strong>Van onderbuikgevoel naar bewijs:</strong> Krijg de "harde" cijfers om jouw "zachte" thema's (zoals werkdruk en sfeer) bespreekbaar te maken in de boardroom.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]"><strong>Signaleer risico's proactief:</strong> Wacht niet op de verzuimcijfers achteraf. Zie realtime trends per team en adviseer managers voordat het misgaat.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
+              <p className="text-[var(--kleur-muted)]"><strong>Faciliteer de lijn:</strong> Geef teamleiders de handvatten om zelf het goede gesprek te voeren, zodat jij je kunt focussen op de grote lijnen en het beleid.</p>
+            </div>
+          </div>
+
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 mb-6">
             <Link 
