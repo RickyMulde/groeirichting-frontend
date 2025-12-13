@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   Calendar, TrendingDown, Brain, Shield, CheckCircle,
   BarChart3, FileText, Database, MessageSquare, Bot, Bell,
-  LogOut, FileStack, Users, MessageCircle
+  LogOut, FileStack, Users, MessageCircle, Clock
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -28,25 +28,25 @@ function VoorHRProfessionals() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Onderbouw je intuïtie met harde data.
+            Van brandjes blussen naar strategische impact.
           </h1>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-            Je voelt vaak haarfijn aan wat er speelt, maar zonder cijfers is het lastig sturen. GroeiRichting geeft je de feiten bij je gevoel. Transformeer van faciliterend HR naar een strategische partner die verzuim, verloop en cultuur inzichtelijk maakt voor de directie.
+            Je wilt bouwen aan een vitale organisatie, maar de waan van de dag regeert. GroeiRichting geeft je de data en tools om verzuim en verloop structureel aan te pakken — met draagvlak van de directie.
           </p>
           
           {/* Bullets */}
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Van onderbuikgevoel naar bewijs:</strong> Krijg de "harde" cijfers om jouw "zachte" thema's (zoals werkdruk en sfeer) bespreekbaar te maken in de boardroom.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Weet aan welke knoppen je moet draaien:</strong> Stop met gissen naar de oorzaken van onvrede. Zie per team exact waar de schoen wringt.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Signaleer risico's proactief:</strong> Wacht niet op de verzuimcijfers achteraf. Zie realtime trends per team en adviseer managers voordat het misgaat.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Onderbouw je intuïtie met feiten:</strong> Krijg de harde data die je nodig hebt om je plannen en budgetten erdoor te krijgen in de boardroom.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Faciliteer de lijn:</strong> Geef teamleiders de handvatten om zelf het goede gesprek te voeren, zodat jij je kunt focussen op de grote lijnen en het beleid.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Preventie in plaats van reparatie:</strong> Signaleer risico's op uitval vroegtijdig, zodat je kunt sturen op vitaliteit in plaats van verzuimdossiers.</p>
             </div>
           </div>
 
@@ -73,46 +73,46 @@ function VoorHRProfessionals() {
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
-            Weet jij écht wat er speelt, of gok je maar?
+            Je wilt bouwen aan de organisatie, maar de realiteit houdt je tegen.
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Kolom 1: Het stille vertrek */}
+            {/* Kolom 1: De Blinde Vlek */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
-                <LogOut className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
+                <Brain className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                Toptalent vertrekt 'opeens'
+                Je weet niet precies waar de pijn zit
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                Vaak zijn het je beste mensen die niet klagen, maar opzeggen. Ze missen perspectief of waardering. Met GroeiRichting vang je deze signalen op vòòrdat de ontslagbrief op je bureau ligt.
+                Je voelt aan dat de sfeer op een afdeling verhardt, maar je krijgt de vinger er niet achter. Ligt het aan de teamleider? De werkdruk? Of onduidelijke processen? Zolang je de oorzaak niet kent, weet je niet aan welke knoppen je moet draaien.
               </p>
             </div>
 
-            {/* Kolom 2: De overbelaste Office Manager */}
+            {/* Kolom 2: De Bewijslast */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
-                <FileStack className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
+                <BarChart3 className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                HR 'erbij doen' lukt niet meer
+                Discussies winnen op gevoel is lastig
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                Je wilt goed voor je mensen zorgen, maar je wordt gestuurd door de waan van de dag. Periodieke functioneringsgesprekken schieten erbij in en signalen sneeuwen onder. Je hebt geen extra handen nodig, maar een slim systeem.
+                Jij ziet het belang van preventie, maar de directie stuurt op cijfers. Zonder harde data over verzuimrisico's en retentie is het lastig om budget en prioriteit te krijgen voor jouw plannen. Je staat vaak alleen in je pleidooi.
               </p>
             </div>
 
-            {/* Kolom 3: Groeipijn */}
+            {/* Kolom 3: De Tijdgebrek-Val */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <div className="relative p-4 rounded-xl w-fit mb-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 shadow-sm">
-                <Users className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
+                <Clock className="w-8 h-8 text-[var(--kleur-primary)] drop-shadow-sm" />
               </div>
               <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-3">
-                Het familiegevoel staat onder druk
+                Geen tijd voor diepgang
               </h3>
               <p className="text-[var(--kleur-muted)]">
-                Vroeger sprak je iedereen bij de koffieautomaat. Nu zijn er eilandjes en weet je niet meer wat er leeft op de verschillende afdelingen. Hoe bewaak je de cultuur als je groeit?
+                Je agenda wordt beheerst door operationele issues en de waan van de dag. Je zou wel vaker diepte-interviews willen houden met medewerkers, maar die tijd is er simpelweg niet. Je wordt gedwongen tot reactief handelen.
               </p>
             </div>
           </div>
