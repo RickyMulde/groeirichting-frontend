@@ -30,7 +30,7 @@ const tooltipData = {
   ai_model: 'Model dat gebruikt wordt (standaard: GPT-4).',
   
   // Thema zichtbaarheid en toegang
-  standaard_zichtbaar: 'Vink aan als dit thema standaard actief moet zijn voor nieuwe werkgevers.',
+  standaard_zichtbaar: 'Vink AAN voor generiek thema (standaard zichtbaar voor alle werkgevers). Vink UIT voor exclusief/maatwerk thema (alleen zichtbaar voor werkgevers die het gekoppeld hebben via superadmin).',
   alleen_premium: 'Vink aan als dit thema alleen beschikbaar is in het premium pakket.',
   alleen_concept: 'Alleen zichtbaar voor jou als superadmin. Gebruik dit voor testen of voorbereiding.',
   voorgesteld_als_verplicht: 'Geef aan of je dit thema aanbeveelt als verplicht onderdeel voor werknemers.',
@@ -145,14 +145,37 @@ function ThemaBeheer() {
             setVragen(vragen)
             
             // Vul de formData met de geladen vragen en doelvragen
+            // Synchroniseer alleen_premium en standaard_zichtbaar bij het laden
+            // Gebruik alleen_premium als primaire bron van waarheid
+            // Als alleen_premium niet is ingesteld, bepaal op basis van standaard_zichtbaar
+            let isMaatwerk = false
+            if (themaData.alleen_premium !== undefined && themaData.alleen_premium !== null) {
+              // alleen_premium is expliciet ingesteld, gebruik die als bron
+              isMaatwerk = themaData.alleen_premium === true
+            } else {
+              // alleen_premium niet ingesteld, bepaal op basis van standaard_zichtbaar
+              // standaard_zichtbaar = false betekent exclusief/maatwerk
+              isMaatwerk = themaData.standaard_zichtbaar === false
+            }
+            
             const formDataMetVragen = {
               ...themaData,
+              alleen_premium: isMaatwerk,
+              standaard_zichtbaar: !isMaatwerk, // Synchroniseer: maatwerk = false, generiek = true
               versiebeheer: JSON.stringify(themaData.versiebeheer || {}, null, 2),
               branche_labels: (themaData.branche_labels || []).join(', '),
               doelgroep_labels: (themaData.doelgroep_labels || []).join(', '),
               zoeklabels: (themaData.zoeklabels || []).join(', '),
               verwachte_signalen: (themaData.verwachte_signalen || []).join(', ')
             }
+            
+            console.log('ThemaBeheer: Thema geladen en gesynchroniseerd:', {
+              alleen_premium_origineel: themaData.alleen_premium,
+              standaard_zichtbaar_origineel: themaData.standaard_zichtbaar,
+              isMaatwerk_bepaald: isMaatwerk,
+              alleen_premium_gesynchroniseerd: formDataMetVragen.alleen_premium,
+              standaard_zichtbaar_gesynchroniseerd: formDataMetVragen.standaard_zichtbaar
+            })
             
             // Vul de vraag velden in formData
             vragen.forEach((vraag, index) => {
@@ -207,6 +230,28 @@ function ThemaBeheer() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
+    
+    // Synchroniseer "Is maatwerkthema" (alleen_premium) met standaard_zichtbaar
+    // Ze zijn omgekeerd: maatwerk = standaard_zichtbaar false, generiek = standaard_zichtbaar true
+    if (name === 'alleen_premium') {
+      setFormData((prev) => ({ 
+        ...prev, 
+        alleen_premium: checked,
+        standaard_zichtbaar: !checked // Maatwerk (true) = exclusief (standaard_zichtbaar false), Generiek (false) = standaard_zichtbaar true
+      }))
+      return
+    }
+    
+    // Als standaard_zichtbaar wordt gewijzigd, synchroniseer alleen_premium
+    if (name === 'standaard_zichtbaar') {
+      setFormData((prev) => ({ 
+        ...prev, 
+        standaard_zichtbaar: checked,
+        alleen_premium: !checked // Generiek (standaard_zichtbaar true) = geen maatwerk (alleen_premium false), Exclusief (standaard_zichtbaar false) = maatwerk (alleen_premium true)
+      }))
+      return
+    }
+    
     setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
   }
 
@@ -241,14 +286,25 @@ function ThemaBeheer() {
     setSuccess('')
     setSaving(true)
     try {
+      // Zorg dat alleen_premium en standaard_zichtbaar altijd gesynchroniseerd zijn bij opslaan
+      // Gebruik alleen_premium als bron van waarheid
+      const isMaatwerk = formData.alleen_premium === true
+      
       const payload = {
         ...formData,
+        alleen_premium: isMaatwerk,
+        standaard_zichtbaar: !isMaatwerk, // Synchroniseer: maatwerk = false, generiek = true
         versiebeheer: safeParseJSON(formData.versiebeheer),
         branche_labels: splitList(formData.branche_labels),
         doelgroep_labels: splitList(formData.doelgroep_labels),
         zoeklabels: splitList(formData.zoeklabels),
         verwachte_signalen: splitList(formData.verwachte_signalen)
       }
+      
+      console.log('ThemaBeheer: Opslaan met gesynchroniseerde waarden:', {
+        alleen_premium: payload.alleen_premium,
+        standaard_zichtbaar: payload.standaard_zichtbaar
+      })
 
       // Foutafhandeling: voorkom crash op zichtbaar_* velden
       ;['zichtbaar_vanaf', 'zichtbaar_tot'].forEach((field) => {
@@ -403,30 +459,42 @@ function ThemaBeheer() {
 
               {/* Rechts: Checkbox velden */}
               <div className="space-y-3 pl-4">
-                {['gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].map(key => (
-                  <div key={key} className="flex items-center">
-                    <label className="flex items-center text-sm font-medium text-gray-700 cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        name={key} 
-                        checked={formData[key]} 
-                        onChange={handleChange}
-                        className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      {tooltipData[key] ? (
-                        <span
-                          title={tooltipData[key]}
-                          className="flex items-center"
-                        >
-                          {key.replace(/_/g, ' ')}
-                          <span className="ml-1 cursor-help text-gray-400 hover:text-gray-600">🛈</span>
-                        </span>
-                      ) : (
-                        key.replace(/_/g, ' ')
-                      )}
-                    </label>
-                  </div>
-                ))}
+                {['gebruik_gpt_vragen', 'klaar_voor_gebruik', 'voorgesteld_als_verplicht', 'standaard_zichtbaar', 'alleen_premium', 'alleen_concept'].map(key => {
+                  const getLabelText = () => {
+                    if (key === 'standaard_zichtbaar') {
+                      return formData[key] ? 'Generiek thema (standaard zichtbaar)' : 'Exclusief thema (maatwerk)'
+                    }
+                    if (key === 'alleen_premium') {
+                      return 'Is maatwerkthema'
+                    }
+                    return key.replace(/_/g, ' ')
+                  }
+                  
+                  return (
+                    <div key={key} className="flex items-center">
+                      <label className="flex items-center text-sm font-medium text-gray-700 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          name={key} 
+                          checked={formData[key]} 
+                          onChange={handleChange}
+                          className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        {tooltipData[key] ? (
+                          <span
+                            title={tooltipData[key]}
+                            className="flex items-center"
+                          >
+                            {getLabelText()}
+                            <span className="ml-1 cursor-help text-gray-400 hover:text-gray-600">🛈</span>
+                          </span>
+                        ) : (
+                          getLabelText()
+                        )}
+                      </label>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
