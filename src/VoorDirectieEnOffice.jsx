@@ -18,8 +18,24 @@ function VoorDirectieEnOffice() {
       <SEOHead 
         title="Voor Directie & Office - Groei zonder grip te verliezen"
         description="Je bedrijf wordt groter, maar het familiegevoel staat onder druk. GroeiRichting is de digitale rechterhand die luistert naar al je medewerkers, zonder dat het jou of je Office Manager extra tijd kost."
-        keywords="directie, office manager, MKB, medewerkersbehoud, cultuur behouden, groeipijn, toptalent behouden"
+        keywords="directie, office manager, MKB, medewerkersbehoud, cultuur behouden, groeipijn, toptalent behouden, medewerkers behouden zonder hr afdeling, cultuur behouden bij groei mkb, verzuimpreventie software voor mkb, alternatief voor jaarlijks mto met doorlopende metingen, voorkom toptalent verlies mkb"
         canonical="https://groeirichting.nl/voor-directie-en-office"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "GroeiRichting - Directie & Office",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "description": "Persoonlijke offerte op maat voor directie en office in het MKB"
+          },
+          "description": "AI-gestuurd gespreks- en analyseplatform voor MKB-directies die grip willen houden op cultuur, verzuim en toptalentbehoud tijdens groei.",
+          "keywords": "directie mkb, medewerkersbehoud, cultuur behouden bij groei, verzuimpreventie software voor mkb, alternatief voor jaarlijks mto, medewerkers behouden zonder hr afdeling, toptalent behouden",
+          "url": "https://groeirichting.nl/voor-directie-en-office"
+        }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
 
@@ -120,6 +136,13 @@ function VoorDirectieEnOffice() {
               </p>
             </div>
           </div>
+          
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <Link to="/contact" className="btn btn-primary">
+              Plan kennismaking
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -188,6 +211,19 @@ function VoorDirectieEnOffice() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* CTA's */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+            <button 
+              onClick={() => setShowVoorbeeldRapportModal(true)}
+              className="btn btn-accent"
+            >
+              Download informatie-brochure
+            </button>
+            <Link to="/contact" className="btn btn-primary">
+              Neem contact op
+            </Link>
           </div>
         </div>
       </section>
@@ -318,6 +354,75 @@ function VoorDirectieEnOffice() {
             </div>
           </div>
         </div>
+
+        {/* CTA Download brochure */}
+        <div className="text-center mt-12">
+          <button 
+            onClick={() => setShowVoorbeeldRapportModal(true)}
+            className="btn btn-accent"
+          >
+            Download informatie-brochure
+          </button>
+        </div>
+      </section>
+
+      {/* FAQ Directie & Office */}
+      <section className="py-12 px-6">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Veelgestelde vragen van Directie &amp; Office
+          </h2>
+
+          {/* Vraag 1 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              1. Kost dit mij of mijn Office Manager veel tijd om te beheren?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Nee, bijna niets. GroeiRichting is ontwikkeld om jullie te ontlasten, niet om werk toe te voegen. Wij regelen de uitnodigingen, de chats en de analyses. Jullie ontvangen alleen een seintje wanneer de resultaten klaarstaan. Je hoeft zelf geen vragenlijsten te maken of data in Excel te kloppen.
+            </p>
+          </div>
+
+          {/* Vraag 2 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              2. Ik heb geen HR-achtergrond. Snap ik de rapportages wel?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Absoluut. Je krijgt geen dik boekwerk met complexe statistieken, maar een helder dashboard. We werken met kleuren (groen = goed, oranje = aandacht) en concrete actiepunten in gewone mensentaal. Iedere ondernemer of manager ziet in één oogopslag waar de prioriteiten liggen.
+            </p>
+          </div>
+
+          {/* Vraag 3 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              3. Wat als er negatieve of kritische resultaten uitkomen?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Dat is juist waardevol. Liever dat je het nu weet via een dashboard, dan dat je beste mensen onverwacht hun ontslag indienen. Kritiek is geen aanval, maar een kans om bij te sturen voordat het te laat is. Bovendien geeft de tool je direct tips over hoe je dat gesprek aan kunt gaan.
+            </p>
+          </div>
+
+          {/* Vraag 4 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              4. Is het wel anoniem? Anders vullen mijn mensen het niet eerlijk in.
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Ja, anonimiteit is heilig. Als medewerkers zich niet veilig voelen, krijg jij geen eerlijke antwoorden. Wij rapporteren daarom alleen op team- of organisatieniveau, nooit op individueel niveau. Niemand in jouw bedrijf kan zien wie wat heeft gezegd.
+            </p>
+          </div>
+
+          {/* Vraag 5 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              5. Stel dat ik geen tijd heb voor de opvolging, wat dan?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              De tool geeft je digitale handvatten die je weinig tijd kosten. Heb je liever dat iemand anders de gesprekken voert of de actiepunten oppakt? Dan koppelen we je eenvoudig aan een tijdelijke HR-professional uit ons netwerk. Zo heb je wel de lusten (betere cultuur), maar niet de lasten.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Social Proof & Afsluiting */}
@@ -337,12 +442,20 @@ function VoorDirectieEnOffice() {
             <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
               Klaar om je cultuur te borgen?
             </h2>
-            <Link 
-              to="/contact"
-              className="btn btn-primary"
-            >
-              Neem contact op
-            </Link>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link 
+                to="/contact"
+                className="btn btn-primary"
+              >
+                Neem contact op
+              </Link>
+              <Link 
+                to="/offerte"
+                className="btn btn-secondary"
+              >
+                Vraag offerte op
+              </Link>
+            </div>
           </div>
         </div>
       </section>

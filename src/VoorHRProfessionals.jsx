@@ -19,8 +19,24 @@ function VoorHRProfessionals() {
       <SEOHead 
         title="Voor HR Professionals - Van administratief HR naar strategisch Business Partner"
         description="Stop met het jaarlijkse MTO dat niemand leest. Krijg realtime data over betrokkenheid, verzuimrisico's en retentie. Onderbouw jouw advies aan de directie met harde feiten."
-        keywords="HR professional, HR manager, business partner, MTO alternatief, HR data, verzuimpreventie, HR analytics, strategisch HR"
+        keywords="HR professional, HR manager, business partner, MTO alternatief, HR data, verzuimpreventie, HR analytics, strategisch HR, hr analytics tool voor verzuimpreventie, continue medewerkerstevredenheid meten, alternatief voor jaarlijks mto met doorlopende metingen, hoe onderbouw ik hr beleid met data voor directie, hr dashboard voor betrokkenheid en werkdruk"
         canonical="https://groeirichting.nl/voor-hr-professionals"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "GroeiRichting - HR Professionals",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "description": "Persoonlijke offerte op maat voor HR-teams die strategische impact willen maken"
+          },
+          "description": "HR analytics en MTO-alternatief voor HR-professionals die continu medewerkerstevredenheid willen meten, verzuimrisico's vroegtijdig willen signaleren en beleid met data willen onderbouwen richting de directie.",
+          "keywords": "hr analytics software, verzuimpreventie tool, alternatief voor jaarlijks mto, continue medewerkerstevredenheid meten, hr dashboard voor betrokkenheid en werkdruk, strategisch hr business partner",
+          "url": "https://groeirichting.nl/voor-hr-professionals"
+        }}
       />
       <div className="space-y-16 bg-[var(--kleur-background)]">
 
@@ -116,6 +132,13 @@ function VoorHRProfessionals() {
               </p>
             </div>
           </div>
+          
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <Link to="/contact" className="btn btn-primary">
+              Plan kennismaking
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -173,12 +196,13 @@ function VoorHRProfessionals() {
                 </div>
               </div>
               
-              <div className="mt-8">
-                <p className="text-lg text-[var(--kleur-muted)] mb-4">Bekijk hoe wij jou kunnen helpen:</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
-                  <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
-                </div>
+              <div className="mt-8 text-center">
+                <button 
+                  onClick={() => setShowBrochureModal(true)}
+                  className="btn btn-accent"
+                >
+                  Download informatie-brochure
+                </button>
               </div>
             </div>
             
@@ -309,6 +333,13 @@ function VoorHRProfessionals() {
                 Medewerkers die zich niet gehoord voelen, zijn 3x vaker geneigd om binnen een jaar te vertrekken.
               </p>
             </div>
+          </div>
+
+          {/* CTA Offerte */}
+          <div className="text-center mt-12">
+            <Link to="/offerte" className="btn btn-primary">
+              Vraag offerte op
+            </Link>
           </div>
         </div>
       </section>
@@ -458,72 +489,6 @@ function VoorHRProfessionals() {
         </div>
       </section>
 
-      {/* De Oplossing - Feature Highlight */}
-      <section className="py-12 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
-            Jullie tool om concrete inzichten te genereren van de organisatie
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Geautomatiseerd
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    De tool voert de interviews, jij krijgt de inzichten.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Laagdrempelig
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Medewerkers antwoorden via een simpele chat, voelt niet als administratie.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Actiegericht
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Je krijgt geen dik rapport, maar direct een seintje: "Let op team Marketing ervaart de werkdruk als te hoog."
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Scrollbaar afbeelding vlak */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
-                <img 
-                  src="/thema-overzicht-dashboard.png" 
-                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
-                  className="w-full h-auto rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* De Oplossing - Data & AI Focus */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -571,6 +536,13 @@ function VoorHRProfessionals() {
               </p>
             </div>
           </div>
+          
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <Link to="/offerte" className="btn btn-secondary">
+              Vraag offerte op
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -599,6 +571,65 @@ function VoorHRProfessionals() {
             >
               Neem contact op
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ HR Professionals */}
+      <section className="py-12 px-6">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Veelgestelde vragen van HR Professionals
+          </h2>
+
+          {/* Vraag 1 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              1. Hoe verschilt dit van ons jaarlijkse MTO (Medewerkerstevredenheidsonderzoek)?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Het traditionele MTO is een momentopname achteraf; vaak is de data al verouderd tegen de tijd dat het rapport af is. GroeiRichting meet continu (of met een frequentie naar keuze) en real-time. Bovendien is een MTO vaak een statische vragenlijst ("Geef een cijfer van 1 tot 10"). Onze AI-interviews vragen door op het waarom achter het cijfer, waardoor je diepere, kwalitatieve inzichten krijgt die je anders mist.
+            </p>
+          </div>
+
+          {/* Vraag 2 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              2. Is de privacy en anonimiteit echt gewaarborgd (AVG)?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Ja, dit is onze topprioriteit. Wij rapporteren uitsluitend op geaggregeerd niveau (team- of organisatieniveau). Als een team te klein is (&lt; 5 personen), worden de resultaten samengevoegd om herleidbaarheid te voorkomen. Medewerkers durven zich alleen uit te spreken als ze zich 100% veilig voelen, en onze software is daar volledig op ingericht ("Privacy by Design").
+            </p>
+          </div>
+
+          {/* Vraag 3 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              3. Kost de implementatie veel tijd en heb ik IT-support nodig?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Nee, de implementatie is 'light'. Omdat we een cloud-based oplossing zijn, hoeft er niets lokaal geïnstalleerd te worden. We hebben enkel een medewerkerslijst (naam + e-mail) nodig om te starten. Wij richten de omgeving in. Vaak kunnen we binnen enkele dagen live zijn, zonder belasting van jullie IT-afdeling.
+            </p>
+          </div>
+
+          {/* Vraag 4 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              4. Krijg ik als HR niet een dagtaak aan het opvolgen van alle signalen?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              Integendeel. De kracht van GroeiRichting is dat het de verantwoordelijkheid teruglegt waar hij hoort: bij de lijnmanager. Managers krijgen toegang tot hun eigen teamdashboard met concrete actiepunten. Jouw rol verschuift van het 'ophalen en verwerken van data' naar het strategisch adviseren van managers op basis van die data.
+            </p>
+          </div>
+
+          {/* Vraag 5 */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+              5. Is de methodiek wel wetenschappelijk onderbouwd?
+            </h3>
+            <p className="text-[var(--kleur-muted)]">
+              We baseren onze thema's op gevalideerde drivers voor werkgeluk en duurzame inzetbaarheid, zoals autonomie, competentie, verbondenheid (SDT-theorie) en werkdrukmodellen. De AI is getraind om objectief en onbevooroordeeld door te vragen, waardoor je bias (die een menselijke interviewer wel heeft) voorkomt.
+            </p>
           </div>
         </div>
       </section>
