@@ -116,6 +116,13 @@ function VoorHRProfessionals() {
               </p>
             </div>
           </div>
+          
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <Link to="/contact" className="btn btn-primary">
+              Plan kennismaking
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -173,12 +180,13 @@ function VoorHRProfessionals() {
                 </div>
               </div>
               
-              <div className="mt-8">
-                <p className="text-lg text-[var(--kleur-muted)] mb-4">Bekijk hoe wij jou kunnen helpen:</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
-                  <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
-                </div>
+              <div className="mt-8 text-center">
+                <button 
+                  onClick={() => setShowBrochureModal(true)}
+                  className="btn btn-accent"
+                >
+                  Download informatie-brochure
+                </button>
               </div>
             </div>
             
@@ -309,6 +317,13 @@ function VoorHRProfessionals() {
                 Medewerkers die zich niet gehoord voelen, zijn 3x vaker geneigd om binnen een jaar te vertrekken.
               </p>
             </div>
+          </div>
+
+          {/* CTA Offerte */}
+          <div className="text-center mt-12">
+            <Link to="/offerte" className="btn btn-primary">
+              Vraag offerte op
+            </Link>
           </div>
         </div>
       </section>
@@ -452,72 +467,6 @@ function VoorHRProfessionals() {
                   <p className="font-medium text-[var(--kleur-text)]">Geen saaie statische formulieren, maar echte gesprekken</p>
                   <p className="text-sm text-[var(--kleur-muted)]">AI ondersteunt medewerkers om betere gesprekken te voeren.</p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* De Oplossing - Feature Highlight */}
-      <section className="py-12 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
-            Jullie tool om concrete inzichten te genereren van de organisatie
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Geautomatiseerd
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    De tool voert de interviews, jij krijgt de inzichten.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <MessageSquare className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Laagdrempelig
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Medewerkers antwoorden via een simpele chat, voelt niet als administratie.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
-                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Actiegericht
-                  </h3>
-                  <p className="text-[var(--kleur-muted)]">
-                    Je krijgt geen dik rapport, maar direct een seintje: "Let op team Marketing ervaart de werkdruk als te hoog."
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Scrollbaar afbeelding vlak */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
-                <img 
-                  src="/thema-overzicht-dashboard.png" 
-                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
-                  className="w-full h-auto rounded-lg"
-                />
               </div>
             </div>
           </div>

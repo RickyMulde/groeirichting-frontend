@@ -120,6 +120,13 @@ function VoorDirectieEnOffice() {
               </p>
             </div>
           </div>
+          
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <Link to="/contact" className="btn btn-primary">
+              Plan kennismaking
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -188,6 +195,19 @@ function VoorDirectieEnOffice() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* CTA's */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+            <button 
+              onClick={() => setShowVoorbeeldRapportModal(true)}
+              className="btn btn-accent"
+            >
+              Download informatie-brochure
+            </button>
+            <Link to="/contact" className="btn btn-primary">
+              Neem contact op
+            </Link>
           </div>
         </div>
       </section>
@@ -317,6 +337,16 @@ function VoorDirectieEnOffice() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* CTA Download brochure */}
+        <div className="text-center mt-12">
+          <button 
+            onClick={() => setShowVoorbeeldRapportModal(true)}
+            className="btn btn-accent"
+          >
+            Download informatie-brochure
+          </button>
         </div>
       </section>
 
