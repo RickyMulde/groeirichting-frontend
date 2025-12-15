@@ -113,13 +113,17 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       console.log('ThemaVoortgangBanner: Aantal thema\'s na mapping:', themas.length)
 
       // Haal gesprekken op voor deze gebruiker in dezelfde periode
+      // Bereken volgende maand (met wrap-around naar volgend jaar bij december)
+      const volgendeMaand = gesprekMaand === 12 ? 1 : gesprekMaand + 1
+      const volgendJaar = gesprekMaand === 12 ? gesprekJaar + 1 : gesprekJaar
+      
       const { data: gesprekken, error: gesprekError } = await supabase
         .from('gesprek')
         .select('theme_id, status, gestart_op')
         .eq('werknemer_id', userId)
         .is('geanonimiseerd_op', null)
         .gte('gestart_op', `${gesprekJaar}-${String(gesprekMaand).padStart(2, '0')}-01`)
-        .lt('gestart_op', `${gesprekJaar}-${String(gesprekMaand + 1).padStart(2, '0')}-01`) // Volgende maand
+        .lt('gestart_op', `${volgendJaar}-${String(volgendeMaand).padStart(2, '0')}-01`) // Volgende maand
         .order('gestart_op', { ascending: false })
 
       if (gesprekError) throw gesprekError
