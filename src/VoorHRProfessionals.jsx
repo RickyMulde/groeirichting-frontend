@@ -520,6 +520,13 @@ function VoorHRProfessionals() {
               </p>
             </div>
           </div>
+          
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <Link to="/offerte" className="btn btn-secondary">
+              Vraag offerte op
+            </Link>
+          </div>
         </div>
       </section>
 

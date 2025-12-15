@@ -367,12 +367,20 @@ function VoorDirectieEnOffice() {
             <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
               Klaar om je cultuur te borgen?
             </h2>
-            <Link 
-              to="/contact"
-              className="btn btn-primary"
-            >
-              Neem contact op
-            </Link>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link 
+                to="/contact"
+                className="btn btn-primary"
+              >
+                Neem contact op
+              </Link>
+              <Link 
+                to="/offerte"
+                className="btn btn-secondary"
+              >
+                Vraag offerte op
+              </Link>
+            </div>
           </div>
         </div>
       </section>
