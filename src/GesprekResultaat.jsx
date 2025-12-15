@@ -397,21 +397,6 @@ function GesprekResultaat() {
 
         <div className="space-y-6">
 
-          {/* Voortgangssectie - Toon altijd als we de data hebben */}
-          {gesprekDatum && userId ? (
-            <ThemaVoortgangBanner 
-              gesprekDatum={gesprekDatum} 
-              userId={userId} 
-            />
-          ) : (
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-              <p className="text-gray-500">Voortgang wordt geladen...</p>
-              <p className="text-xs text-gray-400 mt-1">
-                Gesprek datum: {gesprekDatum ? 'Ja' : 'Nee'} | User ID: {userId ? 'Ja' : 'Nee'}
-              </p>
-            </div>
-          )}
-
           {/* Samenvatting sectie */}
           <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
             <div className="space-y-1">
@@ -485,6 +470,21 @@ function GesprekResultaat() {
               </div>
             )}
           </section>
+
+          {/* Voortgangssectie - Toon altijd als we de data hebben (na samenvatting en vervolgacties) */}
+          {gesprekDatum && userId ? (
+            <ThemaVoortgangBanner 
+              gesprekDatum={gesprekDatum} 
+              userId={userId} 
+            />
+          ) : (
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+              <p className="text-gray-500">Voortgang wordt geladen...</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Gesprek datum: {gesprekDatum ? 'Ja' : 'Nee'} | User ID: {userId ? 'Ja' : 'Nee'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
