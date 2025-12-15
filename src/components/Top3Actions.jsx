@@ -25,27 +25,32 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
 
   const checkAlleThemasAfgerond = async () => {
     try {
-      // Haal werknemer op om employer_id te krijgen
-      const { data: werknemer, error: werknemerError } = await supabase
-        .from('users')
-        .select('employer_id')
-        .eq('id', werknemerId)
-        .single()
-
-      if (werknemerError || !werknemer) {
-        console.error('Kon werknemer niet ophalen:', werknemerError)
+      // Haal toegestane thema's op via API (gebruikt nieuwe filtering logica)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        console.error('Geen sessie gevonden')
         return false
       }
 
-      // Thema's zijn globaal, niet per werkgever - filter alleen op actieve thema's
-      const { data: alleThemas, error: themaError } = await supabase
-        .from('themes')
-        .select('id')
-        .eq('klaar_voor_gebruik', true)
-        .eq('standaard_zichtbaar', true)
+      const themaDataResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-thema-data-werknemer/${werknemerId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        }
+      )
 
-      if (themaError || !alleThemas || alleThemas.length === 0) {
-        console.error('Kon thema\'s niet ophalen:', themaError)
+      if (!themaDataResponse.ok) {
+        console.error('Kon thema data niet ophalen:', themaDataResponse.status)
+        return false
+      }
+
+      const themaData = await themaDataResponse.json()
+      const toegestaneThemas = themaData.thema_data || []
+
+      if (toegestaneThemas.length === 0) {
+        console.log('Geen toegestane thema\'s gevonden')
         return false
       }
 
@@ -69,11 +74,13 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
         return false
       }
 
-      // Check of alle thema's zijn afgerond
+      // Check of alle toegestane thema's zijn afgerond
       const uniekeThemasInGesprekken = [...new Set(gesprekken?.map(g => g.theme_id) || [])]
-      const alleThemasAfgerond = uniekeThemasInGesprekken.length === alleThemas.length
+      const toegestaneThemeIds = toegestaneThemas.map(t => t.id)
+      const alleThemasAfgerond = uniekeThemasInGesprekken.length === toegestaneThemeIds.length &&
+        uniekeThemasInGesprekken.every(id => toegestaneThemeIds.includes(id))
 
-      console.log(`Check thema's: ${uniekeThemasInGesprekken.length}/${alleThemas.length} afgerond`)
+      console.log(`Check thema's: ${uniekeThemasInGesprekken.length}/${toegestaneThemeIds.length} afgerond`)
       return alleThemasAfgerond
     } catch (err) {
       console.error('Fout bij checken of alle thema\'s zijn afgerond:', err)

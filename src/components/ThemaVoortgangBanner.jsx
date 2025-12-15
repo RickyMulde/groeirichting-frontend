@@ -76,16 +76,32 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         return
       }
 
-      // Haal alle actieve thema's op
-      const { data: themas, error: themaError } = await supabase
-        .from('themes')
-        .select('id, titel')
-        .eq('klaar_voor_gebruik', true)
-        .eq('standaard_zichtbaar', true)
-        .order('volgorde_index', { ascending: true })
+      // Haal toegestane thema's op via API (gebruikt nieuwe filtering logica)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('Geen sessie gevonden')
+      }
 
-      if (themaError) throw themaError
-      console.log('ThemaVoortgangBanner: Thema\'s opgehaald:', themas)
+      const themaDataResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-thema-data-werknemer/${userId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        }
+      )
+
+      if (!themaDataResponse.ok) {
+        throw new Error(`Fout bij ophalen thema data: ${themaDataResponse.status}`)
+      }
+
+      const themaData = await themaDataResponse.json()
+      const themas = (themaData.thema_data || []).map(t => ({
+        id: t.id,
+        titel: t.titel
+      }))
+
+      console.log('ThemaVoortgangBanner: Thema\'s opgehaald via API:', themas)
 
       // Haal gesprekken op voor deze gebruiker in dezelfde periode
       const { data: gesprekken, error: gesprekError } = await supabase
