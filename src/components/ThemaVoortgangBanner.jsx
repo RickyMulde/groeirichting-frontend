@@ -8,6 +8,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const [themaVoortgang, setThemaVoortgang] = useState([])
   const [loading, setLoading] = useState(true)
   const [werkgeverConfig, setWerkgeverConfig] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (gesprekDatum && userId) {
@@ -18,6 +19,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const haalThemaVoortgangOp = async () => {
     try {
       setLoading(true)
+      setError(null)
       console.log('ThemaVoortgangBanner: Start ophalen voortgang voor:', { gesprekDatum, userId })
 
       // Haal eerst werknemer en werkgever op
@@ -92,16 +94,23 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       )
 
       if (!themaDataResponse.ok) {
-        throw new Error(`Fout bij ophalen thema data: ${themaDataResponse.status}`)
+        const errorText = await themaDataResponse.text()
+        console.error('ThemaVoortgangBanner: API error response:', themaDataResponse.status, errorText)
+        throw new Error(`Fout bij ophalen thema data: ${themaDataResponse.status} - ${errorText}`)
       }
 
       const themaData = await themaDataResponse.json()
+      console.log('ThemaVoortgangBanner: Raw API response:', themaData)
+      console.log('ThemaVoortgangBanner: Thema data array:', themaData.thema_data)
+      console.log('ThemaVoortgangBanner: Aantal thema\'s in response:', themaData.thema_data?.length || 0)
+      
       const themas = (themaData.thema_data || []).map(t => ({
         id: t.id,
         titel: t.titel
       }))
 
       console.log('ThemaVoortgangBanner: Thema\'s opgehaald via API:', themas)
+      console.log('ThemaVoortgangBanner: Aantal thema\'s na mapping:', themas.length)
 
       // Haal gesprekken op voor deze gebruiker in dezelfde periode
       const { data: gesprekken, error: gesprekError } = await supabase
@@ -150,7 +159,14 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       console.log('ThemaVoortgangBanner: Voortgang berekend:', voortgang)
       setThemaVoortgang(voortgang)
     } catch (error) {
-      console.error('Fout bij ophalen thema voortgang:', error)
+      console.error('ThemaVoortgangBanner: Fout bij ophalen thema voortgang:', error)
+      console.error('ThemaVoortgangBanner: Error details:', {
+        message: error.message,
+        stack: error.stack,
+        userId,
+        gesprekDatum
+      })
+      setError(error.message || 'Fout bij ophalen voortgang')
     } finally {
       setLoading(false)
     }
@@ -216,6 +232,11 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
           <p className="text-xs text-gray-400 mt-2">
             Debug: Gesprek datum: {gesprekDatum} | User ID: {userId} | Thema's: {themaVoortgang.length}
           </p>
+          {error && (
+            <p className="text-xs text-red-500 mt-2">
+              Fout: {error}
+            </p>
+          )}
         </div>
       </section>
     )
