@@ -124,8 +124,8 @@ function WerkgeverThemaKoppelingen() {
         const { data, error } = await supabase
           .from('teams')
           .select('id, naam, teams_beschrijving')
-          .eq('employer_id', selectedEmployerId)
-          .is('archived', false)
+          .eq('werkgever_id', selectedEmployerId)
+          .is('archived_at', null)
           .order('naam')
 
         if (error) throw error
