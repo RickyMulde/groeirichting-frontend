@@ -170,7 +170,7 @@ function GesprekResultaat() {
                   samenvatting: generateResult.samenvatting,
                   score: generateResult.score,
                   magWerkgeverInzien: true,
-                  vervolgacties: [], // Nog niet geladen
+                  adviezen: [], // Nog niet geladen
                   vervolgacties_toelichting: '',
                   themeId,
                   gesprekId
@@ -193,7 +193,7 @@ function GesprekResultaat() {
             samenvatting: 'Er kon geen samenvatting worden gegenereerd voor dit gesprek. Neem contact op met je leidinggevende.',
             score: null,
             magWerkgeverInzien: true,
-            vervolgacties: [],
+            adviezen: [],
             vervolgacties_toelichting: '',
             themeId,
             gesprekId
@@ -214,7 +214,7 @@ function GesprekResultaat() {
           samenvatting: resultData.samenvatting,
           score: resultData.score,
           magWerkgeverInzien: resultData.mag_werkgever_inzien,
-          vervolgacties: resultData.vervolgacties || [],
+          adviezen: resultData.vervolgacties || [],
           vervolgacties_toelichting: resultData.vervolgacties_toelichting || '',
           themeId,
           gesprekId
@@ -257,12 +257,12 @@ function GesprekResultaat() {
         const result = await response.json();
         console.log('✅ Vervolgacties gegenereerd op achtergrond:', result);
         
-        // Update gesprekData met de nieuwe vervolgacties
+        // Update gesprekData met de nieuwe adviezen
         setGesprekData(prev => {
           if (!prev) return prev;
           return {
             ...prev,
-            vervolgacties: result.vervolgacties || [],
+            adviezen: result.adviezen || [],
             vervolgacties_toelichting: result.vervolgacties_toelichting || ''
           };
         });
@@ -301,7 +301,7 @@ function GesprekResultaat() {
           if (resultData.vervolgacties && resultData.vervolgacties.length > 0) {
             setGesprekData(prev => ({
               ...prev,
-              vervolgacties: resultData.vervolgacties,
+              adviezen: resultData.vervolgacties,
               vervolgacties_toelichting: resultData.vervolgacties_toelichting || ''
             }));
           }
@@ -497,13 +497,21 @@ function GesprekResultaat() {
                   <Loader2 className="w-5 h-5 animate-spin" />
                   <span>Vervolgacties worden geladen...</span>
                 </div>
-              ) : gesprekData.vervolgacties && gesprekData.vervolgacties.length > 0 ? (
+              ) : gesprekData.adviezen && gesprekData.adviezen.length > 0 ? (
                 <>
-                  <ol className="list-decimal list-inside text-gray-700 space-y-1">
-                    {gesprekData.vervolgacties.map((actie, index) => (
-                      <li key={index} className="leading-relaxed">{actie}</li>
+                  <div className="space-y-4">
+                    {gesprekData.adviezen.map((advies, index) => (
+                      <div key={index} className="bg-[var(--kleur-background)] border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-gray-900 mb-2">{index + 1}. {typeof advies === 'string' ? advies : advies.titel}</h4>
+                        {typeof advies === 'object' && advies.reden && (
+                          <p className="text-gray-600 text-sm mb-2">{advies.reden}</p>
+                        )}
+                        {typeof advies === 'object' && advies.resultaat && (
+                          <p className="text-[var(--kleur-primary)] text-sm font-medium">{advies.resultaat}</p>
+                        )}
+                      </div>
                     ))}
-                  </ol>
+                  </div>
                   {gesprekData.vervolgacties_toelichting && (
                     <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                       <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
