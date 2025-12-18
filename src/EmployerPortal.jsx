@@ -37,14 +37,26 @@ function EmployerPortal() {
   useEffect(() => {
     const fetchTakenStatus = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
-          console.error('EmployerPortal: No user found')
+        // Verifieer eerst de session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError || !session) {
+          console.error('EmployerPortal: No session found:', sessionError)
           setLoading(false)
           return
         }
 
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        if (userError || !user) {
+          console.error('EmployerPortal: Error getting user:', userError)
+          setLoading(false)
+          return
+        }
+
+        console.log('EmployerPortal: User ID from auth:', user.id)
+        console.log('EmployerPortal: Session user ID:', session.user?.id)
+
         // Haal employer_id op uit user data - selecteer alle benodigde velden
+        // Gebruik direct de user.id van auth, niet via .eq() filter
         const { data: userData, error: userError } = await supabase
           .from('users')
           .select('id, employer_id, role')
@@ -53,15 +65,28 @@ function EmployerPortal() {
 
         if (userError) {
           console.error('EmployerPortal: Error fetching user data:', userError)
+          console.error('EmployerPortal: User ID used in query:', user.id)
+          console.error('EmployerPortal: Session user ID:', session.user?.id)
+          console.error('EmployerPortal: Auth UID (should match user.id):', user.id)
+          
+          // Als het een PGRST116 error is, betekent dit dat de user record niet bestaat
+          // Dit kan betekenen dat de registratie niet correct is voltooid
+          if (userError.code === 'PGRST116') {
+            console.error('EmployerPortal: User record not found in database. Registration may have failed.')
+          }
+          
           setLoading(false)
           return
         }
 
         if (!userData?.employer_id) {
           console.error('EmployerPortal: No employer_id found for user:', user.id)
+          console.error('EmployerPortal: User data received:', userData)
           setLoading(false)
           return
         }
+
+        console.log('EmployerPortal: User data found:', userData)
 
         setEmployerId(userData.employer_id)
 

@@ -121,6 +121,33 @@ function RegisterEmployer() {
             return
           }
 
+          // Wacht even om ervoor te zorgen dat de user record beschikbaar is via RLS
+          // Probeer de user record op te halen om te verifiëren dat deze bestaat
+          let retries = 0
+          const maxRetries = 5
+          let userFound = false
+          
+          while (retries < maxRetries && !userFound) {
+            await new Promise(resolve => setTimeout(resolve, 500)) // Wacht 500ms
+            
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('id, employer_id')
+              .eq('id', loginResult.data.user.id)
+              .single()
+            
+            if (!userError && userData) {
+              userFound = true
+              break
+            }
+            
+            retries++
+          }
+
+          if (!userFound) {
+            console.warn('User record nog niet beschikbaar na registratie, maar doorgaan met redirect')
+          }
+
           setSuccess('Je account is succesvol aangemaakt! Je wordt nu doorgestuurd...')
           setTimeout(() => {
             window.location.href = '/werkgever-portaal'
