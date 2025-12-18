@@ -109,54 +109,10 @@ function RegisterEmployer() {
       const result = await response.json()
 
       if (response.ok) {
-        if (isInvitation) {
-          // Voor uitnodiging: probeer automatisch in te loggen
-          const loginResult = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-          })
-
-          if (loginResult.error) {
-            setError('Registratie gelukt, maar automatisch inloggen mislukt: ' + loginResult.error.message)
-            return
-          }
-
-          // Wacht even om ervoor te zorgen dat de user record beschikbaar is via RLS
-          // Probeer de user record op te halen om te verifiëren dat deze bestaat
-          let retries = 0
-          const maxRetries = 5
-          let userFound = false
-          
-          while (retries < maxRetries && !userFound) {
-            await new Promise(resolve => setTimeout(resolve, 500)) // Wacht 500ms
-            
-            const { data: userData, error: userError } = await supabase
-              .from('users')
-              .select('id, employer_id')
-              .eq('id', loginResult.data.user.id)
-              .single()
-            
-            if (!userError && userData) {
-              userFound = true
-              break
-            }
-            
-            retries++
-          }
-
-          if (!userFound) {
-            console.warn('User record nog niet beschikbaar na registratie, maar doorgaan met redirect')
-          }
-
-          setSuccess('Je account is succesvol aangemaakt! Je wordt nu doorgestuurd...')
-          setTimeout(() => {
-            window.location.href = '/werkgever-portaal'
-          }, 2000)
-        } else {
-          setSuccess(result.message || 'Account succesvol aangemaakt!')
-          // Stuur door naar verificatie pagina
-          window.location.href = '/verify-email?email=' + encodeURIComponent(email)
-        }
+        // Voor zowel uitnodiging als normale registratie: email verificatie vereist
+        setSuccess(result.message || 'Account succesvol aangemaakt! Je ontvangt automatisch een verificatie-e-mail.')
+        // Stuur door naar verificatie pagina
+        window.location.href = '/verify-email?email=' + encodeURIComponent(email)
       } else {
         setError(result.error || 'Registratie mislukt.')
       }
