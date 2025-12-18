@@ -45,9 +45,9 @@ function EmployerPortal() {
           return
         }
 
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
-        if (userError || !user) {
-          console.error('EmployerPortal: Error getting user:', userError)
+        const { data: { user }, error: authUserError } = await supabase.auth.getUser()
+        if (authUserError || !user) {
+          console.error('EmployerPortal: Error getting user:', authUserError)
           setLoading(false)
           return
         }
@@ -57,21 +57,21 @@ function EmployerPortal() {
 
         // Haal employer_id op uit user data - selecteer alle benodigde velden
         // Gebruik direct de user.id van auth, niet via .eq() filter
-        const { data: userData, error: userError } = await supabase
+        const { data: userData, error: userDataError } = await supabase
           .from('users')
           .select('id, employer_id, role')
           .eq('id', user.id)
           .single()
 
-        if (userError) {
-          console.error('EmployerPortal: Error fetching user data:', userError)
+        if (userDataError) {
+          console.error('EmployerPortal: Error fetching user data:', userDataError)
           console.error('EmployerPortal: User ID used in query:', user.id)
           console.error('EmployerPortal: Session user ID:', session.user?.id)
           console.error('EmployerPortal: Auth UID (should match user.id):', user.id)
           
           // Als het een PGRST116 error is, betekent dit dat de user record niet bestaat
           // Dit kan betekenen dat de registratie niet correct is voltooid
-          if (userError.code === 'PGRST116') {
+          if (userDataError.code === 'PGRST116') {
             console.error('EmployerPortal: User record not found in database. Registration may have failed.')
           }
           
@@ -90,8 +90,7 @@ function EmployerPortal() {
 
         setEmployerId(userData.employer_id)
 
-        // Haal taken status op
-        const { data: { session } } = await supabase.auth.getSession()
+        // Haal taken status op (gebruik bestaande session)
         if (!session?.access_token) {
           console.error('EmployerPortal: No access token found')
           setLoading(false)
