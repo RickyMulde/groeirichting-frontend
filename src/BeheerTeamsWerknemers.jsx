@@ -537,6 +537,19 @@ function BeheerTeamsWerknemers() {
                   isInviteExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}>
                   <div className="space-y-3 pt-4">
+                    {/* Teamleider checkbox - alleen voor werknemers, direct onder emailadres */}
+                    {inviteRole === 'employee' && selectedTeam && (
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={isTeamleider}
+                          onChange={(e) => setIsTeamleider(e.target.checked)}
+                          className="mr-2"
+                        />
+                        <span className="text-sm text-gray-900 font-medium">Maak deze medewerker teamleider van dit team</span>
+                      </label>
+                    )}
+                    
                     <label className="block text-sm font-medium text-gray-700">
                       Voeg een korte omschrijving van de functie van deze medewerker toe
                     </label>
@@ -556,26 +569,6 @@ function BeheerTeamsWerknemers() {
                         <li>Logistiek medewerker orderverwerking en verzending</li>
                       </ul>
                     </div>
-                    
-                    {/* Teamleider checkbox - alleen voor werknemers */}
-                    {inviteRole === 'employee' && (
-                      <div className="mt-4">
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={isTeamleider}
-                            onChange={(e) => setIsTeamleider(e.target.checked)}
-                            className="mr-2"
-                          />
-                          <span className="text-sm font-medium text-gray-700">
-                            Maak deze medewerker teamleider van dit team
-                          </span>
-                        </label>
-                        <p className="text-xs text-gray-500 mt-1 ml-6">
-                          Een teamleider kan de geaggregeerde resultaten van het team bekijken via het thema dashboard.
-                        </p>
-                      </div>
-                    )}
                   </div>
                   
                   <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">

@@ -38,16 +38,28 @@ function EmployerPortal() {
     const fetchTakenStatus = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+        if (!user) {
+          console.error('EmployerPortal: No user found')
+          setLoading(false)
+          return
+        }
 
-        // Haal employer_id op uit user data
+        // Haal employer_id op uit user data - selecteer alle benodigde velden
         const { data: userData, error: userError } = await supabase
           .from('users')
-          .select('employer_id')
+          .select('id, employer_id, role')
           .eq('id', user.id)
           .single()
 
-        if (userError || !userData?.employer_id) {
+        if (userError) {
+          console.error('EmployerPortal: Error fetching user data:', userError)
+          setLoading(false)
+          return
+        }
+
+        if (!userData?.employer_id) {
+          console.error('EmployerPortal: No employer_id found for user:', user.id)
+          setLoading(false)
           return
         }
 
@@ -55,9 +67,16 @@ function EmployerPortal() {
 
         // Haal taken status op
         const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) {
+          console.error('EmployerPortal: No access token found')
+          setLoading(false)
+          return
+        }
+
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${userData.employer_id}/taken-status`, {
           headers: {
-            'Authorization': `Bearer ${session?.access_token}`
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json'
           }
         })
 
@@ -66,6 +85,7 @@ function EmployerPortal() {
           setTaken(data.taken || [])
           setVerborgen(data.verborgen || false)
         } else {
+          console.error('EmployerPortal: Error fetching taken status:', response.status, response.statusText)
         }
       } catch (error) {
       } finally {
