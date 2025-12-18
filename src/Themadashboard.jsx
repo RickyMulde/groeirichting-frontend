@@ -22,6 +22,8 @@ function Themadashboard() {
   const [selectedScorePopup, setSelectedScorePopup] = useState(null)
   const [availablePeriods, setAvailablePeriods] = useState([])
   const [selectedPeriod, setSelectedPeriod] = useState(null)
+  const [isTeamleider, setIsTeamleider] = useState(false)
+  const [teamleiderTeamId, setTeamleiderTeamId] = useState(null)
 
   // Haal thema's op
   const fetchThemes = async (employerId, period = null, teamId = null) => {
@@ -123,21 +125,46 @@ function Themadashboard() {
       
       const { data: { user } } = await supabase.auth.getUser()
       
-      const { data: employer, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('contact_email', user.email)
+      // Haal user data op om te controleren of het een teamleider is
+      const { data: userData, error: userDataError } = await supabase
+        .from('users')
+        .select('id, role, employer_id, is_teamleider, teamleider_van_team_id')
+        .eq('id', user.id)
         .single()
 
-      if (employerError || !employer) {
-        throw new Error('Werkgever niet gevonden')
+      if (userDataError || !userData) {
+        throw new Error('Gebruiker data niet gevonden')
+      }
+
+      let orgId
+      if (userData.is_teamleider && userData.role === 'employee') {
+        // Teamleider: gebruik employer_id direct
+        if (!userData.employer_id) {
+          throw new Error('Geen organisatie gekoppeld aan teamleider')
+        }
+        orgId = userData.employer_id
+      } else if (userData.role === 'employer') {
+        // Werkgever: haal employer op via email
+        const { data: employer, error: employerError } = await supabase
+          .from('employers')
+          .select('id')
+          .eq('contact_email', user.email)
+          .single()
+
+        if (employerError || !employer) {
+          throw new Error('Werkgever niet gevonden')
+        }
+        orgId = employer.id
+      } else {
+        throw new Error('Geen toegang tot samenvattingen')
       }
 
       const { data: { session } } = await supabase.auth.getSession()
-      let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${employer.id}/${themeId}`
+      let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${orgId}/${themeId}`
       
-      // Voeg team filtering toe als team is geselecteerd
-      if (selectedTeam) {
+      // Voor teamleiders: team_id wordt automatisch door backend bepaald
+      // Voor werkgevers: voeg team filtering toe als team is geselecteerd
+      if (!userData.is_teamleider && selectedTeam) {
         url += `?team_id=${selectedTeam}`
       }
       
@@ -231,19 +258,52 @@ function Themadashboard() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error('Gebruiker niet ingelogd')
         
-        const { data: employer, error: employerError } = await supabase
-          .from('employers')
-          .select('id')
-          .eq('contact_email', user.email)
+        // Haal user data op om te controleren of het een teamleider is
+        const { data: userData, error: userDataError } = await supabase
+          .from('users')
+          .select('id, role, employer_id, is_teamleider, teamleider_van_team_id')
+          .eq('id', user.id)
           .single()
 
-        if (employerError || !employer) {
-          throw new Error('Werkgever niet gevonden')
+        if (userDataError || !userData) {
+          throw new Error('Gebruiker data niet gevonden')
         }
 
-        setEmployerId(employer.id)
-        await fetchEmployerSettings(employer.id)
-        await fetchAvailablePeriods(employer.id)
+        // Controleer of gebruiker teamleider is
+        if (userData.is_teamleider && userData.role === 'employee') {
+          setIsTeamleider(true)
+          setTeamleiderTeamId(userData.teamleider_van_team_id)
+          // Voor teamleiders: gebruik employer_id direct
+          if (userData.employer_id) {
+            setEmployerId(userData.employer_id)
+            // Stel automatisch team in voor teamleider
+            if (userData.teamleider_van_team_id) {
+              selectTeam(userData.teamleider_van_team_id)
+            }
+            await fetchEmployerSettings(userData.employer_id)
+            await fetchAvailablePeriods(userData.employer_id)
+          } else {
+            throw new Error('Geen organisatie gekoppeld aan teamleider')
+          }
+        } else if (userData.role === 'employer') {
+          // Werkgever: haal employer op via email
+          const { data: employer, error: employerError } = await supabase
+            .from('employers')
+            .select('id')
+            .eq('contact_email', user.email)
+            .single()
+
+          if (employerError || !employer) {
+            throw new Error('Werkgever niet gevonden')
+          }
+
+          setEmployerId(employer.id)
+          await fetchEmployerSettings(employer.id)
+          await fetchAvailablePeriods(employer.id)
+        } else {
+          throw new Error('Geen toegang tot thema dashboard')
+        }
+        
         // fetchThemes wordt automatisch aangeroepen via useEffect wanneer selectedPeriod is ingesteld
       } catch (err) {
         setError(err.message)
@@ -264,9 +324,11 @@ function Themadashboard() {
       setSummaryStatus({})
       setExpandedTheme(null) // Sluit uitgeklapte thema's zodat ze opnieuw kunnen worden uitgeklapt met nieuwe data
       
-      fetchThemes(employerId, selectedPeriod, selectedTeam)
+      // Voor teamleiders: gebruik altijd hun team, voor werkgevers: gebruik selectedTeam
+      const effectiveTeamId = isTeamleider ? teamleiderTeamId : selectedTeam
+      fetchThemes(employerId, selectedPeriod, effectiveTeamId)
     }
-  }, [employerId, selectedPeriod, selectedTeam])
+  }, [employerId, selectedPeriod, selectedTeam, isTeamleider, teamleiderTeamId])
 
   if (loading) {
     return (
@@ -303,7 +365,7 @@ function Themadashboard() {
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <button 
-                onClick={() => navigate('/werkgever-portaal')}
+                onClick={() => navigate(isTeamleider ? '/werknemer-portaal' : '/werkgever-portaal')}
                 className="btn btn-secondary flex items-center gap-2 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -312,14 +374,16 @@ function Themadashboard() {
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">
                   Thema Dashboard
-                  {selectedTeam && teams.find(t => t.id === selectedTeam) && 
-                    ` - Team ${teams.find(t => t.id === selectedTeam).naam}`
+                  {(isTeamleider ? teamleiderTeamId : selectedTeam) && teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)) && 
+                    ` - Team ${teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)).naam}`
                   }
                 </h1>
                 <p className="text-gray-600 text-sm sm:text-base">
-                  {selectedTeam ? 
-                    `Overzicht van alle thema's en resultaten voor dit team` :
-                    `Overzicht van alle thema's en resultaten`
+                  {isTeamleider ? 
+                    `Overzicht van alle thema's en resultaten voor jouw team` :
+                    (selectedTeam ? 
+                      `Overzicht van alle thema's en resultaten voor dit team` :
+                      `Overzicht van alle thema's en resultaten`)
                   }
                 </p>
               </div>
@@ -337,7 +401,7 @@ function Themadashboard() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
             <button 
-              onClick={() => navigate('/werkgever-portaal')}
+              onClick={() => navigate(isTeamleider ? '/werknemer-portaal' : '/werkgever-portaal')}
               className="btn btn-secondary flex items-center gap-2 w-fit"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -346,14 +410,16 @@ function Themadashboard() {
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">
                 Thema Dashboard
-                {selectedTeam && teams.find(t => t.id === selectedTeam) && 
-                  ` - Team ${teams.find(t => t.id === selectedTeam).naam}`
+                {(isTeamleider ? teamleiderTeamId : selectedTeam) && teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)) && 
+                  ` - Team ${teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)).naam}`
                 }
               </h1>
               <p className="text-gray-600 text-sm sm:text-base">
-                {selectedTeam ? 
-                  `Overzicht van alle thema's en resultaten voor dit team` :
-                  `Overzicht van alle thema's en resultaten`
+                {isTeamleider ? 
+                  `Overzicht van alle thema's en resultaten voor jouw team` :
+                  (selectedTeam ? 
+                    `Overzicht van alle thema's en resultaten voor dit team` :
+                    `Overzicht van alle thema's en resultaten`)
                 }
               </p>
             </div>
@@ -433,17 +499,19 @@ function Themadashboard() {
           </div>
         )}
 
-        {/* Team Selector */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Filter op Team
-          </label>
-          <TeamSelector
-            onTeamSelect={selectTeam}
-            selectedTeamId={selectedTeam}
-            className="max-w-md"
-          />
-        </div>
+        {/* Team Selector - alleen voor werkgevers */}
+        {!isTeamleider && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Filter op Team
+            </label>
+            <TeamSelector
+              onTeamSelect={selectTeam}
+              selectedTeamId={selectedTeam}
+              className="max-w-md"
+            />
+          </div>
+        )}
 
         {/* Thema's */}
         <div className="space-y-6">
@@ -525,7 +593,8 @@ function Themadashboard() {
                     }
                     
                     if (status === 'generating') {
-                      const teamName = selectedTeam && teams.find(t => t.id === selectedTeam)?.naam
+                      const effectiveTeamId = isTeamleider ? teamleiderTeamId : selectedTeam
+                      const teamName = effectiveTeamId && teams.find(t => t.id === effectiveTeamId)?.naam
                       return (
                         <div className="text-center py-6">
                           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto mb-4"></div>

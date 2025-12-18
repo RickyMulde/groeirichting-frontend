@@ -19,6 +19,8 @@ function BeheerTeamsWerknemers() {
   const [functieOmschrijving, setFunctieOmschrijving] = useState('')
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [isInviteExpanded, setIsInviteExpanded] = useState(false)
+  const [inviteRole, setInviteRole] = useState('employee') // 'employee' of 'employer'
+  const [isTeamleider, setIsTeamleider] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -141,9 +143,9 @@ function BeheerTeamsWerknemers() {
       return
     }
 
-    // Valideer dat een team is geselecteerd (niet "Totaal")
-    if (!selectedTeam) {
-      setFoutmelding('Selecteer eerst een specifiek team om uit te nodigen')
+    // Valideer dat een team is geselecteerd voor werknemers (niet voor werkgevers)
+    if (inviteRole === 'employee' && !selectedTeam) {
+      setFoutmelding('Selecteer eerst een specifiek team om een werknemer uit te nodigen')
       setLoading(false)
       return
     }
@@ -170,11 +172,13 @@ function BeheerTeamsWerknemers() {
         },
         body: JSON.stringify({ 
           to: email, 
-          name: 'Medewerker', 
+          name: inviteRole === 'employer' ? 'Werkgever' : 'Medewerker', 
           employerId: currentUser.employer_id,
           token: crypto.randomUUID(),
-          teamId: selectedTeam,
-          functieOmschrijving: functieOmschrijving.trim() || null
+          teamId: inviteRole === 'employee' ? selectedTeam : null,
+          functieOmschrijving: inviteRole === 'employee' ? (functieOmschrijving.trim() || null) : null,
+          inviteRole: inviteRole,
+          isTeamleider: inviteRole === 'employee' ? isTeamleider : false
         })
       })
 
@@ -185,6 +189,8 @@ function BeheerTeamsWerknemers() {
         setEmail('')
         setFunctieOmschrijving('')
         setIsInviteExpanded(false)
+        setIsTeamleider(false)
+        setInviteRole('employee')
         setSuccesmelding('Uitnodiging succesvol verzonden!')
         setTimeout(() => setSuccesmelding(''), 5000)
         // Ververs de teams data om eventuele wijzigingen te tonen
@@ -461,14 +467,49 @@ function BeheerTeamsWerknemers() {
           </div>
         </div>
 
-        {/* Uitnodiging Harmonica - Alleen zichtbaar als specifiek team geselecteerd */}
-        {selectedTeam !== null && selectedTeam !== undefined && (
+        {/* Uitnodiging Harmonica - Werknemer: alleen zichtbaar als specifiek team geselecteerd, Werkgever: altijd zichtbaar */}
+        {((inviteRole === 'employee' && selectedTeam !== null && selectedTeam !== undefined) || inviteRole === 'employer') && (
           <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
                 <MailPlus className="text-kleur-primary" /> 
-                Medewerker uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
+                {inviteRole === 'employer' ? 'Werkgever/Manager uitnodigen' : `Medewerker uitnodigen ${selectedTeam ? `in team ${teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}` : ''}`}
               </h2>
+              
+              {/* Rol selectie */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Type uitnodiging
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="employee"
+                      checked={inviteRole === 'employee'}
+                      onChange={(e) => {
+                        setInviteRole(e.target.value)
+                        setIsTeamleider(false)
+                      }}
+                      className="mr-2"
+                    />
+                    <span>Werknemer</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="employer"
+                      checked={inviteRole === 'employer'}
+                      onChange={(e) => {
+                        setInviteRole(e.target.value)
+                        setIsTeamleider(false)
+                      }}
+                      className="mr-2"
+                    />
+                    <span>Werkgever/Manager</span>
+                  </label>
+                </div>
+              </div>
               
               <form onSubmit={handleInvite} className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -515,6 +556,26 @@ function BeheerTeamsWerknemers() {
                         <li>Logistiek medewerker orderverwerking en verzending</li>
                       </ul>
                     </div>
+                    
+                    {/* Teamleider checkbox - alleen voor werknemers */}
+                    {inviteRole === 'employee' && (
+                      <div className="mt-4">
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={isTeamleider}
+                            onChange={(e) => setIsTeamleider(e.target.checked)}
+                            className="mr-2"
+                          />
+                          <span className="text-sm font-medium text-gray-700">
+                            Maak deze medewerker teamleider van dit team
+                          </span>
+                        </label>
+                        <p className="text-xs text-gray-500 mt-1 ml-6">
+                          Een teamleider kan de geaggregeerde resultaten van het team bekijken via het thema dashboard.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">

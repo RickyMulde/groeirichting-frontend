@@ -479,7 +479,7 @@ function GesprekResultaat() {
           {/* Vervolgacties sectie */}
           <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Vervolgacties per thema op basis van jouw antwoorden:</h2>
+              <h2 className="text-xl font-semibold">Jouw inzichten uit dit gesprek</h2>
               <button
                 onClick={handleVervolgactiesUitklappen}
                 className="p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
@@ -490,12 +490,18 @@ function GesprekResultaat() {
                 </svg>
               </button>
             </div>
+
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                💡 <strong>Goed om te weten:</strong> Je hoeft nu nog niets te doen. Dit zijn suggesties op basis van jouw antwoorden. We slaan ze voor je op. Pas later kies je op je dashboard met welke Top 3 je écht aan de slag wilt.
+              </p>
+            </div>
         
             {vervolgactiesUitgeklapt ? (
               vervolgactiesLoading ? (
                 <div className="flex items-center gap-3 text-gray-600">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Vervolgacties worden geladen...</span>
+                  <span>Inzichten worden geladen...</span>
                 </div>
               ) : gesprekData.adviezen && gesprekData.adviezen.length > 0 ? (
                 <>
@@ -517,21 +523,16 @@ function GesprekResultaat() {
                       <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
                     </div>
                   )}
-                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
-                    </p>
-                  </div>
                 </>
               ) : (
                 <div className="flex items-center gap-3 text-gray-600">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Vervolgacties worden nog gegenereerd, probeer het zo opnieuw...</span>
+                  <span>Inzichten worden nog gegenereerd, probeer het zo opnieuw...</span>
                 </div>
               )
             ) : (
               <div className="text-gray-600 text-sm">
-                <p>Klik op het pijltje om de vervolgacties te bekijken</p>
+                <p>Klik op het pijltje om de inzichten te bekijken</p>
               </div>
             )}
           </section>

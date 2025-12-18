@@ -82,7 +82,7 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/thema-dashboard" element={
-          <ProtectedRoute requiredRole="employer">
+          <ProtectedRoute>
             <TeamsProvider>
               <Themadashboard />
             </TeamsProvider>
