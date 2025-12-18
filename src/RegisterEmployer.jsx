@@ -109,10 +109,34 @@ function RegisterEmployer() {
       const result = await response.json()
 
       if (response.ok) {
-        // Voor zowel uitnodiging als normale registratie: email verificatie vereist
-        setSuccess(result.message || 'Account succesvol aangemaakt! Je ontvangt automatisch een verificatie-e-mail.')
-        // Stuur door naar verificatie pagina
-        window.location.href = '/verify-email?email=' + encodeURIComponent(email)
+        if (isInvitation) {
+          // Voor uitnodiging: direct inloggen en doorsturen naar portaal
+          const loginResult = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+          })
+
+          if (loginResult.error) {
+            setError('Registratie gelukt, maar automatisch inloggen mislukt: ' + loginResult.error.message)
+            return
+          }
+
+          // Wacht even om ervoor te zorgen dat de user record beschikbaar is via RLS
+          await new Promise(resolve => setTimeout(resolve, 500))
+
+          // Refresh session om zeker te zijn dat alle data up-to-date is
+          await supabase.auth.refreshSession()
+
+          setSuccess('Account succesvol aangemaakt! Je wordt doorgestuurd...')
+          setTimeout(() => {
+            window.location.href = '/werkgever-portaal'
+          }, 1500)
+        } else {
+          // Normale registratie: email verificatie vereist
+          setSuccess(result.message || 'Account succesvol aangemaakt! Je ontvangt automatisch een verificatie-e-mail.')
+          // Stuur door naar verificatie pagina
+          window.location.href = '/verify-email?email=' + encodeURIComponent(email)
+        }
       } else {
         setError(result.error || 'Registratie mislukt.')
       }
