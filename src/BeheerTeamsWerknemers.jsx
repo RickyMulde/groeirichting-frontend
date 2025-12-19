@@ -493,7 +493,7 @@ function BeheerTeamsWerknemers() {
                       }}
                       className="mr-2"
                     />
-                    <span>Werknemer</span>
+                    <span>Medewerker</span>
                   </label>
                   <label className="flex items-center">
                     <input
@@ -510,6 +510,21 @@ function BeheerTeamsWerknemers() {
                   </label>
                 </div>
               </div>
+              
+              {/* Teamleider checkbox - alleen voor medewerkers, boven email veld, altijd zichtbaar */}
+              {inviteRole === 'employee' && selectedTeam && (
+                <div className="mb-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isTeamleider}
+                      onChange={(e) => setIsTeamleider(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded m-0 flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-900 font-medium">Maak deze medewerker teamleider van dit team</span>
+                  </label>
+                </div>
+              )}
               
               <form onSubmit={handleInvite} className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -537,18 +552,6 @@ function BeheerTeamsWerknemers() {
                   isInviteExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}>
                   <div className="space-y-3 pt-4">
-                    {/* Teamleider checkbox - alleen voor werknemers, direct onder emailadres */}
-                    {inviteRole === 'employee' && selectedTeam && (
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={isTeamleider}
-                          onChange={(e) => setIsTeamleider(e.target.checked)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded m-0 flex-shrink-0"
-                        />
-                        <span className="text-sm text-gray-900 font-medium">Maak deze medewerker teamleider van dit team</span>
-                      </label>
-                    )}
                     
                     <label className="block text-sm font-medium text-gray-700">
                       Voeg een korte omschrijving van de functie van deze medewerker toe
