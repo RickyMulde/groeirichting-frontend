@@ -539,12 +539,12 @@ function BeheerTeamsWerknemers() {
                   <div className="space-y-3 pt-4">
                     {/* Teamleider checkbox - alleen voor werknemers, direct onder emailadres */}
                     {inviteRole === 'employee' && selectedTeam && (
-                      <label className="flex items-center">
+                      <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={isTeamleider}
                           onChange={(e) => setIsTeamleider(e.target.checked)}
-                          className="mr-2"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded m-0 flex-shrink-0"
                         />
                         <span className="text-sm text-gray-900 font-medium">Maak deze medewerker teamleider van dit team</span>
                       </label>
