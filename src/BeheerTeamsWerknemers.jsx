@@ -7,7 +7,7 @@ import TeamManagementModal from './components/TeamManagementModal'
 import Alert from './Alert'
 
 function BeheerTeamsWerknemers() {
-  const { teams, selectedTeam, selectTeam, refreshTeams } = useTeams()
+  const { teams, selectedTeam, selectTeam, refreshTeams, updateTeam } = useTeams()
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [werknemers, setWerknemers] = useState([])
   const [selectedWerknemer, setSelectedWerknemer] = useState(null)
@@ -15,6 +15,9 @@ function BeheerTeamsWerknemers() {
   const [foutmelding, setFoutmelding] = useState('')
   const [succesmelding, setSuccesmelding] = useState('')
   const [showTeamModal, setShowTeamModal] = useState(false)
+  const [editingTeam, setEditingTeam] = useState(null)
+  const [teamNaam, setTeamNaam] = useState('')
+  const [teamBeschrijving, setTeamBeschrijving] = useState('')
   const [email, setEmail] = useState('')
   const [functieOmschrijving, setFunctieOmschrijving] = useState('')
   const [refreshTrigger, setRefreshTrigger] = useState(0)
@@ -235,6 +238,39 @@ function BeheerTeamsWerknemers() {
     }
   }
 
+  // Team bewerken functionaliteit
+  const handleEditTeam = (team) => {
+    setEditingTeam(team)
+    setTeamNaam(team.naam)
+    setTeamBeschrijving(team.teams_beschrijving || '')
+  }
+
+  const handleCloseTeamEditModal = () => {
+    setEditingTeam(null)
+    setTeamNaam('')
+    setTeamBeschrijving('')
+  }
+
+  const handleSaveTeamChanges = async () => {
+    if (!editingTeam || !teamNaam.trim() || !teamBeschrijving.trim()) {
+      setFoutmelding('Team naam en beschrijving zijn verplicht')
+      return
+    }
+
+    try {
+      setLoading(true)
+      await updateTeam(editingTeam.id, teamNaam.trim(), teamBeschrijving.trim())
+      setSuccesmelding('Team succesvol bijgewerkt')
+      handleCloseTeamEditModal()
+      refreshTeams()
+      setRefreshTrigger(prev => prev + 1)
+    } catch (error) {
+      setFoutmelding('Fout bij opslaan team wijzigingen: ' + (error.message || 'Onbekende fout'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleResend = async (invitation) => {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
@@ -433,7 +469,7 @@ function BeheerTeamsWerknemers() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          // TODO: Implementeer team bewerken
+                          handleEditTeam(team)
                         }}
                         className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                         title="Team bewerken"
@@ -851,6 +887,55 @@ function BeheerTeamsWerknemers() {
             <div className="flex justify-end gap-4 pt-4">
               <button onClick={handleCloseModal} className="btn btn-secondary">Annuleren</button>
               <button onClick={handleSaveChanges} className="btn btn-primary">Opslaan</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Team Bewerken Modal */}
+      {editingTeam && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
+            <h2 className="text-xl font-semibold">Team bewerken</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Team naam</label>
+                <input 
+                  value={teamNaam} 
+                  onChange={e => setTeamNaam(e.target.value)} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Team naam"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Team omschrijving</label>
+                <textarea 
+                  value={teamBeschrijving} 
+                  onChange={e => setTeamBeschrijving(e.target.value)} 
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Team omschrijving"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Team omschrijving wordt gebruikt om betere en gerichtere vragen te stellen.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 pt-4">
+              <button 
+                onClick={handleCloseTeamEditModal} 
+                className="btn btn-secondary"
+                disabled={loading}
+              >
+                Annuleren
+              </button>
+              <button 
+                onClick={handleSaveTeamChanges} 
+                className="btn btn-primary"
+                disabled={loading || !teamNaam.trim() || !teamBeschrijving.trim()}
+              >
+                {loading ? 'Opslaan...' : 'Opslaan'}
+              </button>
             </div>
           </div>
         </div>
