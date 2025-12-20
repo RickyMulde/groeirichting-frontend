@@ -7,7 +7,7 @@ import TeamManagementModal from './components/TeamManagementModal'
 import Alert from './Alert'
 
 function BeheerTeamsWerknemers() {
-  const { teams, selectedTeam, selectTeam, refreshTeams, updateTeam } = useTeams()
+  const { teams, selectedTeam, selectTeam, refreshTeams, updateTeam, archiveTeam } = useTeams()
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [werknemers, setWerknemers] = useState([])
   const [selectedWerknemer, setSelectedWerknemer] = useState(null)
@@ -271,6 +271,37 @@ function BeheerTeamsWerknemers() {
     }
   }
 
+  // Team verwijderen functionaliteit
+  const handleDeleteTeam = async (team) => {
+    // Controleer of team leden heeft
+    const teamLedenCount = team.leden?.length || 0
+    if (teamLedenCount > 0) {
+      setFoutmelding(`Dit team kan niet worden verwijderd omdat het nog ${teamLedenCount} ${teamLedenCount === 1 ? 'lid' : 'leden'} heeft.`)
+      return
+    }
+
+    // Bevestigingsdialoog
+    if (!confirm(`Weet je zeker dat je team "${team.naam}" wilt verwijderen?`)) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      await archiveTeam(team.id)
+      setSuccesmelding('Team succesvol verwijderd')
+      refreshTeams()
+      setRefreshTrigger(prev => prev + 1)
+      // Als het verwijderde team geselecteerd was, deselecteer het
+      if (selectedTeam === team.id) {
+        selectTeam(null)
+      }
+    } catch (error) {
+      setFoutmelding('Fout bij verwijderen team: ' + (error.message || 'Onbekende fout'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleResend = async (invitation) => {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
@@ -479,10 +510,19 @@ function BeheerTeamsWerknemers() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          // TODO: Implementeer team verwijderen
+                          handleDeleteTeam(team)
                         }}
-                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                        title="Team verwijderen"
+                        disabled={loading || (team.leden?.length || 0) > 0}
+                        className={`p-1 transition-colors ${
+                          (team.leden?.length || 0) > 0
+                            ? 'text-gray-300 cursor-not-allowed'
+                            : 'text-gray-400 hover:text-red-600'
+                        }`}
+                        title={
+                          (team.leden?.length || 0) > 0
+                            ? `Team kan niet worden verwijderd omdat het nog ${team.leden?.length} ${team.leden?.length === 1 ? 'lid' : 'leden'} heeft`
+                            : 'Team verwijderen'
+                        }
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
