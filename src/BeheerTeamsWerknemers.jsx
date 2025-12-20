@@ -209,19 +209,34 @@ function BeheerTeamsWerknemers() {
 
   // Werknemer bewerken functionaliteit
   const handleEdit = async (werknemer) => {
-    // Haal volledige werknemer data op inclusief teamleider velden
-    const { data: fullWerknemerData, error } = await supabase
-      .from('users')
-      .select('id, email, first_name, middle_name, last_name, birthdate, gender, functie_omschrijving, team_id, is_teamleider, teamleider_van_team_id')
-      .eq('id', werknemer.id)
-      .single()
-    
-    if (error) {
-      setFoutmelding('Fout bij ophalen medewerker gegevens')
-      return
+    // Gebruik de bestaande werknemer data en voeg teamleider velden toe
+    // Als de velden al in de data zitten, gebruik die, anders probeer ze op te halen
+    let werknemerData = { 
+      ...werknemer,
+      is_teamleider: werknemer.is_teamleider ?? false,
+      teamleider_van_team_id: werknemer.teamleider_van_team_id ?? null
     }
     
-    setSelectedWerknemer(fullWerknemerData)
+    // Probeer alleen de teamleider velden op te halen als ze niet in de data zitten
+    if (werknemer.is_teamleider === undefined && werknemer.teamleider_van_team_id === undefined) {
+      try {
+        const { data: teamleiderData, error } = await supabase
+          .from('users')
+          .select('is_teamleider, teamleider_van_team_id')
+          .eq('id', werknemer.id)
+          .maybeSingle()
+        
+        if (!error && teamleiderData) {
+          werknemerData.is_teamleider = teamleiderData.is_teamleider || false
+          werknemerData.teamleider_van_team_id = teamleiderData.teamleider_van_team_id || null
+        }
+      } catch (error) {
+        // Als de query faalt, gebruik default waarden (al ingesteld hierboven)
+        console.warn('Kon teamleider velden niet ophalen, gebruik defaults')
+      }
+    }
+    
+    setSelectedWerknemer(werknemerData)
   }
   
   const handleCloseModal = () => setSelectedWerknemer(null)
