@@ -208,24 +208,69 @@ function BeheerTeamsWerknemers() {
   }
 
   // Werknemer bewerken functionaliteit
-  const handleEdit = (werknemer) => setSelectedWerknemer(werknemer)
+  const handleEdit = async (werknemer) => {
+    // Haal volledige werknemer data op inclusief teamleider velden
+    const { data: fullWerknemerData, error } = await supabase
+      .from('users')
+      .select('id, email, first_name, middle_name, last_name, birthdate, gender, functie_omschrijving, team_id, is_teamleider, teamleider_van_team_id')
+      .eq('id', werknemer.id)
+      .single()
+    
+    if (error) {
+      setFoutmelding('Fout bij ophalen medewerker gegevens')
+      return
+    }
+    
+    setSelectedWerknemer(fullWerknemerData)
+  }
+  
   const handleCloseModal = () => setSelectedWerknemer(null)
+  
   const handleSaveChanges = async () => {
-    const { id, email, first_name, middle_name, last_name, birthdate, gender, functie_omschrijving } = selectedWerknemer
+    const { id, email, first_name, middle_name, last_name, birthdate, gender, functie_omschrijving, team_id, is_teamleider } = selectedWerknemer
+    
+    // Validatie: als teamleider wordt aangewezen, controleer of er al een teamleider is voor dit team
+    if (is_teamleider && team_id) {
+      // Controleer of er al een andere teamleider is voor dit team
+      const { data: existingTeamleider, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('teamleider_van_team_id', team_id)
+        .eq('is_teamleider', true)
+        .neq('id', id) // Excludeer de huidige medewerker
+        .maybeSingle()
+      
+      if (checkError) {
+        setFoutmelding('Fout bij controleren bestaande teamleider')
+        return
+      }
+      
+      if (existingTeamleider) {
+        setFoutmelding('Dit team heeft al een teamleider. Verwijder eerst de huidige teamleider status van de andere medewerker.')
+        return
+      }
+    }
     
     try {
-      const { error } = await supabase.from('users').update({ 
+      const updateData = {
         email, 
         first_name, 
         middle_name, 
         last_name, 
         birthdate, 
         gender, 
-        functie_omschrijving 
-      }).eq('id', id)
+        functie_omschrijving,
+        is_teamleider: is_teamleider || false,
+        teamleider_van_team_id: (is_teamleider && team_id) ? team_id : null
+      }
+      
+      const { error } = await supabase
+        .from('users')
+        .update(updateData)
+        .eq('id', id)
 
       if (error) {
-        setFoutmelding('Fout bij opslaan wijzigingen')
+        setFoutmelding('Fout bij opslaan wijzigingen: ' + (error.message || 'Onbekende fout'))
       } else {
         setSuccesmelding('Wijzigingen opgeslagen')
         handleCloseModal()
@@ -234,7 +279,7 @@ function BeheerTeamsWerknemers() {
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
-      setFoutmelding('Fout bij opslaan wijzigingen')
+      setFoutmelding('Fout bij opslaan wijzigingen: ' + (error.message || 'Onbekende fout'))
     }
   }
 
@@ -923,6 +968,27 @@ function BeheerTeamsWerknemers() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+              {selectedWerknemer.team_id && (
+                <div className="pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedWerknemer.is_teamleider || false}
+                      onChange={(e) => setSelectedWerknemer({ 
+                        ...selectedWerknemer, 
+                        is_teamleider: e.target.checked 
+                      })}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded m-0 flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-900 font-medium">
+                      Maak deze medewerker teamleider van dit team
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1 ml-6">
+                    Een teamleider kan de geaggregeerde resultaten van het team bekijken via het thema dashboard.
+                  </p>
+                </div>
+              )}
             </div>
             <div className="flex justify-end gap-4 pt-4">
               <button onClick={handleCloseModal} className="btn btn-secondary">Annuleren</button>
