@@ -6,6 +6,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [expandedActie, setExpandedActie] = useState(null)
+  const [expandedMicroAdviezen, setExpandedMicroAdviezen] = useState({}) // {actieNummer: true/false}
   const [isGenerating, setIsGenerating] = useState(false)
   const pollingIntervalRef = useRef(null)
 
@@ -320,50 +321,103 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
           { nummer: 1, actie: topActies.actie_1, prioriteit: topActies.prioriteit_1, toelichting: topActies.toelichting_per_actie[0] },
           { nummer: 2, actie: topActies.actie_2, prioriteit: topActies.prioriteit_2, toelichting: topActies.toelichting_per_actie[1] },
           { nummer: 3, actie: topActies.actie_3, prioriteit: topActies.prioriteit_3, toelichting: topActies.toelichting_per_actie[2] }
-        ].map(({ nummer, actie, prioriteit, toelichting }) => (
-          <div key={nummer} className="bg-white rounded-lg border border-blue-200 p-4">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center space-x-3 flex-1">
-                {/* Nummer en prioriteit */}
-                <div className="flex items-center space-x-2">
-                                     <div className="w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
-                     {nummer}
-                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getPrioriteitKleur(prioriteit)}`}>
-                    {getPrioriteitIcon(prioriteit)} {prioriteit}
-                  </span>
+        ].map(({ nummer, actie, prioriteit, toelichting }) => {
+          // Parse actie JSON als het een string is
+          let actieData = actie
+          if (typeof actie === 'string') {
+            try {
+              actieData = JSON.parse(actie)
+            } catch (e) {
+              // Als parsing faalt, gebruik originele string
+              actieData = { titel: actie }
+            }
+          }
+          
+          // Haal micro-adviezen op als ze bestaan
+          const microAdviezen = actieData.micro_adviezen || []
+          const actieTitel = actieData.titel || actie
+          
+          return (
+            <div key={nummer} className="bg-white rounded-lg border border-blue-200 p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3 flex-1">
+                  {/* Nummer en prioriteit */}
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
+                      {nummer}
+                    </div>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getPrioriteitKleur(prioriteit)}`}>
+                      {getPrioriteitIcon(prioriteit)} {prioriteit}
+                    </span>
+                  </div>
+                  
+                  {/* Actie tekst */}
+                  <div className="flex-1">
+                    <p className="text-gray-900 text-sm leading-relaxed font-medium">
+                      {actieTitel}
+                    </p>
+                  </div>
                 </div>
-                
-                {/* Actie tekst */}
-                <div className="flex-1">
-                  <p className="text-gray-900 text-sm leading-relaxed">
-                    {actie}
+
+                {/* Uitklap knop */}
+                <button
+                  onClick={() => setExpandedActie(expandedActie === nummer ? null : nummer)}
+                  className="ml-3 p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
+                  aria-label={expandedActie === nummer ? 'Inklappen' : 'Uitklappen'}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedActie === nummer ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Uitklapbare toelichting */}
+              {expandedActie === nummer && (
+                <div className="mt-3 pt-3 border-t border-blue-100 space-y-3">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {toelichting}
                   </p>
+                  
+                  {/* Micro-adviezen */}
+                  {microAdviezen.length > 0 && (
+                    <div className="mt-4">
+                      <button
+                        onClick={() => setExpandedMicroAdviezen(prev => ({
+                          ...prev,
+                          [nummer]: !prev[nummer]
+                        }))}
+                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                      >
+                        <svg 
+                          className={`w-4 h-4 transition-transform ${expandedMicroAdviezen[nummer] ? 'rotate-180' : ''}`} 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        <span>3 tips om dit te doen</span>
+                      </button>
+                      
+                      {expandedMicroAdviezen[nummer] && (
+                        <div className="mt-2 pl-6 space-y-2">
+                          {microAdviezen.map((micro, microIndex) => (
+                            <div key={microIndex} className="text-sm">
+                              <p className="font-medium text-gray-900">{micro.titel}</p>
+                              {micro.toelichting && (
+                                <p className="text-xs text-gray-600 italic mt-0.5">{micro.toelichting}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
-
-                             {/* Uitklap knop */}
-               <button
-                 onClick={() => setExpandedActie(expandedActie === nummer ? null : nummer)}
-                 className="ml-3 p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
-                 aria-label={expandedActie === nummer ? 'Inklappen' : 'Uitklappen'}
-               >
-                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedActie === nummer ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
-                 </svg>
-               </button>
+              )}
             </div>
-
-            {/* Uitklapbare toelichting */}
-            {expandedActie === nummer && (
-              <div className="mt-3 pt-3 border-t border-blue-100">
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  {toelichting}
-                </p>
-              </div>
-            )}
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Algemene toelichting */}

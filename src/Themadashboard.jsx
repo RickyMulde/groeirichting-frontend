@@ -659,6 +659,34 @@ function Themadashboard() {
                             </div>
                           )}
 
+                          {/* Scenario Badge */}
+                          {summaryData[theme.theme_id].scenario && (
+                            <div className={`rounded-xl p-4 border-2 ${
+                              summaryData[theme.theme_id].scenario === 'CRISIS' 
+                                ? 'bg-red-50 border-red-300' 
+                                : summaryData[theme.theme_id].scenario === 'VERBETEREN'
+                                ? 'bg-yellow-50 border-yellow-300'
+                                : 'bg-green-50 border-green-300'
+                            }`}>
+                              <div className="flex items-center gap-2">
+                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                  summaryData[theme.theme_id].scenario === 'CRISIS'
+                                    ? 'bg-red-200 text-red-900'
+                                    : summaryData[theme.theme_id].scenario === 'VERBETEREN'
+                                    ? 'bg-yellow-200 text-yellow-900'
+                                    : 'bg-green-200 text-green-900'
+                                }`}>
+                                  {summaryData[theme.theme_id].scenario}
+                                </span>
+                                <span className="text-sm text-gray-700">
+                                  {summaryData[theme.theme_id].scenario === 'CRISIS' && 'Urgente aandacht vereist'}
+                                  {summaryData[theme.theme_id].scenario === 'VERBETEREN' && 'Constructieve verbetering mogelijk'}
+                                  {summaryData[theme.theme_id].scenario === 'BORGEN' && 'Vasthouden en excelleren'}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Samenvatting */}
                           {summaryData[theme.theme_id].samenvatting && (
                             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -677,8 +705,66 @@ function Themadashboard() {
                             </div>
                           )}
 
-                          {/* Verbeteradviezen */}
-                          {summaryData[theme.theme_id].verbeteradvies && (
+                          {/* Nieuwe Leiderschaps-Kaarten */}
+                          {summaryData[theme.theme_id].adviezen && Array.isArray(summaryData[theme.theme_id].adviezen) && summaryData[theme.theme_id].adviezen.length > 0 ? (
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                              <div className="flex items-center gap-3 mb-6">
+                                <div className="p-2 bg-orange-100 rounded-lg">
+                                  <TrendingUp className="w-5 h-5 text-orange-600" />
+                                </div>
+                                <h4 className="text-lg font-semibold text-gray-900">
+                                  Leiderschaps-Acties
+                                  {summaryData[theme.theme_id].team_context && 
+                                    ` - Team ${summaryData[theme.theme_id].team_context.team_naam}`
+                                  }
+                                </h4>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {summaryData[theme.theme_id].adviezen.map((advies, index) => {
+                                  const typeColors = {
+                                    'Systeem': { bg: 'bg-blue-50', border: 'border-blue-200', icon: 'bg-blue-500', text: 'text-blue-900' },
+                                    'Leiderschap': { bg: 'bg-purple-50', border: 'border-purple-200', icon: 'bg-purple-500', text: 'text-purple-900' },
+                                    'Cultuur': { bg: 'bg-green-50', border: 'border-green-200', icon: 'bg-green-500', text: 'text-green-900' }
+                                  }
+                                  const colors = typeColors[advies.type] || typeColors['Systeem']
+                                  
+                                  return (
+                                    <div key={index} className={`${colors.bg} ${colors.border} border-2 rounded-lg p-4`}>
+                                      <div className="flex items-center gap-2 mb-3">
+                                        <div className={`${colors.icon} w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm`}>
+                                          {index + 1}
+                                        </div>
+                                        <span className={`${colors.text} font-semibold text-sm`}>{advies.type}</span>
+                                      </div>
+                                      <h5 className={`${colors.text} font-bold mb-2`}>{advies.titel}</h5>
+                                      <p className="text-gray-700 text-sm mb-3">{advies.signaal}</p>
+                                      <div className={`${colors.bg} border ${colors.border} rounded p-2 mt-3 mb-3`}>
+                                        <p className="text-xs font-medium text-gray-800">{advies.cta}</p>
+                                      </div>
+                                      
+                                      {/* Micro-adviezen */}
+                                      {advies.micro_adviezen && Array.isArray(advies.micro_adviezen) && advies.micro_adviezen.length > 0 && (
+                                        <div className={`mt-4 pt-3 border-t ${colors.border}`}>
+                                          <p className={`text-xs font-semibold ${colors.text} mb-2`}>3 tips om dit te doen:</p>
+                                          <div className="space-y-2">
+                                            {advies.micro_adviezen.map((micro, microIndex) => (
+                                              <div key={microIndex} className="text-sm">
+                                                <p className="font-medium text-gray-900">{micro.titel}</p>
+                                                {micro.toelichting && (
+                                                  <p className="text-xs text-gray-600 italic mt-0.5">{micro.toelichting}</p>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          ) : summaryData[theme.theme_id].gpt_adviezen && (
+                            // Fallback naar oude structuur voor backward compatibility
                             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                               <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-orange-100 rounded-lg">
@@ -691,21 +777,13 @@ function Themadashboard() {
                                   }
                                 </h4>
                               </div>
-                              <p className="text-gray-700 leading-relaxed">{summaryData[theme.theme_id].verbeteradvies}</p>
-                            </div>
-                          )}
-
-                          {/* GPT Adviezen */}
-                          {summaryData[theme.theme_id].gpt_adviezen && (
-                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                              <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2 bg-green-100 rounded-lg">
-                                  <CheckCircle className="w-5 h-5 text-green-600" />
-                                </div>
-                                <h4 className="text-lg font-semibold text-gray-900">AI Adviezen</h4>
-                              </div>
+                              {summaryData[theme.theme_id].verbeteradvies && (
+                                <p className="text-gray-700 leading-relaxed mb-4">{summaryData[theme.theme_id].verbeteradvies}</p>
+                              )}
                               <div className="space-y-4">
-                                {Object.entries(summaryData[theme.theme_id].gpt_adviezen).map(([key, advice], index) => (
+                                {Object.entries(summaryData[theme.theme_id].gpt_adviezen)
+                                  .filter(([key]) => key.startsWith('prioriteit_'))
+                                  .map(([key, advice], index) => (
                                   <div key={key} className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
                                     <div className="flex items-start gap-3">
                                       <div className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
