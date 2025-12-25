@@ -346,6 +346,18 @@ function Instellingen() {
                   <li>"Onze medewerkers stellen orders samen, verwerken zendingen en zorgen dat alles op tijd de deur uit gaat. Het werk is fysiek en kent piekperiodes."</li>
                 </ul>
               </div>
+              
+              {/* Opslaan knop */}
+              <div className="pt-4 border-t">
+                <button
+                  onClick={saveConfiguratie}
+                  disabled={configSaving}
+                  className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="w-4 h-4" />
+                  {configSaving ? 'Opslaan...' : 'Opslaan'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
