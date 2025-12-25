@@ -65,19 +65,21 @@ function ProtectedRoute({ children, requiredRole = null, redirectTo = null }) {
           }
         }
 
-        // Voor werkgevers: controleer of employer bestaat in database
+        // Voor werkgevers: controleer of employer_id bestaat (voor managers via uitnodiging hoeft contact_email niet te matchen)
         if (userData.role === 'employer') {
-          const { data: employer, error: employerError } = await supabase
-            .from('employers')
-            .select('id')
-            .eq('contact_email', userData.email)
-            .single()
-
-          if (employerError || !employer) {
-            // Redirect naar werkgever portaal (laat EmployerPortal de fout afhandelen)
+          if (!userData.employer_id) {
+            // Geen employer_id betekent dat provisioning nog niet is voltooid
+            // Voor normale werkgevers: redirect naar verify-email
+            // Voor managers via uitnodiging: dit zou niet moeten gebeuren
+            if (!user?.email_confirmed_at) {
+              navigate('/verify-email')
+              return
+            }
+            // Als email wel bevestigd is maar geen employer_id, laat EmployerPortal de fout afhandelen
             navigate('/werkgever-portaal')
             return
           }
+          // employer_id bestaat, dat is voldoende (voor managers via uitnodiging)
         }
 
         // Voor employees: controleer of ze bij een werkgever horen

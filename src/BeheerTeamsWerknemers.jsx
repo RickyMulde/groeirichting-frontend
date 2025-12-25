@@ -7,7 +7,7 @@ import TeamManagementModal from './components/TeamManagementModal'
 import Alert from './Alert'
 
 function BeheerTeamsWerknemers() {
-  const { teams, selectedTeam, selectTeam, refreshTeams } = useTeams()
+  const { teams, selectedTeam, selectTeam, refreshTeams, updateTeam, archiveTeam } = useTeams()
   const [uitnodigingen, setUitnodigingen] = useState([])
   const [werknemers, setWerknemers] = useState([])
   const [selectedWerknemer, setSelectedWerknemer] = useState(null)
@@ -15,10 +15,15 @@ function BeheerTeamsWerknemers() {
   const [foutmelding, setFoutmelding] = useState('')
   const [succesmelding, setSuccesmelding] = useState('')
   const [showTeamModal, setShowTeamModal] = useState(false)
+  const [editingTeam, setEditingTeam] = useState(null)
+  const [teamNaam, setTeamNaam] = useState('')
+  const [teamBeschrijving, setTeamBeschrijving] = useState('')
   const [email, setEmail] = useState('')
   const [functieOmschrijving, setFunctieOmschrijving] = useState('')
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [isInviteExpanded, setIsInviteExpanded] = useState(false)
+  const [inviteRole, setInviteRole] = useState('employee') // 'employee' of 'employer'
+  const [isTeamleider, setIsTeamleider] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -141,9 +146,9 @@ function BeheerTeamsWerknemers() {
       return
     }
 
-    // Valideer dat een team is geselecteerd (niet "Totaal")
-    if (!selectedTeam) {
-      setFoutmelding('Selecteer eerst een specifiek team om uit te nodigen')
+    // Valideer dat een team is geselecteerd voor werknemers (niet voor werkgevers)
+    if (inviteRole === 'employee' && !selectedTeam) {
+      setFoutmelding('Selecteer eerst een specifiek team om een werknemer uit te nodigen')
       setLoading(false)
       return
     }
@@ -170,11 +175,13 @@ function BeheerTeamsWerknemers() {
         },
         body: JSON.stringify({ 
           to: email, 
-          name: 'Medewerker', 
+          name: inviteRole === 'employer' ? 'Werkgever' : 'Medewerker', 
           employerId: currentUser.employer_id,
           token: crypto.randomUUID(),
-          teamId: selectedTeam,
-          functieOmschrijving: functieOmschrijving.trim() || null
+          teamId: inviteRole === 'employee' ? selectedTeam : null,
+          functieOmschrijving: inviteRole === 'employee' ? (functieOmschrijving.trim() || null) : null,
+          inviteRole: inviteRole,
+          isTeamleider: inviteRole === 'employee' ? isTeamleider : false
         })
       })
 
@@ -185,6 +192,8 @@ function BeheerTeamsWerknemers() {
         setEmail('')
         setFunctieOmschrijving('')
         setIsInviteExpanded(false)
+        setIsTeamleider(false)
+        setInviteRole('employee')
         setSuccesmelding('Uitnodiging succesvol verzonden!')
         setTimeout(() => setSuccesmelding(''), 5000)
         // Ververs de teams data om eventuele wijzigingen te tonen
@@ -199,24 +208,84 @@ function BeheerTeamsWerknemers() {
   }
 
   // Werknemer bewerken functionaliteit
-  const handleEdit = (werknemer) => setSelectedWerknemer(werknemer)
+  const handleEdit = async (werknemer) => {
+    // Gebruik de bestaande werknemer data en voeg teamleider velden toe
+    // Als de velden al in de data zitten, gebruik die, anders probeer ze op te halen
+    let werknemerData = { 
+      ...werknemer,
+      is_teamleider: werknemer.is_teamleider ?? false,
+      teamleider_van_team_id: werknemer.teamleider_van_team_id ?? null
+    }
+    
+    // Probeer alleen de teamleider velden op te halen als ze niet in de data zitten
+    if (werknemer.is_teamleider === undefined && werknemer.teamleider_van_team_id === undefined) {
+      try {
+        const { data: teamleiderData, error } = await supabase
+          .from('users')
+          .select('is_teamleider, teamleider_van_team_id')
+          .eq('id', werknemer.id)
+          .maybeSingle()
+        
+        if (!error && teamleiderData) {
+          werknemerData.is_teamleider = teamleiderData.is_teamleider || false
+          werknemerData.teamleider_van_team_id = teamleiderData.teamleider_van_team_id || null
+        }
+      } catch (error) {
+        // Als de query faalt, gebruik default waarden (al ingesteld hierboven)
+        console.warn('Kon teamleider velden niet ophalen, gebruik defaults')
+      }
+    }
+    
+    setSelectedWerknemer(werknemerData)
+  }
+  
   const handleCloseModal = () => setSelectedWerknemer(null)
+  
   const handleSaveChanges = async () => {
-    const { id, email, first_name, middle_name, last_name, birthdate, gender, functie_omschrijving } = selectedWerknemer
+    const { id, email, first_name, middle_name, last_name, birthdate, gender, functie_omschrijving, team_id, is_teamleider } = selectedWerknemer
+    
+    // Validatie: als teamleider wordt aangewezen, controleer of er al een teamleider is voor dit team
+    if (is_teamleider && team_id) {
+      // Controleer of er al een andere teamleider is voor dit team
+      const { data: existingTeamleider, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('teamleider_van_team_id', team_id)
+        .eq('is_teamleider', true)
+        .neq('id', id) // Excludeer de huidige medewerker
+        .maybeSingle()
+      
+      if (checkError) {
+        setFoutmelding('Fout bij controleren bestaande teamleider')
+        return
+      }
+      
+      if (existingTeamleider) {
+        setFoutmelding('Dit team heeft al een teamleider. Verwijder eerst de huidige teamleider status van de andere medewerker.')
+        return
+      }
+    }
     
     try {
-      const { error } = await supabase.from('users').update({ 
+      const updateData = {
         email, 
         first_name, 
         middle_name, 
         last_name, 
         birthdate, 
         gender, 
-        functie_omschrijving 
-      }).eq('id', id)
+        functie_omschrijving,
+        is_teamleider: is_teamleider || false,
+        teamleider_van_team_id: (is_teamleider && team_id) ? team_id : null
+      }
+      
+      const { error } = await supabase
+        .from('users')
+        .update(updateData)
+        .eq('id', id)
 
       if (error) {
-        setFoutmelding('Fout bij opslaan wijzigingen')
+        setFoutmelding('Fout bij opslaan wijzigingen: ' + (error.message || 'Onbekende fout'))
       } else {
         setSuccesmelding('Wijzigingen opgeslagen')
         handleCloseModal()
@@ -225,7 +294,71 @@ function BeheerTeamsWerknemers() {
         setRefreshTrigger(prev => prev + 1)
       }
     } catch (error) {
-      setFoutmelding('Fout bij opslaan wijzigingen')
+      setFoutmelding('Fout bij opslaan wijzigingen: ' + (error.message || 'Onbekende fout'))
+    }
+  }
+
+  // Team bewerken functionaliteit
+  const handleEditTeam = (team) => {
+    setEditingTeam(team)
+    setTeamNaam(team.naam)
+    setTeamBeschrijving(team.teams_beschrijving || '')
+  }
+
+  const handleCloseTeamEditModal = () => {
+    setEditingTeam(null)
+    setTeamNaam('')
+    setTeamBeschrijving('')
+  }
+
+  const handleSaveTeamChanges = async () => {
+    if (!editingTeam || !teamNaam.trim() || !teamBeschrijving.trim()) {
+      setFoutmelding('Team naam en beschrijving zijn verplicht')
+      return
+    }
+
+    try {
+      setLoading(true)
+      await updateTeam(editingTeam.id, teamNaam.trim(), teamBeschrijving.trim())
+      setSuccesmelding('Team succesvol bijgewerkt')
+      handleCloseTeamEditModal()
+      refreshTeams()
+      setRefreshTrigger(prev => prev + 1)
+    } catch (error) {
+      setFoutmelding('Fout bij opslaan team wijzigingen: ' + (error.message || 'Onbekende fout'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Team verwijderen functionaliteit
+  const handleDeleteTeam = async (team) => {
+    // Controleer of team leden heeft
+    const teamLedenCount = team.leden?.length || 0
+    if (teamLedenCount > 0) {
+      setFoutmelding(`Dit team kan niet worden verwijderd omdat het nog ${teamLedenCount} ${teamLedenCount === 1 ? 'lid' : 'leden'} heeft.`)
+      return
+    }
+
+    // Bevestigingsdialoog
+    if (!confirm(`Weet je zeker dat je team "${team.naam}" wilt verwijderen?`)) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      await archiveTeam(team.id)
+      setSuccesmelding('Team succesvol verwijderd')
+      refreshTeams()
+      setRefreshTrigger(prev => prev + 1)
+      // Als het verwijderde team geselecteerd was, deselecteer het
+      if (selectedTeam === team.id) {
+        selectTeam(null)
+      }
+    } catch (error) {
+      setFoutmelding('Fout bij verwijderen team: ' + (error.message || 'Onbekende fout'))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -427,7 +560,7 @@ function BeheerTeamsWerknemers() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          // TODO: Implementeer team bewerken
+                          handleEditTeam(team)
                         }}
                         className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                         title="Team bewerken"
@@ -437,10 +570,19 @@ function BeheerTeamsWerknemers() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          // TODO: Implementeer team verwijderen
+                          handleDeleteTeam(team)
                         }}
-                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                        title="Team verwijderen"
+                        disabled={loading || (team.leden?.length || 0) > 0}
+                        className={`p-1 transition-colors ${
+                          (team.leden?.length || 0) > 0
+                            ? 'text-gray-300 cursor-not-allowed'
+                            : 'text-gray-400 hover:text-red-600'
+                        }`}
+                        title={
+                          (team.leden?.length || 0) > 0
+                            ? `Team kan niet worden verwijderd omdat het nog ${team.leden?.length} ${team.leden?.length === 1 ? 'lid' : 'leden'} heeft`
+                            : 'Team verwijderen'
+                        }
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -461,14 +603,64 @@ function BeheerTeamsWerknemers() {
           </div>
         </div>
 
-        {/* Uitnodiging Harmonica - Alleen zichtbaar als specifiek team geselecteerd */}
-        {selectedTeam !== null && selectedTeam !== undefined && (
+        {/* Uitnodiging Harmonica - Werknemer: alleen zichtbaar als specifiek team geselecteerd, Werkgever: altijd zichtbaar */}
+        {((inviteRole === 'employee' && selectedTeam !== null && selectedTeam !== undefined) || inviteRole === 'employer') && (
           <div className="bg-white shadow-md rounded-xl mb-8 overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-medium mb-4 flex items-center gap-2">
                 <MailPlus className="text-kleur-primary" /> 
-                Medewerker uitnodigen <span className="text-sm text-gray-500">in team {teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}</span>
+                {inviteRole === 'employer' ? 'Werkgever/Manager uitnodigen' : `Medewerker uitnodigen ${selectedTeam ? `in team ${teams.find(team => team.id === selectedTeam)?.naam || 'Onbekend'}` : ''}`}
               </h2>
+              
+              {/* Rol selectie */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Type uitnodiging
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="employee"
+                      checked={inviteRole === 'employee'}
+                      onChange={(e) => {
+                        setInviteRole(e.target.value)
+                        setIsTeamleider(false)
+                      }}
+                      className="mr-2"
+                    />
+                    <span>Medewerker</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="employer"
+                      checked={inviteRole === 'employer'}
+                      onChange={(e) => {
+                        setInviteRole(e.target.value)
+                        setIsTeamleider(false)
+                      }}
+                      className="mr-2"
+                    />
+                    <span>Werkgever/Manager</span>
+                  </label>
+                </div>
+              </div>
+              
+              {/* Teamleider checkbox - alleen voor medewerkers, boven email veld, altijd zichtbaar */}
+              {inviteRole === 'employee' && selectedTeam && (
+                <div className="mb-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isTeamleider}
+                      onChange={(e) => setIsTeamleider(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded m-0 flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-900 font-medium">Maak deze medewerker teamleider van dit team</span>
+                  </label>
+                </div>
+              )}
               
               <form onSubmit={handleInvite} className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -496,6 +688,7 @@ function BeheerTeamsWerknemers() {
                   isInviteExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}>
                   <div className="space-y-3 pt-4">
+                    
                     <label className="block text-sm font-medium text-gray-700">
                       Voeg een korte omschrijving van de functie van deze medewerker toe
                     </label>
@@ -720,10 +913,13 @@ function BeheerTeamsWerknemers() {
 
       {/* Medewerker Bewerken Modal */}
       {selectedWerknemer && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
-            <h2 className="text-xl font-semibold">Medewerker bewerken</h2>
-            <div className="space-y-4">
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] flex flex-col shadow-xl">
+            <div className="p-6 pb-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold">Medewerker bewerken</h2>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">E-mailadres</label>
                 <input 
@@ -790,10 +986,81 @@ function BeheerTeamsWerknemers() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+              {selectedWerknemer.team_id && (
+                <div className="pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedWerknemer.is_teamleider || false}
+                      onChange={(e) => setSelectedWerknemer({ 
+                        ...selectedWerknemer, 
+                        is_teamleider: e.target.checked 
+                      })}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded m-0 flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-900 font-medium">
+                      Maak deze medewerker teamleider van dit team
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1 ml-6">
+                    Een teamleider kan de geaggregeerde resultaten van het team bekijken via het thema dashboard.
+                  </p>
+                </div>
+              )}
+              </div>
             </div>
-            <div className="flex justify-end gap-4 pt-4">
+            <div className="p-6 pt-4 border-t border-gray-200 flex justify-end gap-4">
               <button onClick={handleCloseModal} className="btn btn-secondary">Annuleren</button>
               <button onClick={handleSaveChanges} className="btn btn-primary">Opslaan</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Team Bewerken Modal */}
+      {editingTeam && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
+            <h2 className="text-xl font-semibold">Team bewerken</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Team naam</label>
+                <input 
+                  value={teamNaam} 
+                  onChange={e => setTeamNaam(e.target.value)} 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Team naam"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Team omschrijving</label>
+                <textarea 
+                  value={teamBeschrijving} 
+                  onChange={e => setTeamBeschrijving(e.target.value)} 
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Team omschrijving"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Team omschrijving wordt gebruikt om betere en gerichtere vragen te stellen.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 pt-4">
+              <button 
+                onClick={handleCloseTeamEditModal} 
+                className="btn btn-secondary"
+                disabled={loading}
+              >
+                Annuleren
+              </button>
+              <button 
+                onClick={handleSaveTeamChanges} 
+                className="btn btn-primary"
+                disabled={loading || !teamNaam.trim() || !teamBeschrijving.trim()}
+              >
+                {loading ? 'Opslaan...' : 'Opslaan'}
+              </button>
             </div>
           </div>
         </div>

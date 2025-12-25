@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Settings, Calendar, Save } from 'lucide-react'
 import { supabase } from './supabaseClient'
+import { useTeams } from './contexts/TeamsContext'
 
 function Instellingen() {
   const navigate = useNavigate()
+  const { teams } = useTeams()
   const [themas, setThemas] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedTeamId, setSelectedTeamId] = useState(null) // null = organisatie-breed
+  const [togglingThemeId, setTogglingThemeId] = useState(null) // Voor loading state per thema
   const [werkgeverConfig, setWerkgeverConfig] = useState({
     actieve_maanden: [3, 6, 9],
     verplicht: true,
@@ -73,24 +77,23 @@ function Instellingen() {
           setFoutmelding(`Kon configuratie niet laden: ${response.status} ${errorText}`)
         }
 
-        // Haal thema's op
-        console.log('🔄 Ophalen thema\'s...')
-        const { data: themaData, error: themaError } = await supabase
-          .from('themes')
-          .select('id, titel, beschrijving_werknemer, beschrijving_werkgever, standaard_zichtbaar, klaar_voor_gebruik')
-          .eq('klaar_voor_gebruik', true)
-          .order('volgorde_index', { ascending: true })
+        // Haal thema's op via API (met zichtbaarheid status)
+        console.log('🔄 Ophalen thema\'s via API...')
+        const themaUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}/themas`
+        const themaResponse = await fetch(themaUrl, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        })
 
-        if (themaError) {
-          console.error('❌ Fout bij ophalen thema\'s:', themaError)
-          setFoutmelding(`Kon thema's niet laden: ${themaError.message}`)
+        if (themaResponse.ok) {
+          const themaData = await themaResponse.json()
+          console.log('✅ Thema\'s gevonden via API:', themaData.themas?.length || 0)
+          setThemas(themaData.themas || [])
         } else {
-          console.log('✅ Thema\'s gevonden:', themaData.length)
-          const enriched = themaData.map((t) => ({
-            ...t,
-            actief: t.standaard_zichtbaar
-          }))
-          setThemas(enriched)
+          const errorText = await themaResponse.text()
+          console.error('❌ Fout bij ophalen thema\'s:', themaResponse.status, errorText)
+          setFoutmelding(`Kon thema's niet laden: ${themaResponse.status} ${errorText}`)
         }
       } catch (error) {
         console.error('❌ Onverwachte fout bij ophalen data:', error)
@@ -104,19 +107,98 @@ function Instellingen() {
     fetchData()
   }, [])
 
-  const toggleThema = async (id, huidigeStatus) => {
-    const nieuweStatus = !huidigeStatus
-    const { error } = await supabase
-      .from('themes')
-      .update({ standaard_zichtbaar: nieuweStatus })
-      .eq('id', id)
+  // Herlaad thema's wanneer team selectie verandert
+  useEffect(() => {
+    const reloadThemas = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
 
-    if (error) {
-      console.error('Fout bij updaten thema:', error)
-    } else {
-      setThemas((prev) =>
-        prev.map((t) => t.id === id ? { ...t, actief: nieuweStatus } : t)
-      )
+        const { data: werkgever } = await supabase
+          .from('employers')
+          .select('id')
+          .eq('contact_email', user.email)
+          .single()
+
+        if (!werkgever) return
+
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) return
+
+        const themaUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}/themas${selectedTeamId ? `?team_id=${selectedTeamId}` : ''}`
+        const themaResponse = await fetch(themaUrl, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        })
+
+        if (themaResponse.ok) {
+          const themaData = await themaResponse.json()
+          setThemas(themaData.themas || [])
+        }
+      } catch (error) {
+        console.error('❌ Fout bij herladen thema\'s:', error)
+      }
+    }
+
+    if (!loading) {
+      reloadThemas()
+    }
+  }, [selectedTeamId, loading])
+
+  const toggleThema = async (themaId, huidigeZichtbaar) => {
+    try {
+      setTogglingThemeId(themaId)
+      
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        alert('Geen gebruiker gevonden')
+        return
+      }
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        alert('Geen toegangstoken gevonden')
+        return
+      }
+
+      const nieuweZichtbaar = !huidigeZichtbaar
+
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/employer-themes/toggle`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          theme_id: themaId,
+          zichtbaar: nieuweZichtbaar,
+          team_id: selectedTeamId || null
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log('✅ Thema toggle succesvol:', result)
+        
+        // Update lokale state
+        setThemas((prev) =>
+          prev.map((t) => 
+            t.id === themaId 
+              ? { ...t, zichtbaar: nieuweZichtbaar, is_expliciet_uitgezet: !nieuweZichtbaar && t.is_generiek }
+              : t
+          )
+        )
+      } else {
+        const errorData = await response.json()
+        console.error('❌ Fout bij toggle thema:', errorData)
+        alert(`Fout bij wijzigen thema: ${errorData.error || 'Onbekende fout'}`)
+      }
+    } catch (error) {
+      console.error('❌ Onverwachte fout bij toggle thema:', error)
+      alert('Er is een fout opgetreden bij het wijzigen van het thema')
+    } finally {
+      setTogglingThemeId(null)
     }
   }
 
@@ -264,6 +346,18 @@ function Instellingen() {
                   <li>"Onze medewerkers stellen orders samen, verwerken zendingen en zorgen dat alles op tijd de deur uit gaat. Het werk is fysiek en kent piekperiodes."</li>
                 </ul>
               </div>
+              
+              {/* Opslaan knop */}
+              <div className="pt-4 border-t">
+                <button
+                  onClick={saveConfiguratie}
+                  disabled={configSaving}
+                  className="btn btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="w-4 h-4" />
+                  {configSaving ? 'Opslaan...' : 'Opslaan'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -343,30 +437,100 @@ function Instellingen() {
 
         {/* Thema's sectie */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4">Thema's</h2>
-          {loading ? (
-            <div>Bezig met laden...</div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {themas.map((thema) => (
-                <div key={thema.id} className="p-4 border rounded-xl shadow-sm bg-white flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-[var(--kleur-primary)]">{thema.titel}</h3>
-                    <p className="text-gray-600 text-sm mt-1">{thema.beschrijving_werkgever || thema.beschrijving_werknemer || 'Geen beschrijving beschikbaar.'}</p>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <label className="text-sm text-gray-700 mr-2">Zichtbaar voor medewerkers</label>
-                    <input
-                      type="checkbox"
-                      checked={thema.actief}
-                      onChange={() => toggleThema(thema.id, thema.actief)}
-                      className="w-5 h-5"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h2 className="text-xl font-semibold text-[var(--kleur-primary)] mb-4">Thema's</h2>
+            
+            {/* Team selectie */}
+            {teams && teams.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Beheer thema's voor:
+                </label>
+                <select
+                  value={selectedTeamId || ''}
+                  onChange={(e) => setSelectedTeamId(e.target.value || null)}
+                  className="w-full md:w-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent"
+                >
+                  <option value="">Hele organisatie</option>
+                  {teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.naam}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  {selectedTeamId 
+                    ? `Je beheert nu thema's voor het geselecteerde team.`
+                    : `Je beheert nu thema's voor de hele organisatie.`
+                  }
+                </p>
+              </div>
+            )}
+
+            {loading ? (
+              <div className="text-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--kleur-primary)] mx-auto"></div>
+                <p className="text-gray-600 mt-2">Thema's laden...</p>
+              </div>
+            ) : themas.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-gray-600">Geen thema's beschikbaar.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {themas.map((thema) => {
+                  const isDisabled = togglingThemeId === thema.id
+                  const canToggle = thema.is_generiek || (thema.is_exclusief && thema.zichtbaar)
+                  const isExclusiefNietGekoppeld = thema.is_exclusief && !thema.zichtbaar
+
+                  return (
+                    <div key={thema.id} className="p-4 border rounded-xl shadow-sm bg-white flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="text-lg font-semibold text-[var(--kleur-primary)]">{thema.titel}</h3>
+                          <div className="flex gap-2">
+                            {thema.is_generiek && (
+                              <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                                Generiek
+                              </span>
+                            )}
+                            {thema.is_exclusief && (
+                              <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded">
+                                Exclusief
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-gray-600 text-sm mt-1">
+                          {thema.beschrijving_werkgever || thema.beschrijving_werknemer || 'Geen beschrijving beschikbaar.'}
+                        </p>
+                        {isExclusiefNietGekoppeld && (
+                          <p className="text-xs text-amber-600 mt-2 italic">
+                            Dit thema is alleen beschikbaar na koppeling door een beheerder.
+                          </p>
+                        )}
+                      </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <label className="text-sm text-gray-700 mr-2">
+                          Zichtbaar voor medewerkers
+                        </label>
+                        <input
+                          type="checkbox"
+                          checked={thema.zichtbaar}
+                          onChange={() => toggleThema(thema.id, thema.zichtbaar)}
+                          disabled={isDisabled || !canToggle || isExclusiefNietGekoppeld}
+                          className="w-5 h-5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        />
+                      </div>
+                      {isDisabled && (
+                        <p className="text-xs text-gray-500 mt-2">Bezig met bijwerken...</p>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Overige instellingen */}

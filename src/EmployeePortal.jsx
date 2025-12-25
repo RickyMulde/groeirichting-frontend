@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 //import Navigatiebalk from './Navigatiebalk'
-import { Smile, History, Settings, Shield, X } from 'lucide-react'
+import { Smile, History, Settings, Shield, X, Users } from 'lucide-react'
 
 function EmployeePortal() {
   const [user, setUser] = useState(null)
@@ -26,7 +26,7 @@ function EmployeePortal() {
 
         const { data: userData, error: userDataError } = await supabase
           .from('users')
-          .select('id, email, role, employer_id')
+          .select('id, email, role, employer_id, is_teamleider, teamleider_van_team_id')
           .eq('id', session.user.id)
           .single()
 
@@ -140,6 +140,19 @@ function EmployeePortal() {
           </div>
           <Link to="/werknemer-instellingen" className="btn btn-secondary">Ga naar instellingen</Link>
         </section>
+
+        {user?.is_teamleider && (
+          <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Users className="text-[var(--kleur-primary)] w-8 h-8" />
+              <div>
+                <h2 className="text-xl font-semibold">Teamresultaten bekijken</h2>
+                <p className="text-sm text-gray-500">Als teamleider kun je de geaggregeerde resultaten van je team bekijken.</p>
+              </div>
+            </div>
+            <button onClick={() => navigate('/thema-dashboard')} className="btn btn-primary">Bekijk teamresultaten</button>
+          </section>
+        )}
 
         <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">

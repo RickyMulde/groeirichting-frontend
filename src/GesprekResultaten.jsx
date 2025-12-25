@@ -240,42 +240,60 @@ function GesprekResultaten() {
     return 'bg-red-500'
   }
 
+  // State voor regenereren van adviezen
+  const [regenererenLoading, setRegenererenLoading] = useState({})
+  const [regenererenError, setRegenererenError] = useState({})
+
   // Functie om vervolgacties op te halen
   const getVervolgacties = (resultaat) => {
-    // Als er echte vervolgacties zijn, gebruik die
     if (resultaat.vervolgacties && resultaat.vervolgacties.length > 0) {
       return resultaat.vervolgacties;
     }
+    return [];
+  }
 
-    // Fallback naar dummy acties
-    const acties = {
-      'Werkdruk en werk-privébalans': [
-        'Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.',
-        'Zoek naar workshops of trainingen over energiemanagement en werk-privébalans die passen bij jouw situatie.',
-        'Onderzoek welke ondersteuning beschikbaar is binnen je organisatie voor persoonlijk advies of begeleiding.'
-      ],
-      'Teamwerk en samenwerking': [
-        'Organiseer regelmatige teamvergaderingen om de samenwerking te versterken.',
-        'Overweeg team building activiteiten om de banden verder aan te halen.',
-        'Evalueer periodiek de effectiviteit van de huidige samenwerkingsvormen.'
-      ],
-      'Ontwikkeling en groei': [
-        'Stel samen met je leidinggevende een persoonlijk ontwikkelplan op.',
-        'Zoek naar trainingen of cursussen die aansluiten bij jouw ontwikkelwensen.',
-        'Plan regelmatige evaluatiegesprekken over je ontwikkeling.'
-      ],
-      'Organisatiecultuur en waarden': [
-        'Blijf actief betrokken bij initiatieven die de organisatiecultuur versterken.',
-        'Deel je ervaringen en suggesties voor verbetering met je leidinggevende of relevante collega\'s.',
-        'Neem deel aan activiteiten die de organisatiecultuur bevorderen.'
-      ]
+  // Functie om adviezen opnieuw te genereren
+  const regenereerAdviezen = async (resultaat) => {
+    const resultaatId = resultaat.id;
+    setRegenererenLoading(prev => ({ ...prev, [resultaatId]: true }));
+    setRegenererenError(prev => ({ ...prev, [resultaatId]: null }));
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/genereer-vervolgacties`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
+          body: JSON.stringify({
+            theme_id: resultaat.theme_id,
+            werknemer_id: user.id,
+            gesprek_id: resultaat.gesprek_id
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Kon adviezen niet genereren');
+      }
+
+      const data = await response.json();
+      
+      // Update resultaten met nieuwe adviezen
+      setResultaten(prev => prev.map(r => 
+        r.id === resultaatId 
+          ? { ...r, vervolgacties: data.adviezen || [] }
+          : r
+      ));
+    } catch (error) {
+      console.error('Fout bij regenereren adviezen:', error);
+      setRegenererenError(prev => ({ ...prev, [resultaatId]: 'Er ging iets mis bij het genereren van adviezen. Probeer het later opnieuw.' }));
+    } finally {
+      setRegenererenLoading(prev => ({ ...prev, [resultaatId]: false }));
     }
-    
-    return acties[resultaat.themes.titel] || [
-      'Plan een vervolggesprek met je leidinggevende.',
-      'Zoek naar workshops of trainingen die aansluiten bij jouw situatie.',
-      'Onderzoek welke ondersteuning beschikbaar is binnen je organisatie.'
-    ]
   }
 
   // Functie om thema uit te klappen/in te klappen
@@ -464,16 +482,51 @@ function GesprekResultaten() {
                     
                     {uitgeklapteThemas.has(resultaat.id) ? (
                       <>
-                        <ol className="list-decimal list-inside text-gray-700 space-y-2 mt-3">
-                          {getVervolgacties(resultaat).map((actie, index) => (
-                            <li key={index} className="leading-relaxed">{actie}</li>
-                          ))}
-                        </ol>
-                        {getVervolgacties(resultaat).length > 0 && (
-                          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <p className="text-sm text-yellow-800">
-                              <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
-                            </p>
+                        {getVervolgacties(resultaat).length > 0 ? (
+                          <>
+                            <div className="space-y-3 mt-3">
+                              {getVervolgacties(resultaat).map((advies, index) => (
+                                <div key={index} className="bg-white border border-gray-200 rounded-lg p-3">
+                                  <h5 className="font-semibold text-gray-900 mb-1">{index + 1}. {typeof advies === 'string' ? advies : advies.titel}</h5>
+                                  {typeof advies === 'object' && advies.reden && (
+                                    <p className="text-gray-600 text-sm mb-1">{advies.reden}</p>
+                                  )}
+                                  {typeof advies === 'object' && advies.resultaat && (
+                                    <p className="text-[var(--kleur-primary)] text-sm font-medium">{advies.resultaat}</p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                              <p className="text-sm text-yellow-800">
+                                <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="mt-3 space-y-3">
+                            {regenererenError[resultaat.id] && (
+                              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <p className="text-sm text-red-700">{regenererenError[resultaat.id]}</p>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-3">
+                              <p className="text-gray-600 text-sm">Geen adviezen beschikbaar voor dit thema.</p>
+                              <button
+                                onClick={() => regenereerAdviezen(resultaat)}
+                                disabled={regenererenLoading[resultaat.id]}
+                                className="btn btn-secondary text-sm py-1 px-3 flex items-center gap-2"
+                              >
+                                {regenererenLoading[resultaat.id] ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                                    Genereren...
+                                  </>
+                                ) : (
+                                  'Adviezen genereren'
+                                )}
+                              </button>
+                            </div>
                           </div>
                         )}
                       </>

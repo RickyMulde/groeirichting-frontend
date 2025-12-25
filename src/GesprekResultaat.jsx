@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, FileText } from 'lucide-react'
+import { ArrowLeft, FileText, Loader2 } from 'lucide-react'
 import { supabase } from './supabaseClient'
 import ThemaVoortgangBanner from './components/ThemaVoortgangBanner'
 import ThemaEvaluatieModal from './components/ThemaEvaluatieModal'
@@ -12,6 +12,7 @@ function GesprekResultaat() {
   const [error, setError] = useState(null)
   const [gesprekData, setGesprekData] = useState(null)
   const [vervolgactiesUitgeklapt, setVervolgactiesUitgeklapt] = useState(false)
+  const [vervolgactiesLoading, setVervolgactiesLoading] = useState(false)
   const [gesprekDatum, setGesprekDatum] = useState(null)
   const [userId, setUserId] = useState(null)
   
@@ -20,6 +21,9 @@ function GesprekResultaat() {
   const [evaluatieLoading, setEvaluatieLoading] = useState(false)
   const [evaluatieError, setEvaluatieError] = useState(null)
   const [heeftEvaluatie, setHeeftEvaluatie] = useState(false)
+  
+  // Ref om te tracken of vervolgacties al gestart zijn
+  const vervolgactiesGestart = useRef(false)
 
   useEffect(() => {
     const fetchGesprekData = async () => {
@@ -59,26 +63,26 @@ function GesprekResultaat() {
         }
 
         // Verifieer dat het gesprek bij deze gebruiker hoort
-        const { data: gesprekData, error: gesprekError } = await supabase
+        const { data: gesprekDataDb, error: gesprekError } = await supabase
           .from('gesprek')
           .select('id, werknemer_id, status, gestart_op')
           .eq('id', gesprekId)
           .single()
 
-        if (gesprekError || !gesprekData) {
+        if (gesprekError || !gesprekDataDb) {
           throw new Error('Gesprek niet gevonden')
         }
 
-        if (gesprekData.werknemer_id !== user.id) {
+        if (gesprekDataDb.werknemer_id !== user.id) {
           throw new Error('Geen toegang tot dit gesprek')
         }
 
-        if (gesprekData.status !== 'Afgerond') {
+        if (gesprekDataDb.status !== 'Afgerond') {
           throw new Error('Gesprek is nog niet afgerond')
         }
 
         // Sla gesprek datum op voor het voortgang component
-        setGesprekDatum(gesprekData.gestart_op)
+        setGesprekDatum(gesprekDataDb.gestart_op)
 
         // Controleer of er al een evaluatie is voor dit gesprek
         try {
@@ -154,70 +158,25 @@ function GesprekResultaat() {
                 const generateResult = await generateResponse.json();
                 console.log('Samenvatting gegenereerd:', generateResult);
                 
-                // Genereer ook vervolgacties
-                try {
-                  console.log('🔄 Genereer vervolgacties...');
-                  const { data: { session } } = await supabase.auth.getSession()
-                  const vervolgactiesResponse = await fetch(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/genereer-vervolgacties`,
-                    {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${session?.access_token}`
-                      },
-                      body: JSON.stringify({
-                        theme_id: themeId,
-                        werknemer_id: user.id,
-                        gesprek_id: gesprekId
-                      })
-                    }
-                  );
-
-                  if (vervolgactiesResponse.ok) {
-                    const vervolgactiesResult = await vervolgactiesResponse.json();
-                    console.log('✅ Vervolgacties gegenereerd:', vervolgactiesResult);
-                  } else {
-                    console.warn('⚠️ Vervolgacties genereren mislukt:', vervolgactiesResponse.status);
-                  }
-                } catch (vervolgactiesError) {
-                  console.warn('⚠️ Fout bij genereren vervolgacties:', vervolgactiesError);
+                // Start vervolgacties op de achtergrond (fire-and-forget)
+                if (!vervolgactiesGestart.current) {
+                  vervolgactiesGestart.current = true;
+                  startVervolgactiesGeneratie(themeId, user.id, gesprekId);
                 }
                 
-                // Wacht even zodat de backend tijd heeft om alles te verwerken
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // Probeer nu opnieuw de samenvatting op te halen
-                const { data: { session } } = await supabase.auth.getSession()
-                const retryResponse = await fetch(
-                  `${import.meta.env.VITE_API_BASE_URL}/api/get-samenvatting?theme_id=${themeId}&werknemer_id=${user.id}&gesprek_id=${gesprekId}`,
-                  {
-                    method: 'GET',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${session?.access_token}`
-                    }
-                  }
-                );
-
-                if (retryResponse.ok) {
-                  const resultData = await retryResponse.json();
-                  console.log('Samenvatting opgehaald na genereren:', resultData);
-                  setGesprekData({
-                    themeTitle: themeData.titel,
-                    samenvatting: resultData.samenvatting,
-                    score: resultData.score,
-                    magWerkgeverInzien: resultData.mag_werkgever_inzien,
-                    vervolgacties: resultData.vervolgacties || [],
-                    vervolgacties_toelichting: resultData.vervolgacties_toelichting || '',
-                    themeId,
-                    gesprekId
-                  });
-                  return;
-                } else {
-                  const retryErrorText = await retryResponse.text();
-                  console.error('Fout bij ophalen samenvatting na genereren:', retryResponse.status, retryErrorText);
-                }
+                // Toon samenvatting direct (zonder te wachten op vervolgacties)
+                setGesprekData({
+                  themeTitle: themeData.titel,
+                  samenvatting: generateResult.samenvatting,
+                  score: generateResult.score,
+                  magWerkgeverInzien: true,
+                  adviezen: [], // Nog niet geladen
+                  vervolgacties_toelichting: '',
+                  themeId,
+                  gesprekId
+                });
+                setLoading(false);
+                return;
               } else {
                 const generateErrorText = await generateResponse.text();
                 console.error('Fout bij genereren samenvatting:', generateResponse.status, generateErrorText);
@@ -234,20 +193,28 @@ function GesprekResultaat() {
             samenvatting: 'Er kon geen samenvatting worden gegenereerd voor dit gesprek. Neem contact op met je leidinggevende.',
             score: null,
             magWerkgeverInzien: true,
-            vervolgacties: [],
+            adviezen: [],
             vervolgacties_toelichting: '',
             themeId,
             gesprekId
           });
+          return;
         }
 
         const resultData = await response.json();
+        
+        // Start vervolgacties op achtergrond als ze nog niet geladen zijn
+        if ((!resultData.vervolgacties || resultData.vervolgacties.length === 0) && !vervolgactiesGestart.current) {
+          vervolgactiesGestart.current = true;
+          startVervolgactiesGeneratie(themeId, user.id, gesprekId);
+        }
+        
         setGesprekData({
           themeTitle: themeData.titel,
           samenvatting: resultData.samenvatting,
           score: resultData.score,
           magWerkgeverInzien: resultData.mag_werkgever_inzien,
-          vervolgacties: resultData.vervolgacties || [],
+          adviezen: resultData.vervolgacties || [],
           vervolgacties_toelichting: resultData.vervolgacties_toelichting || '',
           themeId,
           gesprekId
@@ -263,6 +230,89 @@ function GesprekResultaat() {
 
     fetchGesprekData()
   }, [params])
+
+  // Functie om vervolgacties op de achtergrond te genereren
+  const startVervolgactiesGeneratie = async (themeId, userId, gesprekId) => {
+    try {
+      console.log('🔄 Start vervolgacties generatie op achtergrond...');
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/genereer-vervolgacties`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
+          body: JSON.stringify({
+            theme_id: themeId,
+            werknemer_id: userId,
+            gesprek_id: gesprekId
+          })
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Vervolgacties gegenereerd op achtergrond:', result);
+        
+        // Update gesprekData met de nieuwe adviezen
+        setGesprekData(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            adviezen: result.adviezen || [],
+            vervolgacties_toelichting: result.vervolgacties_toelichting || ''
+          };
+        });
+      } else {
+        console.warn('⚠️ Vervolgacties genereren mislukt:', response.status);
+      }
+    } catch (error) {
+      console.warn('⚠️ Fout bij genereren vervolgacties op achtergrond:', error);
+    }
+  };
+
+  // Functie om vervolgacties op te halen bij uitklappen
+  const handleVervolgactiesUitklappen = async () => {
+    const newState = !vervolgactiesUitgeklapt;
+    setVervolgactiesUitgeklapt(newState);
+    
+    // Als we uitklappen en er zijn nog geen vervolgacties, probeer ze op te halen
+    if (newState && gesprekData && (!gesprekData.vervolgacties || gesprekData.vervolgacties.length === 0)) {
+      setVervolgactiesLoading(true);
+      
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/get-samenvatting?theme_id=${gesprekData.themeId}&werknemer_id=${userId}&gesprek_id=${gesprekData.gesprekId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token}`
+            }
+          }
+        );
+
+        if (response.ok) {
+          const resultData = await response.json();
+          if (resultData.vervolgacties && resultData.vervolgacties.length > 0) {
+            setGesprekData(prev => ({
+              ...prev,
+              adviezen: resultData.vervolgacties,
+              vervolgacties_toelichting: resultData.vervolgacties_toelichting || ''
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Fout bij ophalen vervolgacties:', error);
+      } finally {
+        setVervolgactiesLoading(false);
+      }
+    }
+  };
 
   // Functie om evaluatie score op te slaan
   const handleScoreSubmit = async (score) => {
@@ -325,6 +375,16 @@ function GesprekResultaat() {
   if (loading) {
     return (
       <div className="centered-page space-y-6">
+        {/* Evaluatie Modal - ook tonen tijdens laden */}
+        <ThemaEvaluatieModal
+          isOpen={showEvaluatieModal}
+          onClose={handleCloseModal}
+          themeTitle={null}
+          onScoreSubmit={handleScoreSubmit}
+          loading={evaluatieLoading}
+          error={evaluatieError}
+        />
+        
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--kleur-primary)]"></div>
@@ -397,21 +457,6 @@ function GesprekResultaat() {
 
         <div className="space-y-6">
 
-          {/* Voortgangssectie - Toon altijd als we de data hebben */}
-          {gesprekDatum && userId ? (
-            <ThemaVoortgangBanner 
-              gesprekDatum={gesprekDatum} 
-              userId={userId} 
-            />
-          ) : (
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-              <p className="text-gray-500">Voortgang wordt geladen...</p>
-              <p className="text-xs text-gray-400 mt-1">
-                Gesprek datum: {gesprekDatum ? 'Ja' : 'Nee'} | User ID: {userId ? 'Ja' : 'Nee'}
-              </p>
-            </div>
-          )}
-
           {/* Samenvatting sectie */}
           <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
             <div className="space-y-1">
@@ -434,9 +479,9 @@ function GesprekResultaat() {
           {/* Vervolgacties sectie */}
           <section className="bg-white shadow-md rounded-xl p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Vervolgacties per thema op basis van jouw antwoorden:</h2>
+              <h2 className="text-xl font-semibold">Jouw inzichten uit dit gesprek</h2>
               <button
-                onClick={() => setVervolgactiesUitgeklapt(!vervolgactiesUitgeklapt)}
+                onClick={handleVervolgactiesUitklappen}
                 className="p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
                 aria-label={vervolgactiesUitgeklapt ? 'Inklappen' : 'Uitklappen'}
               >
@@ -445,46 +490,67 @@ function GesprekResultaat() {
                 </svg>
               </button>
             </div>
+
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                💡 <strong>Goed om te weten:</strong> Je hoeft nu nog niets te doen. Dit zijn suggesties op basis van jouw antwoorden. We slaan ze voor je op. Pas later kies je op je dashboard met welke Top 3 je écht aan de slag wilt.
+              </p>
+            </div>
         
             {vervolgactiesUitgeklapt ? (
-              gesprekData.vervolgacties && gesprekData.vervolgacties.length > 0 ? (
+              vervolgactiesLoading ? (
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Inzichten worden geladen...</span>
+                </div>
+              ) : gesprekData.adviezen && gesprekData.adviezen.length > 0 ? (
                 <>
-                  <ol className="list-decimal list-inside text-gray-700 space-y-1">
-                    {gesprekData.vervolgacties.map((actie, index) => (
-                      <li key={index} className="leading-relaxed">{actie}</li>
+                  <div className="space-y-4">
+                    {gesprekData.adviezen.map((advies, index) => (
+                      <div key={index} className="bg-[var(--kleur-background)] border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-gray-900 mb-2">{index + 1}. {typeof advies === 'string' ? advies : advies.titel}</h4>
+                        {typeof advies === 'object' && advies.reden && (
+                          <p className="text-gray-600 text-sm mb-2">{advies.reden}</p>
+                        )}
+                        {typeof advies === 'object' && advies.resultaat && (
+                          <p className="text-[var(--kleur-primary)] text-sm font-medium">{advies.resultaat}</p>
+                        )}
+                      </div>
                     ))}
-                  </ol>
+                  </div>
                   {gesprekData.vervolgacties_toelichting && (
                     <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                       <p className="text-sm text-blue-700">{gesprekData.vervolgacties_toelichting}</p>
                     </div>
                   )}
-                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
-                    </p>
-                  </div>
                 </>
               ) : (
-                <>
-                  <ol className="list-decimal list-inside text-gray-700 space-y-1">
-                    <li>Plan een vervolggesprek met je leidinggevende om je werkdruk verder te bespreken.</li>
-                    <li>Zoek naar workshops of trainingen over energiemanagement en werk-privébalans die passen bij jouw situatie.</li>
-                    <li>Onderzoek welke ondersteuning beschikbaar is binnen je organisatie voor persoonlijk advies of begeleiding.</li>
-                  </ol>
-                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Let op:</strong> Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
-                    </p>
-                  </div>
-                </>
+                <div className="flex items-center gap-3 text-gray-600">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Inzichten worden nog gegenereerd, probeer het zo opnieuw...</span>
+                </div>
               )
             ) : (
               <div className="text-gray-600 text-sm">
-                <p>Klik op "Uitklappen" om de vervolgacties te bekijken</p>
+                <p>Klik op het pijltje om de inzichten te bekijken</p>
               </div>
             )}
           </section>
+
+          {/* Voortgangssectie - Toon altijd als we de data hebben (na samenvatting en vervolgacties) */}
+          {gesprekDatum && userId ? (
+            <ThemaVoortgangBanner 
+              gesprekDatum={gesprekDatum} 
+              userId={userId} 
+            />
+          ) : (
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+              <p className="text-gray-500">Voortgang wordt geladen...</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Gesprek datum: {gesprekDatum ? 'Ja' : 'Nee'} | User ID: {userId ? 'Ja' : 'Nee'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

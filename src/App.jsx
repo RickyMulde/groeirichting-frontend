@@ -22,6 +22,7 @@ import EmployeePortal from './EmployeePortal'
 import SuperadminPortaal from './Superadminportaal'
 import ThemaBeheer from './ThemaBeheer'
 import ThemaBeheerOverzicht from './ThemaBeheerOverzicht'
+import WerkgeverThemaKoppelingen from './WerkgeverThemaKoppelingen'
 import GebruikersBeheer from './GebruikersBeheer'
 import GesprekPagina from './GesprekPagina'
 import GesprekResultaat from './GesprekResultaat'
@@ -81,7 +82,7 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/thema-dashboard" element={
-          <ProtectedRoute requiredRole="employer">
+          <ProtectedRoute>
             <TeamsProvider>
               <Themadashboard />
             </TeamsProvider>
@@ -116,6 +117,11 @@ function App() {
             <ThemaBeheerOverzicht />
           </ProtectedRoute>
         } />
+        <Route path="/superadmin/thema/:themeId/koppelingen" element={
+          <ProtectedRoute requiredRole="superuser">
+            <WerkgeverThemaKoppelingen />
+          </ProtectedRoute>
+        } />
         <Route path="/superadmin/gebruikers-beheer" element={
           <ProtectedRoute requiredRole="superuser">
             <GebruikersBeheer />
@@ -135,7 +141,9 @@ function App() {
         } />
         <Route path="/instellingen" element={
           <ProtectedRoute>
-            <Instellingen />
+            <TeamsProvider>
+              <Instellingen />
+            </TeamsProvider>
           </ProtectedRoute>
         } />
         <Route path="/redirect" element={

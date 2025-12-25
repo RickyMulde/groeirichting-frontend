@@ -22,6 +22,8 @@ function Themadashboard() {
   const [selectedScorePopup, setSelectedScorePopup] = useState(null)
   const [availablePeriods, setAvailablePeriods] = useState([])
   const [selectedPeriod, setSelectedPeriod] = useState(null)
+  const [isTeamleider, setIsTeamleider] = useState(false)
+  const [teamleiderTeamId, setTeamleiderTeamId] = useState(null)
 
   // Haal thema's op
   const fetchThemes = async (employerId, period = null, teamId = null) => {
@@ -123,21 +125,46 @@ function Themadashboard() {
       
       const { data: { user } } = await supabase.auth.getUser()
       
-      const { data: employer, error: employerError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('contact_email', user.email)
+      // Haal user data op om te controleren of het een teamleider is
+      const { data: userData, error: userDataError } = await supabase
+        .from('users')
+        .select('id, role, employer_id, is_teamleider, teamleider_van_team_id')
+        .eq('id', user.id)
         .single()
 
-      if (employerError || !employer) {
-        throw new Error('Werkgever niet gevonden')
+      if (userDataError || !userData) {
+        throw new Error('Gebruiker data niet gevonden')
+      }
+
+      let orgId
+      if (userData.is_teamleider && userData.role === 'employee') {
+        // Teamleider: gebruik employer_id direct
+        if (!userData.employer_id) {
+          throw new Error('Geen organisatie gekoppeld aan teamleider')
+        }
+        orgId = userData.employer_id
+      } else if (userData.role === 'employer') {
+        // Werkgever: haal employer op via email
+        const { data: employer, error: employerError } = await supabase
+          .from('employers')
+          .select('id')
+          .eq('contact_email', user.email)
+          .single()
+
+        if (employerError || !employer) {
+          throw new Error('Werkgever niet gevonden')
+        }
+        orgId = employer.id
+      } else {
+        throw new Error('Geen toegang tot samenvattingen')
       }
 
       const { data: { session } } = await supabase.auth.getSession()
-      let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${employer.id}/${themeId}`
+      let url = `${import.meta.env.VITE_API_BASE_URL}/api/organisation-summary/${orgId}/${themeId}`
       
-      // Voeg team filtering toe als team is geselecteerd
-      if (selectedTeam) {
+      // Voor teamleiders: team_id wordt automatisch door backend bepaald
+      // Voor werkgevers: voeg team filtering toe als team is geselecteerd
+      if (!userData.is_teamleider && selectedTeam) {
         url += `?team_id=${selectedTeam}`
       }
       
@@ -231,19 +258,52 @@ function Themadashboard() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error('Gebruiker niet ingelogd')
         
-        const { data: employer, error: employerError } = await supabase
-          .from('employers')
-          .select('id')
-          .eq('contact_email', user.email)
+        // Haal user data op om te controleren of het een teamleider is
+        const { data: userData, error: userDataError } = await supabase
+          .from('users')
+          .select('id, role, employer_id, is_teamleider, teamleider_van_team_id')
+          .eq('id', user.id)
           .single()
 
-        if (employerError || !employer) {
-          throw new Error('Werkgever niet gevonden')
+        if (userDataError || !userData) {
+          throw new Error('Gebruiker data niet gevonden')
         }
 
-        setEmployerId(employer.id)
-        await fetchEmployerSettings(employer.id)
-        await fetchAvailablePeriods(employer.id)
+        // Controleer of gebruiker teamleider is
+        if (userData.is_teamleider && userData.role === 'employee') {
+          setIsTeamleider(true)
+          setTeamleiderTeamId(userData.teamleider_van_team_id)
+          // Voor teamleiders: gebruik employer_id direct
+          if (userData.employer_id) {
+            setEmployerId(userData.employer_id)
+            // Stel automatisch team in voor teamleider
+            if (userData.teamleider_van_team_id) {
+              selectTeam(userData.teamleider_van_team_id)
+            }
+            await fetchEmployerSettings(userData.employer_id)
+            await fetchAvailablePeriods(userData.employer_id)
+          } else {
+            throw new Error('Geen organisatie gekoppeld aan teamleider')
+          }
+        } else if (userData.role === 'employer') {
+          // Werkgever: haal employer op via email
+          const { data: employer, error: employerError } = await supabase
+            .from('employers')
+            .select('id')
+            .eq('contact_email', user.email)
+            .single()
+
+          if (employerError || !employer) {
+            throw new Error('Werkgever niet gevonden')
+          }
+
+          setEmployerId(employer.id)
+          await fetchEmployerSettings(employer.id)
+          await fetchAvailablePeriods(employer.id)
+        } else {
+          throw new Error('Geen toegang tot thema dashboard')
+        }
+        
         // fetchThemes wordt automatisch aangeroepen via useEffect wanneer selectedPeriod is ingesteld
       } catch (err) {
         setError(err.message)
@@ -264,9 +324,11 @@ function Themadashboard() {
       setSummaryStatus({})
       setExpandedTheme(null) // Sluit uitgeklapte thema's zodat ze opnieuw kunnen worden uitgeklapt met nieuwe data
       
-      fetchThemes(employerId, selectedPeriod, selectedTeam)
+      // Voor teamleiders: gebruik altijd hun team, voor werkgevers: gebruik selectedTeam
+      const effectiveTeamId = isTeamleider ? teamleiderTeamId : selectedTeam
+      fetchThemes(employerId, selectedPeriod, effectiveTeamId)
     }
-  }, [employerId, selectedPeriod, selectedTeam])
+  }, [employerId, selectedPeriod, selectedTeam, isTeamleider, teamleiderTeamId])
 
   if (loading) {
     return (
@@ -303,7 +365,7 @@ function Themadashboard() {
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <button 
-                onClick={() => navigate('/werkgever-portaal')}
+                onClick={() => navigate(isTeamleider ? '/werknemer-portaal' : '/werkgever-portaal')}
                 className="btn btn-secondary flex items-center gap-2 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -312,14 +374,16 @@ function Themadashboard() {
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">
                   Thema Dashboard
-                  {selectedTeam && teams.find(t => t.id === selectedTeam) && 
-                    ` - Team ${teams.find(t => t.id === selectedTeam).naam}`
+                  {(isTeamleider ? teamleiderTeamId : selectedTeam) && teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)) && 
+                    ` - Team ${teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)).naam}`
                   }
                 </h1>
                 <p className="text-gray-600 text-sm sm:text-base">
-                  {selectedTeam ? 
-                    `Overzicht van alle thema's en resultaten voor dit team` :
-                    `Overzicht van alle thema's en resultaten`
+                  {isTeamleider ? 
+                    `Overzicht van alle thema's en resultaten voor jouw team` :
+                    (selectedTeam ? 
+                      `Overzicht van alle thema's en resultaten voor dit team` :
+                      `Overzicht van alle thema's en resultaten`)
                   }
                 </p>
               </div>
@@ -337,7 +401,7 @@ function Themadashboard() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
             <button 
-              onClick={() => navigate('/werkgever-portaal')}
+              onClick={() => navigate(isTeamleider ? '/werknemer-portaal' : '/werkgever-portaal')}
               className="btn btn-secondary flex items-center gap-2 w-fit"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -346,14 +410,16 @@ function Themadashboard() {
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[var(--kleur-primary)]">
                 Thema Dashboard
-                {selectedTeam && teams.find(t => t.id === selectedTeam) && 
-                  ` - Team ${teams.find(t => t.id === selectedTeam).naam}`
+                {(isTeamleider ? teamleiderTeamId : selectedTeam) && teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)) && 
+                  ` - Team ${teams.find(t => t.id === (isTeamleider ? teamleiderTeamId : selectedTeam)).naam}`
                 }
               </h1>
               <p className="text-gray-600 text-sm sm:text-base">
-                {selectedTeam ? 
-                  `Overzicht van alle thema's en resultaten voor dit team` :
-                  `Overzicht van alle thema's en resultaten`
+                {isTeamleider ? 
+                  `Overzicht van alle thema's en resultaten voor jouw team` :
+                  (selectedTeam ? 
+                    `Overzicht van alle thema's en resultaten voor dit team` :
+                    `Overzicht van alle thema's en resultaten`)
                 }
               </p>
             </div>
@@ -433,17 +499,19 @@ function Themadashboard() {
           </div>
         )}
 
-        {/* Team Selector */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Filter op Team
-          </label>
-          <TeamSelector
-            onTeamSelect={selectTeam}
-            selectedTeamId={selectedTeam}
-            className="max-w-md"
-          />
-        </div>
+        {/* Team Selector - alleen voor werkgevers */}
+        {!isTeamleider && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Filter op Team
+            </label>
+            <TeamSelector
+              onTeamSelect={selectTeam}
+              selectedTeamId={selectedTeam}
+              className="max-w-md"
+            />
+          </div>
+        )}
 
         {/* Thema's */}
         <div className="space-y-6">
@@ -525,7 +593,8 @@ function Themadashboard() {
                     }
                     
                     if (status === 'generating') {
-                      const teamName = selectedTeam && teams.find(t => t.id === selectedTeam)?.naam
+                      const effectiveTeamId = isTeamleider ? teamleiderTeamId : selectedTeam
+                      const teamName = effectiveTeamId && teams.find(t => t.id === effectiveTeamId)?.naam
                       return (
                         <div className="text-center py-6">
                           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -590,6 +659,34 @@ function Themadashboard() {
                             </div>
                           )}
 
+                          {/* Scenario Badge */}
+                          {summaryData[theme.theme_id].scenario && (
+                            <div className={`rounded-xl p-4 border-2 ${
+                              summaryData[theme.theme_id].scenario === 'CRISIS' 
+                                ? 'bg-red-50 border-red-300' 
+                                : summaryData[theme.theme_id].scenario === 'VERBETEREN'
+                                ? 'bg-yellow-50 border-yellow-300'
+                                : 'bg-green-50 border-green-300'
+                            }`}>
+                              <div className="flex items-center gap-2">
+                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                  summaryData[theme.theme_id].scenario === 'CRISIS'
+                                    ? 'bg-red-200 text-red-900'
+                                    : summaryData[theme.theme_id].scenario === 'VERBETEREN'
+                                    ? 'bg-yellow-200 text-yellow-900'
+                                    : 'bg-green-200 text-green-900'
+                                }`}>
+                                  {summaryData[theme.theme_id].scenario}
+                                </span>
+                                <span className="text-sm text-gray-700">
+                                  {summaryData[theme.theme_id].scenario === 'CRISIS' && 'Urgente aandacht vereist'}
+                                  {summaryData[theme.theme_id].scenario === 'VERBETEREN' && 'Constructieve verbetering mogelijk'}
+                                  {summaryData[theme.theme_id].scenario === 'BORGEN' && 'Vasthouden en excelleren'}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Samenvatting */}
                           {summaryData[theme.theme_id].samenvatting && (
                             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -608,8 +705,66 @@ function Themadashboard() {
                             </div>
                           )}
 
-                          {/* Verbeteradviezen */}
-                          {summaryData[theme.theme_id].verbeteradvies && (
+                          {/* Nieuwe Leiderschaps-Kaarten */}
+                          {summaryData[theme.theme_id].adviezen && Array.isArray(summaryData[theme.theme_id].adviezen) && summaryData[theme.theme_id].adviezen.length > 0 ? (
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                              <div className="flex items-center gap-3 mb-6">
+                                <div className="p-2 bg-orange-100 rounded-lg">
+                                  <TrendingUp className="w-5 h-5 text-orange-600" />
+                                </div>
+                                <h4 className="text-lg font-semibold text-gray-900">
+                                  Leiderschaps-Acties
+                                  {summaryData[theme.theme_id].team_context && 
+                                    ` - Team ${summaryData[theme.theme_id].team_context.team_naam}`
+                                  }
+                                </h4>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {summaryData[theme.theme_id].adviezen.map((advies, index) => {
+                                  const typeColors = {
+                                    'Systeem': { bg: 'bg-blue-50', border: 'border-blue-200', icon: 'bg-blue-500', text: 'text-blue-900' },
+                                    'Leiderschap': { bg: 'bg-purple-50', border: 'border-purple-200', icon: 'bg-purple-500', text: 'text-purple-900' },
+                                    'Cultuur': { bg: 'bg-green-50', border: 'border-green-200', icon: 'bg-green-500', text: 'text-green-900' }
+                                  }
+                                  const colors = typeColors[advies.type] || typeColors['Systeem']
+                                  
+                                  return (
+                                    <div key={index} className={`${colors.bg} ${colors.border} border-2 rounded-lg p-4`}>
+                                      <div className="flex items-center gap-2 mb-3">
+                                        <div className={`${colors.icon} w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm`}>
+                                          {index + 1}
+                                        </div>
+                                        <span className={`${colors.text} font-semibold text-sm`}>{advies.type}</span>
+                                      </div>
+                                      <h5 className={`${colors.text} font-bold mb-2`}>{advies.titel}</h5>
+                                      <p className="text-gray-700 text-sm mb-3">{advies.signaal}</p>
+                                      <div className={`${colors.bg} border ${colors.border} rounded p-2 mt-3 mb-3`}>
+                                        <p className="text-xs font-medium text-gray-800">{advies.cta}</p>
+                                      </div>
+                                      
+                                      {/* Micro-adviezen */}
+                                      {advies.micro_adviezen && Array.isArray(advies.micro_adviezen) && advies.micro_adviezen.length > 0 && (
+                                        <div className={`mt-4 pt-3 border-t ${colors.border}`}>
+                                          <p className={`text-xs font-semibold ${colors.text} mb-2`}>3 tips om dit te doen:</p>
+                                          <div className="space-y-2">
+                                            {advies.micro_adviezen.map((micro, microIndex) => (
+                                              <div key={microIndex} className="text-sm">
+                                                <p className="font-medium text-gray-900">{micro.titel}</p>
+                                                {micro.toelichting && (
+                                                  <p className="text-xs text-gray-600 italic mt-0.5">{micro.toelichting}</p>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          ) : summaryData[theme.theme_id].gpt_adviezen && (
+                            // Fallback naar oude structuur voor backward compatibility
                             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                               <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-orange-100 rounded-lg">
@@ -622,21 +777,13 @@ function Themadashboard() {
                                   }
                                 </h4>
                               </div>
-                              <p className="text-gray-700 leading-relaxed">{summaryData[theme.theme_id].verbeteradvies}</p>
-                            </div>
-                          )}
-
-                          {/* GPT Adviezen */}
-                          {summaryData[theme.theme_id].gpt_adviezen && (
-                            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                              <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2 bg-green-100 rounded-lg">
-                                  <CheckCircle className="w-5 h-5 text-green-600" />
-                                </div>
-                                <h4 className="text-lg font-semibold text-gray-900">AI Adviezen</h4>
-                              </div>
+                              {summaryData[theme.theme_id].verbeteradvies && (
+                                <p className="text-gray-700 leading-relaxed mb-4">{summaryData[theme.theme_id].verbeteradvies}</p>
+                              )}
                               <div className="space-y-4">
-                                {Object.entries(summaryData[theme.theme_id].gpt_adviezen).map(([key, advice], index) => (
+                                {Object.entries(summaryData[theme.theme_id].gpt_adviezen)
+                                  .filter(([key]) => key.startsWith('prioriteit_'))
+                                  .map(([key, advice], index) => (
                                   <div key={key} className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
                                     <div className="flex items-start gap-3">
                                       <div className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">

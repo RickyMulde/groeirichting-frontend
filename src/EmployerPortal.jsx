@@ -37,27 +37,70 @@ function EmployerPortal() {
   useEffect(() => {
     const fetchTakenStatus = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-
-        // Haal employer_id op uit user data
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('employer_id')
-          .eq('id', user.id)
-          .single()
-
-        if (userError || !userData?.employer_id) {
+        // Verifieer eerst de session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError || !session) {
+          console.error('EmployerPortal: No session found:', sessionError)
+          setLoading(false)
           return
         }
 
+        const { data: { user }, error: authUserError } = await supabase.auth.getUser()
+        if (authUserError || !user) {
+          console.error('EmployerPortal: Error getting user:', authUserError)
+          setLoading(false)
+          return
+        }
+
+        console.log('EmployerPortal: User ID from auth:', user.id)
+        console.log('EmployerPortal: Session user ID:', session.user?.id)
+
+        // Haal employer_id op uit user data - selecteer alle benodigde velden
+        // Gebruik direct de user.id van auth, niet via .eq() filter
+        const { data: userData, error: userDataError } = await supabase
+          .from('users')
+          .select('id, employer_id, role')
+          .eq('id', user.id)
+          .single()
+
+        if (userDataError) {
+          console.error('EmployerPortal: Error fetching user data:', userDataError)
+          console.error('EmployerPortal: User ID used in query:', user.id)
+          console.error('EmployerPortal: Session user ID:', session.user?.id)
+          console.error('EmployerPortal: Auth UID (should match user.id):', user.id)
+          
+          // Als het een PGRST116 error is, betekent dit dat de user record niet bestaat
+          // Dit kan betekenen dat de registratie niet correct is voltooid
+          if (userDataError.code === 'PGRST116') {
+            console.error('EmployerPortal: User record not found in database. Registration may have failed.')
+          }
+          
+          setLoading(false)
+          return
+        }
+
+        if (!userData?.employer_id) {
+          console.error('EmployerPortal: No employer_id found for user:', user.id)
+          console.error('EmployerPortal: User data received:', userData)
+          setLoading(false)
+          return
+        }
+
+        console.log('EmployerPortal: User data found:', userData)
+
         setEmployerId(userData.employer_id)
 
-        // Haal taken status op
-        const { data: { session } } = await supabase.auth.getSession()
+        // Haal taken status op (gebruik bestaande session)
+        if (!session?.access_token) {
+          console.error('EmployerPortal: No access token found')
+          setLoading(false)
+          return
+        }
+
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${userData.employer_id}/taken-status`, {
           headers: {
-            'Authorization': `Bearer ${session?.access_token}`
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json'
           }
         })
 
@@ -66,6 +109,7 @@ function EmployerPortal() {
           setTaken(data.taken || [])
           setVerborgen(data.verborgen || false)
         } else {
+          console.error('EmployerPortal: Error fetching taken status:', response.status, response.statusText)
         }
       } catch (error) {
       } finally {

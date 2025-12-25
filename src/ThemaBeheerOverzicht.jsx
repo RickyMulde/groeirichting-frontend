@@ -71,12 +71,43 @@ function ThemaBeheerOverzicht() {
         <h2 className="text-lg font-semibold mb-3">Bestaande thema's</h2>
         <ul className="divide-y">
           {themas.map((thema) => (
-            <li key={thema.id} className="py-2 flex justify-between items-center">
-              <div>
-                <span className="font-medium">{thema.titel}</span>
+            <li key={thema.id} className="py-4 flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="font-medium">{thema.titel}</span>
+                  {thema.standaard_zichtbaar ? (
+                    <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded font-medium">
+                      Generiek
+                    </span>
+                  ) : (
+                    <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded font-medium">
+                      Exclusief
+                    </span>
+                  )}
+                  {!thema.klaar_voor_gebruik && (
+                    <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                      Concept
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm text-gray-600 mt-1">{thema.beschrijving_werkgever || thema.beschrijving_werknemer}</p>
+                <p className="text-xs text-gray-500 mt-2">
+                  {thema.standaard_zichtbaar 
+                    ? "Dit thema is standaard zichtbaar voor alle werkgevers. Werkgevers kunnen het uitzetten."
+                    : "Dit thema is exclusief en moet per werkgever/team gekoppeld worden door een beheerder."
+                  }
+                </p>
               </div>
-              <Link to={`/superadmin/thema/${thema.id}`} className="btn btn-accent text-sm">Bewerk</Link>
+              <div className="flex gap-2 ml-4">
+                <Link 
+                  to={`/superadmin/thema/${thema.id}/koppelingen`} 
+                  className="btn btn-secondary text-sm"
+                  title="Beheer werkgever-koppelingen"
+                >
+                  Koppelingen
+                </Link>
+                <Link to={`/superadmin/thema/${thema.id}`} className="btn btn-accent text-sm">Bewerk</Link>
+              </div>
             </li>
           ))}
         </ul>

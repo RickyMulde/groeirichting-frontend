@@ -8,6 +8,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const [themaVoortgang, setThemaVoortgang] = useState([])
   const [loading, setLoading] = useState(true)
   const [werkgeverConfig, setWerkgeverConfig] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (gesprekDatum && userId) {
@@ -18,6 +19,7 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
   const haalThemaVoortgangOp = async () => {
     try {
       setLoading(true)
+      setError(null)
       console.log('ThemaVoortgangBanner: Start ophalen voortgang voor:', { gesprekDatum, userId })
 
       // Haal eerst werknemer en werkgever op
@@ -76,25 +78,52 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
         return
       }
 
-      // Haal alle actieve thema's op
-      const { data: themas, error: themaError } = await supabase
-        .from('themes')
-        .select('id, titel')
-        .eq('klaar_voor_gebruik', true)
-        .eq('standaard_zichtbaar', true)
-        .order('volgorde_index', { ascending: true })
+      // Haal toegestane thema's op via API (gebruikt nieuwe filtering logica)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('Geen sessie gevonden')
+      }
 
-      if (themaError) throw themaError
-      console.log('ThemaVoortgangBanner: Thema\'s opgehaald:', themas)
+      const themaDataResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-thema-data-werknemer/${userId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        }
+      )
+
+      if (!themaDataResponse.ok) {
+        const errorText = await themaDataResponse.text()
+        console.error('ThemaVoortgangBanner: API error response:', themaDataResponse.status, errorText)
+        throw new Error(`Fout bij ophalen thema data: ${themaDataResponse.status} - ${errorText}`)
+      }
+
+      const themaData = await themaDataResponse.json()
+      console.log('ThemaVoortgangBanner: Raw API response:', themaData)
+      console.log('ThemaVoortgangBanner: Thema data array:', themaData.thema_data)
+      console.log('ThemaVoortgangBanner: Aantal thema\'s in response:', themaData.thema_data?.length || 0)
+      
+      const themas = (themaData.thema_data || []).map(t => ({
+        id: t.id,
+        titel: t.titel
+      }))
+
+      console.log('ThemaVoortgangBanner: Thema\'s opgehaald via API:', themas)
+      console.log('ThemaVoortgangBanner: Aantal thema\'s na mapping:', themas.length)
 
       // Haal gesprekken op voor deze gebruiker in dezelfde periode
+      // Bereken volgende maand (met wrap-around naar volgend jaar bij december)
+      const volgendeMaand = gesprekMaand === 12 ? 1 : gesprekMaand + 1
+      const volgendJaar = gesprekMaand === 12 ? gesprekJaar + 1 : gesprekJaar
+      
       const { data: gesprekken, error: gesprekError } = await supabase
         .from('gesprek')
         .select('theme_id, status, gestart_op')
         .eq('werknemer_id', userId)
         .is('geanonimiseerd_op', null)
         .gte('gestart_op', `${gesprekJaar}-${String(gesprekMaand).padStart(2, '0')}-01`)
-        .lt('gestart_op', `${gesprekJaar}-${String(gesprekMaand + 1).padStart(2, '0')}-01`) // Volgende maand
+        .lt('gestart_op', `${volgendJaar}-${String(volgendeMaand).padStart(2, '0')}-01`) // Volgende maand
         .order('gestart_op', { ascending: false })
 
       if (gesprekError) throw gesprekError
@@ -134,7 +163,14 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
       console.log('ThemaVoortgangBanner: Voortgang berekend:', voortgang)
       setThemaVoortgang(voortgang)
     } catch (error) {
-      console.error('Fout bij ophalen thema voortgang:', error)
+      console.error('ThemaVoortgangBanner: Fout bij ophalen thema voortgang:', error)
+      console.error('ThemaVoortgangBanner: Error details:', {
+        message: error.message,
+        stack: error.stack,
+        userId,
+        gesprekDatum
+      })
+      setError(error.message || 'Fout bij ophalen voortgang')
     } finally {
       setLoading(false)
     }
@@ -200,6 +236,11 @@ const ThemaVoortgangBanner = ({ gesprekDatum, userId }) => {
           <p className="text-xs text-gray-400 mt-2">
             Debug: Gesprek datum: {gesprekDatum} | User ID: {userId} | Thema's: {themaVoortgang.length}
           </p>
+          {error && (
+            <p className="text-xs text-red-500 mt-2">
+              Fout: {error}
+            </p>
+          )}
         </div>
       </section>
     )
