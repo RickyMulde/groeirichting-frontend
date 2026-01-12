@@ -719,7 +719,7 @@ function Themadashboard() {
                                   }
                                 </h4>
                               </div>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="space-y-4">
                                 {summaryData[theme.theme_id].adviezen.map((advies, index) => {
                                   const typeColors = {
                                     'Systeem': { bg: 'bg-blue-50', border: 'border-blue-200', icon: 'bg-blue-500', text: 'text-blue-900' },
