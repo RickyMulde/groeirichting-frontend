@@ -5,7 +5,6 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
   const [topActies, setTopActies] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [expandedActie, setExpandedActie] = useState(null)
   const [expandedMicroAdviezen, setExpandedMicroAdviezen] = useState({}) // {actieNummer: true/false}
   const [isGenerating, setIsGenerating] = useState(false)
   const pollingIntervalRef = useRef(null)
@@ -358,59 +357,48 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
                     </p>
                   </div>
                 </div>
-
-                {/* Uitklap knop */}
-                <button
-                  onClick={() => setExpandedActie(expandedActie === nummer ? null : nummer)}
-                  className="ml-3 p-2 text-gray-600 hover:text-gray-800 transition-colors bg-transparent"
-                  aria-label={expandedActie === nummer ? 'Inklappen' : 'Uitklappen'}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedActie === nummer ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
-                  </svg>
-                </button>
               </div>
 
-              {/* Uitklapbare toelichting */}
-              {expandedActie === nummer && (
-                <div className="mt-3 pt-3 border-t border-blue-100 space-y-3">
+              {/* Toelichting - altijd zichtbaar */}
+              {toelichting && (
+                <div className="mt-3 pt-3 border-t border-blue-100">
                   <p className="text-gray-700 text-sm leading-relaxed">
                     {toelichting}
                   </p>
+                </div>
+              )}
+              
+              {/* Micro-adviezen - alleen na openklappen */}
+              {microAdviezen.length > 0 && (
+                <div className="mt-4">
+                  <button
+                    onClick={() => setExpandedMicroAdviezen(prev => ({
+                      ...prev,
+                      [nummer]: !prev[nummer]
+                    }))}
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                  >
+                    <svg 
+                      className={`w-4 h-4 transition-transform ${expandedMicroAdviezen[nummer] ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                    <span>3 tips om dit te doen</span>
+                  </button>
                   
-                  {/* Micro-adviezen */}
-                  {microAdviezen.length > 0 && (
-                    <div className="mt-4">
-                      <button
-                        onClick={() => setExpandedMicroAdviezen(prev => ({
-                          ...prev,
-                          [nummer]: !prev[nummer]
-                        }))}
-                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
-                      >
-                        <svg 
-                          className={`w-4 h-4 transition-transform ${expandedMicroAdviezen[nummer] ? 'rotate-180' : ''}`} 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                        <span>3 tips om dit te doen</span>
-                      </button>
-                      
-                      {expandedMicroAdviezen[nummer] && (
-                        <div className="mt-2 pl-6 space-y-2">
-                          {microAdviezen.map((micro, microIndex) => (
-                            <div key={microIndex} className="text-sm">
-                              <p className="font-medium text-gray-900">{micro.titel}</p>
-                              {micro.toelichting && (
-                                <p className="text-xs text-gray-600 italic mt-0.5">{micro.toelichting}</p>
-                              )}
-                            </div>
-                          ))}
+                  {expandedMicroAdviezen[nummer] && (
+                    <div className="mt-2 pl-6 space-y-2">
+                      {microAdviezen.map((micro, microIndex) => (
+                        <div key={microIndex} className="text-sm">
+                          <p className="font-medium text-gray-900">{micro.titel}</p>
+                          {micro.toelichting && (
+                            <p className="text-xs text-gray-600 italic mt-0.5">{micro.toelichting}</p>
+                          )}
                         </div>
-                      )}
+                      ))}
                     </div>
                   )}
                 </div>
