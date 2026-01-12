@@ -27,7 +27,7 @@ function Instellingen() {
       try {
         console.log('🔄 Starten met ophalen data voor instellingen...')
         
-        // Haal werkgever ID op
+        // Haal werkgever ID op via users tabel
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) {
           console.error('❌ Geen gebruiker gevonden')
@@ -35,17 +35,25 @@ function Instellingen() {
         }
         console.log('✅ Gebruiker gevonden:', user.email)
 
-        const { data: werkgever, error: werkgeverError } = await supabase
-          .from('employers')
-          .select('id')
-          .eq('contact_email', user.email)
+        // Haal user data op om employer_id te krijgen
+        const { data: userData, error: userDataError } = await supabase
+          .from('users')
+          .select('id, role, employer_id')
+          .eq('id', user.id)
           .single()
 
-        if (werkgeverError) {
-          console.error('❌ Fout bij ophalen werkgever:', werkgeverError)
+        if (userDataError || !userData) {
+          console.error('❌ Fout bij ophalen user data:', userDataError)
           return
         }
-        console.log('✅ Werkgever gevonden:', werkgever.id)
+
+        if (!userData.employer_id) {
+          console.error('❌ Geen employer_id gekoppeld aan gebruiker')
+          return
+        }
+
+        const werkgeverId = userData.employer_id
+        console.log('✅ Werkgever ID gevonden:', werkgeverId)
 
         // Haal werkgever configuratie op
         const { data: { session } } = await supabase.auth.getSession()
@@ -55,7 +63,7 @@ function Instellingen() {
         }
 
         console.log('🔄 Ophalen werkgever configuratie...')
-        const configUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}`
+        const configUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgeverId}`
         console.log('API URL:', configUrl)
         
         const response = await fetch(configUrl, {
@@ -79,7 +87,7 @@ function Instellingen() {
 
         // Haal thema's op via API (met zichtbaarheid status)
         console.log('🔄 Ophalen thema\'s via API...')
-        const themaUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}/themas`
+        const themaUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgeverId}/themas`
         const themaResponse = await fetch(themaUrl, {
           headers: {
             'Authorization': `Bearer ${session.access_token}`
@@ -114,18 +122,21 @@ function Instellingen() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        const { data: werkgever } = await supabase
-          .from('employers')
-          .select('id')
-          .eq('contact_email', user.email)
+        // Haal user data op om employer_id te krijgen
+        const { data: userData, error: userDataError } = await supabase
+          .from('users')
+          .select('id, employer_id')
+          .eq('id', user.id)
           .single()
 
-        if (!werkgever) return
+        if (userDataError || !userData || !userData.employer_id) return
+
+        const werkgeverId = userData.employer_id
 
         const { data: { session } } = await supabase.auth.getSession()
         if (!session?.access_token) return
 
-        const themaUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgever.id}/themas${selectedTeamId ? `?team_id=${selectedTeamId}` : ''}`
+        const themaUrl = `${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werkgeverId}/themas${selectedTeamId ? `?team_id=${selectedTeamId}` : ''}`
         const themaResponse = await fetch(themaUrl, {
           headers: {
             'Authorization': `Bearer ${session.access_token}`
@@ -215,23 +226,26 @@ function Instellingen() {
       setConfigSaving(true)
       console.log('🔄 Opslaan configuratie...', werkgeverConfig)
       
-      // Haal werkgever ID op
+      // Haal werkgever ID op via users tabel
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         console.error('❌ Geen gebruiker gevonden bij opslaan')
         return
       }
 
-      const { data: werkgever, error: werkgeverError } = await supabase
-        .from('employers')
-        .select('id')
-        .eq('contact_email', user.email)
+      // Haal user data op om employer_id te krijgen
+      const { data: userData, error: userDataError } = await supabase
+        .from('users')
+        .select('id, employer_id')
+        .eq('id', user.id)
         .single()
 
-      if (werkgeverError) {
-        console.error('❌ Fout bij ophalen werkgever bij opslaan:', werkgeverError)
+      if (userDataError || !userData || !userData.employer_id) {
+        console.error('❌ Fout bij ophalen user data bij opslaan:', userDataError)
         return
       }
+
+      const werkgeverId = userData.employer_id
 
       // Sla configuratie op
       const { data: { session } } = await supabase.auth.getSession()
@@ -241,7 +255,7 @@ function Instellingen() {
       }
 
       const saveData = {
-        werkgever_id: werkgever.id,
+        werkgever_id: werkgeverId,
         ...werkgeverConfig,
         verplicht: true,  // Altijd true
         actief: true      // Altijd true
