@@ -376,7 +376,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
                       ...prev,
                       [nummer]: !prev[nummer]
                     }))}
-                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                    className="flex items-center gap-2 text-white hover:text-gray-200 text-sm font-medium transition-colors"
                   >
                     <svg 
                       className={`w-4 h-4 transition-transform ${expandedMicroAdviezen[nummer] ? 'rotate-180' : ''}`} 
@@ -408,14 +408,7 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
         })}
       </div>
 
-      {/* Algemene toelichting */}
-      {topActies.algemene_toelichting && (
-        <div className="mt-4 pt-4 border-t border-blue-200">
-          <p className="text-blue-800 text-sm italic">
-            💡 {topActies.algemene_toelichting}
-          </p>
-        </div>
-      )}
+      {/* Algemene toelichting - niet meer getoond aan medewerker, maar wel opgeslagen in database */}
 
       
     </div>
