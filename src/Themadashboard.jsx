@@ -144,17 +144,11 @@ function Themadashboard() {
         }
         orgId = userData.employer_id
       } else if (userData.role === 'employer') {
-        // Werkgever: haal employer op via email
-        const { data: employer, error: employerError } = await supabase
-          .from('employers')
-          .select('id')
-          .eq('contact_email', user.email)
-          .single()
-
-        if (employerError || !employer) {
-          throw new Error('Werkgever niet gevonden')
+        // Werkgever: gebruik employer_id direct uit users tabel
+        if (!userData.employer_id) {
+          throw new Error('Geen organisatie gekoppeld aan werkgever')
         }
-        orgId = employer.id
+        orgId = userData.employer_id
       } else {
         throw new Error('Geen toegang tot samenvattingen')
       }
@@ -286,20 +280,14 @@ function Themadashboard() {
             throw new Error('Geen organisatie gekoppeld aan teamleider')
           }
         } else if (userData.role === 'employer') {
-          // Werkgever: haal employer op via email
-          const { data: employer, error: employerError } = await supabase
-            .from('employers')
-            .select('id')
-            .eq('contact_email', user.email)
-            .single()
-
-          if (employerError || !employer) {
-            throw new Error('Werkgever niet gevonden')
+          // Werkgever: gebruik employer_id direct uit users tabel
+          if (!userData.employer_id) {
+            throw new Error('Geen organisatie gekoppeld aan werkgever')
           }
 
-          setEmployerId(employer.id)
-          await fetchEmployerSettings(employer.id)
-          await fetchAvailablePeriods(employer.id)
+          setEmployerId(userData.employer_id)
+          await fetchEmployerSettings(userData.employer_id)
+          await fetchAvailablePeriods(userData.employer_id)
         } else {
           throw new Error('Geen toegang tot thema dashboard')
         }
