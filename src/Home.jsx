@@ -159,39 +159,39 @@ function Home() {
                     Geen onverwacht vertrek meer
                   </h4>
                   <p className="mb-3">
-                    <strong>De situatie:</strong> Je wordt nooit meer verrast door een opzegging van een sleutelfiguur. Het systeem vangt signalen van twijfel weken van tevoren op.
+                    <strong>De situatie:</strong> Je wordt niet meer verrast door het plotselinge vertrek van je beste mensen. Het systeem herkent twijfel en verminderde betrokkenheid in een vroeg stadium.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
                     <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Jij behoudt je kennis en je team, zonder dat je continu "politieagentje" hoeft te spelen.</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Je behoudt kennis en ervaring binnen boord, zonder dat jij continu bezig bent met micromanagement of brandjes blussen.</p>
                   </div>
                 </div>
 
                 {/* Resultaat 2 */}
                 <div>
                   <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    Managers lossen problemen zélf op
+                    Managers pakken hun verantwoordelijkheid
                   </h4>
                   <p className="mb-3">
-                    <strong>De situatie:</strong> Je hoeft je managers niet meer achter de broek te zitten. Ze zien in hun eigen dashboard precies waar de werkdruk oploopt en krijgen direct de juiste gespreksonderwerpen aangereikt.
+                    <strong>De situatie:</strong> Je hoeft niet meer te sturen op elk detail. Teamleiders zien in hun eigen dashboard waar de werkdruk of sfeer aandacht vraagt en krijgen concrete handvatten om dit op te lossen.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
                     <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Zij voeren het goede gesprek, lossen het op, en jij hoeft niks te doen.</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Problemen worden opgelost op de werkvloer, zodat jij je kunt focussen op de strategie en de grote lijnen.</p>
                   </div>
                 </div>
 
                 {/* Resultaat 3 */}
                 <div>
                   <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    Een cultuur die geld oplevert
+                    Een cultuur die rendeert
                   </h4>
                   <p className="mb-3">
-                    <strong>De situatie:</strong> Verzuim daalt en productiviteit stijgt omdat mensen lekker in hun vel zitten. Goed werkgeverschap is geen kostenpost meer, maar een winstmotor.
+                    <strong>De situatie:</strong> Doordat medewerkers zich gehoord voelen, daalt het verzuim en stijgt de productiviteit. Goed werkgeverschap wordt meetbaar en draagt direct bij aan het bedrijfsresultaat.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
                     <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je bespaart tienduizenden euro's aan werving en verzuim, puur door te luisteren (automatisch).</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Je bespaart aanzienlijk op werving- en verzuimkosten, simpelweg door processen te automatiseren die voorheen tijdrovend waren.</p>
                   </div>
                 </div>
               </div>
