@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
-  Users, Quote, CheckCircle
+  Users, Quote, CheckCircle,
+  ShieldCheck, Target, TrendingUp
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -155,7 +156,8 @@ function Home() {
               <div className="space-y-8 text-lg text-[var(--kleur-muted)] mb-8">
                 {/* Resultaat 1 */}
                 <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                  <h4 className="flex items-center gap-3 text-xl font-bold text-[var(--kleur-secondary)] mb-3">
+                    <ShieldCheck className="w-6 h-6 flex-shrink-0" />
                     Geen onverwacht vertrek meer
                   </h4>
                   <p className="mb-3">
@@ -169,7 +171,8 @@ function Home() {
 
                 {/* Resultaat 2 */}
                 <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                  <h4 className="flex items-center gap-3 text-xl font-bold text-[var(--kleur-secondary)] mb-3">
+                    <Target className="w-6 h-6 flex-shrink-0" />
                     Managers pakken hun verantwoordelijkheid
                   </h4>
                   <p className="mb-3">
@@ -183,7 +186,8 @@ function Home() {
 
                 {/* Resultaat 3 */}
                 <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                  <h4 className="flex items-center gap-3 text-xl font-bold text-[var(--kleur-secondary)] mb-3">
+                    <TrendingUp className="w-6 h-6 flex-shrink-0" />
                     Een cultuur die rendeert
                   </h4>
                   <p className="mb-3">
