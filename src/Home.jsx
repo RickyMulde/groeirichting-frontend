@@ -153,14 +153,14 @@ function Home() {
                 Resultaat: Een zelfsturende organisatie waar talent blijft.
               </h2>
               
-              <div className="space-y-8 text-lg text-[var(--kleur-muted)] mb-8">
+              <div className="space-y-8 text-[var(--kleur-muted)] mb-8">
                 {/* Resultaat 1 */}
                 <div>
                   <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
                     <ShieldCheck className="w-6 h-6 flex-shrink-0" />
                     Geen onverwacht vertrek meer
                   </h4>
-                  <p className="mb-3">
+                  <p className="text-base mb-3">
                     <strong>De situatie:</strong> Je wordt niet meer verrast door het plotselinge vertrek van je beste mensen. Het systeem herkent twijfel en verminderde betrokkenheid in een vroeg stadium.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
@@ -175,7 +175,7 @@ function Home() {
                     <Target className="w-6 h-6 flex-shrink-0" />
                     Managers pakken hun verantwoordelijkheid
                   </h4>
-                  <p className="mb-3">
+                  <p className="text-base mb-3">
                     <strong>De situatie:</strong> Je hoeft niet meer te sturen op elk detail. Teamleiders zien in hun eigen dashboard waar de werkdruk of sfeer aandacht vraagt en krijgen concrete handvatten om dit op te lossen.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
@@ -190,7 +190,7 @@ function Home() {
                     <TrendingUp className="w-6 h-6 flex-shrink-0" />
                     Een cultuur die rendeert
                   </h4>
-                  <p className="mb-3">
+                  <p className="text-base mb-3">
                     <strong>De situatie:</strong> Doordat medewerkers zich gehoord voelen, daalt het verzuim en stijgt de productiviteit. Goed werkgeverschap wordt meetbaar en draagt direct bij aan het bedrijfsresultaat.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
