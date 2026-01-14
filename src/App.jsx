@@ -38,6 +38,7 @@ import ProvisionEmployer from './ProvisionEmployer'
 import EmailBeheer from './EmailBeheer'
 import VoorDirectieEnOffice from './VoorDirectieEnOffice'
 import VoorHRProfessionals from './VoorHRProfessionals'
+import MTOAlternatief from './MTOAlternatief'
 import { usePageTracking } from './hooks/usePageTracking'
 
 
@@ -55,6 +56,7 @@ function App() {
         <Route path="/hoe-werkt-het" element={<HoeWerktHet />} />
         <Route path="/voor-directie-en-office" element={<VoorDirectieEnOffice />} />
         <Route path="/voor-hr-professionals" element={<VoorHRProfessionals />} />
+        <Route path="/mto-alternatief" element={<MTOAlternatief />} />
         <Route path="/privacy-veiligheid" element={<PrivacyVeiligheid />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/privacy-portaal" element={<PrivacyPortaal />} />
