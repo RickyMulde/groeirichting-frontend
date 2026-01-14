@@ -39,6 +39,7 @@ import EmailBeheer from './EmailBeheer'
 import VoorDirectieEnOffice from './VoorDirectieEnOffice'
 import VoorHRProfessionals from './VoorHRProfessionals'
 import MTOAlternatief from './MTOAlternatief'
+import VerloopVoorkomen from './VerloopVoorkomen'
 import { usePageTracking } from './hooks/usePageTracking'
 
 
@@ -57,6 +58,7 @@ function App() {
         <Route path="/voor-directie-en-office" element={<VoorDirectieEnOffice />} />
         <Route path="/voor-hr-professionals" element={<VoorHRProfessionals />} />
         <Route path="/mto-alternatief" element={<MTOAlternatief />} />
+        <Route path="/verloop-voorkomen" element={<VerloopVoorkomen />} />
         <Route path="/privacy-veiligheid" element={<PrivacyVeiligheid />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/privacy-portaal" element={<PrivacyPortaal />} />
