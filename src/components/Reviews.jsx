@@ -23,20 +23,10 @@ function Reviews() {
           {reviews.map((review, index) => (
             <div 
               key={index}
-              className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col h-full"
             >
-              {/* Quote icon */}
+              {/* Company logo - bovenaan */}
               <div className="mb-6">
-                <Quote className="w-8 h-8 text-[var(--kleur-accent)] opacity-60" />
-              </div>
-
-              {/* Review text */}
-              <p className="text-[var(--kleur-muted)] text-lg leading-relaxed mb-6 italic">
-                "{review.text}"
-              </p>
-
-              {/* Company logo */}
-              <div className="mb-4">
                 <img 
                   src={review.logo} 
                   alt={`${review.company} logo`}
@@ -44,8 +34,18 @@ function Reviews() {
                 />
               </div>
 
-              {/* Author info */}
-              <div className="border-t border-gray-100 pt-4">
+              {/* Quote icon en review text - midden met flex-grow */}
+              <div className="flex-grow">
+                <div className="mb-6">
+                  <Quote className="w-8 h-8 text-[var(--kleur-accent)] opacity-60" />
+                </div>
+                <p className="text-[var(--kleur-muted)] text-lg leading-relaxed italic">
+                  "{review.text}"
+                </p>
+              </div>
+
+              {/* Author info - onderaan uitgelijnd */}
+              <div className="border-t border-gray-100 pt-4 mt-6">
                 <p className="font-semibold text-[var(--kleur-text)]">
                   {review.author}
                 </p>
