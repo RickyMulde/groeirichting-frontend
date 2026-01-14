@@ -1,40 +1,11 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   X, CheckCircle, UserPlus, Mail, Zap,
-  ArrowRight, ChevronDown
+  ArrowRight
 } from 'lucide-react'
 import SEOHead from './components/SEOHead'
 
 function MTOAlternatief() {
-  const [openFAQ, setOpenFAQ] = useState(null)
-
-  const toggleFAQ = (index) => {
-    setOpenFAQ(openFAQ === index ? null : index)
-  }
-
-  const faqs = [
-    {
-      vraag: "Is het wel anoniem voor mijn medewerkers?",
-      antwoord: "Absoluut. Veiligheid en vertrouwen staan op 1. Jij ziet de trends en cijfers per team, maar nooit wie wat exact heeft ingevuld. Zo durven medewerkers eerlijk te zijn."
-    },
-    {
-      vraag: "Vervangt dit mijn jaarlijkse MTO volledig?",
-      antwoord: "Ja, en het verbetert het. Een MTO is een momentopname (foto), GroeiRichting is een continue monitor (film). Je weet dus altijd hoe het gaat, niet alleen in oktober."
-    },
-    {
-      vraag: "Ik ben geen technische held, is de installatie moeilijk?",
-      antwoord: "Nee, we hebben het 'hufterproof' gemaakt. Je maakt een account, kopieert de e-mailadressen van je team, en zij krijgen vanzelf een uitnodiging. Je bent binnen 5 minuten klaar."
-    },
-    {
-      vraag: "Wat gebeurt er na de 14 dagen proefperiode?",
-      antwoord: "Niets. Het stopt automatisch. Je zit nergens aan vast en hoeft geen betaalgegevens in te vullen om te starten. Alleen als jij blij bent, praten we verder."
-    },
-    {
-      vraag: "Is de data veilig (AVG/GDPR)?",
-      antwoord: "Zeker. Al onze data wordt versleuteld opgeslagen op Nederlandse servers en we voldoen aan de strengste AVG-eisen."
-    }
-  ]
   return (
     <>
       <SEOHead 
@@ -89,29 +60,16 @@ function MTOAlternatief() {
             </p>
           </div>
           
-          {/* Visual placeholder - Dashboard screenshot op mobiel */}
+          {/* Scrollbaar dashboard screenshot */}
           <div className="flex items-center justify-center md:justify-end order-1 md:order-2">
-            <div className="bg-white rounded-2xl shadow-xl p-4 border border-gray-200 max-w-sm w-full">
-              <div className="bg-gray-100 rounded-lg aspect-[9/16] flex items-center justify-center">
-                <p className="text-[var(--kleur-muted)] text-sm text-center px-4">
-                  Dashboard screenshot<br />op mobiel<br />(placeholder)
-                </p>
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-xl max-w-md w-full">
+              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '500px' }}>
+                <img 
+                  src="/thema-overzicht-dashboard.png" 
+                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
+                  className="w-full h-auto rounded-lg"
+                />
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Social Proof Bar */}
-        <section className="bg-gray-50 py-8 px-6">
-          <div className="max-w-6xl mx-auto text-center">
-            <p className="text-lg text-[var(--kleur-muted)] font-medium">
-              Het moderne alternatief voor traditionele onderzoeken.
-            </p>
-            {/* Placeholder voor logo's - kan later worden toegevoegd */}
-            <div className="flex justify-center gap-8 mt-6 opacity-50">
-              <div className="w-24 h-12 bg-gray-200 rounded"></div>
-              <div className="w-24 h-12 bg-gray-200 rounded"></div>
-              <div className="w-24 h-12 bg-gray-200 rounded"></div>
             </div>
           </div>
         </section>
@@ -231,39 +189,59 @@ function MTOAlternatief() {
 
         {/* FAQ Sectie */}
         <section className="py-12 px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
               Veelgestelde vragen
             </h2>
-            
-            <div className="space-y-4">
-              {faqs.map((faq, index) => (
-                <div 
-                  key={index}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-                >
-                  <button
-                    onClick={() => toggleFAQ(index)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
-                  >
-                    <h3 className="text-lg font-semibold text-[var(--kleur-primary)] pr-4">
-                      {faq.vraag}
-                    </h3>
-                    <ChevronDown 
-                      className={`w-5 h-5 text-[var(--kleur-primary)] flex-shrink-0 transition-transform ${
-                        openFAQ === index ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </button>
-                  {openFAQ === index && (
-                    <div className="px-6 pb-4">
-                      <p className="text-[var(--kleur-muted)] leading-relaxed">
-                        {faq.antwoord}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))}
+
+            {/* Vraag 1 */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+                Is het wel anoniem voor mijn medewerkers?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Absoluut. Veiligheid en vertrouwen staan op 1. Jij ziet de trends en cijfers per team, maar nooit wie wat exact heeft ingevuld. Zo durven medewerkers eerlijk te zijn.
+              </p>
+            </div>
+
+            {/* Vraag 2 */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+                Vervangt dit mijn jaarlijkse MTO volledig?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Ja, en het verbetert het. Een MTO is een momentopname (foto), GroeiRichting is een continue monitor (film). Je weet dus altijd hoe het gaat, niet alleen in oktober.
+              </p>
+            </div>
+
+            {/* Vraag 3 */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+                Ik ben geen technische held, is de installatie moeilijk?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Nee, we hebben het 'hufterproof' gemaakt. Je maakt een account, kopieert de e-mailadressen van je team, en zij krijgen vanzelf een uitnodiging. Je bent binnen 5 minuten klaar.
+              </p>
+            </div>
+
+            {/* Vraag 4 */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+                Wat gebeurt er na de 14 dagen proefperiode?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Niets. Het stopt automatisch. Je zit nergens aan vast en hoeft geen betaalgegevens in te vullen om te starten. Alleen als jij blij bent, praten we verder.
+              </p>
+            </div>
+
+            {/* Vraag 5 */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-xl font-semibold text-[var(--kleur-primary)] mb-2">
+                Is de data veilig (AVG/GDPR)?
+              </h3>
+              <p className="text-[var(--kleur-muted)]">
+                Zeker. Al onze data wordt versleuteld opgeslagen op Nederlandse servers en we voldoen aan de strengste AVG-eisen.
+              </p>
             </div>
           </div>
         </section>
