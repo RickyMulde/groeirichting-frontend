@@ -258,7 +258,17 @@ function Home() {
       </section>
 
       {/* Reviews */}
-      <Reviews />
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Van onderbuikgevoel naar feitelijk inzicht
+          </h2>
+          <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
+            Ontdek hoe directie en HR GroeiRichting inzetten voor grip op de organisatie.
+          </p>
+          <Reviews />
+        </div>
+      </section>
 
       {/* Eindkreet */}
       <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">

@@ -13,15 +13,13 @@ function Reviews() {
       company: "Innosend",
       text: "Eenvoudig, snel en direct diepgaand inzicht. Als snelgroeiend bedrijf willen we weten hoe elk team ervoor staat. Wij hebben GroeiRichting inmiddels vast opgenomen in onze halfjaarlijkse cyclus.",
       author: "Virgil Swagemakers",
-      role: "Eigenaar Innosend",
+      role: "Founder",
       logo: "/logos/innosend.webp"
     }
   ]
 
   return (
-    <section className="py-12 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {reviews.map((review, index) => (
             <div 
               key={index}
@@ -60,9 +58,7 @@ function Reviews() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
+    </div>
   )
 }
 
