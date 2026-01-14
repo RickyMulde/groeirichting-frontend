@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
-  Users, Quote, CheckCircle
+  Users, Quote, CheckCircle,
+  ShieldCheck, Target, TrendingUp
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -116,15 +117,15 @@ function Home() {
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Van cijfers naar oorzaken:</strong> Geen statische vinkjes, maar een dynamisch gesprek dat tot de kern komt.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Behoud je beste mensen:</strong> Zie direct wie er dreigt af te haken en waarom.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Geen dikke rapporten:</strong> Krijg direct een kant-en-klare agenda voor het goede gesprek.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Verlaag verzuimkosten:</strong> Grijp in bij hoge werkdruk voordat iemand uitvalt.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Continu grip:</strong> Niet één meetmoment, maar een vast ritme van inzicht en verbetering.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Verhoog productiviteit:</strong> Een betrokken team werkt harder en efficiënter.</p>
             </div>
           </div>
 
@@ -149,58 +150,53 @@ function Home() {
             {/* Tekst links */}
             <div>
               <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
-                Van inzicht naar resultaat: Zo werkt doorlopend Groeien.
+                Resultaat: Een zelfsturende organisatie waar talent blijft.
               </h2>
               
-              <div className="space-y-8 text-lg text-[var(--kleur-muted)] mb-8">
-                {/* Stap 1 */}
+              <div className="space-y-8 text-[var(--kleur-muted)] mb-8">
+                {/* Resultaat 1 */}
                 <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    1. Start met de GroeiScan
+                  <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                    <ShieldCheck className="w-6 h-6 flex-shrink-0" />
+                    Geen onverwacht vertrek meer
                   </h4>
-                  <p className="mb-3">
-                    We vervangen statische vinkjes door diepgaande AI-interviews. Je ziet direct per team hoe de vlag erbij hangt op de vier kernpijlers.
+                  <p className="text-base mb-3">
+                    <strong>De situatie:</strong> Je wordt niet meer verrast door het plotselinge vertrek van je beste mensen. Het systeem herkent twijfel en verminderde betrokkenheid in een vroeg stadium.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je weet exact waar de pijn zit en waar je niet op hoeft te focussen.</p>
+                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Je behoudt kennis en ervaring binnen boord, zonder dat jij continu bezig bent met micromanagement of brandjes blussen.</p>
                   </div>
                 </div>
 
-                {/* Stap 2 */}
+                {/* Resultaat 2 */}
                 <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    2. Focus & Maatwerk
+                  <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                    <Target className="w-6 h-6 flex-shrink-0" />
+                    Managers pakken hun verantwoordelijkheid
                   </h4>
-                  <p className="mb-3">
-                    Geen dikke rapporten voor in de lade. Je pakt alleen de knelpunten aan. Daarnaast zet je flexibele 'Specials' in, bijvoorbeeld ter voorbereiding op het functioneringsgesprek.
+                  <p className="text-base mb-3">
+                    <strong>De situatie:</strong> Je hoeft niet meer te sturen op elk detail. Teamleiders zien in hun eigen dashboard waar de werkdruk of sfeer aandacht vraagt en krijgen concrete handvatten om dit op te lossen.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Managers krijgen een concrete agenda, zonder voorbereidingstijd.</p>
+                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Problemen worden opgelost op de werkvloer, zodat jij je kunt focussen op de strategie en de grote lijnen.</p>
                   </div>
                 </div>
 
-                {/* Stap 3 */}
+                {/* Resultaat 3 */}
                 <div>
-                  <h4 className="text-xl font-semibold text-[var(--kleur-primary)] mb-3">
-                    3. De Check (Resultaat)
+                  <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
+                    <TrendingUp className="w-6 h-6 flex-shrink-0" />
+                    Een cultuur die rendeert
                   </h4>
-                  <p className="mb-3">
-                    Halverwege de cyclus hermeten we alleen de verbeterpunten. Hebben de acties effect gehad? Is de werkdruk gedaald?
+                  <p className="text-base mb-3">
+                    <strong>De situatie:</strong> Doordat medewerkers zich gehoord voelen, daalt het verzuim en stijgt de productiviteit. Goed werkgeverschap wordt meetbaar en draagt direct bij aan het bedrijfsresultaat.
                   </p>
                   <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Winst:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je maakt groei aantoonbaar voor directie én medewerkers.</p>
+                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
+                    <p className="text-sm text-[var(--kleur-text)]">Je bespaart aanzienlijk op werving- en verzuimkosten, simpelweg door processen te automatiseren die voorheen tijdrovend waren.</p>
                   </div>
-                </div>
-              </div>
-              
-              <div className="mt-8">
-                <p className="text-lg text-[var(--kleur-muted)] mb-4">Bekijk hoe wij jou kunnen helpen:</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
-                  <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
                 </div>
               </div>
             </div>
@@ -208,6 +204,45 @@ function Home() {
             {/* Visualisatie rechts */}
             <div className="flex items-center justify-center">
               <ProcessVisualisation />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Kies je Winst */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
+            GroeiRichting werkt voor de hele organisatie.
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Blok 1: Directie & Office */}
+            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-primary)]/20 hover:border-[var(--kleur-primary)]/40 transition-all">
+              <h3 className="text-2xl font-bold text-[var(--kleur-primary)] mb-4">
+                Ik wil zakelijk rendement en rust.
+              </h3>
+              <p className="text-lg text-[var(--kleur-muted)] mb-6">
+                Je wilt geen gedoe, maar een bedrijf dat loopt. Verlaag verzuimkosten, behoud je beste mensen en borg de cultuur, zonder dat het jou extra tijd kost.
+              </p>
+              <Link to="/voor-directie-en-office" className="btn btn-primary inline-flex items-center gap-2">
+                Bekijk de zakelijke voordelen
+                <span>→</span>
+              </Link>
+            </div>
+
+            {/* Blok 2: HR-Professionals */}
+            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-accent)]/20 hover:border-[var(--kleur-accent)]/40 transition-all">
+              <h3 className="text-2xl font-bold text-[var(--kleur-accent)] mb-4">
+                Ik wil strategische impact met data.
+              </h3>
+              <p className="text-lg text-[var(--kleur-muted)] mb-6">
+                Je wilt af van de administratie en de diepte in. Krijg de tools en data om de directie te overtuigen en lijnmanagers te activeren.
+              </p>
+              <Link to="/voor-hr-professionals" className="btn btn-accent inline-flex items-center gap-2">
+                Bekijk de HR-oplossing
+                <span>→</span>
+              </Link>
             </div>
           </div>
         </div>
