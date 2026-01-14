@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
-  Users, Quote, CheckCircle,
+  Users, CheckCircle,
   ShieldCheck, Target, TrendingUp
 } from 'lucide-react'
 
@@ -11,6 +11,7 @@ import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
 import ProcessVisualisation from './components/ProcessVisualisation'
+import Reviews from './components/Reviews'
 
 function Home() {
   const [showBrochureModal, setShowBrochureModal] = useState(false)
@@ -256,14 +257,8 @@ function Home() {
         </div>
       </section>
 
-      {/* Quote */}
-      <section className="bg-[var(--kleur-accent)] text-white p-8 rounded-xl text-center">
-        <Quote className="w-8 h-8 mx-auto mb-4" />
-        <p className="text-lg italic max-w-2xl mx-auto">
-          "Sinds we met GroeiRichting werken, hebben we écht inzicht in wat er speelt. We kunnen nu preventief handelen."
-        </p>
-        <p className="mt-4 font-medium">– HR-manager in de zorg</p>
-      </section>
+      {/* Reviews */}
+      <Reviews />
 
       {/* Eindkreet */}
       <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">
