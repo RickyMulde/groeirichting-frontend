@@ -1,16 +1,45 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   X, CheckCircle, UserPlus, Mail, Zap,
-  ArrowRight
+  ArrowRight, ChevronDown
 } from 'lucide-react'
 import SEOHead from './components/SEOHead'
 
 function MTOAlternatief() {
+  const [openFAQ, setOpenFAQ] = useState(null)
+
+  const toggleFAQ = (index) => {
+    setOpenFAQ(openFAQ === index ? null : index)
+  }
+
+  const faqs = [
+    {
+      vraag: "Is het wel anoniem voor mijn medewerkers?",
+      antwoord: "Absoluut. Veiligheid en vertrouwen staan op 1. Jij ziet de trends en cijfers per team, maar nooit wie wat exact heeft ingevuld. Zo durven medewerkers eerlijk te zijn."
+    },
+    {
+      vraag: "Vervangt dit mijn jaarlijkse MTO volledig?",
+      antwoord: "Ja, en het verbetert het. Een MTO is een momentopname (foto), GroeiRichting is een continue monitor (film). Je weet dus altijd hoe het gaat, niet alleen in oktober."
+    },
+    {
+      vraag: "Ik ben geen technische held, is de installatie moeilijk?",
+      antwoord: "Nee, we hebben het 'hufterproof' gemaakt. Je maakt een account, kopieert de e-mailadressen van je team, en zij krijgen vanzelf een uitnodiging. Je bent binnen 5 minuten klaar."
+    },
+    {
+      vraag: "Wat gebeurt er na de 14 dagen proefperiode?",
+      antwoord: "Niets. Het stopt automatisch. Je zit nergens aan vast en hoeft geen betaalgegevens in te vullen om te starten. Alleen als jij blij bent, praten we verder."
+    },
+    {
+      vraag: "Is de data veilig (AVG/GDPR)?",
+      antwoord: "Zeker. Al onze data wordt versleuteld opgeslagen op Nederlandse servers en we voldoen aan de strengste AVG-eisen."
+    }
+  ]
   return (
     <>
       <SEOHead 
-        title="Stop met saaie MTO's - Het snelle, realtime alternatief"
-        description="Krijg real-time inzicht in je team en voorkom verloop. Geen maanden wachten, maar direct resultaat. Start binnen 1 minuut."
+        title="MTO Alternatief - Inzicht in 1 minuut"
+        description="Stop met trage medewerkerstevredenheidsonderzoeken. GroeiRichting geeft real-time inzicht in verzuim en werkdruk. Start vandaag gratis."
         keywords="MTO alternatief, medewerkerstevredenheidsonderzoek alternatief, real-time team inzicht, snelle MTO, moderne MTO, HR software, medewerkerstevredenheid"
         canonical="https://groeirichting.nl/mto-alternatief"
         structuredData={{
@@ -196,6 +225,45 @@ function MTOAlternatief() {
                   Jij hoeft niks te doen. Zie direct hoe de vlag erbij hangt.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Sectie */}
+        <section className="py-12 px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
+              Veelgestelde vragen
+            </h2>
+            
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div 
+                  key={index}
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+                >
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-lg font-semibold text-[var(--kleur-primary)] pr-4">
+                      {faq.vraag}
+                    </h3>
+                    <ChevronDown 
+                      className={`w-5 h-5 text-[var(--kleur-primary)] flex-shrink-0 transition-transform ${
+                        openFAQ === index ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {openFAQ === index && (
+                    <div className="px-6 pb-4">
+                      <p className="text-[var(--kleur-muted)] leading-relaxed">
+                        {faq.antwoord}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </section>
