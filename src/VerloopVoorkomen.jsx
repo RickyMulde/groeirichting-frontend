@@ -40,7 +40,7 @@ function VerloopVoorkomen() {
               Zie direct in welk team de uitstroom dreigt.
             </h1>
             <h2 className="text-xl md:text-2xl text-[var(--kleur-muted)] mb-8 font-normal">
-              Krijg real-time signalen over werkdruk en sfeer per afdeling. Grijp in vòòrdat de ontslagbrieven binnenkomen.
+              Krijg real-time signalen over werkdruk, verzuimrisico en sfeer per afdeling. Grijp in vòòrdat de ontslagbrieven binnenkomen.
             </h2>
             
             {/* CTA Button */}
