@@ -30,7 +30,7 @@ function Reviews() {
                 <img 
                   src={review.logo} 
                   alt={`${review.company} logo`}
-                  className="h-12 w-auto object-contain opacity-80"
+                  className="h-16 w-auto object-contain opacity-80"
                 />
               </div>
 
