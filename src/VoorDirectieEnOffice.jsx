@@ -9,6 +9,7 @@ import {
 import HeroIllustratie from './assets/hero.svg?react'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
+import Reviews from './components/Reviews'
 
 function VoorDirectieEnOffice() {
   const [showVoorbeeldRapportModal, setShowVoorbeeldRapportModal] = useState(false)
@@ -428,13 +429,17 @@ function VoorDirectieEnOffice() {
       {/* Social Proof & Afsluiting */}
       <section className="py-12 px-6">
         <div className="max-w-4xl mx-auto">
-          {/* Testimonial */}
-          <div className="bg-[var(--kleur-accent)] text-white p-8 rounded-xl mb-12">
-            <Quote className="w-12 h-12 mx-auto mb-4 opacity-80" />
-            <p className="text-lg italic text-center max-w-2xl mx-auto mb-4">
-              "Vroeger sprak ik iedereen zelf. Nu groeit mijn bedrijf, maar dankzij GroeiRichting weet ik nog steeds precies wie er niet lekker in zijn vel zit."
-            </p>
-            <p className="text-center font-medium">– DGA, MKB-bedrijf</p>
+          {/* Reviews */}
+          <div className="mb-12">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+                Van onderbuikgevoel naar feitelijk inzicht
+              </h2>
+              <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
+                Ontdek hoe directie en HR GroeiRichting inzetten voor grip op de organisatie.
+              </p>
+              <Reviews />
+            </div>
           </div>
 
           {/* Afsluitende CTA */}
