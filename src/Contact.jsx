@@ -21,7 +21,7 @@ function Contact() {
               "name": "Hoe snel kan ik starten met GroeiRichting?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Na een kennismakingsgesprek kunnen we binnen 1-2 weken starten. We helpen je met de setup en training van je team."
+                "text": "Je hebt binnen 1 minuut een account aangemaakt. Daarna kun je direct medewerkers uitnodigen."
               }
             },
             {
@@ -63,7 +63,7 @@ function Contact() {
               "name": "GroeiRichting B.V.",
               "image": "https://groeirichting.nl/Logo.svg",
               "telephone": "+31-85-060-7424",
-              "email": "rick@groeirichting.nl",
+              "email": "info@groeirichting.nl",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "Schutstraat 145",
@@ -130,7 +130,7 @@ function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-[var(--kleur-text)] mb-1">E-mail</h3>
-                    <p className="text-[var(--kleur-muted)]">rick@groeirichting.nl</p>
+                    <p className="text-[var(--kleur-muted)]">info@groeirichting.nl</p>
                     <p className="text-sm text-[var(--kleur-muted)] mt-1">
                       We reageren meestal binnen 24 uur
                     </p>
@@ -230,8 +230,7 @@ function Contact() {
               Hoe snel kan ik starten met GroeiRichting?
             </h3>
             <p className="text-[var(--kleur-muted)]">
-              Na een kennismakingsgesprek kunnen we binnen 1-2 weken starten. 
-              We helpen je met de setup en training van je team.
+              Je hebt binnen 1 minuut een account aangemaakt. Daarna kun je direct medewerkers uitnodigen.
             </p>
           </div>
 

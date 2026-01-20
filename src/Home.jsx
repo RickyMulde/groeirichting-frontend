@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
-  Users, Quote, CheckCircle,
+  Users, CheckCircle,
   ShieldCheck, Target, TrendingUp
 } from 'lucide-react'
 
@@ -11,6 +11,7 @@ import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
 import ProcessVisualisation from './components/ProcessVisualisation'
+import Reviews from './components/Reviews'
 
 function Home() {
   const [showBrochureModal, setShowBrochureModal] = useState(false)
@@ -209,6 +210,19 @@ function Home() {
         </div>
       </section>
 
+      {/* Reviews */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Van onderbuikgevoel naar feitelijk inzicht
+          </h2>
+          <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
+            Ontdek hoe directie en HR GroeiRichting inzetten voor grip op de organisatie.
+          </p>
+          <Reviews />
+        </div>
+      </section>
+
       {/* Kies je Winst */}
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
@@ -254,15 +268,6 @@ function Home() {
           <p className="text-lg font-medium text-[var(--kleur-primary)] mb-8">Heb je nog vragen?</p>
           <ContactForm />
         </div>
-      </section>
-
-      {/* Quote */}
-      <section className="bg-[var(--kleur-accent)] text-white p-8 rounded-xl text-center">
-        <Quote className="w-8 h-8 mx-auto mb-4" />
-        <p className="text-lg italic max-w-2xl mx-auto">
-          "Sinds we met GroeiRichting werken, hebben we écht inzicht in wat er speelt. We kunnen nu preventief handelen."
-        </p>
-        <p className="mt-4 font-medium">– HR-manager in de zorg</p>
       </section>
 
       {/* Eindkreet */}

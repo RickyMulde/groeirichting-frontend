@@ -10,6 +10,7 @@ import HeroIllustratie from './assets/hero.svg?react'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
 import ProcessVisualisation from './components/ProcessVisualisation'
+import Reviews from './components/Reviews'
 
 function VoorHRProfessionals() {
   const [showBrochureModal, setShowBrochureModal] = useState(false)
@@ -139,6 +140,19 @@ function VoorHRProfessionals() {
               Plan kennismaking
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Van onderbuikgevoel naar feitelijk inzicht
+          </h2>
+          <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
+            Ontdek hoe directie en HR GroeiRichting inzetten voor grip op de organisatie.
+          </p>
+          <Reviews />
         </div>
       </section>
 
