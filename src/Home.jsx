@@ -132,8 +132,13 @@ function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <Link to="/voor-directie-en-office" className="btn btn-primary">Voor Directie en Office</Link>
-            <Link to="/voor-hr-professionals" className="btn btn-accent">Voor HR-professionals</Link>
+            <Link to="/registreer-werkgever" className="btn btn-primary">Start gratis proeflicentie</Link>
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-accent"
+            >
+              Voorbeeldrapport downloaden
+            </button>
           </div>
 
           {/* Micro-trust */}
@@ -281,6 +286,8 @@ function Home() {
       <BrochureDownloadModal 
         isOpen={showBrochureModal}
         onClose={() => setShowBrochureModal(false)}
+        title="Download voorbeeldrapport"
+        description="Vul je gegevens in en we sturen het voorbeeldrapport direct naar je email."
       />
     </>
   )
