@@ -36,7 +36,7 @@ function MTOAlternatief() {
 
         {/* Hero Sectie */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24 px-6 max-w-7xl mx-auto">
-          <div className="order-2 md:order-1">
+          <div className="order-1 md:order-1">
             <h1 className="text-4xl md:text-5xl font-bold text-[var(--kleur-primary)] mb-6 leading-tight">
               Stop met saaie MTO's die in de la belanden.
             </h1>
@@ -62,7 +62,7 @@ function MTOAlternatief() {
           </div>
           
           {/* Scrollbaar dashboard screenshot */}
-          <div className="flex items-center justify-center md:justify-end order-1 md:order-2">
+          <div className="flex items-center justify-center md:justify-end order-2 md:order-2">
             <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-xl max-w-md w-full">
               <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '500px' }}>
                 <img 
@@ -142,7 +142,7 @@ function MTOAlternatief() {
         <section className="py-12 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
-              Inzicht in 60 seconden
+              Less is more
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -155,7 +155,7 @@ function MTOAlternatief() {
                   Account aanmaken
                 </h3>
                 <p className="text-[var(--kleur-muted)]">
-                  Je bent letterlijk in 1 minuut up-and-running.
+                  Maak binnen 1 minuut een account aan.
                 </p>
               </div>
 
@@ -168,7 +168,7 @@ function MTOAlternatief() {
                   Team uitnodigen
                 </h3>
                 <p className="text-[var(--kleur-muted)]">
-                  Nodig collega's uit in 10 seconden via e-mail.
+                  Nodig medewerkers uit en start direct.
                 </p>
               </div>
 
