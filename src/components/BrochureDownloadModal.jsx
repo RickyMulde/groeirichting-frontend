@@ -121,37 +121,37 @@ const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
         }
       }}
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4 md:p-6 relative">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-gray-600 transition-colors"
           aria-label="Sluiten"
         >
-          <X size={24} />
+          <X size={20} className="md:w-6 md:h-6" />
         </button>
 
         {success ? (
           // Success state
           <div className="text-center py-4">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-2">
+            <CheckCircle className="w-12 h-12 md:w-16 md:h-16 text-green-500 mx-auto mb-3 md:mb-4" />
+            <h2 className="text-xl md:text-2xl font-semibold text-[var(--kleur-primary)] mb-2">
               Brochure verzonden!
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">
               We hebben de brochure naar <strong>{email}</strong> gestuurd.
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               Check je inbox (en spam folder) voor de email met de bijlage.
             </p>
           </div>
         ) : (
           // Form state
           <>
-            <h2 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-4">
+            <h2 className="text-xl md:text-2xl font-semibold text-[var(--kleur-primary)] mb-3 md:mb-4">
               {modalTitle}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
               {modalDescription}
             </p>
 
@@ -201,11 +201,11 @@ const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
               </div>
 
               {/* Submit button */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
                   disabled={isSubmitting}
                 >
                   Annuleren
@@ -213,7 +213,7 @@ const BrochureDownloadModal = ({ isOpen, onClose, title, description }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Bezig met verzenden...' : buttonText}
                 </button>
