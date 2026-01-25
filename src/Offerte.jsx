@@ -130,6 +130,112 @@ function Offerte() {
         </p>
       </div>
 
+      {/* Prijzenoverzicht */}
+      <div className="py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {/* PILOT Pakket */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200 hover:shadow-xl transition-shadow">
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-3">🚀</div>
+              <h3 className="text-2xl font-bold text-[var(--kleur-text)] mb-2">PILOT</h3>
+              <div className="mb-2">
+                <span className="text-3xl font-bold text-[var(--kleur-primary)]">GRATIS</span>
+              </div>
+              <p className="text-sm text-[var(--kleur-muted)]">1 Team (max 15)</p>
+            </div>
+            <ul className="space-y-3 mb-6">
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Scan 4 Thema's</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">AI-Chats</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Advies (Team)</span>
+              </li>
+            </ul>
+            <button className="w-full btn btn-primary">
+              Start Nu
+            </button>
+          </div>
+
+          {/* BASIS Pakket */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200 hover:shadow-xl transition-shadow">
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-3">📊</div>
+              <h3 className="text-2xl font-bold text-[var(--kleur-text)] mb-2">BASIS</h3>
+              <div className="mb-2">
+                <span className="text-3xl font-bold text-[var(--kleur-primary)]">€ 12,50</span>
+              </div>
+              <p className="text-sm text-[var(--kleur-muted)]">p.p.p.m.</p>
+            </div>
+            <ul className="space-y-3 mb-6">
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Heel de organisatie</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">AI-Chats</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Dashboard</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Advies (Organisatie)</span>
+              </li>
+            </ul>
+            <button className="w-full btn btn-primary">
+              Kies Basis
+            </button>
+          </div>
+
+          {/* PLUS Pakket - Gemarkeerd */}
+          <div className="bg-white rounded-xl shadow-xl p-6 border-2 border-[var(--kleur-secondary)] relative transform scale-105 hover:scale-[1.06] transition-all">
+            {/* Badge */}
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span className="bg-[var(--kleur-secondary)] text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">
+                POPULAIR
+              </span>
+            </div>
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-3">⭐</div>
+              <h3 className="text-2xl font-bold text-[var(--kleur-text)] mb-2">PLUS</h3>
+              <div className="mb-2">
+                <span className="text-3xl font-bold text-[var(--kleur-secondary)]">€ 17,50</span>
+              </div>
+              <p className="text-sm text-[var(--kleur-muted)]">p.p.p.m.</p>
+            </div>
+            <ul className="space-y-3 mb-6">
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)] font-medium">Alles uit Basis</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)] font-medium">Maatwerk modules</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)] font-medium">Gesprekscyclus</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)] font-medium">Prioriteit Support</span>
+              </li>
+            </ul>
+            <button className="w-full btn btn-secondary text-lg font-bold">
+              Kies Plus
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Formulier */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
