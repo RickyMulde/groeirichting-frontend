@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircle, Users, MessageCircle, BarChart,
-  Smartphone, Shield, TrendingUp, Quote, ArrowRight
+  Smartphone, Shield, TrendingUp, Quote, ArrowRight, Calendar
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -166,12 +166,23 @@ function HoeWerktHet() {
             </p>
           </div>
           
-          <button 
-            onClick={() => setShowBrochureModal(true)}
-            className="btn btn-primary"
-          >
-            Download informatiebrochure
-          </button>
+          <div className="flex flex-wrap gap-4">
+            <button 
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-primary"
+            >
+              Download informatiebrochure
+            </button>
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Plan een demo
+            </a>
+          </div>
         </div>
         <HeroIllustratie className="w-full h-auto" aria-label="Illustratie van hoe GroeiRichting werkt: AI-gestuurde gesprekken tussen werkgevers en medewerkers" />
       </section>
@@ -649,11 +660,15 @@ function HoeWerktHet() {
             >
               Download informatiebrochure
             </button>
-            <Link to="/contact">
-              <button className="btn border-2 border-white text-white hover:bg-white hover:text-[var(--kleur-primary)]">
-                Plan een demo
-              </button>
-            </Link>
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Plan een demo
+            </a>
           </div>
         </div>
       </section>

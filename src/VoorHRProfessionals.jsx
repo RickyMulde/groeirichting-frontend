@@ -69,12 +69,15 @@ function VoorHRProfessionals() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 mb-6">
-            <Link 
-              to="/contact"
-              className="btn btn-primary"
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary inline-flex items-center gap-2"
             >
-              Neem contact op
-            </Link>
+              <Calendar className="w-5 h-5" />
+              Plan een demo
+            </a>
             <button 
               onClick={() => setShowBrochureModal(true)}
               className="btn btn-accent"
@@ -585,6 +588,15 @@ function VoorHRProfessionals() {
             >
               Neem contact op
             </Link>
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Plan een demo
+            </a>
           </div>
         </div>
       </section>

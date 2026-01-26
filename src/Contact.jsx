@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Clock, MessageSquare, CheckCircle } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock, MessageSquare, CheckCircle, Calendar } from 'lucide-react'
 import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
 
@@ -106,9 +106,22 @@ function Contact() {
         <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
           Neem contact met ons op
         </h1>
-        <p className="text-xl text-[var(--kleur-muted)] max-w-2xl mx-auto">
+        <p className="text-xl text-[var(--kleur-muted)] max-w-2xl mx-auto mb-8">
           Heb je vragen over GroeiRichting? We helpen je graag verder. Stuur een bericht of bel ons direct.
         </p>
+        
+        {/* Google Calendar CTA */}
+        <div className="flex justify-center">
+          <a
+            href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+          >
+            <Calendar className="w-6 h-6" />
+            Plan een demo (15-30 min)
+          </a>
+        </div>
       </section>
 
       {/* Contact informatie en formulier */}
