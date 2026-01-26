@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   UserX, Briefcase, TrendingUp, CheckCircle,
   Quote, Zap, MessageSquare, BarChart,
-  LogOut, FileStack, Users, Bot, MessageCircle, Bell, Info
+  LogOut, FileStack, Users, Bot, MessageCircle, Bell, Info, Calendar
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -74,6 +74,15 @@ function VoorDirectieEnOffice() {
             >
               Neem contact op
             </Link>
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Plan een demo
+            </a>
             <button 
               onClick={() => setShowVoorbeeldRapportModal(true)}
               className="btn btn-accent"
@@ -454,6 +463,15 @@ function VoorDirectieEnOffice() {
               >
                 Neem contact op
               </Link>
+              <a
+                href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white inline-flex items-center gap-2"
+              >
+                <Calendar className="w-5 h-5" />
+                Plan een demo
+              </a>
               <Link 
                 to="/offerte"
                 className="btn btn-secondary"

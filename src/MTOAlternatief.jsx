@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import {
   X, CheckCircle, UserPlus, Mail, Zap,
-  ArrowRight
+  ArrowRight, Calendar
 } from 'lucide-react'
 import SEOHead from './components/SEOHead'
 import Reviews from './components/Reviews'
@@ -44,15 +44,24 @@ function MTOAlternatief() {
               Krijg real-time inzicht in je team en voorkom verloop. Geen maanden wachten, maar direct resultaat.
             </h2>
             
-            {/* CTA Button */}
-            <div className="mb-4">
+            {/* CTA Buttons */}
+            <div className="mb-4 flex flex-wrap gap-4">
               <Link 
                 to="/registreer-werkgever" 
-                className="btn btn-primary text-lg px-8 py-4 inline-flex items-center gap-2"
+                className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white text-lg px-8 py-4 inline-flex items-center gap-2"
               >
                 Start 14 dagen gratis
                 <ArrowRight className="w-5 h-5" />
               </Link>
+              <a
+                href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary text-lg px-8 py-4 inline-flex items-center gap-2"
+              >
+                <Calendar className="w-5 h-5" />
+                Plan een demo
+              </a>
             </div>
             
             {/* Micro-copy */}
@@ -269,13 +278,24 @@ function MTOAlternatief() {
             <p className="text-lg md:text-xl mb-8 text-white/90 leading-relaxed">
               Je zit nergens aan vast. Na 14 dagen stopt de proefperiode automatisch, tenzij je zo enthousiast bent dat je wilt blijven.
             </p>
-            <Link 
-              to="/registreer-werkgever" 
-              className="btn bg-white text-[var(--kleur-primary)] hover:bg-gray-100 text-lg px-8 md:px-10 py-4 md:py-5 inline-flex items-center gap-2 font-bold shadow-lg"
-            >
-              Maak nu je gratis account aan
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                to="/registreer-werkgever" 
+                className="btn bg-white text-[var(--kleur-primary)] hover:bg-gray-100 text-lg px-8 md:px-10 py-4 md:py-5 inline-flex items-center gap-2 font-bold shadow-lg"
+              >
+                Maak nu je gratis account aan
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <a
+                href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white text-lg px-8 md:px-10 py-4 md:py-5 inline-flex items-center gap-2 font-bold shadow-lg"
+              >
+                <Calendar className="w-5 h-5" />
+                Plan een demo
+              </a>
+            </div>
           </div>
         </section>
 

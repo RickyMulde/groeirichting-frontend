@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
   Users, CheckCircle,
-  ShieldCheck, Target, TrendingUp
+  ShieldCheck, Target, TrendingUp, Calendar
 } from 'lucide-react'
 
 import HeroIllustratie from './assets/hero.svg?react'
@@ -133,6 +133,15 @@ function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Link to="/registreer-werkgever" className="btn btn-primary">Start gratis proeflicentie</Link>
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Plan een demo
+            </a>
             <button 
               onClick={() => setShowBrochureModal(true)}
               className="btn btn-accent"
@@ -278,7 +287,18 @@ function Home() {
       {/* Eindkreet */}
       <section className="bg-[var(--kleur-primary)] text-white py-8 text-center rounded-xl">
         <h3 className="text-xl font-bold mb-4 text-white">De beste resultaten bereik je met verbonden, geboeide medewerkers die plezier ervaren bij wat ze doen. GroeiRichting ondersteunt jou hierbij!</h3>
-        <Link to="/contact" className="btn btn-secondary">Plan vrijblijvend gesprek</Link>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link to="/contact" className="btn btn-secondary">Plan vrijblijvend gesprek</Link>
+          <a
+            href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white inline-flex items-center gap-2"
+          >
+            <Calendar className="w-5 h-5" />
+            Plan een demo
+          </a>
+        </div>
       </section>
       </div>
 
