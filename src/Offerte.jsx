@@ -141,7 +141,8 @@ function Offerte() {
               <div className="mb-2">
                 <span className="text-3xl font-bold text-[var(--kleur-primary)]">GRATIS</span>
               </div>
-              <p className="text-sm text-[var(--kleur-muted)]">1 team (max 15 personen)</p>
+              <p className="text-sm text-[var(--kleur-muted)]">1 team</p>
+              <p className="text-sm text-[var(--kleur-muted)]">(max 15 personen)</p>
             </div>
             <ul className="space-y-3 mb-6 flex-grow">
               <li className="flex items-start">
