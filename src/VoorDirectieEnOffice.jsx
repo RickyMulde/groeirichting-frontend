@@ -68,12 +68,6 @@ function VoorDirectieEnOffice() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 mb-6">
-            <Link 
-              to="/contact"
-              className="btn btn-primary"
-            >
-              Neem contact op
-            </Link>
             <a
               href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
               target="_blank"
