@@ -1,71 +1,16 @@
-import { useState } from 'react'
-import { CheckCircle, Mail, Phone, Users, MessageSquare } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { CheckCircle, ArrowRight } from 'lucide-react'
 import SEOHead from './components/SEOHead'
+import ContactForm from './components/ContactForm'
 
 function Offerte() {
-  const [formData, setFormData] = useState({
-    naam: '',
-    bedrijfsnaam: '',
-    email: '',
-    telefoon: '',
-    aantalMedewerkers: '',
-    opmerkingen: ''
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    
-    // Simuleer API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-  }
-
-  if (isSubmitted) {
-    return (
-      <>
-        <SEOHead 
-          title="Offerte ontvangen - GroeiRichting"
-          description="Je offerte aanvraag is ontvangen. Je ontvangt binnen 24 uur een persoonlijk voorstel."
-          canonical="https://groeirichting.nl/offerte"
-        />
-        <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-8">
-          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-green-800 mb-4">Offerte aanvraag ontvangen!</h2>
-          <p className="text-green-700 mb-6">
-            Je ontvangt binnen 24 uur een persoonlijk voorstel van ons team.
-          </p>
-          <button 
-            onClick={() => setIsSubmitted(false)}
-            className="btn btn-primary"
-          >
-            Nieuwe aanvraag
-          </button>
-        </div>
-      </div>
-      </>
-    )
-  }
 
   return (
     <>
       <SEOHead 
-        title="Offerte aanvragen - Vraag een offerte aan voor GroeiRichting"
-        description="Ontvang binnen 24 uur een persoonlijk voorstel dat aansluit bij jouw organisatie. Vraag nu een offerte aan voor GroeiRichting."
-        keywords="offerte groeirichting, prijs, tarieven, kosten, aanvraag offerte"
+        title="Investeer in groei, niet in vinkjes - GroeiRichting"
+        description="Veel organisaties besteden duizenden euro's per jaar aan consultants. Met GroeiPortaal haal je deze expertise in huis, maar dan continu en digitaal."
+        keywords="offerte groeirichting, consultant alternatief, AI interviewer, medewerkerstevredenheid, groeiportaal"
         canonical="https://groeirichting.nl/offerte"
         structuredData={{
           "@context": "https://schema.org",
@@ -112,293 +57,149 @@ function Offerte() {
           ]
         }}
       />
-      <div className="max-w-4xl mx-auto space-y-12">
-      {/* Header */}
-      <div className="text-center py-8">
-        <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-          Vraag een offerte aan
-        </h1>
-        <p className="text-xl text-[var(--kleur-muted)] max-w-2xl mx-auto">
-          Ontvang binnen 24 uur een persoonlijk voorstel dat aansluit bij jouw organisatie.
-        </p>
-      </div>
+      <div className="max-w-4xl mx-auto space-y-12 py-12">
+        {/* Header */}
+        <div className="text-center py-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-[var(--kleur-primary)] mb-6">
+            Investeer in groei, niet in vinkjes.
+          </h1>
+        </div>
 
-      {/* ROI-prikkel */}
-      <div className="bg-gray-50 border-l-2 border-[var(--kleur-primary)] p-4 rounded-r-lg">
-        <p className="text-[var(--kleur-muted)]">
-          Verloop en verzuim zijn kostbaar. Het vertrek van je beste medewerker of uitval van je hardste werker kan je bedrijf duizenden euro's kosten. GroeiRichting helpt je die risico's tijdig te signaleren en voorkomen.
-        </p>
-      </div>
+        {/* Body tekst */}
+        <div className="prose prose-lg max-w-none">
+          <p className="text-lg text-[var(--kleur-text)] mb-6 leading-relaxed">
+            Veel organisaties besteden duizenden euro's per jaar aan consultants om te achterhalen waarom teams vastlopen of medewerkers vertrekken. Met GroeiPortaal haal je deze expertise in huis, maar dan continu en digitaal.
+          </p>
+          <p className="text-lg text-[var(--kleur-text)] mb-8 leading-relaxed">
+            Onze AI-interviewer voert de gesprekken waar leidinggevenden geen tijd voor hebben, analyseert de kernoorzaken en levert direct toepasbaar advies.
+          </p>
+        </div>
 
-      {/* Prijzenoverzicht */}
-      <div className="py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {/* PILOT Pakket */}
-          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200 hover:shadow-xl transition-shadow flex flex-col">
-            <div className="text-center mb-6">
-              <div className="text-4xl mb-3">🚀</div>
-              <h3 className="text-2xl font-bold text-[var(--kleur-text)] mb-2">PILOT</h3>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-[var(--kleur-primary)]">GRATIS</span>
-              </div>
-              <p className="text-sm text-[var(--kleur-muted)]">1 team</p>
-              <p className="text-sm text-[var(--kleur-muted)]">(max 15 personen)</p>
+        {/* Onze belofte */}
+        <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-[var(--kleur-primary)]/20">
+          <h2 className="text-2xl font-bold text-[var(--kleur-primary)] mb-6">
+            Onze belofte:
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4">
+              <CheckCircle className="w-6 h-6 text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+              <p className="text-lg text-[var(--kleur-text)]">
+                <strong>Diepgang van een consultant, snelheid van software.</strong>
+              </p>
             </div>
-            <ul className="space-y-3 mb-6 flex-grow">
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Incl. 4 thema's</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">AI-chats</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Overzichtelijk dashboard</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Incl. samenvatting en adviezen</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Resultaten van team</span>
-              </li>
-            </ul>
-            <button className="w-full btn btn-primary mt-auto">
-              Start Nu
-            </button>
-          </div>
-
-          {/* BASIS Pakket */}
-          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200 hover:shadow-xl transition-shadow flex flex-col">
-            <div className="text-center mb-6">
-              <div className="text-4xl mb-3">📊</div>
-              <h3 className="text-2xl font-bold text-[var(--kleur-text)] mb-2">BASIS</h3>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-[var(--kleur-primary)]">€ 12,50</span>
-              </div>
-              <p className="text-sm text-[var(--kleur-muted)]">p.p.p.m.</p>
-              <p className="text-sm text-[var(--kleur-muted)] mt-1">Onbeperkt teams</p>
+            <div className="flex items-start gap-4">
+              <CheckCircle className="w-6 h-6 text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+              <p className="text-lg text-[var(--kleur-text)]">
+                <strong>Geen uurtje-factuurtje, maar een vast bedrag per medewerker.</strong>
+              </p>
             </div>
-            <ul className="space-y-3 mb-6 flex-grow">
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Incl. 4 thema's</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">AI-chats</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Overzichtelijk dashboard</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Incl. samenvatting en adviezen</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Resultaten per team</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Resultaten hele organisatie</span>
-              </li>
-            </ul>
-            <button className="w-full btn btn-primary mt-auto">
-              Kies Basis
-            </button>
-          </div>
-
-          {/* PLUS Pakket - Gemarkeerd */}
-          <div className="bg-white rounded-xl shadow-xl p-6 border-2 border-[var(--kleur-secondary)] relative transform scale-105 hover:scale-[1.06] transition-all flex flex-col">
-            {/* Badge */}
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <span className="bg-[var(--kleur-secondary)] text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">
-                POPULAIR
-              </span>
+            <div className="flex items-start gap-4">
+              <CheckCircle className="w-6 h-6 text-[var(--kleur-accent)] mt-1 flex-shrink-0" />
+              <p className="text-lg text-[var(--kleur-text)]">
+                <strong>Direct inzicht, geen lange implementatie.</strong>
+              </p>
             </div>
-            <div className="text-center mb-6">
-              <div className="text-4xl mb-3">⭐</div>
-              <h3 className="text-2xl font-bold text-[var(--kleur-text)] mb-2">PLUS</h3>
-              <div className="mb-2">
-                <span className="text-3xl font-bold text-[var(--kleur-secondary)]">€ 17,50</span>
-              </div>
-              <p className="text-sm text-[var(--kleur-muted)]">p.p.p.m.</p>
-              <p className="text-sm text-[var(--kleur-muted)] mt-1">Onbeperkt teams</p>
-            </div>
-            <ul className="space-y-3 mb-6 flex-grow">
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Incl. 4 thema's</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">AI-chats</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Overzichtelijk dashboard</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Incl. samenvatting en adviezen</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Resultaten per team</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Resultaten hele organisatie</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)] font-bold">Incl. maatwerkthema's</span>
-              </li>
-            </ul>
-            <button className="w-full btn btn-secondary text-lg font-bold mt-auto">
-              Kies Plus
-            </button>
           </div>
         </div>
-      </div>
 
-      {/* Formulier */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Naam */}
-            <div>
-              <label htmlFor="naam" className="block text-sm font-medium text-[var(--kleur-text)] mb-2">
-                Naam *
-              </label>
-              <input
-                type="text"
-                id="naam"
-                name="naam"
-                value={formData.naam}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent transition-all duration-200"
-                placeholder="Jouw volledige naam"
-              />
-            </div>
-
-            {/* Bedrijfsnaam */}
-            <div>
-              <label htmlFor="bedrijfsnaam" className="block text-sm font-medium text-[var(--kleur-text)] mb-2">
-                Bedrijfsnaam *
-              </label>
-              <input
-                type="text"
-                id="bedrijfsnaam"
-                name="bedrijfsnaam"
-                value={formData.bedrijfsnaam}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent transition-all duration-200"
-                placeholder="Naam van je organisatie"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* E-mailadres */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[var(--kleur-text)] mb-2">
-                <Mail className="w-4 h-4 inline mr-2" />
-                E-mailadres *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent transition-all duration-200"
-                placeholder="jouw@email.nl"
-              />
-            </div>
-
-            {/* Telefoonnummer */}
-            <div>
-              <label htmlFor="telefoon" className="block text-sm font-medium text-[var(--kleur-text)] mb-2">
-                <Phone className="w-4 h-4 inline mr-2" />
-                Telefoonnummer
-              </label>
-              <input
-                type="tel"
-                id="telefoon"
-                name="telefoon"
-                value={formData.telefoon}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent transition-all duration-200"
-                placeholder="06-12345678"
-              />
-            </div>
-          </div>
-
-          {/* Aantal medewerkers */}
-          <div>
-            <label htmlFor="aantalMedewerkers" className="block text-sm font-medium text-[var(--kleur-text)] mb-2">
-              <Users className="w-4 h-4 inline mr-2" />
-              Aantal medewerkers *
-            </label>
-            <input
-              type="number"
-              id="aantalMedewerkers"
-              name="aantalMedewerkers"
-              value={formData.aantalMedewerkers}
-              onChange={handleInputChange}
-              required
-              min="1"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent transition-all duration-200"
-              placeholder="Bijv. 25"
-            />
-          </div>
-
-          {/* Vragen of Opmerkingen */}
-          <div>
-            <label htmlFor="opmerkingen" className="block text-sm font-medium text-[var(--kleur-text)] mb-2">
-              <MessageSquare className="w-4 h-4 inline mr-2" />
-              Vragen of Opmerkingen
-            </label>
-            <textarea
-              id="opmerkingen"
-              name="opmerkingen"
-              value={formData.opmerkingen}
-              onChange={handleInputChange}
-              rows="4"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--kleur-primary)] focus:border-transparent transition-all duration-200 resize-none"
-              placeholder="Vertel ons meer over je organisatie, specifieke wensen of vragen..."
-            />
-          </div>
-
-          {/* CTA Button */}
-          <div className="text-center pt-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn btn-primary text-lg px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+        {/* CTA Sectie - Twee keuzes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+          {/* Blok Links: De Veilige Route (Pilot) */}
+          <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-[var(--kleur-primary)]/20 hover:border-[var(--kleur-primary)]/40 transition-all flex flex-col">
+            <h3 className="text-2xl font-bold text-[var(--kleur-primary)] mb-3">
+              Ervaar het eerst zelf
+            </h3>
+            <p className="text-lg text-[var(--kleur-muted)] mb-6 flex-grow">
+              Wil je zien hoe de AI doorvraagt en welk advies eruit rolt? Start een gratis pilot met één team.
+            </p>
+            <Link 
+              to="/registreer-werkgever"
+              className="btn btn-primary text-lg px-8 py-4 inline-flex items-center gap-2 justify-center mt-auto"
             >
-              {isSubmitting ? 'Bezig met versturen...' : 'Ontvang mijn offerte'}
-            </button>
+              Start Gratis Pilot
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
-        </form>
-      </div>
 
-      {/* Afsluitzin */}
-      <div className="text-center py-6">
-        <p className="text-lg text-[var(--kleur-muted)]">
-          Je ontvangt binnen 24 uur een persoonlijk voorstel van ons team.
-        </p>
+          {/* Blok Rechts: De Zakelijke Route (Offerte) */}
+          <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-[var(--kleur-accent)]/20 hover:border-[var(--kleur-accent)]/40 transition-all flex flex-col">
+            <h3 className="text-2xl font-bold text-[var(--kleur-accent)] mb-3">
+              Direct een voorstel op maat
+            </h3>
+            <p className="text-lg text-[var(--kleur-muted)] mb-6 flex-grow">
+              Benieuwd naar de investering voor de hele organisatie? Wij maken graag een passend voorstel, inclusief opties voor maatwerkthema's.
+            </p>
+            <Link 
+              to="/contact"
+              className="btn btn-accent text-lg px-8 py-4 inline-flex items-center gap-2 justify-center mt-auto"
+            >
+              Vraag Voorstel Aan
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+
+        {/* FAQ & Contact Sectie */}
+        <section className="py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Kolom 1: FAQ */}
+            <div>
+              <h2 className="text-2xl font-bold text-[var(--kleur-primary)] mb-6">
+                Goed om te weten
+              </h2>
+              <div className="space-y-6">
+                {/* Vraag 1 */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-[var(--kleur-text)] mb-3">
+                    1. Kost de implementatie veel tijd?
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Nee. Omdat GroeiPortaal geen zware software-installatie vereist, kunnen we vaak binnen 24 uur live zijn. Wij richten de omgeving in, jij hoeft alleen de medewerkerslijst aan te leveren.
+                  </p>
+                </div>
+
+                {/* Vraag 2 */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-[var(--kleur-text)] mb-3">
+                    2. Is de data echt anoniem?
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Absoluut. Dit is essentieel voor eerlijke antwoorden. De AI analyseert patronen en trends, maar deelt nooit wie wat specifiek heeft gezegd met de leidinggevende. Privacy en AVG-compliance staan op 1.
+                  </p>
+                </div>
+
+                {/* Vraag 3 */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-[var(--kleur-text)] mb-3">
+                    3. Is GroeiRichting een MTO?
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Nee, het is een verbeterde vorm van een medewerkertevredenheidsonderzoek (MTO). GroeiRichting geeft ook aan waar het misgaat én hoe het opgelost kan worden.
+                  </p>
+                </div>
+
+                {/* Vraag 4 */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-[var(--kleur-text)] mb-3">
+                    4. Zit ik direct vast aan een lang contract?
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Nee. We geloven in onze waarde. Je kunt starten met een vrijblijvende Pilot. Besluit je door te gaan? Dan werken we met transparante licenties die meebewegen met de grootte van je organisatie.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Kolom 2: Contactformulier */}
+            <div>
+              <h2 className="text-2xl font-bold text-[var(--kleur-primary)] mb-6">
+                Stuur een bericht
+              </h2>
+              <ContactForm />
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
     </>
   )
 }
