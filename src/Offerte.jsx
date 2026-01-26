@@ -141,20 +141,28 @@ function Offerte() {
               <div className="mb-2">
                 <span className="text-3xl font-bold text-[var(--kleur-primary)]">GRATIS</span>
               </div>
-              <p className="text-sm text-[var(--kleur-muted)]">1 Team (max 15)</p>
+              <p className="text-sm text-[var(--kleur-muted)]">1 team (max 15 personen)</p>
             </div>
             <ul className="space-y-3 mb-6 flex-grow">
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Scan 4 Thema's</span>
+                <span className="text-sm text-[var(--kleur-text)]">Incl. 4 thema's</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">AI-Chats</span>
+                <span className="text-sm text-[var(--kleur-text)]">AI-chats</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Advies (Team)</span>
+                <span className="text-sm text-[var(--kleur-text)]">Overzichtelijk dashboard</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Incl. samenvatting en adviezen</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Resultaten van team</span>
               </li>
             </ul>
             <button className="w-full btn btn-primary mt-auto">
@@ -171,23 +179,32 @@ function Offerte() {
                 <span className="text-3xl font-bold text-[var(--kleur-primary)]">€ 12,50</span>
               </div>
               <p className="text-sm text-[var(--kleur-muted)]">p.p.p.m.</p>
+              <p className="text-sm text-[var(--kleur-muted)] mt-1">Onbeperkt teams</p>
             </div>
             <ul className="space-y-3 mb-6 flex-grow">
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Heel de organisatie</span>
+                <span className="text-sm text-[var(--kleur-text)]">Incl. 4 thema's</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">AI-Chats</span>
+                <span className="text-sm text-[var(--kleur-text)]">AI-chats</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Dashboard</span>
+                <span className="text-sm text-[var(--kleur-text)]">Overzichtelijk dashboard</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Advies (Team & Organisatie)</span>
+                <span className="text-sm text-[var(--kleur-text)]">Incl. samenvatting en adviezen</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Resultaten per team</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Resultaten hele organisatie</span>
               </li>
             </ul>
             <button className="w-full btn btn-primary mt-auto">
@@ -210,27 +227,36 @@ function Offerte() {
                 <span className="text-3xl font-bold text-[var(--kleur-secondary)]">€ 17,50</span>
               </div>
               <p className="text-sm text-[var(--kleur-muted)]">p.p.p.m.</p>
+              <p className="text-sm text-[var(--kleur-muted)] mt-1">Onbeperkt teams</p>
             </div>
             <ul className="space-y-3 mb-6 flex-grow">
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Heel de organisatie</span>
+                <span className="text-sm text-[var(--kleur-text)]">Incl. 4 thema's</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">AI-Chats</span>
+                <span className="text-sm text-[var(--kleur-text)]">AI-chats</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Dashboard</span>
+                <span className="text-sm text-[var(--kleur-text)]">Overzichtelijk dashboard</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)]">Advies (Team & Organisatie)</span>
+                <span className="text-sm text-[var(--kleur-text)]">Incl. samenvatting en adviezen</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✅</span>
-                <span className="text-sm text-[var(--kleur-text)] font-bold">Maatwerk Modules</span>
+                <span className="text-sm text-[var(--kleur-text)]">Resultaten per team</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)]">Resultaten hele organisatie</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 mr-2">✅</span>
+                <span className="text-sm text-[var(--kleur-text)] font-bold">Incl. maatwerkthema's</span>
               </li>
             </ul>
             <button className="w-full btn btn-secondary text-lg font-bold mt-auto">
