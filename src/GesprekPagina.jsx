@@ -543,6 +543,13 @@ function GesprekPagina() {
     const result = await response.json()
     if (!response.ok) {
       console.error('Opslaan antwoord mislukt:', result.error)
+      
+      // Check of dit een PII detectie error is
+      if (result.error === 'PII_DETECTED') {
+        // Gooi een speciale error die we kunnen vangen in verstuurAntwoord
+        throw { type: 'PII_DETECTED', data: result };
+      }
+      
       setFoutmelding(result.error)
       return false;
     }
@@ -599,7 +606,7 @@ function GesprekPagina() {
 
     setIsVerzenden(true);
     try {
-      // Extra input validatie voor veiligheid
+      // Extra input validatie voor veiligheid (XSS, etc.)
       const inputValidation = validateInput(cleanInput);
       if (!inputValidation.isValid) {
         voegChatBerichtToe('waarschuwing', inputValidation.error, null, false);
@@ -607,12 +614,8 @@ function GesprekPagina() {
         return;
       }
 
-      const check = containsSensitiveInfo(cleanInput);
-      if (check.flagged) {
-        voegChatBerichtToe('waarschuwing', check.reason, null, false);
-        setIsVerzenden(false);
-        return;
-      }
+      // ⚠️ PII validatie wordt nu gedaan in de backend via externe AVG API
+      // Lokale check is uitgeschakeld - backend doet de validatie
 
       const huidigeVraag = vragen[currentIndex];
       const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
@@ -638,9 +641,35 @@ function GesprekPagina() {
       }
 
       // Sla het antwoord op in Supabase
-      const result = await slaGesprekOp(huidigeVraag.id, cleanInput, huidigeVraag?.tekst);
-      if (!result) {
+      let result;
+      try {
+        result = await slaGesprekOp(huidigeVraag.id, cleanInput, huidigeVraag?.tekst);
+        if (!result) {
+          setFoutmelding('Er is een probleem opgetreden bij het opslaan van je antwoord. Probeer het opnieuw.');
+          setIsVerzenden(false);
+          return;
+        }
+      } catch (error) {
+        // PII gedetecteerd tijdens opslaan
+        if (error.type === 'PII_DETECTED') {
+          const piiMessage = error.data.details || error.data.message || 'Je antwoord bevat gevoelige persoonsgegevens. Pas je antwoord aan en probeer het opnieuw.';
+          voegChatBerichtToe('waarschuwing', piiMessage, huidigeVraag.id, false);
+          
+          // Zet het antwoord terug in het input veld zodat de gebruiker het kan aanpassen
+          setInput(cleanInput);
+          
+          // Verwijder het antwoord uit de chat berichten (laatste toegevoegde antwoord)
+          setChatBerichten(prev => prev.filter(b => !(b.type === 'antwoord' && b.inhoud === cleanInput && b.vraagId === huidigeVraag.id)));
+          
+          // Verwijder het antwoord uit de antwoorden array
+          setAntwoorden(prev => prev.filter(a => !(a.antwoord === cleanInput && a.vraag === huidigeVraag?.tekst)));
+          
+          setIsVerzenden(false);
+          return;
+        }
+        // Andere errors
         setFoutmelding('Er is een probleem opgetreden bij het opslaan van je antwoord. Probeer het opnieuw.');
+        setIsVerzenden(false);
         return;
       }
 
