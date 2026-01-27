@@ -672,7 +672,34 @@ function GesprekPagina() {
 
         if (!decideRes.ok) {
           console.error('Fout bij ophalen vervolgvraag:', decideRes.status);
+          
+          // Check of dit een PII detectie error is
+          try {
+            const errorData = await decideRes.json();
+            if (errorData.error === 'PII_DETECTED') {
+              // PII gedetecteerd - toon duidelijke waarschuwing
+              const piiMessage = errorData.details || errorData.message || 'Je antwoord bevat gevoelige persoonsgegevens. Pas je antwoord aan en probeer het opnieuw.';
+              voegChatBerichtToe('waarschuwing', piiMessage, huidigeVraag.id, false);
+              
+              // Zet het antwoord terug in het input veld zodat de gebruiker het kan aanpassen
+              setInput(cleanInput);
+              
+              // Verwijder het antwoord uit de chat berichten (laatste toegevoegde antwoord)
+              setChatBerichten(prev => prev.filter(b => !(b.type === 'antwoord' && b.inhoud === cleanInput && b.vraagId === huidigeVraag.id)));
+              
+              // Verwijder het antwoord uit de antwoorden array
+              setAntwoorden(prev => prev.filter(a => !(a.antwoord === cleanInput && a.vraag === huidigeVraag?.tekst)));
+              
+              setIsVerzenden(false);
+              return;
+            }
+          } catch (parseError) {
+            // Als we de error niet kunnen parsen, gebruik de standaard error
+            console.error('Kon error response niet parsen:', parseError);
+          }
+          
           setFoutmelding('Er is een probleem opgetreden bij het genereren van de vervolgvraag. Probeer het opnieuw.');
+          setIsVerzenden(false);
           return;
         }
 
@@ -750,6 +777,39 @@ function GesprekPagina() {
               gender: werknemerContext.gender
             })
           });
+
+          if (!decideRes.ok) {
+            console.error('Fout bij ophalen vervolgvraag:', decideRes.status);
+            
+            // Check of dit een PII detectie error is
+            try {
+              const errorData = await decideRes.json();
+              if (errorData.error === 'PII_DETECTED') {
+                // PII gedetecteerd - toon duidelijke waarschuwing
+                const piiMessage = errorData.details || errorData.message || 'Je antwoord bevat gevoelige persoonsgegevens. Pas je antwoord aan en probeer het opnieuw.';
+                voegChatBerichtToe('waarschuwing', piiMessage, huidigeVraag.id, false);
+                
+                // Zet het antwoord terug in het input veld zodat de gebruiker het kan aanpassen
+                setInput(cleanInput);
+                
+                // Verwijder het antwoord uit de chat berichten (laatste toegevoegde antwoord)
+                setChatBerichten(prev => prev.filter(b => !(b.type === 'antwoord' && b.inhoud === cleanInput && b.vraagId === huidigeVraag.id)));
+                
+                // Verwijder het antwoord uit de antwoorden array
+                setAntwoorden(prev => prev.filter(a => !(a.antwoord === cleanInput && a.vraag === huidigeVraag?.tekst)));
+                
+                setIsVerzenden(false);
+                return;
+              }
+            } catch (parseError) {
+              // Als we de error niet kunnen parsen, gebruik de standaard error
+              console.error('Kon error response niet parsen:', parseError);
+            }
+            
+            setFoutmelding('Er is een probleem opgetreden bij het genereren van de vervolgvraag. Probeer het opnieuw.');
+            setIsVerzenden(false);
+            return;
+          }
 
           const decide = await decideRes.json();
           
