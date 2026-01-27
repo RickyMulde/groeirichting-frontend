@@ -46,7 +46,7 @@ function CookieBanner() {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-lg z-50">
       <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex flex-col gap-4">
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-gray-900 mb-2">
               Cookies en privacy
@@ -59,16 +59,16 @@ function CookieBanner() {
               </a>.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
             <button
               onClick={rejectCookies}
-              className="px-4 py-2 text-sm border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-sm border border-gray-300 rounded bg-gray-800 text-white hover:bg-gray-700 transition-colors"
             >
               Weigeren
             </button>
             <button
               onClick={acceptCookies}
-              className="px-4 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors"
+              className="px-4 py-2 text-sm bg-[var(--kleur-secondary)] text-white rounded hover:brightness-110 transition-colors"
             >
               Accepteren
             </button>
