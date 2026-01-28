@@ -543,6 +543,13 @@ function GesprekPagina() {
     const result = await response.json()
     if (!response.ok) {
       console.error('Opslaan antwoord mislukt:', result.error)
+      
+      // Check of dit een PII detectie error is
+      if (result.error === 'PII_DETECTED') {
+        // Gooi een speciale error die we kunnen vangen in verstuurAntwoord
+        throw { type: 'PII_DETECTED', data: result };
+      }
+      
       setFoutmelding(result.error)
       return false;
     }
@@ -599,7 +606,7 @@ function GesprekPagina() {
 
     setIsVerzenden(true);
     try {
-      // Extra input validatie voor veiligheid
+      // Extra input validatie voor veiligheid (XSS, etc.)
       const inputValidation = validateInput(cleanInput);
       if (!inputValidation.isValid) {
         voegChatBerichtToe('waarschuwing', inputValidation.error, null, false);
@@ -607,12 +614,8 @@ function GesprekPagina() {
         return;
       }
 
-      const check = containsSensitiveInfo(cleanInput);
-      if (check.flagged) {
-        voegChatBerichtToe('waarschuwing', check.reason, null, false);
-        setIsVerzenden(false);
-        return;
-      }
+      // ⚠️ PII validatie wordt nu gedaan in de backend via externe AVG API
+      // Lokale check is uitgeschakeld - backend doet de validatie
 
       const huidigeVraag = vragen[currentIndex];
       const isVasteVraag = !huidigeVraag.id.toString().startsWith('gpt-');
@@ -638,9 +641,56 @@ function GesprekPagina() {
       }
 
       // Sla het antwoord op in Supabase
-      const result = await slaGesprekOp(huidigeVraag.id, cleanInput, huidigeVraag?.tekst);
-      if (!result) {
+      let result;
+      try {
+        result = await slaGesprekOp(huidigeVraag.id, cleanInput, huidigeVraag?.tekst);
+        if (!result) {
+          setFoutmelding('Er is een probleem opgetreden bij het opslaan van je antwoord. Probeer het opnieuw.');
+          setIsVerzenden(false);
+          return;
+        }
+        
+        // ✅ PII Validatie geslaagd - log in console
+        console.log('🔒 [PII Validatie] ✅ ANTWOORD GOEDGEKEURD');
+        console.log('🔒 [PII Validatie] Antwoord:', cleanInput);
+        console.log('🔒 [PII Validatie] Resultaat: Geen gevoelige gegevens gedetecteerd');
+        console.log('🔒 [PII Validatie] ========================================');
+        // Note: rawApiResponse is alleen beschikbaar bij errors, bij success wordt het niet meegestuurd
+        
+      } catch (error) {
+        // PII gedetecteerd tijdens opslaan
+        if (error.type === 'PII_DETECTED') {
+          // 🔒 Log volledige PII validatie response in console
+          console.log('🔒 [PII Validatie] ❌ ANTWOORD GEBLOKKEERD');
+          console.log('🔒 [PII Validatie] Antwoord:', cleanInput);
+          console.log('🔒 [PII Validatie] ========================================');
+          console.log('🔒 [PII Validatie] Volledige backend response:', error.data);
+          console.log('🔒 [PII Validatie] Labels:', error.data.labels || []);
+          console.log('🔒 [PII Validatie] Reden:', error.data.reason || 'Onbekend');
+          console.log('🔒 [PII Validatie] Artikelen:', error.data.articles || []);
+          console.log('🔒 [PII Validatie] Fallback gebruikt:', error.data.fallback || false);
+          console.log('🔒 [PII Validatie] RAW API Response:', error.data.rawApiResponse || 'Niet beschikbaar');
+          console.log('🔒 [PII Validatie] ========================================');
+          
+          const piiMessage = error.data.details || error.data.message || 'Je antwoord bevat gevoelige persoonsgegevens. Pas je antwoord aan en probeer het opnieuw.';
+          voegChatBerichtToe('waarschuwing', piiMessage, huidigeVraag.id, false);
+          
+          // Zet het antwoord terug in het input veld zodat de gebruiker het kan aanpassen
+          setInput(cleanInput);
+          
+          // Verwijder het antwoord uit de chat berichten (laatste toegevoegde antwoord)
+          setChatBerichten(prev => prev.filter(b => !(b.type === 'antwoord' && b.inhoud === cleanInput && b.vraagId === huidigeVraag.id)));
+          
+          // Verwijder het antwoord uit de antwoorden array
+          setAntwoorden(prev => prev.filter(a => !(a.antwoord === cleanInput && a.vraag === huidigeVraag?.tekst)));
+          
+          setIsVerzenden(false);
+          return;
+        }
+        // Andere errors
+        console.error('❌ [PII Validatie] Onbekende error bij opslaan:', error);
         setFoutmelding('Er is een probleem opgetreden bij het opslaan van je antwoord. Probeer het opnieuw.');
+        setIsVerzenden(false);
         return;
       }
 
@@ -672,11 +722,57 @@ function GesprekPagina() {
 
         if (!decideRes.ok) {
           console.error('Fout bij ophalen vervolgvraag:', decideRes.status);
+          
+          // Check of dit een PII detectie error is
+          try {
+            const errorData = await decideRes.json();
+            
+            // 🔒 Log PII validatie response (ook als het geen PII error is)
+            console.log('🔒 [PII Validatie - decide-followup] Response status:', decideRes.status);
+            console.log('🔒 [PII Validatie - decide-followup] Response data:', errorData);
+            
+            if (errorData.error === 'PII_DETECTED') {
+              // 🔒 Log volledige PII validatie response in console
+              console.log('🔒 [PII Validatie] ❌ ANTWOORD GEBLOKKEERD (bij decide-followup)');
+              console.log('🔒 [PII Validatie] Antwoord:', cleanInput);
+              console.log('🔒 [PII Validatie] Volledige response:', errorData);
+              console.log('🔒 [PII Validatie] Labels:', errorData.labels || []);
+              console.log('🔒 [PII Validatie] Reden:', errorData.reason || 'Onbekend');
+              console.log('🔒 [PII Validatie] Artikelen:', errorData.articles || []);
+              console.log('🔒 [PII Validatie] Fallback gebruikt:', errorData.fallback || false);
+              
+              // PII gedetecteerd - toon duidelijke waarschuwing
+              const piiMessage = errorData.details || errorData.message || 'Je antwoord bevat gevoelige persoonsgegevens. Pas je antwoord aan en probeer het opnieuw.';
+              voegChatBerichtToe('waarschuwing', piiMessage, huidigeVraag.id, false);
+              
+              // Zet het antwoord terug in het input veld zodat de gebruiker het kan aanpassen
+              setInput(cleanInput);
+              
+              // Verwijder het antwoord uit de chat berichten (laatste toegevoegde antwoord)
+              setChatBerichten(prev => prev.filter(b => !(b.type === 'antwoord' && b.inhoud === cleanInput && b.vraagId === huidigeVraag.id)));
+              
+              // Verwijder het antwoord uit de antwoorden array
+              setAntwoorden(prev => prev.filter(a => !(a.antwoord === cleanInput && a.vraag === huidigeVraag?.tekst)));
+              
+              setIsVerzenden(false);
+              return;
+            }
+          } catch (parseError) {
+            // Als we de error niet kunnen parsen, gebruik de standaard error
+            console.error('Kon error response niet parsen:', parseError);
+          }
+          
           setFoutmelding('Er is een probleem opgetreden bij het genereren van de vervolgvraag. Probeer het opnieuw.');
+          setIsVerzenden(false);
           return;
         }
 
         const decide = await decideRes.json();
+        
+        // ✅ PII Validatie geslaagd - log in console
+        console.log('🔒 [PII Validatie - decide-followup] ✅ ANTWOORD GOEDGEKEURD');
+        console.log('🔒 [PII Validatie - decide-followup] Antwoord:', cleanInput);
+        console.log('🔒 [PII Validatie - decide-followup] Resultaat: Geen gevoelige gegevens gedetecteerd');
         
         // Toon reactie (als die er is)
         if (decide.reactie) {
@@ -751,7 +847,59 @@ function GesprekPagina() {
             })
           });
 
+          if (!decideRes.ok) {
+            console.error('Fout bij ophalen vervolgvraag:', decideRes.status);
+            
+            // Check of dit een PII detectie error is
+            try {
+              const errorData = await decideRes.json();
+              
+              // 🔒 Log PII validatie response (ook als het geen PII error is)
+              console.log('🔒 [PII Validatie - decide-followup] Response status:', decideRes.status);
+              console.log('🔒 [PII Validatie - decide-followup] Response data:', errorData);
+              
+              if (errorData.error === 'PII_DETECTED') {
+                // 🔒 Log volledige PII validatie response in console
+                console.log('🔒 [PII Validatie] ❌ ANTWOORD GEBLOKKEERD (bij decide-followup - vervolgvraag)');
+                console.log('🔒 [PII Validatie] Antwoord:', cleanInput);
+                console.log('🔒 [PII Validatie] Volledige response:', errorData);
+                console.log('🔒 [PII Validatie] Labels:', errorData.labels || []);
+                console.log('🔒 [PII Validatie] Reden:', errorData.reason || 'Onbekend');
+                console.log('🔒 [PII Validatie] Artikelen:', errorData.articles || []);
+                console.log('🔒 [PII Validatie] Fallback gebruikt:', errorData.fallback || false);
+                
+                // PII gedetecteerd - toon duidelijke waarschuwing
+                const piiMessage = errorData.details || errorData.message || 'Je antwoord bevat gevoelige persoonsgegevens. Pas je antwoord aan en probeer het opnieuw.';
+                voegChatBerichtToe('waarschuwing', piiMessage, huidigeVraag.id, false);
+                
+                // Zet het antwoord terug in het input veld zodat de gebruiker het kan aanpassen
+                setInput(cleanInput);
+                
+                // Verwijder het antwoord uit de chat berichten (laatste toegevoegde antwoord)
+                setChatBerichten(prev => prev.filter(b => !(b.type === 'antwoord' && b.inhoud === cleanInput && b.vraagId === huidigeVraag.id)));
+                
+                // Verwijder het antwoord uit de antwoorden array
+                setAntwoorden(prev => prev.filter(a => !(a.antwoord === cleanInput && a.vraag === huidigeVraag?.tekst)));
+                
+                setIsVerzenden(false);
+                return;
+              }
+            } catch (parseError) {
+              // Als we de error niet kunnen parsen, gebruik de standaard error
+              console.error('Kon error response niet parsen:', parseError);
+            }
+            
+            setFoutmelding('Er is een probleem opgetreden bij het genereren van de vervolgvraag. Probeer het opnieuw.');
+            setIsVerzenden(false);
+            return;
+          }
+
           const decide = await decideRes.json();
+          
+          // ✅ PII Validatie geslaagd - log in console
+          console.log('🔒 [PII Validatie - decide-followup] ✅ ANTWOORD GOEDGEKEURD (vervolgvraag)');
+          console.log('🔒 [PII Validatie - decide-followup] Antwoord:', cleanInput);
+          console.log('🔒 [PII Validatie - decide-followup] Resultaat: Geen gevoelige gegevens gedetecteerd');
           
           // Toon reactie (als die er is)
           if (decide.reactie) {

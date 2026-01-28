@@ -14,20 +14,20 @@ function ZohoSalesIQ() {
       return // Al geladen, niet opnieuw laden
     }
 
-    // Initialiseer Zoho SalesIQ object
+    // Initialiseer Zoho SalesIQ object met widgetcode (officiële implementatie)
     window.$zoho = window.$zoho || {}
-    window.$zoho.salesiq = window.$zoho.salesiq || { ready: function() {} }
+    window.$zoho.salesiq = window.$zoho.salesiq || {
+      widgetcode: "siq6a8c571ecbb02f102e897557868cedd3d3a26f931d9fb61cd3a49f035b3abd72",
+      values: {},
+      ready: function() {}
+    }
 
-    // Laad het eerste script (initialisatie)
-    const initScript = document.createElement('script')
-    initScript.textContent = 'window.$zoho=window.$zoho || {};$zoho.salesiq=$zoho.salesiq||{ready:function(){}}'
-    document.head.appendChild(initScript)
-
-    // Laad het tweede script (widget)
+    // Laad het widget script (officiële implementatie)
     const widgetScript = document.createElement('script')
+    widgetScript.type = 'text/javascript'
     widgetScript.id = 'zsiqscript'
-    widgetScript.src = 'https://salesiq.zohopublic.eu/widget?wc=siq6a8c571ecbb02f102e897557868cedd3d3a26f931d9fb61cd3a49f035b3abd72'
     widgetScript.defer = true
+    widgetScript.src = 'https://salesiq.zoho.eu/widget'
     
     // Configureer SalesIQ voor cookie consent
     widgetScript.onload = () => {
@@ -43,11 +43,9 @@ function ZohoSalesIQ() {
               // Cookies worden gebruikt voor persistentie, maar IP-based tracking werkt altijd
               if (cookieConsent === 'accepted') {
                 // Als cookies zijn geaccepteerd, SalesIQ kan cookies gebruiken voor betere tracking
-                console.log('SalesIQ: Geladen - Cookie consent geaccepteerd, volledige tracking actief')
               } else {
                 // Als cookies niet zijn geaccepteerd, SalesIQ gebruikt alleen IP-based tracking
                 // Dit is AVG-compliant en bezoekers worden nog steeds getrackt
-                console.log('SalesIQ: Geladen - Alleen IP-based tracking (AVG-compliant)')
               }
             } catch (error) {
               console.error('SalesIQ: Fout bij configureren:', error)
@@ -57,7 +55,13 @@ function ZohoSalesIQ() {
       }, 1000)
     }
     
-    document.head.appendChild(widgetScript)
+    // Voeg script toe volgens officiële implementatie (insertBefore)
+    const firstScript = document.getElementsByTagName('script')[0]
+    if (firstScript && firstScript.parentNode) {
+      firstScript.parentNode.insertBefore(widgetScript, firstScript)
+    } else {
+      document.head.appendChild(widgetScript)
+    }
   }
 
   // Laad SalesIQ altijd bij mount voor visitor tracking
@@ -74,9 +78,9 @@ function ZohoSalesIQ() {
         // Bij acceptatie kunnen cookies worden gebruikt voor betere tracking
         // Bij weigering blijft IP-based tracking actief
         if (e.newValue === 'accepted') {
-          console.log('SalesIQ: Cookie consent geaccepteerd, volledige tracking nu actief')
+          // Cookie consent geaccepteerd, volledige tracking nu actief
         } else if (e.newValue === 'rejected') {
-          console.log('SalesIQ: Cookie consent geweigerd, IP-based tracking blijft actief')
+          // Cookie consent geweigerd, IP-based tracking blijft actief
         }
       }
     }
@@ -84,7 +88,7 @@ function ZohoSalesIQ() {
     const handleCookieAccept = () => {
       const cookieConsent = localStorage.getItem('cookieConsent')
       if (cookieConsent === 'accepted') {
-        console.log('SalesIQ: Cookie consent geaccepteerd, volledige tracking nu actief')
+        // Cookie consent geaccepteerd, volledige tracking nu actief
       }
     }
 

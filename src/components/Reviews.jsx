@@ -4,7 +4,7 @@ function Reviews() {
   const reviews = [
     {
       company: "Henk Mulderij Financieel Advieskantoor",
-      text: "In een hectische periode zochten wij naar scherpte. GroeiRichting was daarin een mooie tool: het wist onze onderbuikgevoelens feilloos te bevestigen met concrete inzichten. Voor ons de perfecte, feitelijke onderbouwing naast onze persoonlijke gesprekken.",
+      text: "Deze tool geeft je een laagdrempelige manier om periodiek feedback op te halen bij je medewerkers. Niet ter vervanging van het gesprek, maar juist als slimme voorbereiding daarop. Je krijgt inzicht in wat er speelt, wat goed gaat en waar aandacht nodig is. Medewerkers krijgen de ruimte om eerlijk input te geven en ontvangen zelf ook praktische tips. Jij krijgt als leidinggevende handvatten om het gesprek gerichter en waardevoller te voeren. Het is geen eindpunt, maar een krachtige eerste stap naar betere gesprekken en meer wederzijds begrip.",
       author: "Irene Fieten",
       role: "Algemeen directeur",
       logo: "/logos/henk-mulderij.svg"
