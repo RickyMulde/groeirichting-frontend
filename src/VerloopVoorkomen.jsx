@@ -46,18 +46,11 @@ function VerloopVoorkomen() {
             
             {/* CTA Buttons */}
             <div className="mb-4 flex flex-wrap gap-4">
-              <Link 
-                to="/registreer-werkgever" 
-                className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white text-lg px-8 py-4 inline-flex items-center gap-2"
-              >
-                Start 14 dagen gratis
-                <ArrowRight className="w-5 h-5" />
-              </Link>
               <a
                 href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary text-lg px-8 py-4 inline-flex items-center gap-2"
+                className="btn bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-4 inline-flex items-center gap-2"
               >
                 <Calendar className="w-5 h-5" />
                 Plan een demo
@@ -194,6 +187,14 @@ function VerloopVoorkomen() {
                 </p>
               </div>
             </div>
+            <div className="text-center mt-10">
+              <Link
+                to="/hoe-werkt-het"
+                className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white text-lg px-8 py-4 inline-flex items-center gap-2"
+              >
+                Bekijk het GroeiPortaal
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -265,6 +266,14 @@ function VerloopVoorkomen() {
               <p className="text-[var(--kleur-muted)]">
                 Zeker. Al onze data wordt versleuteld opgeslagen op Nederlandse servers en we voldoen aan de strengste AVG-eisen.
               </p>
+            </div>
+            <div className="text-center pt-6">
+              <Link
+                to="/hoe-werkt-het"
+                className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white text-lg px-8 py-4 inline-flex items-center gap-2"
+              >
+                Bekijk hoe het werkt
+              </Link>
             </div>
           </div>
         </section>
