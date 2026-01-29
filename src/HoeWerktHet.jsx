@@ -179,7 +179,7 @@ function HoeWerktHet() {
                 <button
                   type="button"
                   onClick={() => openLightbox(stepIndex, 0)}
-                  className="w-full rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-[var(--kleur-primary)] focus:ring-offset-2"
+                  className="w-full rounded-xl overflow-hidden border border-white bg-white shadow-sm hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
                   aria-label={`${titel} vergroten${images.length > 1 ? ', carrousel met meerdere afbeeldingen' : ''}`}
                 >
                   <img
