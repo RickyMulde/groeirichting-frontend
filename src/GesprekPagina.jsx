@@ -39,6 +39,7 @@ function GesprekPagina() {
   const [loading, setLoading] = useState(true);
   const [isGenereren, setIsGenereren] = useState(false); // Nieuwe state voor samenvatting genereren
   const [isEersteGesprek, setIsEersteGesprek] = useState(true); // State voor bepalen welke intro te tonen
+  const [effectiveGptDoelstelling, setEffectiveGptDoelstelling] = useState(null); // Override per werkgever+thema of null = thema standaard
   
   // Nieuwe state voor chat berichten
   const [chatBerichten, setChatBerichten] = useState([])
@@ -232,6 +233,25 @@ function GesprekPagina() {
         .single();
       if (!error && data) {
         setTheme(data);
+        // Effectieve gpt_doelstelling ophalen (werkgever-override of thema standaard)
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            const effRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/effective-gpt-doelstelling?theme_id=${themeId}`, {
+              headers: { 'Authorization': `Bearer ${session.access_token}` }
+            });
+            if (effRes.ok) {
+              const eff = await effRes.json();
+              setEffectiveGptDoelstelling(eff.gpt_doelstelling ?? '');
+            } else {
+              setEffectiveGptDoelstelling(data.gpt_doelstelling ?? '');
+            }
+          } else {
+            setEffectiveGptDoelstelling(data.gpt_doelstelling ?? '');
+          }
+        } catch (_) {
+          setEffectiveGptDoelstelling(data.gpt_doelstelling ?? '');
+        }
         const { data: vragenData, error: vragenError } = await supabase
           .from('theme_questions')
           .select('id, tekst, verplicht, type, doel_vraag, volgorde_index')
@@ -710,7 +730,7 @@ function GesprekPagina() {
             thema: theme?.titel || 'Thema',
             gespreksgeschiedenis: nieuweAntwoorden,
             doel_vraag: huidigeVraag?.doel_vraag || '',
-            gpt_doelstelling: theme?.gpt_doelstelling || '',
+            gpt_doelstelling: (effectiveGptDoelstelling != null ? effectiveGptDoelstelling : theme?.gpt_doelstelling) || '',
             prompt_style: theme?.prompt_style || '',
             ai_behavior: theme?.ai_behavior || '',
             gpt_beperkingen: theme?.gpt_beperkingen || '',
@@ -837,7 +857,7 @@ function GesprekPagina() {
               thema: theme?.titel || 'Thema',
               gespreksgeschiedenis: nieuweAntwoorden,
               doel_vraag: vasteVragen[huidigeVasteVraagIndex]?.doel_vraag || '',
-              gpt_doelstelling: theme?.gpt_doelstelling || '',
+              gpt_doelstelling: (effectiveGptDoelstelling != null ? effectiveGptDoelstelling : theme?.gpt_doelstelling) || '',
               prompt_style: theme?.prompt_style || '',
               ai_behavior: theme?.ai_behavior || '',
               gpt_beperkingen: theme?.gpt_beperkingen || '',

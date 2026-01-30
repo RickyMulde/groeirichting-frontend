@@ -24,6 +24,7 @@ import ThemaBeheer from './ThemaBeheer'
 import ThemaBeheerOverzicht from './ThemaBeheerOverzicht'
 import WerkgeverThemaKoppelingen from './WerkgeverThemaKoppelingen'
 import GebruikersBeheer from './GebruikersBeheer'
+import WerkgeverInstellingenDetail from './WerkgeverInstellingenDetail'
 import GesprekPagina from './GesprekPagina'
 import GesprekResultaat from './GesprekResultaat'
 import GesprekResultaten from './GesprekResultaten'
@@ -129,6 +130,11 @@ function App() {
         <Route path="/superadmin/gebruikers-beheer" element={
           <ProtectedRoute requiredRole="superuser">
             <GebruikersBeheer />
+          </ProtectedRoute>
+        } />
+        <Route path="/superadmin/werkgever/:werkgeverId/instellingen" element={
+          <ProtectedRoute requiredRole="superuser">
+            <WerkgeverInstellingenDetail />
           </ProtectedRoute>
         } />
         <Route path="/superadmin/email-beheer" element={
