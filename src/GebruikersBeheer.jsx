@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { ArrowLeft, Users, LogIn, Copy, Check } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowLeft, Users, LogIn, Copy, Check, Settings } from 'lucide-react'
 
 function GebruikersBeheer() {
   const [loading, setLoading] = useState(true)
@@ -287,6 +288,14 @@ function GebruikersBeheer() {
                       Aangemaakt: {new Date(werkgever.created_at).toLocaleDateString('nl-NL')}
                     </p>
                     <div className="flex gap-2 flex-wrap">
+                      <Link
+                        to={`/superadmin/werkgever/${werkgever.id}/instellingen`}
+                        className="btn btn-accent text-xs flex items-center gap-1"
+                        title="GPT-doelstelling per thema"
+                      >
+                        <Settings className="w-3 h-3" />
+                        Instellingen
+                      </Link>
                       <button 
                         onClick={() => handleLoginAsUser(werkgever.contact_email)}
                         disabled={generatingLink === werkgever.contact_email}
