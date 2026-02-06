@@ -277,7 +277,7 @@ function HoeWerktHet() {
                 className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white inline-flex items-center justify-center gap-2"
               >
                 <Calendar className="w-5 h-5" aria-hidden />
-                Plan een demo
+                Boek een demo
               </a>
             </div>
           </div>

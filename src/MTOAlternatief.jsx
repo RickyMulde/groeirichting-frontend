@@ -53,7 +53,7 @@ function MTOAlternatief() {
                 className="btn bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-4 inline-flex items-center gap-2"
               >
                 <Calendar className="w-5 h-5" />
-                Plan een demo
+                Boek een demo
               </a>
             </div>
             
@@ -302,7 +302,7 @@ function MTOAlternatief() {
                 className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white text-lg px-8 md:px-10 py-4 md:py-5 inline-flex items-center gap-2 font-bold shadow-lg"
               >
                 <Calendar className="w-5 h-5" />
-                Plan een demo
+                Boek een demo
               </a>
             </div>
           </div>
