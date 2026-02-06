@@ -119,7 +119,7 @@ function Contact() {
             className="inline-flex items-center gap-3 bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
           >
             <Calendar className="w-6 h-6" />
-            Plan een demo (15-30 min)
+            Boek een demo (15-30 min)
           </a>
         </div>
       </section>

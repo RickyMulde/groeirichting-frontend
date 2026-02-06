@@ -27,7 +27,7 @@ function HoeWerktHet() {
             Of je nu leidinggevende of medewerker bent: het platform begeleidt het proces. Zo ontstaat een gesprekscultuur waarin groei centraal staat en verloop en verzuim worden voorkomen.
           </p>
           
-          <button className="btn btn-primary">Plan een demo</button>
+          <button className="btn btn-primary">Boek een demo</button>
         </div>
         <HeroIllustratie className="w-full h-auto" />
       </section>
@@ -57,7 +57,7 @@ function HoeWerktHet() {
               </div>
               
               <div className="pt-4">
-                <button className="btn btn-primary">Plan een demo en zie jouw dashboard in actie</button>
+                <button className="btn btn-primary">Boek een demo en zie jouw dashboard in actie</button>
               </div>
             </div>
             
@@ -259,7 +259,7 @@ function HoeWerktHet() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn btn-primary">Plan een demo</button>
+            <button className="btn btn-primary">Boek een demo</button>
             <button className="btn btn-accent">Bekijk 3-min demo</button>
           </div>
         </div>
