@@ -107,11 +107,11 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Krijg grip op wat er écht speelt in je teams.
+            Krijg grip op wat er écht speelt in je organisatie.
           </h1>
           <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-          Traditionele statische MTO's geven cijfers, GroeiRichting geeft de oorzaken. Of je nu al meet of net begint: De GroeiScan verandert onderbuikgevoel direct in een concreet verbeterplan per thema.
+          Traditionele statische MTO's geven cijfers, GroeiRichting geeft de oorzaken. Of je nu al meet of net begint: de AI-gesprekken van GroeiRichting vragen door waar MTO's stoppen. Zo krijg je meer informatie en betere signalen.
           </p>
           
           {/* Bullets */}
