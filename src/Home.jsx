@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
-  Users, CheckCircle,
+  Users, CheckCircle, X,
   ShieldCheck, Target, TrendingUp, Calendar
 } from 'lucide-react'
 
@@ -107,11 +107,11 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Krijg grip op wat er écht speelt in je teams.
+            Krijg grip op wat er écht speelt in je organisatie.
           </h1>
           <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-          Traditionele statische MTO's geven cijfers, GroeiRichting geeft de oorzaken. Of je nu al meet of net begint: De GroeiScan verandert onderbuikgevoel direct in een concreet verbeterplan per thema.
+          Traditionele statische MTO's geven cijfers, GroeiRichting geeft de oorzaken. Of je nu al meet of net begint: de AI-gesprekken van GroeiRichting vragen door waar MTO's stoppen. Zo krijg je meer informatie en betere signalen.
           </p>
           
           {/* Bullets */}
@@ -150,6 +150,96 @@ function Home() {
           </p>
         </div>
         <HeroIllustratie className="w-full h-auto" />
+      </section>
+
+      {/* Traditioneel MTO vs. GroeiRichting */}
+      <section className="py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-12 text-center">
+            Waarom ouderwetse MTO&apos;s niet meer werken
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Kaart 1: Traditioneel MTO */}
+            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-red-100">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-red-50 rounded-lg">
+                  <X className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-[var(--kleur-text)]">
+                  Traditioneel MTO
+                </h3>
+              </div>
+              <ul className="space-y-4 text-[var(--kleur-muted)]">
+                <li className="flex items-start gap-3">
+                  <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <span>Slechts een jaarlijkse momentopname achteraf</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <span>Ellenlange, statische vragenlijsten</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <span>Cijfers zonder de achterliggende oorzaak</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <span>Rapporten die in de lade verdwijnen</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <span>Geen directe waarde voor de medewerker</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Kaart 2: GroeiRichting */}
+            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-accent)]">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-teal-50 rounded-lg">
+                  <CheckCircle className="w-8 h-8 text-[var(--kleur-accent)]" />
+                </div>
+                <h3 className="text-2xl font-bold text-[var(--kleur-text)]">
+                  GroeiRichting
+                </h3>
+              </div>
+              <ul className="space-y-4 text-[var(--kleur-muted)]">
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                  <span>Geen momentopname, maar continu inzicht in trends</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                  <span>Geen statische vragenlijst, maar een interactief AI-gesprek</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                  <span>Ontdek de diepgang en het &apos;waarom&apos; achter het cijfer</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                  <span>Concrete actiepunten om morgen mee aan de slag te gaan</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                  <span>Directe meerwaarde en groeitips voor de medewerker zelf</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="text-center mt-10">
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Boek een demo
+            </a>
+          </div>
+        </div>
       </section>
 
       {/* Wat is GroeiRichting? */}
