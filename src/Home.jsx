@@ -228,6 +228,17 @@ function Home() {
               </ul>
             </div>
           </div>
+          <div className="text-center mt-10">
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary inline-flex items-center gap-2"
+            >
+              <Calendar className="w-5 h-5" />
+              Boek een demo
+            </a>
+          </div>
         </div>
       </section>
 
