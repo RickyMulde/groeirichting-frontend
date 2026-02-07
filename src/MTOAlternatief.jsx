@@ -89,54 +89,70 @@ function MTOAlternatief() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Kaart 1: De Oude Manier */}
+              {/* Kaart 1: Traditioneel MTO */}
               <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-red-100">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 bg-red-50 rounded-lg">
                     <X className="w-8 h-8 text-red-600" />
                   </div>
                   <h3 className="text-2xl font-bold text-[var(--kleur-text)]">
-                    De Oude Manier
+                    Traditioneel MTO
                   </h3>
                 </div>
                 <ul className="space-y-4 text-[var(--kleur-muted)]">
                   <li className="flex items-start gap-3">
                     <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                    <span>1x per jaar meten</span>
+                    <span>Slechts een jaarlijkse momentopname achteraf</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                    <span>Ellenlange vragenlijsten</span>
+                    <span>Ellenlange, statische vragenlijsten</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                    <span>Rapporten die niemand leest</span>
+                    <span>Cijfers zonder de achterliggende oorzaak</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <span>Rapporten die in de lade verdwijnen</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <span>Geen directe waarde voor de medewerker</span>
                   </li>
                 </ul>
               </div>
 
-              {/* Kaart 2: De GroeiRichting Manier */}
+              {/* Kaart 2: GroeiRichting */}
               <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-accent)]">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 bg-teal-50 rounded-lg">
                     <CheckCircle className="w-8 h-8 text-[var(--kleur-accent)]" />
                   </div>
                   <h3 className="text-2xl font-bold text-[var(--kleur-text)]">
-                    De GroeiRichting Manier
+                    GroeiRichting
                   </h3>
                 </div>
                 <ul className="space-y-4 text-[var(--kleur-muted)]">
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
-                    <span>Real-time inzicht</span>
+                    <span>Geen momentopname, maar continu inzicht in trends</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
-                    <span>Max 5 minuten per thema</span>
+                    <span>Geen statische vragenlijst, maar een interactief AI-gesprek</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
-                    <span>Direct actie ondernemen op verloop</span>
+                    <span>Ontdek de diepgang en het &apos;waarom&apos; achter het cijfer</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                    <span>Concrete actiepunten om morgen mee aan de slag te gaan</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-[var(--kleur-accent)] mt-0.5 flex-shrink-0" />
+                    <span>Directe meerwaarde en groeitips voor de medewerker zelf</span>
                   </li>
                 </ul>
               </div>
