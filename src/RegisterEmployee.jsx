@@ -134,7 +134,19 @@ function RegisterEmployee() {
         <input type="text" placeholder="Voornaam" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
         <input type="text" placeholder="Tussenvoegsel (optioneel)" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
         <input type="text" placeholder="Achternaam" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-        <input type="date" placeholder="Geboortedatum" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} required />
+        <div className="form-group">
+          <label htmlFor="birthdate" className="form-label">Geboortedatum *</label>
+          <input
+            id="birthdate"
+            type="date"
+            className="input-date-safari"
+            value={birthdate}
+            onChange={(e) => setBirthdate(e.target.value)}
+            min="1900-01-01"
+            max={new Date().toISOString().slice(0, 10)}
+            required
+          />
+        </div>
         <select value={gender} onChange={(e) => setGender(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           <option value="">Selecteer geslacht *</option>
           <option value="man">Man</option>

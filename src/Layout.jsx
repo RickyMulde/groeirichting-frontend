@@ -335,8 +335,8 @@ function Layout({ children }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white text-center text-sm py-4 text-gray-400">
-        © {new Date().getFullYear()} GroeiRichting. Alle rechten voorbehouden.
+      <footer className="bg-white text-center text-sm py-4 px-4 text-gray-400 min-h-[3rem] flex items-center justify-center">
+        <span className="break-words">© {new Date().getFullYear()} GroeiRichting. Alle rechten voorbehouden.</span>
       </footer>
 
       {/* Cookie Banner - Alleen voor niet-ingelogde gebruikers */}
