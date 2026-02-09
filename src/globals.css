@@ -39,6 +39,21 @@
     @apply outline-none border-[var(--kleur-accent)] ring-1 ring-[var(--kleur-accent)];
   }
 
+  /* Safari/iOS: date input weergave en bruikbaarheid */
+  input[type="date"],
+  input.input-date-safari {
+    min-height: 2.75rem;
+    display: block;
+    box-sizing: border-box;
+  }
+  @supports (-webkit-touch-callout: none) {
+    input[type="date"],
+    input.input-date-safari {
+      min-height: 2.75rem;
+      width: 100%;
+    }
+  }
+
   .form-group {
     @apply space-y-1;
   }

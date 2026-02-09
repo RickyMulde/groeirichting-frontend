@@ -304,17 +304,14 @@ function ThemaOverzicht() {
               return (
                 <div key={thema.id} className={`bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow ${highlightClass}`}>
                 {/* Thema header */}
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{thema.titel}</h3>
-                      <p className="text-gray-600 text-sm mb-4">{thema.beschrijving_werknemer || 'Geen beschrijving beschikbaar.'}</p>
-                      
-
+                <div className="p-4 sm:p-6">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2 break-words">{thema.titel}</h3>
+                      <p className="text-gray-600 text-sm mb-0 sm:mb-4">{thema.beschrijving_werknemer || 'Geen beschrijving beschikbaar.'}</p>
                     </div>
-                    
-                    {/* Actie knoppen */}
-                    <div className="flex gap-2 ml-4">
+                    {/* Actie knoppen: onder titel op mobiel, rechts op desktop */}
+                    <div className="flex flex-wrap gap-2 sm:ml-4 flex-shrink-0">
                       {thema.heeft_openstaand_gesprek && (
                         <button
                           onClick={() => {
@@ -341,11 +338,11 @@ function ThemaOverzicht() {
                         ) : (
                           <button
                             disabled
-                            className="btn btn-disabled text-sm flex items-center gap-2 text-gray-400 cursor-not-allowed"
+                            className="btn btn-disabled text-sm flex items-center gap-2 text-gray-400 cursor-not-allowed whitespace-normal"
                             title="Gesprek kan alleen gestart worden in actieve maanden"
                           >
                             <Clock size={16} />
-                            Beschikbaar vanaf {formatVolgendeGesprekDatum(thema.volgende_gesprek_datum)}
+                            <span>Beschikbaar vanaf {formatVolgendeGesprekDatum(thema.volgende_gesprek_datum)}</span>
                           </button>
                         )
                       )}
@@ -356,13 +353,13 @@ function ThemaOverzicht() {
                   <div className="text-center mt-4">
                     <button
                       onClick={() => toggleThema(thema.id)}
-                      className="btn btn-accent text-sm flex items-center justify-center gap-2 mx-auto"
+                      className="btn btn-accent text-sm w-full sm:w-auto whitespace-normal text-center py-2.5 flex items-center justify-center gap-2 mx-auto"
                     >
-                      Bekijk overzicht vorige gesprekken en resultaten
+                      <span className="inline">Bekijk overzicht vorige gesprekken en resultaten</span>
                       {expandedThema === thema.id ? (
-                        <ChevronUp className="w-4 h-4" />
+                        <ChevronUp className="w-4 h-4 flex-shrink-0" />
                       ) : (
-                        <ChevronDown className="w-4 h-4" />
+                        <ChevronDown className="w-4 h-4 flex-shrink-0" />
                       )}
                     </button>
                   </div>
