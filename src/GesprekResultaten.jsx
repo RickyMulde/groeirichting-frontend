@@ -11,8 +11,6 @@ function GesprekResultaten() {
   const [resultaten, setResultaten] = useState([])
   const [selectedPeriode, setSelectedPeriode] = useState(null)
   const [beschikbarePeriodes, setBeschikbarePeriodes] = useState([])
-  const [actieveMaanden, setActieveMaanden] = useState([])
-  const [werkgeverConfig, setWerkgeverConfig] = useState(null)
   const [user, setUser] = useState(null)
   const [uitgeklapteThemas, setUitgeklapteThemas] = useState(new Set())
 
@@ -25,99 +23,35 @@ function GesprekResultaten() {
     return monthNames[maand - 1]
   }
 
-  // Functie om periode string te maken (YYYY-MM)
-  const maakPeriodeString = (jaar, maand) => {
-    return `${jaar}-${String(maand).padStart(2, '0')}`
-  }
-
-  // Functie om laatste actieve maand te bepalen
-  const bepaalLaatsteActieveMaand = (actieveMaanden) => {
-    const now = new Date()
-    const huidigeJaar = now.getFullYear()
-    const huidigeMaand = now.getMonth() + 1 // JavaScript maanden zijn 0-based
-
-    // Sorteer actieve maanden
-    const gesorteerdeMaanden = [...actieveMaanden].sort((a, b) => a - b)
-    
-    // Zoek de laatste actieve maand (inclusief huidige maand)
-    let laatsteActieveMaand = null
-    let laatsteActieveJaar = huidigeJaar
-
-    // Check huidige jaar
-    for (let i = gesorteerdeMaanden.length - 1; i >= 0; i--) {
-      if (gesorteerdeMaanden[i] <= huidigeMaand) {
-        laatsteActieveMaand = gesorteerdeMaanden[i]
-        laatsteActieveJaar = huidigeJaar
-        break
-      }
-    }
-
-    // Als geen actieve maand gevonden in huidige jaar, gebruik laatste van vorige jaar
-    if (!laatsteActieveMaand) {
-      laatsteActieveMaand = gesorteerdeMaanden[gesorteerdeMaanden.length - 1]
-      laatsteActieveJaar = huidigeJaar - 1
-    }
-
-    return { maand: laatsteActieveMaand, jaar: laatsteActieveJaar }
-  }
-
-  // Functie om beschikbare periodes te genereren
-  const genereerBeschikbarePeriodes = async (actieveMaanden, accountAanmaakDatum, userId) => {
-    const periodes = []
-    const now = new Date()
-    const huidigeJaar = now.getFullYear()
-    const huidigeMaand = now.getMonth() + 1
-
-    // Haal alle gesprekken op voor deze gebruiker om te bepalen welke maanden daadwerkelijk data hebben
-    const { data: gesprekken, error: gesprekError } = await supabase
-      .from('gesprek')
-      .select('gestart_op')
+  // Haal beschikbare periodes op: alle maanden waarin deze medewerker gesprekresultaten heeft
+  const genereerBeschikbarePeriodes = async (userId) => {
+    const { data: rows, error } = await supabase
+      .from('gesprekresultaten')
+      .select('periode')
       .eq('werknemer_id', userId)
-      .is('geanonimiseerd_op', null)
 
-    if (gesprekError) {
-      console.error('Fout bij ophalen gesprekken voor periode filtering:', gesprekError)
-      return periodes
+    if (error) {
+      console.error('Fout bij ophalen periodes uit gesprekresultaten:', error)
+      return []
     }
 
-    // Bepaal welke maanden daadwerkelijk gesprekken hebben
-    const maandenMetGesprekken = new Set()
-    if (gesprekken && gesprekken.length > 0) {
-      gesprekken.forEach(gesprek => {
-        const gesprekDatum = new Date(gesprek.gestart_op)
-        const gesprekJaar = gesprekDatum.getFullYear()
-        const gesprekMaand = gesprekDatum.getMonth() + 1
-        const periode = maakPeriodeString(gesprekJaar, gesprekMaand)
-        maandenMetGesprekken.add(periode)
-      })
-    }
-
-    // Start vanaf account aanmaak datum of 2 jaar geleden (wat later is)
-    const startJaar = Math.max(accountAanmaakDatum.getFullYear(), huidigeJaar - 2)
-    
-    for (let jaar = startJaar; jaar <= huidigeJaar; jaar++) {
-      for (const maand of actieveMaanden) {
-        // Voor huidige jaar, alleen maanden tot en met huidige maand
-        if (jaar === huidigeJaar && maand > huidigeMaand) {
-          continue
-        }
-        
-        const periode = maakPeriodeString(jaar, maand)
-        
-        // Alleen toevoegen als er daadwerkelijk gesprekken zijn in deze periode
-        if (maandenMetGesprekken.has(periode)) {
-          periodes.push({
-            periode,
+    const uniekePeriodes = new Map()
+    if (rows && rows.length > 0) {
+      rows.forEach((row) => {
+        const p = row.periode
+        if (p && !uniekePeriodes.has(p)) {
+          const [jaar, maand] = p.split('-').map(Number)
+          uniekePeriodes.set(p, {
+            periode: p,
             jaar,
             maand,
             label: `${getMaandNaam(maand)} ${jaar}`
           })
         }
-      }
+      })
     }
 
-    // Sorteer van nieuw naar oud
-    return periodes.sort((a, b) => b.periode.localeCompare(a.periode))
+    return Array.from(uniekePeriodes.values()).sort((a, b) => b.periode.localeCompare(a.periode))
   }
 
   useEffect(() => {
@@ -133,43 +67,11 @@ function GesprekResultaten() {
         }
         setUser(user)
 
-        // Haal werkgever configuratie op
-        const { data: werknemer, error: werknemerError } = await supabase
-          .from('users')
-          .select('employer_id, created_at')
-          .eq('id', user.id)
-          .single()
-
-        if (werknemerError) throw werknemerError
-
-        const { data: { session } } = await supabase.auth.getSession()
-        const werkgeverResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/werkgever-gesprek-instellingen/${werknemer.employer_id}`, {
-          headers: {
-            'Authorization': `Bearer ${session?.access_token}`
-          }
-        })
-        let config = { actieve_maanden: [3, 6, 9] } // Default fallback
-        if (werkgeverResponse.ok) {
-          config = await werkgeverResponse.json()
-        }
-        setWerkgeverConfig(config)
-        setActieveMaanden(config.actieve_maanden)
-
-        // Genereer beschikbare periodes
-        const accountAanmaakDatum = new Date(werknemer.created_at)
-        const periodes = await genereerBeschikbarePeriodes(config.actieve_maanden, accountAanmaakDatum, user.id)
+        // Beschikbare periodes = alle maanden waarin deze medewerker gesprekresultaten heeft
+        const periodes = await genereerBeschikbarePeriodes(user.id)
         setBeschikbarePeriodes(periodes)
 
-        // Bepaal laatste actieve maand
-        const laatsteActieve = bepaalLaatsteActieveMaand(config.actieve_maanden)
-        const laatstePeriode = maakPeriodeString(laatsteActieve.jaar, laatsteActieve.maand)
-        
-        // Zoek deze periode in beschikbare periodes
-        const gevondenPeriode = periodes.find(p => p.periode === laatstePeriode)
-        if (gevondenPeriode) {
-          setSelectedPeriode(gevondenPeriode)
-        } else if (periodes.length > 0) {
-          // Fallback naar eerste beschikbare periode
+        if (periodes.length > 0) {
           setSelectedPeriode(periodes[0])
         }
 
