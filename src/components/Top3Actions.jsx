@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { AlertCircle } from 'lucide-react'
 import { supabase } from '../supabaseClient'
 
 const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
@@ -313,6 +314,14 @@ const Top3Actions = ({ werknemerId, periode, onRefresh }) => {
            Gegenereerd op: {new Date(topActies.gegenereerd_op).toLocaleDateString('nl-NL')}
          </div>
        </div>
+
+      {/* Let op - ballon */}
+      <div className="mb-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50/90 px-3 py-2 shadow-sm">
+        <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+        <p className="text-sm text-amber-900">
+          Let op: Voer impactvolle verbeteradviezen alleen in overleg met je werkgever of leidinggevende uit.
+        </p>
+      </div>
 
       {/* Top 3 Acties */}
       <div className="space-y-4">
