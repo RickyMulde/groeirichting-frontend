@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
   Users, CheckCircle, X,
@@ -155,6 +154,64 @@ function Home() {
           </p>
         </div>
         <img src="/performance.svg" alt="" className="w-full h-auto" />
+      </section>
+
+      {/* De Confrontatie: Brandweerman vs. Ondernemer */}
+      <section className="py-12 px-6 bg-white border-y border-slate-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">
+              Herken je dit? De &apos;Scale-up Trap&apos;.
+            </h2>
+            <p className="text-lg text-[var(--kleur-muted)] max-w-2xl mx-auto">
+              Hoe harder je groeit, hoe meer je agenda wordt gegijzeld door personeelsgedoe.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* De Huidige Situatie */}
+            <div className="rounded-xl p-8 shadow-lg border-2 border-red-100 bg-red-50">
+              <h3 className="text-xl font-bold text-red-700 mb-6 flex items-center gap-2">
+                <X className="w-6 h-6 flex-shrink-0" /> Nu: De Brandweerman
+              </h3>
+              <ul className="space-y-4 text-red-900/80">
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                  Je bent 80% van je tijd bezig met &apos;gedoe&apos; op de werkvloer.
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                  Je wordt verrast door onverwacht verloop en hoog verzuim.
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                  Niemand vertelt je meer wat er écht speelt (de feedback-muur).
+                </li>
+              </ul>
+            </div>
+
+            {/* De GroeiRichting Situatie */}
+            <div className="rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-accent)] bg-teal-50">
+              <h3 className="text-xl font-bold text-teal-700 mb-6 flex items-center gap-2">
+                <CheckCircle className="w-6 h-6 flex-shrink-0" /> Met GroeiRichting: De Architect
+              </h3>
+              <ul className="space-y-4 text-teal-900/80">
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
+                  Je hebt de regie terug en focust weer op je groeistrategie.
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
+                  Brandhaarden worden geblust voordat ze schade aanrichten.
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
+                  Je bouwt op data en feiten, niet op onderbuikgevoel.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Traditioneel MTO vs. GroeiRichting */}
@@ -333,45 +390,6 @@ function Home() {
             Ontdek hoe directie en HR GroeiRichting inzetten voor grip op de organisatie.
           </p>
           <Reviews />
-        </div>
-      </section>
-
-      {/* Kies je Winst */}
-      <section className="py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-8 text-center">
-            GroeiRichting werkt voor de hele organisatie.
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Blok 1: Directie & Office */}
-            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-primary)]/20 hover:border-[var(--kleur-primary)]/40 transition-all">
-              <h3 className="text-2xl font-bold text-[var(--kleur-primary)] mb-4">
-                Ik wil zakelijk rendement en rust.
-              </h3>
-              <p className="text-lg text-[var(--kleur-muted)] mb-6">
-                Je wilt geen gedoe, maar een bedrijf dat loopt. Verlaag verzuimkosten, behoud je beste mensen en borg de cultuur, zonder dat het jou extra tijd kost.
-              </p>
-              <Link to="/voor-directie-en-office" className="btn btn-primary inline-flex items-center gap-2">
-                Bekijk de zakelijke voordelen
-                <span>→</span>
-              </Link>
-            </div>
-
-            {/* Blok 2: HR-Professionals */}
-            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-accent)]/20 hover:border-[var(--kleur-accent)]/40 transition-all">
-              <h3 className="text-2xl font-bold text-[var(--kleur-accent)] mb-4">
-                Ik wil strategische impact met data.
-              </h3>
-              <p className="text-lg text-[var(--kleur-muted)] mb-6">
-                Je wilt af van de administratie en de diepte in. Krijg de tools en data om de directie te overtuigen en lijnmanagers te activeren.
-              </p>
-              <Link to="/voor-hr-professionals" className="btn btn-accent inline-flex items-center gap-2">
-                Bekijk de HR-oplossing
-                <span>→</span>
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
 
