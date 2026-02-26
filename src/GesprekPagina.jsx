@@ -1158,10 +1158,9 @@ function GesprekPagina() {
               {isVerzenden && (
                 <div className="flex justify-end mb-3">
                   <div className="bg-gray-100 p-3 rounded-lg text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                      AI denkt na...
-                    </div>
+                    <span className="typing-dots inline-flex gap-0.5">
+                      <span>.</span><span>.</span><span>.</span>
+                    </span>
                   </div>
                 </div>
               )}

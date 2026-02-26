@@ -107,8 +107,8 @@ function Layout({ children }) {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
-              src="/Logo.svg" 
-              alt="GroeiRichting Logo" 
+              src="/performance.svg" 
+              alt="GroeiRichting" 
               className="h-10 sm:h-12 w-auto"
             />
           </Link>
