@@ -177,15 +177,15 @@ function Home() {
               <ul className="space-y-4 text-red-900/80">
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  Je bent 80% van je tijd bezig met &apos;gedoe&apos; op de werkvloer.
+                  Hoe vaak heb jij deze week al brandjes moeten blussen in plaats van gebouwd aan je strategie?
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  Je wordt verrast door onverwacht verloop en hoog verzuim.
+                  Hoe gaat je bedrijf de volgende groeistap maken als jij wordt opgeslokt door personeelsgedoe?
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  Niemand vertelt je meer wat er écht speelt (de feedback-muur).
+                  Hoe blijft je team voor jouw visie kiezen als jij geen tijd meer hebt om ze écht te horen?
                 </li>
               </ul>
             </div>
