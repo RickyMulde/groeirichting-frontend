@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
   Users, CheckCircle, X,
-  ShieldCheck, Target, TrendingUp, Calendar
+  ShieldCheck, Target, TrendingUp, Calendar,
+  Bot, Bell
 } from 'lucide-react'
 
 import ContactForm from './components/ContactForm'
@@ -181,11 +183,11 @@ function Home() {
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  De groei van je bedrijf komt in gevaar.
+                  Je loopt continu achter de feiten aan.
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  Je loopt continu achter de feiten aan.
+                  De groei van je bedrijf komt in gevaar.
                 </li>
               </ul>
             </div>
@@ -210,6 +212,87 @@ function Home() {
                 </li>
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Geen dikke rapporten, maar direct inzicht. */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
+            Geen dikke rapporten, maar direct inzicht.
+          </h2>
+          <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
+            Zie direct hoe de vlag erbij hangt. Scoort &apos;Samenwerking&apos; groen? Top. Is &apos;Werkdruk&apos; oranje? Dan weet je precies welk thema de komende periode aandacht krijgt en dat per team.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bot className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Wij doen de uitvoering
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Jij hoeft geen vragen te verzinnen of interviews te plannen. Onze software regelt de uitnodigingen, de interviews en de analyse. Jij krijgt puur een seintje als de resultaten klaar staan.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <MessageCircle className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Geen HR-jargon
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Kijk naar het dashboard hiernaast. Je ziet geen complexe statistieken, maar heldere scores en kleuren. Iedere manager ziet in 3 seconden waar de aandacht heen moet.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="relative p-3 rounded-xl flex-shrink-0 bg-gradient-to-br from-teal-50 to-teal-100 border border-teal-200/50 shadow-sm">
+                  <Bell className="w-6 h-6 text-[var(--kleur-accent)] drop-shadow-sm" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
+                    Van inzicht naar actie
+                  </h3>
+                  <p className="text-[var(--kleur-muted)]">
+                    Klik op een oranje thema (zoals Werkdruk) en zie direct waarom het team ontevreden is. Je krijgt concrete handvatten om het gesprek aan te gaan en het probleem op te lossen.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div className="overflow-y-auto rounded-lg" style={{ maxHeight: '400px' }}>
+                <img
+                  src="/thema-overzicht-dashboard.png"
+                  alt="Dashboard overzicht met thema's: Werkdruk & Taaklast, Perspectief & Ontwikkeling, Motivatie en Werkplezier, Samenwerking & Werksfeer"
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+            <button
+              type="button"
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-accent"
+            >
+              Download voorbeeldrapport
+            </button>
+            <Link to="/contact" className="btn btn-primary">
+              Neem contact op
+            </Link>
           </div>
         </div>
       </section>
