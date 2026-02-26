@@ -19,8 +19,8 @@ function Home() {
     <>
       <SEOHead 
         title="Stop met brandjes blussen. Start weer met ondernemen!"
-        description="Je bedrijf groeit, maar je tijd wordt opgeslokt door brandjes blussen. Met GroeiRichting breng je bloot waar de brandhaarden zitten en krijg je hapklare oplossingen. Voor scale-up ondernemers die weer willen bouwen."
-        keywords="scale-up ondernemer, organisatiecultuur, personeelsgedoe, DGA, brandjes blussen, medewerkerstevredenheid, verloop verzuim, GroeiRichting, HR-capaciteit"
+        description="Van onrust naar inzicht, van inzicht naar rust. GroeiRichting geeft scale-up ondernemers de regie terug: nulmeting, direct dashboard en hapklare adviezen. Geen onderbuik, maar feiten."
+        keywords="scale-up ondernemer, organisatiecultuur, nulmeting, brandjes blussen, DGA, medewerkerstevredenheid, verloop verzuim, onboarding-check, ontwikkelgesprekken, GroeiRichting, HR-capaciteit"
         canonical="https://groeirichting.nl/"
         structuredData={{
           "@context": "https://schema.org",
@@ -61,18 +61,20 @@ function Home() {
                 "priceCurrency": "EUR",
                 "description": "Persoonlijke offerte op maat"
               },
-              "description": "De meting: AI-gesprekken met medewerkers op vaste momenten. De diepgang: echt gesprek in plaats van statische vragenlijst. De analyse: waarom achter het cijfer, haarscherp rapport met uitvoerbare adviezen. De oplossing: HR-capaciteit om brandhaarden daadwerkelijk te blussen.",
+              "description": "GroeiRichting bevrijdt de scale-up ondernemer van de rol van fulltime brandweerman. De meting: AI-gesprekken op vaste momenten. De diepgang: echt gesprek, ongefilterde waarheid. De analyse: haarscherp rapport met uitvoerbare adviezen. De oplossing: HR-capaciteit om brandhaarden te blussen. Nulmeting, onboarding-check na 90 dagen, ontwikkelgesprekken met AI-voorbereiding.",
               "featureList": [
+                "Nulmeting: binnen 2 weken alle brandhaarden in kaart, direct dashboard organisatiecultuur",
                 "AI-gesprekken met medewerkers op vaste momenten (de meting)",
-                "Echt gesprek in plaats van statische vragenlijst — eerlijke waarheid boven tafel",
+                "Echt gesprek in plaats van statische vragenlijst — ongefilterde waarheid boven tafel",
                 "Haarscherp rapport met direct uitvoerbare adviezen (de analyse)",
-                "HR-capaciteit om brandhaarden uit de meting daadwerkelijk te blussen",
-                "Krijg je handen vrij: focus terug op strategie",
-                "Werk aan je bedrijf in plaats van in je bedrijf",
-                "Signaleer verloop- en verzuimrisico's vóór ze roadmap en winstgevendheid saboteren",
+                "Onboarding-check na 90 dagen: meet of nieuw talent echt landt",
+                "Ontwikkelgesprekken: AI-voorbereidingsgesprek vóór het fysieke gesprek",
+                "HR-capaciteit om brandhaarden daadwerkelijk te blussen",
+                "Direct inzicht in trends, geen momentopname",
+                "Van onrust naar inzicht, van inzicht naar rust",
                 "Privacy-first: AVG-proof met anonieme rapportages"
               ],
-              "keywords": "scale-up ondernemer, organisatiecultuur, brandjes blussen, DGA, medewerkerstevredenheid, verloop verzuim, HR-capaciteit, GroeiRichting",
+              "keywords": "scale-up ondernemer, organisatiecultuur, nulmeting, brandjes blussen, DGA, onboarding-check, ontwikkelgesprekken, medewerkerstevredenheid, verloop verzuim, HR-capaciteit, GroeiRichting",
               "screenshot": "https://groeirichting.nl/Logo.svg",
               "aggregateRating": {
                 "@type": "AggregateRating",

@@ -10,8 +10,8 @@ const SEOHead = ({
   structuredData = null // JSON-LD structured data object
 }) => {
   const fullTitle = title ? `${title} | GroeiRichting` : 'Stop met brandjes blussen. Start weer met ondernemen! | GroeiRichting';
-  const fullDescription = description || 'Je bedrijf groeit, maar je tijd wordt opgeslokt door brandjes blussen. Met GroeiRichting breng je bloot waar de brandhaarden zitten en krijg je hapklare oplossingen. Voor scale-up ondernemers.';
-  const fullKeywords = keywords || 'scale-up ondernemer, organisatiecultuur, personeelsgedoe, DGA, brandjes blussen, medewerkerstevredenheid, verloop verzuim, GroeiRichting, HR-capaciteit';
+  const fullDescription = description || 'Van onrust naar inzicht, van inzicht naar rust. GroeiRichting geeft scale-up ondernemers de regie terug: nulmeting, direct dashboard en hapklare adviezen. Geen onderbuik, maar feiten.';
+  const fullKeywords = keywords || 'scale-up ondernemer, organisatiecultuur, nulmeting, brandjes blussen, DGA, medewerkerstevredenheid, verloop verzuim, onboarding-check, ontwikkelgesprekken, GroeiRichting, HR-capaciteit';
   const fullCanonical = canonical || 'https://groeirichting.nl/';
 
   useEffect(() => {
