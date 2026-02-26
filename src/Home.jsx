@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import {
   BarChart, Smile, MessageCircle,
   Users, CheckCircle, X,
@@ -290,9 +289,6 @@ function Home() {
             >
               Download voorbeeldrapport
             </button>
-            <Link to="/contact" className="btn btn-primary">
-              Neem contact op
-            </Link>
           </div>
         </div>
       </section>
@@ -387,60 +383,51 @@ function Home() {
         </div>
       </section>
 
-      {/* Wat is GroeiRichting? */}
+      {/* Start met een nulmeting, groei door met een systeem. */}
       <section className="py-12 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             {/* Tekst links */}
             <div>
-              <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-6">
-                Resultaat: Een zelfsturende organisatie waar talent blijft.
+              <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">
+                Start met een nulmeting, groei door met een systeem.
               </h2>
+              <p className="text-lg text-[var(--kleur-muted)] mb-8">
+                Inzicht biedt direct rust. Door de blinde vlekken in kaart te brengen, pak jij de regie terug en bouw je aan je bedrijf in plaats van dat je brandjes blust.
+              </p>
               
               <div className="space-y-8 text-[var(--kleur-muted)] mb-8">
-                {/* Resultaat 1 */}
+                {/* De Nulmeting */}
                 <div>
                   <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
                     <ShieldCheck className="w-6 h-6 flex-shrink-0" />
-                    Geen onverwacht vertrek meer
+                    De Nulmeting <span className="font-normal text-[var(--kleur-muted)]">(Directe Rust)</span>
                   </h4>
-                  <p className="text-base mb-3">
-                    <strong>De situatie:</strong> Je wordt niet meer verrast door het plotselinge vertrek van je beste mensen. Het systeem herkent twijfel en verminderde betrokkenheid in een vroeg stadium.
+                  <p className="text-base">
+                    Stop de onrust en lokaliseer binnen 2 weken alle brandhaarden. Krijg een feitelijk dashboard van je volledige organisatiecultuur, zodat je precies weet waar je moet beginnen.
                   </p>
-                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je behoudt kennis en ervaring binnen boord, zonder dat jij continu bezig bent met micromanagement of brandjes blussen.</p>
-                  </div>
                 </div>
 
-                {/* Resultaat 2 */}
+                {/* Onboarding-check */}
                 <div>
                   <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
                     <Target className="w-6 h-6 flex-shrink-0" />
-                    Managers pakken hun verantwoordelijkheid
+                    Onboarding-check <span className="font-normal text-[var(--kleur-muted)]">(Borging bij Groei)</span>
                   </h4>
-                  <p className="text-base mb-3">
-                    <strong>De situatie:</strong> Je hoeft niet meer te sturen op elk detail. Teamleiders zien in hun eigen dashboard waar de werkdruk of sfeer aandacht vraagt en krijgen concrete handvatten om dit op te lossen.
+                  <p className="text-base">
+                    Voorkom dat je nieuw personeel voor niks inwerkt. Onze AI meet na 90 dagen of nieuwe talenten echt landen. Zo voorkom je dat kostbaar talent via de achterdeur vertrekt terwijl jij opschaalt.
                   </p>
-                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Problemen worden opgelost op de werkvloer, zodat jij je kunt focussen op de strategie en de grote lijnen.</p>
-                  </div>
                 </div>
 
-                {/* Resultaat 3 */}
+                {/* Ontwikkelgesprekken */}
                 <div>
                   <h4 className="flex items-center gap-3 text-xl font-semibold text-[var(--kleur-primary)] mb-3">
                     <TrendingUp className="w-6 h-6 flex-shrink-0" />
-                    Een cultuur die rendeert
+                    Ontwikkelgesprekken <span className="font-normal text-[var(--kleur-muted)]">(Continu Behoud)</span>
                   </h4>
-                  <p className="text-base mb-3">
-                    <strong>De situatie:</strong> Doordat medewerkers zich gehoord voelen, daalt het verzuim en stijgt de productiviteit. Goed werkgeverschap wordt meetbaar en draagt direct bij aan het bedrijfsresultaat.
+                  <p className="text-base">
+                    Je wilt het maximale uit je medewerkers halen. Vraag ze ernaar en ze blijven vaak stil. Bereid je medewerkers voor op het fysieke ontwikkelgesprek, door een voorbereidingsgesprek met AI te laten voeren.
                   </p>
-                  <div className="bg-[var(--kleur-accent)]/10 border-l-4 border-[var(--kleur-accent)] p-4 rounded-r-lg">
-                    <p className="text-sm font-semibold text-[var(--kleur-accent)] mb-1">Het voordeel:</p>
-                    <p className="text-sm text-[var(--kleur-text)]">Je bespaart aanzienlijk op werving- en verzuimkosten, simpelweg door processen te automatiseren die voorheen tijdrovend waren.</p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -451,14 +438,17 @@ function Home() {
             </div>
           </div>
           
-          {/* Download voorbeeldrapport knop */}
+          {/* CTA: Boek een demo */}
           <div className="text-center mt-8">
-            <button 
-              onClick={() => setShowBrochureModal(true)}
-              className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white px-8 py-4"
+            <a
+              href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn bg-[var(--kleur-secondary)] hover:bg-[var(--kleur-secondary)] hover:brightness-110 text-white px-8 py-4 inline-flex items-center gap-2 justify-center"
             >
-              Download voorbeeldrapport
-            </button>
+              <Calendar className="w-5 h-5" />
+              Boek een demo
+            </a>
           </div>
         </div>
       </section>
