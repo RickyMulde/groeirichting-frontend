@@ -6,7 +6,6 @@ import {
   ShieldCheck, Target, TrendingUp, Calendar
 } from 'lucide-react'
 
-import HeroIllustratie from './assets/hero.svg?react'
 import ContactForm from './components/ContactForm'
 import SEOHead from './components/SEOHead'
 import BrochureDownloadModal from './components/BrochureDownloadModal'
@@ -155,7 +154,7 @@ function Home() {
             Ook maatwerkthema&apos;s mogelijk voor specifieke events/informatiebehoefte.
           </p>
         </div>
-        <HeroIllustratie className="w-full h-auto" />
+        <img src="/performance.svg" alt="" className="w-full h-auto" />
       </section>
 
       {/* Traditioneel MTO vs. GroeiRichting */}
