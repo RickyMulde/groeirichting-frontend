@@ -9,9 +9,9 @@ const SEOHead = ({
   ogType = "website",
   structuredData = null // JSON-LD structured data object
 }) => {
-  const fullTitle = title ? `${title} | GroeiRichting` : 'GroeiRichting - AI-Gestuurde Gesprekken voor Werkgevers en Medewerkers';
-  const fullDescription = description || 'Ontdek hoe AI-gestuurde gesprekken werkgevers en medewerkers helpen groeien. Professionele gespreksvoering met kunstmatige intelligentie voor betere werkrelaties.';
-  const fullKeywords = keywords || 'AI gesprekken, werkgever medewerker, kunstmatige intelligentie, gespreksvoering, groei, ontwikkeling, HR, personeel';
+  const fullTitle = title ? `${title} | GroeiRichting` : 'Stop met brandjes blussen. Start weer met ondernemen! | GroeiRichting';
+  const fullDescription = description || 'Je bedrijf groeit, maar je tijd wordt opgeslokt door brandjes blussen. Met GroeiRichting breng je bloot waar de brandhaarden zitten en krijg je hapklare oplossingen. Voor scale-up ondernemers.';
+  const fullKeywords = keywords || 'scale-up ondernemer, organisatiecultuur, personeelsgedoe, DGA, brandjes blussen, medewerkerstevredenheid, verloop verzuim, GroeiRichting, HR-capaciteit';
   const fullCanonical = canonical || 'https://groeirichting.nl/';
 
   useEffect(() => {

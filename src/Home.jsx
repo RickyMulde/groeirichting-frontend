@@ -19,9 +19,9 @@ function Home() {
   return (
     <>
       <SEOHead 
-        title="Medewerkerstevredenheid verbeteren met AI-gesprekken"
-        description="Versterk de verbinding met je medewerkers en signaleer vroegtijdig wat er speelt. GroeiRichting is hét MTO-alternatief voor meer betrokkenheid, minder verzuim en groei."
-        keywords="medewerkerstevredenheid verbeteren, betrokkenheid medewerkers, verzuim terugdringen, MTO alternatief, AI HR, gespreksplatform, werkgeluk"
+        title="Stop met brandjes blussen. Start weer met ondernemen!"
+        description="Je bedrijf groeit, maar je tijd wordt opgeslokt door brandjes blussen. Met GroeiRichting breng je bloot waar de brandhaarden zitten en krijg je hapklare oplossingen. Voor scale-up ondernemers die weer willen bouwen."
+        keywords="scale-up ondernemer, organisatiecultuur, personeelsgedoe, DGA, brandjes blussen, medewerkerstevredenheid, verloop verzuim, GroeiRichting, HR-capaciteit"
         canonical="https://groeirichting.nl/"
         structuredData={{
           "@context": "https://schema.org",
@@ -31,7 +31,7 @@ function Home() {
               "name": "GroeiRichting",
               "url": "https://groeirichting.nl",
               "logo": "https://groeirichting.nl/Logo.svg",
-              "description": "AI-gestuurde gesprekken voor werkgevers en werknemers om samen te groeien. MTO-alternatief voor meer betrokkenheid, minder verzuim en groei.",
+              "description": "Wij bevrijden de scale-up ondernemer van de rol van fulltime brandweerman. We geven de controle over de organisatiecultuur terug, zodat de DGA weer kan bouwen aan het bedrijf in plaats van opgeslokt te worden door personeelsgedoe.",
               "foundingDate": "2024",
               "contactPoint": {
                 "@type": "ContactPoint",
@@ -62,18 +62,18 @@ function Home() {
                 "priceCurrency": "EUR",
                 "description": "Persoonlijke offerte op maat"
               },
-              "description": "AI-gestuurde gespreksplatform voor medewerkerstevredenheid. Digitaal gesprek- en ontwikkelportaal dat het gat vult tussen een traditioneel MTO en het functioneringsgesprek.",
+              "description": "De meting: AI-gesprekken met medewerkers op vaste momenten. De diepgang: echt gesprek in plaats van statische vragenlijst. De analyse: waarom achter het cijfer, haarscherp rapport met uitvoerbare adviezen. De oplossing: HR-capaciteit om brandhaarden daadwerkelijk te blussen.",
               "featureList": [
-                "AI-gestuurde gesprekken over werkdruk, motivatie, samenwerking en ontwikkeling",
-                "Persoonlijke samenvattingen en groeisuggesties voor medewerkers",
-                "Geanonimiseerde trends en signalen per team voor werkgevers",
-                "Vroege signalering van risico's in werkdruk, motivatie en samenwerking",
-                "MTO-alternatief met meer diepgang en minder tijd",
-                "Privacy-first: AVG-proof met anonieme rapportages",
-                "Begeleide gesprekken per thema",
-                "Dashboard met inzichten per team en rol"
+                "AI-gesprekken met medewerkers op vaste momenten (de meting)",
+                "Echt gesprek in plaats van statische vragenlijst — eerlijke waarheid boven tafel",
+                "Haarscherp rapport met direct uitvoerbare adviezen (de analyse)",
+                "HR-capaciteit om brandhaarden uit de meting daadwerkelijk te blussen",
+                "Krijg je handen vrij: focus terug op strategie",
+                "Werk aan je bedrijf in plaats van in je bedrijf",
+                "Signaleer verloop- en verzuimrisico's vóór ze roadmap en winstgevendheid saboteren",
+                "Privacy-first: AVG-proof met anonieme rapportages"
               ],
-              "keywords": "medewerkerstevredenheid, MTO alternatief, AI HR, gespreksplatform, werkgeluk, betrokkenheid medewerkers, verzuim terugdringen, medewerkerstevredenheid verbeteren, AI gesprekken, HR software, personeelsgesprekken",
+              "keywords": "scale-up ondernemer, organisatiecultuur, brandjes blussen, DGA, medewerkerstevredenheid, verloop verzuim, HR-capaciteit, GroeiRichting",
               "screenshot": "https://groeirichting.nl/Logo.svg",
               "aggregateRating": {
                 "@type": "AggregateRating",
@@ -107,32 +107,38 @@ function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-24">
         <div>
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
-            Krijg grip op wat er écht speelt in je organisatie.
+            Stop met brandjes blussen. Start weer met ondernemen!
           </h1>
-          <h2 className="sr-only">MTO alternatief en AI HR platform voor medewerkerstevredenheid</h2>
+          <h2 className="sr-only">GroeiRichting: controle over organisatiecultuur voor scale-up ondernemers</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
-          Traditionele statische MTO's geven cijfers, GroeiRichting geeft de oorzaken. Of je nu al meet of net begint: de AI-gesprekken van GroeiRichting vragen door waar MTO's stoppen. Zo krijg je meer informatie en betere signalen.
+          Je bedrijf groeit, maar je tijd wordt steeds opgeslokt door het blussen van brandjes. Met GroeiRichting breng je direct bloot waar de brandhaarden zitten en worden hapklare oplossingen voorgeschoteld.
           </p>
           
           {/* Bullets */}
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Behoud je beste mensen:</strong> Zie direct wie er dreigt af te haken en waarom.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Krijg je handen weer vrij:</strong> Stop met het managen van individuele irritaties en krijg je focus terug op de strategie.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Verlaag verzuimkosten:</strong> Grijp in bij hoge werkdruk voordat iemand uitvalt.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Werk aan je bedrijf in plaats van in je bedrijf:</strong> Verschuif van reactief brandjes blussen naar proactief bouwen aan een schaalbaar team.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Verhoog productiviteit:</strong> Een betrokken team werkt harder en efficiënter.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Voorkom de &apos;Groei-Stagnatie&apos;:</strong> Signaleer verloop- en verzuimrisico&apos;s voordat ze je roadmap en je winstgevendheid saboteren.</p>
             </div>
           </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <Link to="/registreer-werkgever" className="btn btn-primary">Start gratis proeflicentie</Link>
+            <button
+              type="button"
+              onClick={() => setShowBrochureModal(true)}
+              className="btn btn-primary"
+            >
+              Download voorbeeldrapport
+            </button>
             <a
               href="https://calendar.app.google/nBkzwXbFmVLCUpKk7"
               target="_blank"
@@ -146,7 +152,7 @@ function Home() {
 
           {/* Micro-trust */}
           <p className="text-sm text-[var(--kleur-muted)] italic">
-            Ook maatwerkthema's mogelijk voor specifieke events/informatiebehoefte.
+            Ook maatwerkthema&apos;s mogelijk voor specifieke events/informatiebehoefte.
           </p>
         </div>
         <HeroIllustratie className="w-full h-auto" />
