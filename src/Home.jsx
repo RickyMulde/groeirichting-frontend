@@ -216,14 +216,14 @@ function Home() {
         </div>
       </section>
 
-      {/* Geen dikke rapporten, maar direct inzicht. */}
+      {/* Van onrust naar inzicht. Van inzicht naar rust. */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4 text-center">
-            Geen dikke rapporten, maar direct inzicht.
+            Van onrust naar inzicht. Van inzicht naar rust.
           </h2>
           <p className="text-lg text-[var(--kleur-muted)] text-center mb-8 max-w-3xl mx-auto">
-            Zie direct hoe de vlag erbij hangt. Scoort &apos;Samenwerking&apos; groen? Top. Is &apos;Werkdruk&apos; oranje? Dan weet je precies welk thema de komende periode aandacht krijgt en dat per team.
+            Je onderbuikgevoel heeft je ver gebracht, maar schaalt niet meer mee met je team. Die vage twijfel op de achtergrond is onrust geworden. Wij maken die onrust concreet, zodat je weer met een gerust hart kunt sturen op feiten.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
@@ -234,10 +234,10 @@ function Home() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Wij doen de uitvoering
+                    Stap 1: De Onrust wegnemen <span className="font-normal text-[var(--kleur-muted)]">(De Uitvoering)</span>
                   </h3>
                   <p className="text-[var(--kleur-muted)]">
-                    Jij hoeft geen vragen te verzinnen of interviews te plannen. Onze software regelt de uitnodigingen, de interviews en de analyse. Jij krijgt puur een seintje als de resultaten klaar staan.
+                    Jij hoeft niet meer te gissen of zelf de lastige gesprekken te voeren. Onze AI-methode regelt het volledige proces en haalt de ongefilterde waarheid boven tafel die jij niet meer voelt.
                   </p>
                 </div>
               </div>
@@ -248,10 +248,10 @@ function Home() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Geen HR-jargon
+                    Stap 2: Het Inzicht krijgen <span className="font-normal text-[var(--kleur-muted)]">(Het Dashboard)</span>
                   </h3>
                   <p className="text-[var(--kleur-muted)]">
-                    Kijk naar het dashboard hiernaast. Je ziet geen complexe statistieken, maar heldere scores en kleuren. Iedere manager ziet in 3 seconden waar de aandacht heen moet.
+                    Geen vage verhalen bij het koffiezetapparaat, maar harde data. In één oogopslag zie je de blinde vlekken en brandhaarden die jouw groei op dit moment saboteren.
                   </p>
                 </div>
               </div>
@@ -262,10 +262,10 @@ function Home() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-[var(--kleur-text)] mb-2">
-                    Van inzicht naar actie
+                    Stap 3: De Rust herstellen <span className="font-normal text-[var(--kleur-muted)]">(De Actie)</span>
                   </h3>
                   <p className="text-[var(--kleur-muted)]">
-                    Klik op een oranje thema (zoals Werkdruk) en zie direct waarom het team ontevreden is. Je krijgt concrete handvatten om het gesprek aan te gaan en het probleem op te lossen.
+                    Inzicht is het begin van rust. Zodra de feiten op tafel liggen, ben jij weer in control. Je stopt met reactief brandjes blussen en krijgt de ruimte om weer te bouwen aan de toekomst van je bedrijf.
                   </p>
                 </div>
               </div>
