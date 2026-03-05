@@ -19,8 +19,8 @@ function Home() {
     <>
       <SEOHead 
         title="Stop met brandjes blussen. Start weer met ondernemen!"
-        description="Van onrust naar inzicht, van inzicht naar rust. GroeiRichting geeft scale-up ondernemers de regie terug: nulmeting, direct dashboard en hapklare adviezen. Geen onderbuik, maar feiten."
-        keywords="scale-up ondernemer, organisatiecultuur, nulmeting, brandjes blussen, DGA, medewerkerstevredenheid, verloop verzuim, onboarding-check, ontwikkelgesprekken, GroeiRichting, HR-capaciteit"
+        description="Van onrust naar inzicht, van inzicht naar rust. GroeiRichting: controle over je organisatiecultuur (20–75 medewerkers). Nulmeting, direct dashboard en hapklare adviezen. Voor ondernemers en directeuren van MKB en scale-up."
+        keywords="MKB, scale-up, ondernemer, directeur, organisatiecultuur, 20-75 medewerkers, nulmeting, brandjes blussen, DGA, medewerkerstevredenheid, verloop verzuim, onboarding-check, ontwikkelgesprekken, GroeiRichting, HR-capaciteit"
         canonical="https://groeirichting.nl/"
         structuredData={{
           "@context": "https://schema.org",
@@ -30,7 +30,7 @@ function Home() {
               "name": "GroeiRichting",
               "url": "https://groeirichting.nl",
               "logo": "https://groeirichting.nl/Logo.svg",
-              "description": "Wij bevrijden de scale-up ondernemer van de rol van fulltime brandweerman. We geven de controle over de organisatiecultuur terug, zodat de DGA weer kan bouwen aan het bedrijf in plaats van opgeslokt te worden door personeelsgedoe.",
+              "description": "GroeiRichting: controle over je organisatiecultuur (20–75 medewerkers). Voor ondernemers en directeuren van MKB en scale-up. We geven de controle terug, zodat je weer kunt bouwen aan je bedrijf in plaats van opgeslokt te worden door personeelsgedoe.",
               "foundingDate": "2024",
               "contactPoint": {
                 "@type": "ContactPoint",
@@ -61,7 +61,7 @@ function Home() {
                 "priceCurrency": "EUR",
                 "description": "Persoonlijke offerte op maat"
               },
-              "description": "GroeiRichting bevrijdt de scale-up ondernemer van de rol van fulltime brandweerman. De meting: AI-gesprekken op vaste momenten. De diepgang: echt gesprek, ongefilterde waarheid. De analyse: haarscherp rapport met uitvoerbare adviezen. De oplossing: HR-capaciteit om brandhaarden te blussen. Nulmeting, onboarding-check na 90 dagen, ontwikkelgesprekken met AI-voorbereiding.",
+              "description": "GroeiRichting: controle over je organisatiecultuur (20–75 medewerkers). De meting: AI-gesprekken op vaste momenten. De diepgang: echt gesprek, ongefilterde waarheid. De analyse: haarscherp rapport met uitvoerbare adviezen. Nulmeting, onboarding-check na 90 dagen, ontwikkelgesprekken met AI-voorbereiding. Voor MKB en scale-up.",
               "featureList": [
                 "Nulmeting: binnen 2 weken alle brandhaarden in kaart, direct dashboard organisatiecultuur",
                 "AI-gesprekken met medewerkers op vaste momenten (de meting)",
@@ -74,7 +74,7 @@ function Home() {
                 "Van onrust naar inzicht, van inzicht naar rust",
                 "Privacy-first: AVG-proof met anonieme rapportages"
               ],
-              "keywords": "scale-up ondernemer, organisatiecultuur, nulmeting, brandjes blussen, DGA, onboarding-check, ontwikkelgesprekken, medewerkerstevredenheid, verloop verzuim, HR-capaciteit, GroeiRichting",
+              "keywords": "MKB, scale-up, ondernemer, directeur, organisatiecultuur, 20-75 medewerkers, nulmeting, brandjes blussen, DGA, onboarding-check, ontwikkelgesprekken, medewerkerstevredenheid, verloop verzuim, HR-capaciteit, GroeiRichting",
               "screenshot": "https://groeirichting.nl/Logo.svg",
               "aggregateRating": {
                 "@type": "AggregateRating",
@@ -110,7 +110,7 @@ function Home() {
           <h1 className="text-4xl font-bold text-[var(--kleur-primary)] mb-4">
             Stop met brandjes blussen. Start weer met ondernemen!
           </h1>
-          <h2 className="sr-only">GroeiRichting: controle over organisatiecultuur voor scale-up ondernemers</h2>
+          <h2 className="sr-only">GroeiRichting: controle over je organisatiecultuur (20–75 medewerkers).</h2>
           <p className="text-lg text-[var(--kleur-muted)] mb-6">
           Je bedrijf groeit, maar je tijd wordt steeds opgeslokt door het blussen van brandjes. Met GroeiRichting breng je direct bloot waar de brandhaarden zitten en worden hapklare oplossingen voorgeschoteld.
           </p>
@@ -127,7 +127,7 @@ function Home() {
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="text-[var(--kleur-primary)] mt-1 flex-shrink-0" />
-              <p className="text-[var(--kleur-muted)]"><strong>Voorkom de &apos;Groei-Stagnatie&apos;:</strong> Signaleer verloop- en verzuimrisico&apos;s voordat ze je roadmap en je winstgevendheid saboteren.</p>
+              <p className="text-[var(--kleur-muted)]"><strong>Voorkom de &apos;Groei-Stagnatie&apos;:</strong> Signaleer verloop- en verzuimrisico&apos;s voordat ze je planning, marges en nachtrust slopen.</p>
             </div>
           </div>
 
@@ -164,31 +164,28 @@ function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[var(--kleur-primary)] mb-4">
-              Herken je dit? De &apos;Scale-up Trap&apos;.
+              De ondernemer die alles doet vs. de ondernemer die richting geeft
             </h2>
-            <p className="text-lg text-[var(--kleur-muted)] max-w-2xl mx-auto">
-              Hoe harder je groeit, hoe meer je agenda wordt gegijzeld door personeelsgedoe.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* De Huidige Situatie */}
             <div className="rounded-xl p-8 shadow-lg border-2 border-red-100 bg-red-50">
               <h3 className="text-xl font-bold text-red-700 mb-6 flex items-center gap-2">
-                <X className="w-6 h-6 flex-shrink-0" /> Nu: De Brandweerman
+                <X className="w-6 h-6 flex-shrink-0" /> Nu: de ondernemer die alles zelf wil oplossen
               </h3>
               <ul className="space-y-4 text-red-900/80">
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  Je bent teveel bezig met brandjes blussen.
+                  Je blust dagelijks brandjes rond planning, support en personeelsgedoe.
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  Je loopt continu achter de feiten aan.
+                  Je rent van team naar team om te ondersteunen, maar dezelfde issues komen terug.
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
-                  De groei van je bedrijf komt in gevaar.
+                  Nieuwe kansen blijven liggen omdat jij te druk bent IN je bedrijf.
                 </li>
               </ul>
             </div>
@@ -196,20 +193,20 @@ function Home() {
             {/* De GroeiRichting Situatie */}
             <div className="rounded-xl p-8 shadow-lg border-2 border-[var(--kleur-accent)] bg-teal-50">
               <h3 className="text-xl font-bold text-teal-700 mb-6 flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 flex-shrink-0" /> Met GroeiRichting: De Architect
+                <CheckCircle className="w-6 h-6 flex-shrink-0" /> Met GroeiRichting: de ondernemer die richting geeft
               </h3>
               <ul className="space-y-4 text-teal-900/80">
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
-                  Je hebt de regie terug en focust weer op je groeistrategie.
+                  Teamleiders krijgen data en pakken issues op voordat ze op jouw bureau belanden.
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
-                  Brandhaarden worden geblust voordat ze schade aanrichten.
+                  Je stuurt op feiten in plaats van onderbuikgevoel, dus conflicten en verlooprisico&apos;s worden vroeg geblust.
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-400 flex-shrink-0" />
-                  Je bouwt op data en feiten, niet op onderbuikgevoel.
+                  Je houdt tijd vrij voor groei: nieuwe klanten, productlijnen of vestigingen.
                 </li>
               </ul>
             </div>
@@ -462,7 +459,7 @@ function Home() {
             Van onderbuikgevoel naar feitelijk inzicht
           </h2>
           <p className="text-lg text-[var(--kleur-muted)] text-center mb-12 max-w-3xl mx-auto">
-            Ontdek hoe directie en HR GroeiRichting inzetten voor grip op de organisatie.
+            Ontdek hoe ondernemers en hun rechterhanden GroeiRichting inzetten voor grip op de organisatie.
           </p>
           <Reviews />
         </div>
