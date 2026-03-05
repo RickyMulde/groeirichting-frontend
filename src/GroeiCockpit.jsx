@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { supabase } from './supabaseClient'
-import { MessageSquare, FileText, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react'
+import { MessageSquare, FileText, BarChart3, ChevronLeft, ChevronRight, Upload } from 'lucide-react'
 
 const PANEL_CHAT = 0
 const PANEL_FILES = 1
@@ -65,7 +65,7 @@ function GroeiCockpit() {
 
   return (
     <div className="w-full max-w-full -mx-6 overflow-x-hidden">
-      <header className="px-6 mb-4">
+      <header className="pl-6 pr-2 mb-4">
         <h1 className="text-2xl font-semibold text-[var(--kleur-primary)] mb-2">GroeiCockpit</h1>
         <p className="text-sm text-gray-600">
           Ingelogd als: <strong>{user?.email ?? '—'}</strong>
@@ -79,7 +79,7 @@ function GroeiCockpit() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex items-center justify-between gap-2 px-4 mb-3">
+        <div className="flex items-center justify-between gap-2 pl-4 pr-2 mb-3">
           <button
             type="button"
             onClick={() => goToPanel(PANEL_CHAT)}
@@ -103,7 +103,7 @@ function GroeiCockpit() {
 
         <div className="relative w-full" style={{ minHeight: 'calc(100vh - 220px)' }}>
           <section
-            className={`absolute inset-0 mx-4 bg-white shadow-md rounded-xl p-6 flex flex-col transition-opacity duration-200 ${activePanel === PANEL_CHAT ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
+            className={`absolute inset-0 ml-4 mr-2 bg-white shadow-md rounded-xl p-6 flex flex-col transition-opacity duration-200 ${activePanel === PANEL_CHAT ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
           >
             <div className="flex items-center gap-2 mb-4">
               <MessageSquare className="w-6 h-6 text-[var(--kleur-primary)]" />
@@ -115,24 +115,28 @@ function GroeiCockpit() {
           </section>
 
           <section
-            className={`absolute inset-0 mx-4 bg-white shadow-md rounded-xl p-6 flex flex-col transition-opacity duration-200 ${activePanel === PANEL_FILES ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
+            className={`absolute inset-0 ml-4 mr-2 bg-white shadow-md rounded-xl p-6 flex flex-col transition-opacity duration-200 ${activePanel === PANEL_FILES ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
           >
             <div className="flex items-center gap-2 mb-4">
               <FileText className="w-6 h-6 text-[var(--kleur-accent)]" />
               <BarChart3 className="w-6 h-6 text-[var(--kleur-accent)]" />
               <h2 className="text-lg font-semibold text-gray-800">Bestanden en grafieken</h2>
             </div>
-            <div className="flex-1 border border-gray-200 rounded-lg bg-gray-50/50 flex items-center justify-center text-gray-500 text-sm min-h-[280px]">
-              Bestanden en grafieken van de agent worden hier getoond (Fase 3–4).
+            <div className="flex-1 flex flex-col items-center justify-center gap-4 min-h-[280px] text-gray-500">
+              <Upload className="w-16 h-16 text-[var(--kleur-accent)] opacity-70" aria-hidden />
+              <p className="text-sm text-center">Upload bestanden om inzichten te halen en te hergebruiken.</p>
+              <button type="button" className="btn btn-primary" disabled aria-label="Upload bestand (komt in een latere fase)">
+                Upload bestand
+              </button>
             </div>
           </section>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-2 px-4">Swipe of gebruik de pijltjes om te wisselen</p>
+        <p className="text-center text-xs text-gray-400 mt-2 pl-4 pr-2">Swipe of gebruik de pijltjes om te wisselen</p>
       </div>
 
       {/* Desktop: twee kolommen, volle breedte */}
-      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:px-6 lg:min-h-[500px]">
+      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:pl-6 lg:pr-2 lg:min-h-[500px]">
         <section className="bg-white shadow-md rounded-xl p-6 flex flex-col min-h-[400px]">
           <div className="flex items-center gap-2 mb-4">
             <MessageSquare className="w-6 h-6 text-[var(--kleur-primary)]" />
@@ -149,8 +153,12 @@ function GroeiCockpit() {
             <BarChart3 className="w-6 h-6 text-[var(--kleur-accent)]" />
             <h2 className="text-lg font-semibold text-gray-800">Bestanden en grafieken</h2>
           </div>
-          <div className="flex-1 border border-gray-200 rounded-lg bg-gray-50/50 flex items-center justify-center text-gray-500 text-sm">
-            Bestanden en grafieken van de agent worden hier getoond (Fase 3–4).
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 text-gray-500">
+            <Upload className="w-20 h-20 text-[var(--kleur-accent)] opacity-70" aria-hidden />
+            <p className="text-sm text-center">Upload bestanden om inzichten te halen en te hergebruiken.</p>
+            <button type="button" className="btn btn-primary" disabled aria-label="Upload bestand (komt in een latere fase)">
+              Upload bestand
+            </button>
           </div>
         </section>
       </div>
