@@ -41,6 +41,7 @@ import VoorDirectieEnOffice from './VoorDirectieEnOffice'
 import VoorHRProfessionals from './VoorHRProfessionals'
 import MTOAlternatief from './MTOAlternatief'
 import VerloopVoorkomen from './VerloopVoorkomen'
+import GroeiCockpit from './GroeiCockpit'
 import { usePageTracking } from './hooks/usePageTracking'
 
 
@@ -189,6 +190,11 @@ function App() {
         <Route path="/gesprek-resultaten" element={
           <ProtectedRoute>
             <GesprekResultaten />
+          </ProtectedRoute>
+        } />
+        <Route path="/groei-cockpit" element={
+          <ProtectedRoute>
+            <GroeiCockpit />
           </ProtectedRoute>
         } />
       </Routes>

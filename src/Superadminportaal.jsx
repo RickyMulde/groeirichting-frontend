@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import { Settings, Users, Palette } from 'lucide-react'
+import { Settings, Users, Palette, Bot } from 'lucide-react'
 
 function SuperadminPortaal() {
   const navigate = useNavigate()
@@ -63,6 +63,18 @@ function SuperadminPortaal() {
             </div>
           </div>
           <Link to="/superadmin/email-beheer" className="btn btn-secondary">Ga naar email beheer</Link>
+        </section>
+
+        {/* 4. Jouw persoonlijke AI agents */}
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Bot className="text-[var(--kleur-primary)] w-8 h-8" />
+            <div>
+              <h2 className="text-xl font-semibold">Jouw persoonlijke AI agents</h2>
+              <p className="text-sm text-gray-500">Hier vind je jouw persoonlijke AI agents die jou kunnen helpen op veel verschillende manieren, zoals sparren en taken uitvoeren.</p>
+            </div>
+          </div>
+          <Link to="/groei-cockpit" className="btn btn-primary">Ga naar GroeiCockpit</Link>
         </section>
       </div>
     </div>

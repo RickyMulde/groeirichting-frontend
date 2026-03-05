@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BarChart3, Users, Settings, X, CheckCircle, XCircle, Calendar, Users2, Target, Lightbulb, CheckCircle2 } from 'lucide-react'
+import { BarChart3, Users, Settings, X, CheckCircle, XCircle, Calendar, Users2, Target, Lightbulb, CheckCircle2, Bot } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 
@@ -221,6 +221,17 @@ function EmployerPortal() {
             </div>
           </div>
           <Link to="/instellingen" className="btn btn-secondary">Ga naar instellingen</Link>
+        </section>
+
+        <section className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Bot className="text-[var(--kleur-primary)] w-8 h-8" />
+            <div>
+              <h2 className="text-xl font-semibold">Jouw persoonlijke AI agents</h2>
+              <p className="text-sm text-gray-500">Hier vind je jouw persoonlijke AI agents die jou kunnen helpen op veel verschillende manieren, zoals sparren en taken uitvoeren.</p>
+            </div>
+          </div>
+          <Link to="/groei-cockpit" className="btn btn-primary">Ga naar GroeiCockpit</Link>
         </section>
       </div>
 
