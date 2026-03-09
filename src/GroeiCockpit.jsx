@@ -326,7 +326,7 @@ function GroeiCockpit() {
       }
       await supabase.from('groei_cockpit_artifacts').insert({
         owner_id: user.id,
-        conversation_id: null,
+        conversation_id: currentConversationId ?? null,
         type: 'file',
         title: file.name,
         storage_path: path,
@@ -340,7 +340,7 @@ function GroeiCockpit() {
     } finally {
       setUploadLoading(false)
     }
-  }, [user?.id, fetchArtifacts])
+  }, [user?.id, currentConversationId, fetchArtifacts])
 
   const handleOpenFile = useCallback(async (artifact) => {
     if (artifact.type !== 'file' || !artifact.storage_path) return
@@ -352,6 +352,17 @@ function GroeiCockpit() {
       console.error('GroeiCockpit: signed url failed', err)
     }
   }, [])
+
+  const handleLinkArtifactToConversation = useCallback(async (artifact) => {
+    if (!currentConversationId) return
+    const newConversationId = artifact.conversation_id === currentConversationId ? null : currentConversationId
+    const { error } = await supabase
+      .from('groei_cockpit_artifacts')
+      .update({ conversation_id: newConversationId })
+      .eq('id', artifact.id)
+      .eq('owner_id', user?.id)
+    if (!error) await fetchArtifacts()
+  }, [currentConversationId, user?.id, fetchArtifacts])
 
   const goToPanel = useCallback((panel) => {
     setActivePanel(panel)
@@ -585,15 +596,26 @@ function GroeiCockpit() {
                         {a.size_bytes != null && ` · ${formatBytes(a.size_bytes)}`}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0">
+                    <div className="flex items-center gap-1 shrink-0 flex-wrap">
                       {currentConversationId && (
-                        <button
-                          type="button"
-                          onClick={() => setReferencedArtifactId(referencedArtifactId === a.id ? null : a.id)}
-                          className={`btn btn-outline text-xs ${referencedArtifactId === a.id ? 'btn-primary' : ''}`}
-                        >
-                          {referencedArtifactId === a.id ? 'Gekoppeld' : 'Koppel'}
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => setReferencedArtifactId(referencedArtifactId === a.id ? null : a.id)}
+                            className={`btn btn-outline text-xs ${referencedArtifactId === a.id ? 'btn-primary' : ''}`}
+                            title="Bij je volgende bericht meesturen naar de agent"
+                          >
+                            {referencedArtifactId === a.id ? 'Gekoppeld' : 'Koppel'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleLinkArtifactToConversation(a)}
+                            className={`btn btn-outline text-xs ${a.conversation_id === currentConversationId ? 'bg-gray-100' : ''}`}
+                            title={a.conversation_id === currentConversationId ? 'Ontkoppel van dit gesprek' : 'Blijvend bij dit gesprek voegen'}
+                          >
+                            {a.conversation_id === currentConversationId ? 'Ontkoppel' : 'Bij gesprek'}
+                          </button>
+                        </>
                       )}
                       {a.type === 'file' && a.storage_path && (
                         <button
