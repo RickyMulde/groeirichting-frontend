@@ -324,16 +324,28 @@ function GroeiCockpit() {
         setUploadError(uploadErr.message ?? 'Upload mislukt')
         return
       }
-      await supabase.from('groei_cockpit_artifacts').insert({
-        owner_id: user.id,
-        conversation_id: currentConversationId ?? null,
-        type: 'file',
-        title: file.name,
-        storage_path: path,
-        mime_type: file.type || null,
-        size_bytes: file.size,
-        metadata: {}
-      })
+      const { data: inserted, error: insertErr } = await supabase
+        .from('groei_cockpit_artifacts')
+        .insert({
+          owner_id: user.id,
+          conversation_id: currentConversationId ?? null,
+          type: 'file',
+          title: file.name,
+          storage_path: path,
+          mime_type: file.type || null,
+          size_bytes: file.size,
+          metadata: {}
+        })
+        .select('id, title')
+        .single()
+      if (insertErr) {
+        setUploadError(insertErr.message ?? 'Opslaan mislukt')
+        return
+      }
+      // Altijd de nieuwste upload als bijlage voor het volgende bericht gebruiken.
+      if (inserted?.id) {
+        setReferencedArtifactId(inserted.id)
+      }
       await fetchArtifacts()
     } catch (err) {
       setUploadError(err.message ?? 'Er ging iets mis')
@@ -428,6 +440,32 @@ function GroeiCockpit() {
           </div>
         ) : (
           <>
+            {referencedArtifact && (
+              <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-medium text-blue-800 mb-0.5">Wordt meegestuurd met je volgende bericht</p>
+                  <p className="text-xs text-blue-900 truncate max-w-[220px]" title={referencedArtifact.title}>
+                    {referencedArtifact.title}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenFile(referencedArtifact)}
+                    className="btn btn-outline text-xs"
+                  >
+                    Openen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReferencedArtifactId(null)}
+                    className="text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    Verwijderen
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="flex-1 border border-gray-200 rounded-lg bg-gray-50/30 overflow-y-auto min-h-[200px] max-h-[320px] p-3 space-y-3">
               {messagesLoading ? (
                 <div className="flex items-center justify-center py-8 text-gray-500 text-sm">
@@ -461,27 +499,51 @@ function GroeiCockpit() {
               )}
               <div ref={messagesEndRef} />
             </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                placeholder="Typ je bericht..."
-                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                disabled={sending}
-              />
-              <button
-                type="button"
-                onClick={handleSendMessage}
-                disabled={sending || !newMessage.trim()}
-                className="btn btn-primary flex items-center gap-1"
-              >
-                {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                Verstuur
-              </button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleUploadClick}
+                  disabled={uploadLoading || !currentConversationId}
+                  className="btn btn-outline flex items-center gap-1"
+                  title="Bestand meesturen met je volgende bericht"
+                >
+                  {uploadLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  <span className="hidden sm:inline">Bestand toevoegen</span>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept=".pdf,.doc,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,application/json,image/png,image/jpeg"
+                  onChange={handleFileChange}
+                />
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                  placeholder="Typ je bericht..."
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  disabled={sending}
+                />
+                <button
+                  type="button"
+                  onClick={handleSendMessage}
+                  disabled={sending || !newMessage.trim()}
+                  className="btn btn-primary flex items-center gap-1"
+                >
+                  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  Verstuur
+                </button>
+              </div>
+              {uploadError && <p className="text-xs text-red-600">{uploadError}</p>}
+              {sendError && <p className="text-sm text-red-600">{sendError}</p>}
             </div>
-            {sendError && <p className="text-sm text-red-600">{sendError}</p>}
           </>
         )}
       </div>
@@ -496,55 +558,6 @@ function GroeiCockpit() {
         <h2 className="text-lg font-semibold text-gray-800">Bestanden en grafieken</h2>
       </div>
       <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-auto">
-        {referencedArtifact && (
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-xs font-medium text-blue-800 mb-1">In gesprek: {referencedArtifact.title}</p>
-            <button
-              type="button"
-              onClick={() => handleOpenFile(referencedArtifact)}
-              className="btn btn-outline text-xs"
-            >
-              Openen
-            </button>
-            <button
-              type="button"
-              onClick={() => setReferencedArtifactId(null)}
-              className="ml-2 text-xs text-gray-500 hover:text-gray-700"
-            >
-              Loskoppelen
-            </button>
-          </div>
-        )}
-
-        <div className="flex flex-col items-center justify-center gap-2 py-4 text-gray-500 border border-dashed border-gray-200 rounded-lg bg-gray-50/50">
-          <Upload className="w-12 h-12 sm:w-16 sm:h-16 text-[var(--kleur-accent)] opacity-70" aria-hidden />
-          <p className="text-sm text-center">Upload bestanden om inzichten te halen en te hergebruiken.</p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            className="hidden"
-            accept=".pdf,.doc,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,application/json,image/png,image/jpeg"
-            onChange={handleFileChange}
-          />
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleUploadClick}
-            disabled={uploadLoading}
-            aria-label="Upload bestand"
-          >
-            {uploadLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin inline-block mr-2" />
-                Uploaden…
-              </>
-            ) : (
-              'Upload bestand'
-            )}
-          </button>
-          {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
-        </div>
-
         {currentConversationId && (
           <label className="flex items-center gap-2 text-sm text-gray-600">
             <input
