@@ -546,13 +546,17 @@ function GroeiCockpit() {
                   accept=".pdf,.doc,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,application/json,image/png,image/jpeg"
                   onChange={handleFileChange}
                 />
-                <input
-                  type="text"
+                <textarea
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                  placeholder="Typ je bericht..."
-                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSendMessage()
+                    }
+                  }}
+                  placeholder="Typ je bericht... (Shift+Enter voor nieuwe regel)"
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none leading-snug min-h-[2.5rem] max-h-32"
                   disabled={sending}
                 />
                 <button
