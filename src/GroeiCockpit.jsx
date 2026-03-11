@@ -293,8 +293,12 @@ function GroeiCockpit() {
           if (!res.ok) {
             const errData = await res.json().catch(() => ({}))
             setSendError(errData?.error || res.statusText || 'Versturen mislukt')
+          } else {
+            setReferencedArtifactId(null)
           }
         } catch (_) {}
+      } else {
+        setReferencedArtifactId(null)
       }
       await fetchMessages()
     } catch (err) {
