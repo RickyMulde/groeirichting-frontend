@@ -11,7 +11,8 @@ import {
   Loader2,
   Plus,
   Send,
-  X
+  X,
+  Trash2
 } from 'lucide-react'
 
 const PANEL_CHAT = 0
@@ -376,6 +377,25 @@ function GroeiCockpit() {
     if (!error) await fetchArtifacts()
   }, [currentConversationId, user?.id, fetchArtifacts])
 
+  const [deletingArtifactId, setDeletingArtifactId] = useState(null)
+  const handleDeleteArtifact = useCallback(async (artifact) => {
+    if (!user?.id || !artifact?.id) return
+    setDeletingArtifactId(artifact.id)
+    try {
+      const { error } = await supabase
+        .from('groei_cockpit_artifacts')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', artifact.id)
+        .eq('owner_id', user.id)
+      if (!error) {
+        if (referencedArtifactId === artifact.id) setReferencedArtifactId(null)
+        await fetchArtifacts()
+      }
+    } finally {
+      setDeletingArtifactId(null)
+    }
+  }, [user?.id, referencedArtifactId, fetchArtifacts])
+
   const goToPanel = useCallback((panel) => {
     setActivePanel(panel)
   }, [])
@@ -616,17 +636,17 @@ function GroeiCockpit() {
                             type="button"
                             onClick={() => setReferencedArtifactId(referencedArtifactId === a.id ? null : a.id)}
                             className={`btn btn-outline text-xs ${referencedArtifactId === a.id ? 'btn-primary' : ''}`}
-                            title="Bij je volgende bericht meesturen naar de agent"
+                            title="Dit bestand meesturen met je volgende bericht naar de agent"
                           >
-                            {referencedArtifactId === a.id ? 'Gekoppeld' : 'Koppel'}
+                            {referencedArtifactId === a.id ? 'Wordt meegestuurd' : 'Meesturen'}
                           </button>
                           <button
                             type="button"
                             onClick={() => handleLinkArtifactToConversation(a)}
-                            className={`btn btn-outline text-xs ${a.conversation_id === currentConversationId ? 'bg-gray-100' : ''}`}
-                            title={a.conversation_id === currentConversationId ? 'Ontkoppel van dit gesprek' : 'Blijvend bij dit gesprek voegen'}
+                            className={`btn btn-outline text-xs ${a.conversation_id === currentConversationId ? 'bg-gray-300 text-gray-900 border-gray-500 hover:bg-gray-400' : ''}`}
+                            title={a.conversation_id === currentConversationId ? 'Bestand loskoppelen van dit gesprek' : 'Bestand aan dit gesprek koppelen (filter)'}
                           >
-                            {a.conversation_id === currentConversationId ? 'Ontkoppel' : 'Bij gesprek'}
+                            {a.conversation_id === currentConversationId ? 'Van gesprek' : 'Aan gesprek'}
                           </button>
                         </>
                       )}
@@ -641,6 +661,17 @@ function GroeiCockpit() {
                           Openen
                         </button>
                       )}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteArtifact(a)}
+                        disabled={deletingArtifactId === a.id}
+                        className="btn btn-outline text-xs text-red-600 hover:bg-red-50 flex items-center gap-1"
+                        title="Bestand verwijderen"
+                        aria-label={`Verwijderen: ${a.title}`}
+                      >
+                        {deletingArtifactId === a.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        Verwijderen
+                      </button>
                     </div>
                   </div>
                   {a.type === 'chart' && a.chart_config && (
