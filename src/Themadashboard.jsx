@@ -227,11 +227,9 @@ function Themadashboard() {
       const theme = themes.find(t => t.theme_id === themeId)
       if (!theme) return
       
-      // Controleer of alle voorwaarden zijn vervuld
+      // Minimaal 4 medewerkers moeten het thema hebben voltooid
       const hasMinEmployees = theme.voltooide_medewerkers >= 4
-      const allEmployeesCompleted = theme.voltooide_medewerkers === theme.totaal_medewerkers
-      
-      if (!hasMinEmployees || !allEmployeesCompleted) {
+      if (!hasMinEmployees) {
         // Voorwaarden niet vervuld - geen samenvatting ophalen
         return
       }
@@ -427,11 +425,11 @@ function Themadashboard() {
                 <ul className="text-sm space-y-1 ml-4">
                   <li className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                    Als alle uitgenodigde medewerkers/teamleden de thema's hebben afgerond
+                    Als minimaal 4 uitgenodigde medewerkers/teamleden het thema hebben afgerond
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                    Op de eerste dag na de actieve maand
+                    Nadat de resultaten verwerkt zijn (meestal op de laatste dag van de actieve maand of de eerste dag van de nieuwe maand)
                   </li>
                 </ul>
                 <p className="text-sm mt-3 font-medium">Er zijn samenvattingen beschikbaar per team of voor alle teams samen (totaal).</p>
@@ -568,7 +566,7 @@ function Themadashboard() {
                   {(() => {
                     const hasMinEmployees = theme.voltooide_medewerkers >= 4
                     const allEmployeesCompleted = theme.voltooide_medewerkers === theme.totaal_medewerkers
-                    const conditionsMet = hasMinEmployees && allEmployeesCompleted
+                    const conditionsMet = hasMinEmployees
                     const status = summaryStatus[theme.theme_id]
                     
                     if (status === 'loading') {
@@ -623,10 +621,7 @@ function Themadashboard() {
                                 <span className="text-sm font-medium text-yellow-900">Let op</span>
                               </div>
                               <p className="text-sm text-yellow-800">
-                                {!hasMinEmployees ? 
-                                  `Deze samenvatting is gebaseerd op ${theme.voltooide_medewerkers} van de ${theme.totaal_medewerkers} medewerkers. Voor een betrouwbare samenvatting worden minimaal 4 voltooide gesprekken aanbevolen.` : 
-                                  `Deze samenvatting is gebaseerd op ${theme.voltooide_medewerkers} van de ${theme.totaal_medewerkers} medewerkers. Voor een complete samenvatting moeten alle medewerkers het thema voltooien.`
-                                }
+                                {`Deze samenvatting is gebaseerd op ${theme.voltooide_medewerkers} van de ${theme.totaal_medewerkers} medewerkers. Voor een betrouwbare samenvatting worden minimaal 4 voltooide gesprekken aanbevolen.`}
                               </p>
                             </div>
                           )}
@@ -851,10 +846,7 @@ function Themadashboard() {
                           Samenvatting nog niet beschikbaar
                         </p>
                         <p className="text-gray-500 text-sm">
-                          {!hasMinEmployees ? 
-                            `Minimaal 4 medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/4 voltooid)` : 
-                            `Alle medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/${theme.totaal_medewerkers} voltooid)`
-                          }
+                          {`Minimaal 4 medewerkers moeten het thema voltooien (${theme.voltooide_medewerkers}/4 voltooid)`}
                         </p>
                       </div>
                     )
