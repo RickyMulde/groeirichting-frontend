@@ -158,8 +158,9 @@ function Themadashboard() {
       
       // Voor teamleiders: team_id wordt automatisch door backend bepaald
       // Voor werkgevers: voeg team filtering toe als team is geselecteerd
-      if (!userData.is_teamleider && selectedTeam) {
-        url += `?team_id=${selectedTeam}`
+      const effectiveTeamId = userData.is_teamleider ? null : selectedTeam
+      if (effectiveTeamId) {
+        url += `?team_id=${effectiveTeamId}`
       }
       
       const response = await fetch(url, {
@@ -170,27 +171,58 @@ function Themadashboard() {
       
       if (!response.ok) {
         if (response.status === 404) {
-          // Geen samenvatting → trigger generatie
-          console.log('Geen samenvatting gevonden, wordt gegenereerd...')
+          // Geen samenvatting → probeer er één te genereren via backend
+          console.log('Geen samenvatting gevonden, probeer generatie te starten...')
           setSummaryStatus(prev => ({ ...prev, [themeId]: 'generating' }))
           
-          // Wacht 3 seconden en probeer opnieuw
-          await new Promise(resolve => setTimeout(resolve, 3000))
-          
-          const retryResponse = await fetch(url, {
+          const generateResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-organisation-summary`, {
+            method: 'POST',
             headers: {
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${session?.access_token}`
-            }
+            },
+            body: JSON.stringify({
+              organisatie_id: orgId,
+              theme_id: themeId,
+              // Voor teamleiders bepaalt backend automatisch team; voor werkgevers optioneel team_id
+              ...(effectiveTeamId ? { team_id: effectiveTeamId } : {})
+            })
           })
           
-          if (retryResponse.ok) {
-            const data = await retryResponse.json()
-            setSummaryData(prev => ({
-              ...prev,
-              [themeId]: data
-            }))
-            setSummaryStatus(prev => ({ ...prev, [themeId]: 'ready' }))
-          } else {
+          if (!generateResponse.ok) {
+            const genError = await generateResponse.json().catch(() => ({}))
+            console.error('Fout bij starten generatie samenvatting:', genError)
+            setSummaryStatus(prev => ({ ...prev, [themeId]: 'error' }))
+            return
+          }
+          
+          // Poll tot 3x of de samenvatting beschikbaar is
+          const maxRetries = 3
+          const delayMs = 3000
+          let success = false
+          
+          for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            await new Promise(resolve => setTimeout(resolve, delayMs))
+            
+            const retryResponse = await fetch(url, {
+              headers: {
+                'Authorization': `Bearer ${session?.access_token}`
+              }
+            })
+            
+            if (retryResponse.ok) {
+              const data = await retryResponse.json()
+              setSummaryData(prev => ({
+                ...prev,
+                [themeId]: data
+              }))
+              setSummaryStatus(prev => ({ ...prev, [themeId]: 'ready' }))
+              success = true
+              break
+            }
+          }
+          
+          if (!success) {
             setSummaryStatus(prev => ({ ...prev, [themeId]: 'error' }))
           }
           return
